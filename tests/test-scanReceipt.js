@@ -8,9 +8,9 @@ global.navigator = () => null;
 
 
 test('scan-receipt', async t => {
-    const {username, password, apiKey, url} = config;
+    const {username, password, apiKey, stage, url} = config;
     await las.login(username, password);
-    await las.configure(apiKey);
+    await las.configure(apiKey, stage);
 
     const withUrlResponse = await las.scanReceiptWithUrl(url);
     withUrlResponse.forEach(detection => {

@@ -7,7 +7,8 @@ global.navigator = () => null;
 
 
 test('configure', t => {
-    const {apiKey} = config;
-    las.configure(apiKey);
+    const {apiKey, stage} = config;
+    las.configure(apiKey, stage);
     t.is(las.getApiKey(), apiKey);
+    t.is(las.getStage(), stage);
 });
