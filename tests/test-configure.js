@@ -6,8 +6,8 @@ import config from './config';
 global.navigator = () => null;
 
 
-test('configure', async t => {
-    const {username, password, apiKey} = config;
-    const future = las.configure(username, password, apiKey);
-    t.is(await future, true);
+test('configure', t => {
+    const {apiKey} = config;
+    las.configure(apiKey);
+    t.is(las.getApiKey(), apiKey);
 });

@@ -7,8 +7,8 @@ global.navigator = () => null;
 
 
 test('session', async t => {
-    const {username, password, apiKey} = config;
-    await las.configure(username, password, apiKey);
+    const {username, password} = config;
+    await las.login(username, password);
 
     const session = await las.getSession();
     t.truthy(session.getIdToken().getJwtToken());
