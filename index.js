@@ -1,1 +1,1 @@
-export default require('./lib/las');
+module.exports = require('./lib/las');
