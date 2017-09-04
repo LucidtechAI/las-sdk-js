@@ -1,0 +1,30 @@
+{
+  "name": "las-sdk-js",
+  "version": "0.0.1",
+  "description": "JavaScript SDK for Lucidtech AI Services API",
+  "main": "index.js",
+  "repository": "git@github.com:LucidtechAI/las-sdk-js.git",
+  "author": "august@lucidtech.ai",
+  "license": "Apache-2.0",
+  "scripts": {
+    "start": "webpack -w",
+    "build": "webpack -p",
+    "test": "ava tests/**/test-*.js",
+    "test-w": "ava -w tests/**/test-*.js",
+    "prepublish": "npm build && npm test"
+  },
+  "devDependencies": {
+    "ava": "^0.22.0",
+    "babel-loader": "^7.1.2",
+    "babel-plugin-add-module-exports": "^0.2.1",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "path": "^0.12.7",
+    "webpack": "^3.5.5"
+  },
+  "dependencies": {
+    "amazon-cognito-identity-js": "^1.19.0",
+    "isomorphic-fetch": "^2.2.1",
+    "loglevel": "^1.4.1"
+  }
+}
