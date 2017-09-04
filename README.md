@@ -9,7 +9,11 @@ yarn add git+ssh://git@github.com/LucidtechAI/las-sdk-js.git
 ## Usage
 
 ```
-import lws from 'lws-sdk-js';
+import las from 'las-sdk-js';
+
+las.configure(...);
+las.scanReceiptWithUrl('https://example.com/image.jpeg');
+las.scanReceiptWithFile(File(...));
 ```
 
 ## Contributing
