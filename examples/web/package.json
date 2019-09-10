@@ -1,0 +1,25 @@
+{
+  "name": "@lucidtech/web-example",
+  "version": "1.0.0",
+  "author": "Lucidtech AS <hello@lucidtech.ai>",
+  "maintainers": [
+    "August André Kvernmo <august@lucidtech.ai>"
+  ],
+  "homepage": "https://lucidtech.ai",
+  "license": "Apache-2.0",
+  "main": "lib/index.js",
+  "typings": "lib/index.d.ts",
+  "scripts": {
+    "webpack": "webpack",
+    "watch": "webpack -w --mode=development",
+    "dev": "webpack-dev-server"
+  },
+  "dependencies": {
+    "@lucidtech/las-sdk-browser": "file:../../packages/las-sdk-browser"
+  },
+  "devDependencies": {
+    "webpack": "^4.39.3",
+    "webpack-cli": "^3.3.7",
+    "webpack-dev-server": "^3.8.0"
+  }
+}

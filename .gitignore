@@ -110,5 +110,7 @@ fabric.properties
 # Idea
 .idea
 
-# Config for tests
-tests/config.js
+# Build output
+dist/
+lib/
+

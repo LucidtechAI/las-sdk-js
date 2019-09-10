@@ -1,18 +1,21 @@
 const path = require('path');
 
 module.exports = {
-    entry: ['whatwg-fetch', './index.js'],
-    target: 'node',
+    entry: './src/index.ts',
     output: {
-        path: path.resolve('dist'),
-        filename: 'build.js',
+        path: path.resolve(__dirname, 'dist'),
+        filename: 'las-sdk.js',
+        library: 'las',
         libraryTarget: 'umd'
     },
     module: {
-        loaders: [{
-            test: /\.js$/,
-            loader: 'babel-loader',
+        rules: [{
+            test: /\.tsx?$/,
+            use: 'ts-loader',
             exclude: /node_modules/
         }]
+    },
+    resolve: {
+        extensions: ['.tsx', '.ts', '.js']
     }
 };
