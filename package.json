@@ -5,17 +5,15 @@
   "private": true,
   "scripts": {
     "test": "jest",
-    "upgrade-lucidtech": "lerna run --sort tsc && lerna bootstrap --sort && yarn upgrade --scope @lucidtech && lerna run --sort tsc",
+    "preupgrade-lucidtech": "lerna bootstrap --sort && lerna run --sort compile",
+    "upgrade-lucidtech": "lerna run upgrade",
+    "postupgrade-lucidtech": "lerna run --sort compile",
     "watch": "lerna run watch",
-    "bootstrap": "lerna bootstrap --use-workspaces",
+    "bootstrap": "lerna bootstrap --sort",
     "compile": "lerna run compile",
     "recompile": "lerna clean -y && lerna run compile",
     "build": "lerna clean -y && lerna run compile && jest"
   },
-  "workspaces": [
-    "packages/*",
-    "examples/*"
-  ],
   "devDependencies": {
     "@types/jest": "^24.0.18",
     "@types/jsdom": "^12.2.4",
@@ -33,5 +31,9 @@
     "uuid": "^3.3.3",
     "webpack": "^4.39.3",
     "webpack-cli": "^3.3.7"
+  },
+  "dependencies": {
+    "@lucidtech/las-sdk-browser": "file:packages/las-sdk-browser",
+    "@lucidtech/las-sdk-node": "file:packages/las-sdk-node"
   }
 }

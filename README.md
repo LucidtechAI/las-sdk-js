@@ -35,15 +35,15 @@ client.postDocuments(content, 'image/jpeg', '<consentId>').then(documentResponse
 
 Install dependencies
 ```
-$ yarn && yarn bootstrap && yarn upgrade-lucidtech
+$ npm install && npm run upgrade-lucidtech
 ```
 
 Build
 ```
-$ yarn build
+$ npm run build
 ```
 
 Run tests
 ```
-$ yarn test
+$ npm run test test
 ```
