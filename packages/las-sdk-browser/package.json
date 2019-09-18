@@ -13,7 +13,9 @@
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "scripts": {
-    "compile": "yarn upgrade --scope @lucidtech && tsc"
+    "compile": "tsc",
+    "upgrade": "npm update",
+    "lint": "tslint ./src/*"
   },
   "dependencies": {
     "@lucidtech/las-sdk-core": "file:../las-sdk-core",
