@@ -10,6 +10,10 @@ export class Client {
         this.credentials = credentials;
     }
 
+    getDocument(documentId: string) {
+        return this.makeGetRequest(`/documents/${documentId}`);
+    }
+
     postDocuments(content: string, contentType: string, consentId: string) {
         const body = {
             'content': Buffer.from(content).toString('base64'),
@@ -27,6 +31,10 @@ export class Client {
         };
 
         return this.makePostRequest('/predictions', body);
+    }
+
+    getProcesses() {
+        return this.makeGetRequest('/processes');
     }
 
     postProcesses(stateMachineArn: string, inputData: any) {
