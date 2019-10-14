@@ -88,3 +88,14 @@ test('Testing erroneous patchTask', async () => {
     const postTasksPromise = client.patchTasks(testTaskId, testTaskResult);
     await expect(postTasksPromise).rejects.toBeDefined();
 });
+
+test('Testing successful getDocument', async () => {
+    const client = getTestClient();
+
+    const documentId = uuidv4();
+    const getDocumentPromise = client.getDocument(documentId);
+    await expect(getDocumentPromise).resolves.toHaveProperty('content');
+    await expect(getDocumentPromise).resolves.toHaveProperty('consentId');
+    await expect(getDocumentPromise).resolves.toHaveProperty('documentId');
+    await expect(getDocumentPromise).resolves.toHaveProperty('contentType');
+});
