@@ -6,8 +6,15 @@ export class TestCredentials extends Credentials {
     testExpiration: number;
     testRefreshToken: string;
 
-    constructor(testApiKey: string, testAccessToken: string, testExpiresInSeconds: number, testRefreshToken: string) {
-        super(testApiKey);
+    constructor(
+        testApiKey: string,
+        testAccessToken: string,
+        testExpiresInSeconds: number,
+        testRefreshToken: string,
+        getPersistentToken?: (...args: any[]) => Token|null,
+        setPersistentToken?: (...args: any[]) => void,
+    ) {
+        super(testApiKey, getPersistentToken, setPersistentToken);
 
         this.testAccessToken = testAccessToken;
         this.testExpiration = Date.now() + 1000 * testExpiresInSeconds;
