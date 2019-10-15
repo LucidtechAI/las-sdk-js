@@ -71,8 +71,19 @@ export class AuthorizationCodeCredentials extends Credentials {
     private readonly redirectUri: string;
     private readonly launchUriFn: (uri: string) => void;
     private readonly pkce?: PKCEDerived;
+    readonly getPersistentToken?: () => Token;
+    readonly setPersistentToken?: (value: Token) => void;
 
-    constructor(apiKey: string, clientId: string, authEndpoint: string, redirectUri: string, launchUriFn: (uri: string) => void, pkce?: PKCEDerived) {
+    constructor(
+        apiKey: string,
+        clientId: string,
+        authEndpoint: string,
+        redirectUri: string,
+        launchUriFn: (uri: string) => void,
+        pkce?: PKCEDerived,
+        getPersistentToken?: () => Token,
+        setPersistentToken?: (value: Token) => void,
+    ) {
         super(apiKey);
 
         this.clientId = clientId;
@@ -80,6 +91,8 @@ export class AuthorizationCodeCredentials extends Credentials {
         this.redirectUri = redirectUri;
         this.launchUriFn = launchUriFn;
         this.pkce = pkce;
+        this.getPersistentToken = getPersistentToken;
+        this.setPersistentToken = setPersistentToken;
     }
 
     protected getToken(): Promise<Token> {
