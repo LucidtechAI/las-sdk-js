@@ -23,17 +23,3 @@ test('Testing getAccessToken', async () => {
     expect(credentials.getToken).toHaveBeenCalled();
     jest.clearAllMocks();
 });
-
-
-test('Sets optional methods for credentials', () => {
-    const testApiKey = 'testApiKey';
-    const testAccessToken = 'testAccessToken';
-    const testExpiresInSeconds = 1;
-    const testRefreshToken = 'testRefreshToken';
-    const credentials = new TestCredentials(testApiKey, testAccessToken, testExpiresInSeconds, testRefreshToken, {
-        getPersistentToken: () => {},
-        setPersistentToken: () => {},
-    });
-    expect(credentials.getPersistentToken).not.toBeUndefined();
-    expect(credentials.setPersistentToken).not.toBeUndefined();
-});

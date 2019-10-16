@@ -42,4 +42,4 @@ export function getTestClient() {
     return new Client(endpoint, credentials);
 }
 
-test('Loading helpers', () => {});
+test('Loading core helpers', () => {});
