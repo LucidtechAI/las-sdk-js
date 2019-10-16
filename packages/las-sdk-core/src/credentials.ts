@@ -17,12 +17,17 @@ export class Token {
 export abstract class Credentials {
     readonly apiKey: string;
     protected token?: Token;
-    getPersistentToken?: () => Token|null;
-    setPersistentToken?: (value: Token) => void;
+    getPersistentToken?: (...args: any[]) => Token|null;
+    setPersistentToken?: (...args: any[]) => void;
 
-    protected constructor(apiKey: string, ...args: any[]) {
+    protected constructor(apiKey: string, options?: { [key: string]: any }) {
         this.apiKey = apiKey;
-        const [ getPersistentToken, setPersistentToken ] = args;
+
+        if (options == null) {
+          return;
+        }
+
+        const { getPersistentToken, setPersistentToken } = options;
         this.getPersistentToken = getPersistentToken;
         this.setPersistentToken = setPersistentToken;
     }
