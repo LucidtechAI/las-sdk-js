@@ -1,4 +1,5 @@
 import {TestCredentials, sleep} from "./helpers.spec";
+import { Token } from './credentials';
 
 
 test('Testing getAccessToken', async () => {
@@ -21,4 +22,18 @@ test('Testing getAccessToken', async () => {
     await expect(credentials.getAccessToken()).resolves.toBe(testAccessToken);
     expect(credentials.getToken).toHaveBeenCalled();
     jest.clearAllMocks();
+});
+
+
+test('Sets optional methods for credentials', () => {
+    const testApiKey = 'testApiKey';
+    const testAccessToken = 'testAccessToken';
+    const testExpiresInSeconds = 1;
+    const testRefreshToken = 'testRefreshToken';
+    const credentials = new TestCredentials(testApiKey, testAccessToken, testExpiresInSeconds, testRefreshToken, {
+        getPersistentToken: () => {},
+        setPersistentToken: () => {},
+    });
+    expect(credentials.getPersistentToken).not.toBeUndefined();
+    expect(credentials.setPersistentToken).not.toBeUndefined();
 });

@@ -11,10 +11,9 @@ export class TestCredentials extends Credentials {
         testAccessToken: string,
         testExpiresInSeconds: number,
         testRefreshToken: string,
-        getPersistentToken?: (...args: any[]) => Token|null,
-        setPersistentToken?: (...args: any[]) => void,
+        options?: { [key: string]: any },
     ) {
-        super(testApiKey, getPersistentToken, setPersistentToken);
+        super(testApiKey, options);
 
         this.testAccessToken = testAccessToken;
         this.testExpiration = Date.now() + 1000 * testExpiresInSeconds;
