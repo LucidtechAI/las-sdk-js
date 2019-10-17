@@ -1,4 +1,5 @@
 import {TestCredentials, sleep} from "./helpers.spec";
+import { Token } from './credentials';
 
 
 test('Testing getAccessToken', async () => {

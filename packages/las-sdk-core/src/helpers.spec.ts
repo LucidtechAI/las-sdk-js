@@ -6,8 +6,14 @@ export class TestCredentials extends Credentials {
     testExpiration: number;
     testRefreshToken: string;
 
-    constructor(testApiKey: string, testAccessToken: string, testExpiresInSeconds: number, testRefreshToken: string) {
-        super(testApiKey);
+    constructor(
+        testApiKey: string,
+        testAccessToken: string,
+        testExpiresInSeconds: number,
+        testRefreshToken: string,
+        options?: { [key: string]: any },
+    ) {
+        super(testApiKey, options);
 
         this.testAccessToken = testAccessToken;
         this.testExpiration = Date.now() + 1000 * testExpiresInSeconds;
@@ -36,4 +42,4 @@ export function getTestClient() {
     return new Client(endpoint, credentials);
 }
 
-test('Loading helpers', () => {});
+test('Loading core helpers', () => {});

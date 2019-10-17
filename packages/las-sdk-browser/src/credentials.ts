@@ -1,7 +1,7 @@
 import axios from 'axios';
 import {SHA256} from 'crypto-js';
 import * as base64 from 'crypto-js/enc-base64';
-import {Credentials, Token} from '@lucidtech/las-sdk-core';
+import {Credentials, Token, ITokenStorage} from '@lucidtech/las-sdk-core';
 
 const utils = {
     randomString(alphabet: string, length: number) {
@@ -71,8 +71,16 @@ export class AuthorizationCodeCredentials extends Credentials {
     private readonly redirectUri: string;
     private readonly launchUriFn: (uri: string) => void;
     private readonly pkce?: PKCEDerived;
+    protected readonly storage?: ITokenStorage<Token>;
 
-    constructor(apiKey: string, clientId: string, authEndpoint: string, redirectUri: string, launchUriFn: (uri: string) => void, pkce?: PKCEDerived) {
+    constructor(
+        apiKey: string,
+        clientId: string,
+        authEndpoint: string,
+        redirectUri: string,
+        launchUriFn: (uri: string) => void,
+        pkce?: PKCEDerived,
+    ) {
         super(apiKey);
 
         this.clientId = clientId;

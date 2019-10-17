@@ -1,7 +1,14 @@
+import { ITokenStorage } from './storage';
+
+
 export class Token {
     readonly accessToken: string;
     readonly expiration: number;
     readonly refreshToken?: string;
+
+    isValid() {
+        return Date.now() < this.expiration;
+    }
 
     constructor(accessToken: string, expiration: number, refreshToken?: string) {
         this.accessToken = accessToken;
@@ -13,26 +20,41 @@ export class Token {
 export abstract class Credentials {
     readonly apiKey: string;
     protected token?: Token;
+    protected storage?: ITokenStorage<Token>;
 
-    protected constructor(apiKey: string) {
+    protected constructor(apiKey: string, storage?: ITokenStorage<Token>) {
         this.apiKey = apiKey;
+        this.storage = storage;
     }
 
     getAccessToken(): Promise<string> {
+        const storage = this.storage;
+
         return new Promise<string>((resolve, reject) => {
-            if (!!this.token && Date.now() < this.token.expiration) {
-                resolve(this.token.accessToken);
-            } else {
-                this.getToken().then(token => {
-                    this.token = token;
-                    resolve(token.accessToken);
-                }).catch(error => {
-                    reject(error);
-                });
+            let token = this.token || null;
+
+            if (!(token && token.isValid()) && storage) {
+                token = storage.getPersistentToken();
             }
+
+            if (token && token.isValid()) {
+                this.token = token;
+                return resolve(token.accessToken);
+            }
+
+            this.getToken().then(newToken => {
+                this.token = newToken;
+
+                if (storage) {
+                  storage.setPersistentToken(newToken);
+                }
+
+                resolve(newToken.accessToken);
+            }).catch(error => {
+                reject(error);
+            });
         })
     }
 
     protected abstract getToken(): Promise<Token>
 }
-
