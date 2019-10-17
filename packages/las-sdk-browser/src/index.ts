@@ -1,1 +1,1 @@
-export {AuthorizationCodeCredentials, PKCEDerived} from './credentials';
+export { AuthorizationCodeCredentials, PKCEDerived } from './credentials';

@@ -1,5 +1,5 @@
-import { SessionStorage } from './storage';
 import { Token } from '@lucidtech/las-sdk-core';
+import { SessionStorage } from './storage';
 import { MockStorage } from './helpers.spec';
 
 
