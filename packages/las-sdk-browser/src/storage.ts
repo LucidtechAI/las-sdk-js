@@ -5,7 +5,7 @@ export class SessionStorage implements ITokenStorage<Token> {
   private _keyName: string;
 
   constructor(keyName?: string) {
-    this._keyName = keyName || "AuthToken";
+    this._keyName = keyName || 'AuthToken';
   }
 
   getPersistentToken() {

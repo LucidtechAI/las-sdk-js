@@ -1,1 +1,1 @@
-export {ClientCredentials} from './credentials';
+export { ClientCredentials } from './credentials';
