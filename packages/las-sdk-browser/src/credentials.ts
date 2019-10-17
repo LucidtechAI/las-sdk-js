@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { SHA256 } from 'crypto-js';
 import * as base64 from 'crypto-js/enc-base64';
-import { Credentials, Token, ITokenStorage } from '@lucidtech/las-sdk-core';
+import { Credentials, Token, TokenStorage } from '@lucidtech/las-sdk-core';
 
 const utils = {
   randomString(alphabet: string, length: number) {
@@ -80,7 +80,7 @@ export class AuthorizationCodeCredentials extends Credentials {
 
     private readonly pkce?: PKCEDerived;
 
-    protected readonly storage?: ITokenStorage<Token>;
+    protected readonly storage?: TokenStorage<Token>;
 
     constructor(
       apiKey: string,

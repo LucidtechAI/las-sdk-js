@@ -1,4 +1,4 @@
-import { ITokenStorage } from './storage';
+import { TokenStorage } from './storage';
 
 
 export class Token {
@@ -24,9 +24,9 @@ export abstract class Credentials {
 
     protected token?: Token;
 
-    protected storage?: ITokenStorage<Token>;
+    protected storage?: TokenStorage<Token>;
 
-    protected constructor(apiKey: string, storage?: ITokenStorage<Token>) {
+    protected constructor(apiKey: string, storage?: TokenStorage<Token>) {
       this.apiKey = apiKey;
       this.storage = storage;
     }

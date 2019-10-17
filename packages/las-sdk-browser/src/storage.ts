@@ -1,15 +1,15 @@
-import { ITokenStorage, Token } from '@lucidtech/las-sdk-core';
+import { TokenStorage, Token } from '@lucidtech/las-sdk-core';
 
 
-export class SessionStorage implements ITokenStorage<Token> {
-  private _keyName: string;
+export class SessionStorage implements TokenStorage<Token> {
+  private keyName: string;
 
   constructor(keyName?: string) {
-    this._keyName = keyName || 'AuthToken';
+    this.keyName = keyName || 'AuthToken';
   }
 
   getPersistentToken() {
-    const tokenString = window.sessionStorage.getItem(this._keyName);
+    const tokenString = window.sessionStorage.getItem(this.keyName);
 
     if (!tokenString) {
       return null;
@@ -26,6 +26,6 @@ export class SessionStorage implements ITokenStorage<Token> {
 
   setPersistentToken(value: Token) {
     const tokenString = JSON.stringify(value);
-    window.sessionStorage.setItem(this._keyName, tokenString);
+    window.sessionStorage.setItem(this.keyName, tokenString);
   }
 }
