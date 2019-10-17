@@ -15,7 +15,7 @@
   "scripts": {
     "compile": "tsc",
     "upgrade": "npm update",
-    "lint": "tslint ./src/*"
+    "lint": "eslint ./src/**/*"
   },
   "dependencies": {
     "axios": "^0.19.0"

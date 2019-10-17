@@ -15,7 +15,7 @@
   "scripts": {
     "compile": "tsc",
     "upgrade": "npm update",
-    "lint": "tslint ./src/*"
+    "lint": "eslint ./src/**/*"
   },
   "dependencies": {
     "@lucidtech/las-sdk-core": "file:../las-sdk-core",
