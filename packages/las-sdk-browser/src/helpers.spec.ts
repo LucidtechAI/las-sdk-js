@@ -1,16 +1,16 @@
 export class MockStorage {
-    private _storage: { [key: string]: string|null };
+    private storage: { [key: string]: string|null };
 
     constructor() {
-        this._storage = {};
+      this.storage = {};
     }
 
     getItem(key: string) {
-        return this._storage[key];
+      return this.storage[key];
     }
 
     setItem(key: string, value: string|null) {
-        this._storage[key] = value;
+      this.storage[key] = value;
     }
 }
 

@@ -13,7 +13,7 @@
     "compile": "lerna run compile",
     "recompile": "lerna clean -y && lerna run compile",
     "build": "lerna clean -y && lerna run compile && jest",
-    "lint": "lerna run lint"
+    "lint": "lerna run --no-bail lint"
   },
   "devDependencies": {
     "@types/jest": "^24.0.18",
