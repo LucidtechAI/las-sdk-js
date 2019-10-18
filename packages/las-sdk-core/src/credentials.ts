@@ -31,17 +31,28 @@ export abstract class Credentials {
       this.storage = storage;
     }
 
+    getLocalToken(): Token|null {
+      const { storage } = this;
+      let token = this.token || null;
+
+      if (!(token && token.isValid()) && storage) {
+        token = storage.getPersistentToken();
+      }
+
+      if (token && token.isValid()) {
+        return token;
+      }
+
+      return null;
+    }
+
     getAccessToken(): Promise<string> {
       const { storage } = this;
 
       return new Promise<string>((resolve, reject) => {
-        let token = this.token || null;
+        const token = this.getLocalToken();
 
-        if (!(token && token.isValid()) && storage) {
-          token = storage.getPersistentToken();
-        }
-
-        if (token && token.isValid()) {
+        if (token) {
           this.token = token;
           return resolve(token.accessToken);
         }
