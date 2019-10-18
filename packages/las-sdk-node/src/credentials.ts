@@ -1,5 +1,5 @@
-import axios from 'axios';
-import { Credentials, Token } from '@lucidtech/las-sdk-core';
+import axios, { AxiosResponse } from 'axios';
+import { Credentials, Token, TokenStorage } from '@lucidtech/las-sdk-core';
 
 
 export class ClientCredentials extends Credentials {
@@ -9,8 +9,10 @@ export class ClientCredentials extends Credentials {
 
     private readonly authEndpoint: string;
 
-    constructor(apiKey: string, clientId: string, clientSecret: string, authEndpoint: string) {
-      super(apiKey);
+    protected readonly storage?: TokenStorage<Token>;
+
+    constructor(apiKey: string, clientId: string, clientSecret: string, authEndpoint: string, storage?: TokenStorage<Token>) {
+      super(apiKey, storage);
 
       this.clientId = clientId;
       this.clientSecret = clientSecret;
@@ -24,7 +26,7 @@ export class ClientCredentials extends Credentials {
         const auth = { username: this.clientId, password: this.clientSecret };
         const config = { headers, auth };
 
-        axios.post(endpoint, null, config).then((response) => {
+        axios.post(endpoint, null, config).then((response: AxiosResponse) => {
           const token = new Token(
             response.data.accessToken,
             Date.now() + 1000 * response.data.expiration,
