@@ -89,8 +89,9 @@ export class AuthorizationCodeCredentials extends Credentials {
       redirectUri: string,
       launchUriFn: (uri: string) => void,
       pkce?: PKCEDerived,
+      storage?: TokenStorage<Token>,
     ) {
-      super(apiKey);
+      super(apiKey, storage);
 
       this.clientId = clientId;
       this.authEndpoint = authEndpoint;
