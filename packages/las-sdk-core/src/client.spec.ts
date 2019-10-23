@@ -99,3 +99,13 @@ test('Testing successful getDocument', async () => {
   await expect(getDocumentPromise).resolves.toHaveProperty('documentId');
   await expect(getDocumentPromise).resolves.toHaveProperty('contentType');
 });
+
+test('Testing getProcesses', async () => {
+  const client = getTestClient();
+  const getProcessesPromise = client.getProcesses({ status: 'APPROVED' });
+  await expect(getProcessesPromise).resolves.toHaveProperty('id');
+  await expect(getProcessesPromise).resolves.toHaveProperty('documentSource');
+  await expect(getProcessesPromise).resolves.toHaveProperty('startDate');
+  await expect(getProcessesPromise).resolves.toHaveProperty('status');
+  await expect(getProcessesPromise).resolves.toHaveProperty('message');
+});
