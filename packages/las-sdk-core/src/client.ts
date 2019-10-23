@@ -1,5 +1,6 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import { Credentials } from './credentials';
+import { buildURL } from './utils';
 
 export class Client {
     apiEndpoint: string;
@@ -34,8 +35,9 @@ export class Client {
       return this.makePostRequest('/predictions', body);
     }
 
-    getProcesses() {
-      return this.makeGetRequest('/processes');
+    getProcesses(search?: { [key: string]: string }) {
+      const url = buildURL('/processes', search);
+      return this.makeGetRequest(url);
     }
 
     postProcesses(stateMachineArn: string, inputData: any) {
