@@ -11,7 +11,7 @@ export function buildURL(url: string, params?: { [ key: string ]: string|Array<s
     }
 
     return `${key}=${value.join(',')}`;
-  }).join(',');
+  }).join('&');
 
   const searchParams = new URLSearchParams(queryString);
   return `${url}?${searchParams}`;
