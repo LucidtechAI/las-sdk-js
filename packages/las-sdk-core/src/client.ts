@@ -35,7 +35,7 @@ export class Client {
       return this.makePostRequest('/predictions', body);
     }
 
-    getProcesses(search?: { [key: string]: string }) {
+    getProcesses(search?: { [key: string]: string|Array<string> }) {
       const url = buildURL('/processes', search);
       return this.makeGetRequest(url);
     }

@@ -13,7 +13,8 @@
     "compile": "lerna run compile",
     "recompile": "lerna clean -y && lerna run compile",
     "build": "lerna clean -y && lerna run compile && jest",
-    "lint": "lerna run --no-bail lint"
+    "lint": "lerna run --no-bail lint",
+    "prepublish": "npm run upgrade-lucidtech"
   },
   "devDependencies": {
     "@types/jest": "^24.0.18",
