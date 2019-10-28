@@ -3,15 +3,17 @@ export function buildURL(url: string, params?: { [ key: string ]: string|Array<s
     return url;
   }
 
-  const queryString = Object.entries(params).map((param) => {
+  const searchParams = new URLSearchParams();
+  const queryString = Object.entries(params).forEach((param) => {
     const [ key, value ] = param;
 
     if (typeof value === 'string') {
-      return `${key}=${encodeURIComponent(value)}`;
+      searchParams.set(key, value);
+      return;
     }
 
-    return `${key}=${encodeURIComponent(value.join(','))}`;
-  }).join('&');
+    searchParams.append(key, value.join(','));
+  });
 
-  return `${url}?${queryString}`;
+  return `${url}?${searchParams}`;
 }
