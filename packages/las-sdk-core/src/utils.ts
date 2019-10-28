@@ -7,10 +7,10 @@ export function buildURL(url: string, params?: { [ key: string ]: string|Array<s
     const [ key, value ] = param;
 
     if (typeof value === 'string') {
-      return `${key}=${value}`;
+      return `${key}=${encodeURIComponent(value)}`;
     }
 
-    return `${key}=${value.join(',')}`;
+    return `${key}=${encodeURIComponent(value.join(','))}`;
   }).join('&');
 
   return `${url}?${queryString}`;
