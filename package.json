@@ -14,7 +14,6 @@
     "recompile": "lerna clean -y && lerna run compile",
     "build": "lerna clean -y && lerna run compile && jest",
     "lint": "lerna run --no-bail lint",
-    "prepublish": "npm run upgrade-lucidtech",
     "publish": "lerna publish"
   },
   "devDependencies": {
