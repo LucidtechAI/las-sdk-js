@@ -16,6 +16,10 @@ export class Client {
       return this.makeGetRequest(`/documents/${documentId}`);
     }
 
+    getData() {
+      return this.makeGetRequest('/data');
+    }
+
     postDocuments(content: string, contentType: string, consentId: string) {
       const body = {
         content: Buffer.from(content).toString('base64'),
