@@ -89,6 +89,20 @@ test('Testing erroneous patchTask', async () => {
   await expect(postTasksPromise).rejects.toBeDefined();
 });
 
+test('Testing patchTask with a non-empty taskError', async () => {
+  const client = getTestClient();
+  const testTaskId = uuidv4();
+  const testTaskError = {
+    code: 'error code',
+    message: 'error message',
+  }
+  const patchTaskPromise = client.patchTasks(testTaskId, {}, { testTaskError });
+  await expect(patchTaskPromise).resolves.toHaveProperty('taskId');
+  await expect(patchTaskPromise).resolves.toHaveProperty('taskData');
+  await expect(patchTaskPromise).resolves.toHaveProperty('taskError');
+  await expect(patchTaskPromise).resolves.toHaveProperty('taskResult');
+})
+
 test('Testing successful getDocument', async () => {
   const client = getTestClient();
 
