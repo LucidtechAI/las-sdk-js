@@ -61,9 +61,10 @@ export class Client {
       return this.makePostRequest('/tasks', body);
     }
 
-    patchTasks(taskId: string, taskResult: any) {
+    patchTasks(taskId: string, taskResult: any = {}, taskError: any = {}) {
       const body = {
         taskResult,
+        taskError,
       };
 
       return this.makePatchRequest(`/tasks/${taskId}`, body);
