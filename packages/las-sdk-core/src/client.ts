@@ -61,12 +61,11 @@ export class Client {
       return this.makePostRequest('/tasks', body);
     }
 
-    patchTasks(taskId: string, taskResult: any = {}, taskError: any = {}) {
-      const body = {
-        taskResult,
-        taskError,
-      };
-
+    /**
+     * Either taskResult or taskError shoud be provided, but not both.
+     */
+    patchTasks(taskId: string, taskResult?: any, taskError?: any) {
+      const body = taskResult ? { taskResult } : { taskError };
       return this.makePatchRequest(`/tasks/${taskId}`, body);
     }
 
