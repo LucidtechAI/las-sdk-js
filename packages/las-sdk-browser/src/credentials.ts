@@ -102,7 +102,7 @@ export class AuthorizationCodeCredentials extends Credentials {
 
     protected getToken(): Promise<Token> {
       return new Promise<Token>((resolve, reject) => {
-        this.getRefreshToken().then((token) => {
+        this.refreshToken().then((token) => {
           resolve(token);
         }).catch((error) => {
           this.getTokenFromCode().then((token) => {
@@ -115,23 +115,29 @@ export class AuthorizationCodeCredentials extends Credentials {
       });
     }
 
-    protected getRefreshToken(): Promise<Token> {
+    protected refreshToken(): Promise<Token> {
       return new Promise<Token>((resolve, reject) => {
-        if (!!this.token && !!this.token.refreshToken) {
-          const params = {
-            grant_type: 'refresh_token',
-            client_id: this.clientId,
-            refresh_token: this.token.refreshToken,
-          };
+        let token = this.token;
 
-          this.postToTokenEndpoint(params).then((token) => {
-            resolve(token);
-          }).catch((error) => {
-            reject(error);
-          });
-        } else {
-          reject({ message: 'No refresh token available' });
+        if (!token && !!this.storage) {
+          token = this.storage.getPersistentToken() || undefined;
         }
+
+        if (!(token && token.refreshToken)) {
+          return reject({ message: 'No refresh token available' });
+        }
+
+        const params = {
+          grant_type: 'refresh_token',
+          client_id: this.clientId,
+          refresh_token: token.refreshToken,
+        };
+
+        this.postToTokenEndpoint(params).then((token) => {
+          resolve(token);
+        }).catch((error) => {
+          reject(error);
+        });
       });
     }
 
