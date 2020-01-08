@@ -82,6 +82,8 @@ export class AuthorizationCodeCredentials extends Credentials {
 
     protected readonly storage?: TokenStorage<Token>;
 
+    protected token?: Token;
+
     constructor(
       apiKey: string,
       clientId: string,
