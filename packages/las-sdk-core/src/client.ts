@@ -61,6 +61,11 @@ export class Client {
       return this.makePostRequest('/tasks', body);
     }
 
+    deleteProcess(processId: string) {
+      const url = `/processes/${processId}`;
+      return this.makeDeleteRequest(url);
+    }
+
     /**
      * Either taskResult or taskError shoud be provided, but not both.
      */
