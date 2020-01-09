@@ -61,8 +61,8 @@ export class Client {
       return this.makePostRequest('/tasks', body);
     }
 
-    deleteTask(taskId: string) {
-      const url = `/processes/${taskId}`;
+    deleteProcess(processId: string) {
+      const url = `/processes/${processId}`;
       return this.makeDeleteRequest(url);
     }
 
