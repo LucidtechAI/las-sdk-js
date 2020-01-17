@@ -132,7 +132,7 @@ export class Client {
           const config = { headers };
           const handle = body
             ? () => axiosFn(endpoint, body, config)
-            : () => axiosFn(endpoint, config)
+            : () => axiosFn(endpoint, config);
 
           handle().then((response) => {
             resolve(response.data);
