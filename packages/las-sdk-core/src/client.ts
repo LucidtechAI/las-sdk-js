@@ -105,6 +105,11 @@ export class Client {
       return this.makePatchRequest(`/tasks/${taskId}`, body);
     }
 
+    patchUserId(userId: string, consentHash: string) {
+      const body = { consentHash };
+      return this.makePatchRequest(`/users/${userId}`, body);
+    }
+
     makeGetRequest(path: string, query?: any) {
       if(!!query) {
         return this.makeAuthorizedRequest(axios.get, path, query);
