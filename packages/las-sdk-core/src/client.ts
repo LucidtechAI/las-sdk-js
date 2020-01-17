@@ -21,13 +21,19 @@ export class Client {
     }
 
     postDocuments(content: string, contentType: string, consentId: string, batchId?: string, feedback?: Array<{[key: string]: string}>) {
-      const body = {
+      let body = {
         content: Buffer.from(content).toString('base64'),
         contentType,
         consentId,
-        batchId,
-        feedback,
       };
+
+      if (!!batchId ) {
+        body = {...body, batchId};
+      }
+
+      if (!!feedback) {
+        body = {...body, feedback};
+      }
 
       return this.makePostRequest('/documents', body);
     }
@@ -100,7 +106,12 @@ export class Client {
     }
 
     makeGetRequest(path: string, query?: any) {
-      return this.makeAuthorizedRequest(axios.get, path, query);
+      if(!!query) {
+        return this.makeAuthorizedRequest(axios.get, path, query);
+      }
+      else {
+        return this.makeAuthorizedRequest(axios.get, path);
+      }
     }
 
     makeDeleteRequest(path: string) {
