@@ -21,7 +21,7 @@ export class Client {
     }
 
     postDocuments(content: string, contentType: string, consentId: string, batchId?: string, feedback?: Array<{[key: string]: string}>) {
-      let body = {
+      let body : any = {
         content: Buffer.from(content).toString('base64'),
         contentType,
         consentId,
@@ -103,6 +103,11 @@ export class Client {
     patchTasks(taskId: string, taskResult?: any, taskError?: any) {
       const body = taskResult ? { taskResult } : { taskError };
       return this.makePatchRequest(`/tasks/${taskId}`, body);
+    }
+
+    patchUserId(userId: string, consentHash: string) {
+      const body = { consentHash };
+      return this.makePatchRequest(`/users/${userId}`, body);
     }
 
     makeGetRequest(path: string, query?: any) {
