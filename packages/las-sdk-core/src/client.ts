@@ -71,8 +71,7 @@ export class Client {
     }
 
     getProcesses(search?: { [key: string]: string|Array<string> }) {
-      const url = buildURL('/processes', search);
-      return this.makeGetRequest(url);
+      return this.makeGetRequest('/processes', search);
     }
 
     postProcesses(stateMachineArn: string, inputData: any) {
@@ -111,12 +110,7 @@ export class Client {
     }
 
     makeGetRequest(path: string, query?: any) {
-      if(!!query) {
-        return this.makeAuthorizedRequest(axios.get, path, query);
-      }
-      else {
-        return this.makeAuthorizedRequest(axios.get, path);
-      }
+      return this.makeAuthorizedRequest(axios.get, buildURL(path, query));
     }
 
     makeDeleteRequest(path: string) {
@@ -131,12 +125,14 @@ export class Client {
       return this.makeAuthorizedRequest(axios.patch, path, body);
     }
 
-    private makeAuthorizedRequest(axiosFn: (url: string, body?: any, query?: any, config?: AxiosRequestConfig) => Promise<any>, path: string, body?: any, query?: any) {
+    private makeAuthorizedRequest(axiosFn: (url: string, body?: any, config?: AxiosRequestConfig) => Promise<any>, path: string, body?: any) {
       return new Promise<any>((resolve, reject) => {
         const endpoint = `${this.apiEndpoint}${path}`;
         this.getAuthorizationHeaders().then((headers) => {
           const config = { headers };
-          const handle = body ? () => axiosFn(endpoint, body, config) : query ? () => axiosFn(endpoint, query, config) :  () => axiosFn(endpoint, config)
+          const handle = body
+            ? () => axiosFn(endpoint, body, config)
+            :  () => axiosFn(endpoint, config)
 
           handle().then((response) => {
             resolve(response.data);
