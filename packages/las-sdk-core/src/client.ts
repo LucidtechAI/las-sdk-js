@@ -20,12 +20,13 @@ export class Client {
       return this.makeGetRequest('/data');
     }
 
-    postDocuments(content: string, contentType: string, consentId: string, batchId?: string) {
+    postDocuments(content: string, contentType: string, consentId: string, batchId?: string, feedback?: Array<{[key: string]: string}>) {
       const body = {
         content: Buffer.from(content).toString('base64'),
         contentType,
         consentId,
-        batchId
+        batchId,
+        feedback,
       };
 
       return this.makePostRequest('/documents', body);
