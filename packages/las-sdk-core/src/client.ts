@@ -20,14 +20,37 @@ export class Client {
       return this.makeGetRequest('/data');
     }
 
-    postDocuments(content: string, contentType: string, consentId: string) {
-      const body = {
+    postDocuments(content: string, contentType: string, consentId: string, batchId?: string, feedback?: Array<{[key: string]: string}>) {
+      let body = {
         content: Buffer.from(content).toString('base64'),
         contentType,
         consentId,
       };
 
+      if (!!batchId ) {
+        body = {...body, batchId};
+      }
+
+      if (!!feedback) {
+        body = {...body, feedback};
+      }
+
       return this.makePostRequest('/documents', body);
+    }
+
+    getDocuments(batchId: string) {
+      const query = {
+        batchId,
+      };
+      return this.makeGetRequest('/documents', query);
+    }
+
+    postDocumentId(documentId: string, feedback: Array<{[key: string]: string}>) {
+      const body = {
+        feedback,
+      };
+
+      return this.makePostRequest(`/documents/${documentId}`, body);
     }
 
     postPredictions(documentId: string, modelName: string) {
@@ -37,6 +60,14 @@ export class Client {
       };
 
       return this.makePostRequest('/predictions', body);
+    }
+
+    postBatches(description: string) {
+      const body = {
+        description,
+      };
+
+      return this.makePostRequest('/batches', body);
     }
 
     getProcesses(search?: { [key: string]: string|Array<string> }) {
@@ -74,8 +105,13 @@ export class Client {
       return this.makePatchRequest(`/tasks/${taskId}`, body);
     }
 
-    makeGetRequest(path: string) {
-      return this.makeAuthorizedRequest(axios.get, path);
+    makeGetRequest(path: string, query?: any) {
+      if(!!query) {
+        return this.makeAuthorizedRequest(axios.get, path, query);
+      }
+      else {
+        return this.makeAuthorizedRequest(axios.get, path);
+      }
     }
 
     makeDeleteRequest(path: string) {
@@ -90,12 +126,12 @@ export class Client {
       return this.makeAuthorizedRequest(axios.patch, path, body);
     }
 
-    private makeAuthorizedRequest(axiosFn: (url: string, body?: any, config?: AxiosRequestConfig) => Promise<any>, path: string, body?: any) {
+    private makeAuthorizedRequest(axiosFn: (url: string, body?: any, query?: any, config?: AxiosRequestConfig) => Promise<any>, path: string, body?: any, query?: any) {
       return new Promise<any>((resolve, reject) => {
         const endpoint = `${this.apiEndpoint}${path}`;
         this.getAuthorizationHeaders().then((headers) => {
           const config = { headers };
-          const handle = body ? () => axiosFn(endpoint, body, config) : () => axiosFn(endpoint, config);
+          const handle = body ? () => axiosFn(endpoint, body, config) : query ? () => axiosFn(endpoint, query, config) :  () => axiosFn(endpoint, config)
 
           handle().then((response) => {
             resolve(response.data);
