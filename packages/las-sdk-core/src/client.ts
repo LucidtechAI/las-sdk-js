@@ -21,7 +21,7 @@ export class Client {
     }
 
     postDocuments(content: string, contentType: string, consentId: string, batchId?: string, feedback?: Array<{[key: string]: string}>) {
-      let body = {
+      let body : any = {
         content: Buffer.from(content).toString('base64'),
         contentType,
         consentId,
