@@ -105,12 +105,12 @@ export class Client {
       return this.makePatchRequest(`/tasks/${taskId}`, body);
     }
 
-    patchUserId(userId: string, consentHash: string) {
+    patchUser(userId: string, consentHash: string) {
       const body = { consentHash };
       return this.makePatchRequest(`/users/${userId}`, body);
     }
 
-    getUserId(userId: string) {
+    getUser(userId: string) {
       return this.makeGetRequest(`/users/${userId}`);
     }
 
