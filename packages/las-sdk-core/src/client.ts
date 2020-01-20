@@ -109,6 +109,10 @@ export class Client {
       return this.makePatchRequest(`/users/${userId}`, body);
     }
 
+    getUserId(userId: string) {
+      return this.makeGetRequest(`/users/${userId}`);
+    }
+
     makeGetRequest(path: string, query?: any) {
       return this.makeAuthorizedRequest(axios.get, buildURL(path, query));
     }
