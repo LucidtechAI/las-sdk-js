@@ -8,7 +8,8 @@ test('Testing successful postDocuments', async () => {
   const testContent = uuidv4();
   const testContentType = 'image/jpeg';
   const testConsentId = uuidv4();
-  const postDocumentsPromise = client.postDocuments(testContent, testContentType, testConsentId);
+  const testBatchId = uuidv4();
+  const postDocumentsPromise = client.postDocuments(testContent, testContentType, testConsentId, testBatchId);
   await expect(postDocumentsPromise).resolves.toHaveProperty('consentId');
   await expect(postDocumentsPromise).resolves.toHaveProperty('contentType');
   await expect(postDocumentsPromise).resolves.toHaveProperty('documentId');
@@ -66,8 +67,7 @@ test('Testing successful postTasks', async () => {
 
   const testActivityArn = uuidv4();
   const postTasksPromise = client.postTasks(testActivityArn);
-  await expect(postTasksPromise).resolves.toHaveProperty('taskId');
-  await expect(postTasksPromise).resolves.toHaveProperty('taskData');
+  await expect(postTasksPromise).resolves.toBeDefined();
 });
 
 test('Testing successful patchTask', async () => {
@@ -76,8 +76,7 @@ test('Testing successful patchTask', async () => {
   const testTaskId = uuidv4();
   const testTaskResult = { [uuidv4()]: uuidv4() };
   const postTasksPromise = client.patchTasks(testTaskId, testTaskResult);
-  await expect(postTasksPromise).resolves.toHaveProperty('taskId');
-  await expect(postTasksPromise).resolves.toHaveProperty('taskData');
+  await expect(postTasksPromise).resolves.toBeDefined();
 });
 
 test('Testing erroneous patchTask', async () => {
@@ -97,10 +96,7 @@ test('Testing patchTask with a non-empty taskError', async () => {
     message: 'error message',
   }
   const patchTaskPromise = client.patchTasks(testTaskId, {}, { testTaskError });
-  await expect(patchTaskPromise).resolves.toHaveProperty('taskId');
-  await expect(patchTaskPromise).resolves.toHaveProperty('taskData');
-  await expect(patchTaskPromise).resolves.toHaveProperty('taskError');
-  await expect(patchTaskPromise).resolves.toHaveProperty('taskResult');
+  await expect(patchTaskPromise).resolves.toBeDefined();
 })
 
 test('Testing successful getDocument', async () => {
@@ -108,7 +104,6 @@ test('Testing successful getDocument', async () => {
 
   const documentId = uuidv4();
   const getDocumentPromise = client.getDocument(documentId);
-  await expect(getDocumentPromise).resolves.toHaveProperty('content');
   await expect(getDocumentPromise).resolves.toHaveProperty('consentId');
   await expect(getDocumentPromise).resolves.toHaveProperty('documentId');
   await expect(getDocumentPromise).resolves.toHaveProperty('contentType');
@@ -117,9 +112,19 @@ test('Testing successful getDocument', async () => {
 test('Testing getProcesses', async () => {
   const client = getTestClient();
   const getProcessesPromise = client.getProcesses({ status: 'APPROVED' });
-  await expect(getProcessesPromise).resolves.toHaveProperty('id');
-  await expect(getProcessesPromise).resolves.toHaveProperty('documentSource');
-  await expect(getProcessesPromise).resolves.toHaveProperty('startDate');
-  await expect(getProcessesPromise).resolves.toHaveProperty('status');
-  await expect(getProcessesPromise).resolves.toHaveProperty('message');
+  await expect(getProcessesPromise).resolves.toHaveProperty('executionArn');
+});
+
+test('Testing getDocuments', async () => {
+  const client = getTestClient();
+  const testBatchId = uuidv4();
+  const getDocumentsPromise = client.getDocuments(testBatchId);
+  await expect(getDocumentsPromise).resolves.toBeDefined();
+});
+
+test('Testing postBatches', async () => {
+  const client = getTestClient();
+  const description = "I am going to create a new batch, give me a batch ID!"
+  const postBatchesPromise = client.postBatches(description);
+  await expect(postBatchesPromise).resolves.toHaveProperty('batchId');
 });
