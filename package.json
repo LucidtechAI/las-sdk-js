@@ -4,7 +4,7 @@
   "license": "Apache-2.0",
   "private": true,
   "scripts": {
-    "test": "jest",
+    "test": "lerna run test",
     "preupgrade-lucidtech": "lerna bootstrap --sort && lerna run --sort compile",
     "upgrade-lucidtech": "lerna run upgrade",
     "postupgrade-lucidtech": "lerna run --sort compile",

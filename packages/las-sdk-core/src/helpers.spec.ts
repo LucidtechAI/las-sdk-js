@@ -39,7 +39,7 @@ export function getTestClient() {
   const testExpiresInSeconds = 3600;
   const testRefreshToken = 'testRefreshToken';
   const credentials = new TestCredentials(testApiKey, testAccessToken, testExpiresInSeconds, testRefreshToken);
-  const endpoint = 'http://localhost:8080';
+  const endpoint = 'http://localhost:4010';
   return new Client(endpoint, credentials);
 }
 
