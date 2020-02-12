@@ -1,6 +1,9 @@
 import { TokenStorage } from './storage';
 
 
+/**
+ * Wrapper class for an AWS Cognito token
+ */
 export class Token {
     readonly accessToken: string;
 
@@ -8,10 +11,18 @@ export class Token {
 
     readonly refreshToken?: string;
 
-    isValid() {
+    /**
+     * Checks if current timestamp is larger than token expiration time
+     */
+    isValid(): boolean {
       return Date.now() < this.expiration;
     }
 
+    /**
+     * @param {string} accessToken
+     * @param {number} expiration
+     * @param {string} [refreshToken]
+     */
     constructor(accessToken: string, expiration: number, refreshToken?: string) {
       this.accessToken = accessToken;
       this.expiration = expiration;
@@ -19,6 +30,9 @@ export class Token {
     }
 }
 
+/**
+ * Use to fetch and store credentials and to generate/cache an access token
+ */
 export abstract class Credentials {
     readonly apiKey: string;
 
@@ -31,6 +45,12 @@ export abstract class Credentials {
       this.storage = storage;
     }
 
+    /**
+     * Method used to get and cache an access token. Algorithm used:
+     * 1. Look for a valid token in memory.
+     * 2. Look for a valid token in the storage (if provided);
+     * 3. Fetch a new token from server and cache it (both in memory and in storage).
+     */
     getAccessToken(): Promise<string> {
       const { storage } = this;
 

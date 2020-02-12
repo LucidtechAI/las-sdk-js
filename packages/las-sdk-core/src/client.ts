@@ -2,6 +2,10 @@ import axios, { AxiosRequestConfig } from 'axios';
 import { Credentials } from './credentials';
 import { buildURL } from './utils';
 
+
+/**
+ * A high-level http client for communicating the Lucidtech REST API
+ */
 export class Client {
     apiEndpoint: string;
 
