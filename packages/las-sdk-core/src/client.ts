@@ -12,14 +12,27 @@ export class Client {
       this.credentials = credentials;
     }
 
+    /**
+     * Get document from the REST API, calls the GET /documets/{documentId} endpoint
+     *
+     * @param {string} documentId - the document id to run inference and create a prediction on
+     * @returns {Promise} - document response from REST API
+      */
     getDocument(documentId: string) {
       return this.makeGetRequest(`/documents/${documentId}`);
     }
 
-    getData() {
-      return this.makeGetRequest('/data');
-    }
-
+    /**
+     * Creates a document handle, calls the POST /documents endpoint.
+     *
+     * @param {string} content - The contents to POST
+     * @param {string} contentType - A MIME type for the document handle
+     * @param {string} consentId - An identifier to mark the owner of the document handle
+     * @param {string} [batchId] - The batch to put the document it
+     * @param {Array<{ [label: string]: string }>} [feedback] A list of items
+     * { label: value } representing the ground truth values for the document
+     * @returns {Promise} - document handle id
+     */
     postDocuments(content: string, contentType: string, consentId: string, batchId?: string, feedback?: Array<{[key: string]: string}>) {
       let body: any = {
         content: Buffer.from(content).toString('base64'),
@@ -38,13 +51,26 @@ export class Client {
       return this.makePostRequest('/documents', body);
     }
 
-    getDocuments(batchId: string) {
-      const query = {
-        batchId,
-      };
+    /**
+      * @param {string} batchId - the batch id that contains the documents of interest
+      * @param {string} [consentId] - an identifier to mark the owner of the document handle
+      * @returns {Promise} - documents from REST API contained in batch <batchId>
+      */
+    getDocuments(batchId: string, consentId?: string) {
+      const query = consentId ? { batchId, consentId } : { batchId };
       return this.makeGetRequest('/documents', query);
     }
 
+    /**
+     * Post feedback to the REST API, calls the POST /documents/{documentId} endpoint.
+     * Posting feedback means posting the ground truth data for the particular document.
+     * This enables the API to learn from past mistakes.
+     *
+     * @param {string} documentId - the document id to run inference and create a prediction on
+     * @param {Array<{ [label: string]: string }>} feedback - a list of feedback items
+     * { label: value } representing the ground truth values for the document
+     * @returns {Promise} - feedback response from REST API
+    */
     postDocumentId(documentId: string, feedback: Array<{[key: string]: string}>) {
       const body = {
         feedback,
@@ -53,15 +79,39 @@ export class Client {
       return this.makePostRequest(`/documents/${documentId}`, body);
     }
 
-    postPredictions(documentId: string, modelName: string) {
-      const body = {
+    /**
+     * Run inference and create a prediction, calls the POST /predictions endpoint.
+     *
+     * @param {string} documentId - the document id to run inference and create a prediction on
+     * @param {string} modelName - the name of the model to use for inference
+     * @param {number} [maxPages] - maximum number of pages to run predicitons on
+     * @param {boolean} [autoRotate] - whether or not to let the API try different rotations on
+     * the document when runnin predictions
+     * @returns {Promise} - prediction on document
+     */
+    postPredictions(documentId: string, modelName: string, maxPages?: number, autoRotate?: boolean) {
+      let body: any = {
         documentId,
         modelName,
       };
 
+      if (maxPages !== undefined) {
+        body = { ...body, maxPages };
+      }
+
+      if (autoRotate !== undefined) {
+        body = { ...body, autoRotate };
+      }
+
       return this.makePostRequest('/predictions', body);
     }
 
+    /**
+     * Creates a batch handle, calls the POST /batches endpoint
+     *
+     * @param {string} description - a short description of the batch you intend to create
+     * @returns {Promise} - batch handle id and pre-signed upload url
+     */
     postBatches(description: string) {
       const body = {
         description,
@@ -70,45 +120,24 @@ export class Client {
       return this.makePostRequest('/batches', body);
     }
 
-    getProcesses(search?: { [key: string]: string|Array<string> }) {
-      return this.makeGetRequest('/processes', search);
-    }
-
-    postProcesses(stateMachineArn: string, inputData: any) {
-      const body = {
-        stateMachineArn,
-        inputData,
-      };
-
-      return this.makePostRequest('/processes', body);
-    }
-
-    postTasks(activityArn: string) {
-      const body = {
-        activityArn,
-      };
-
-      return this.makePostRequest('/tasks', body);
-    }
-
-    deleteProcess(processId: string) {
-      const url = `/processes/${processId}`;
-      return this.makeDeleteRequest(url);
-    }
-
     /**
-     * Either taskResult or taskError shoud be provided, but not both.
+     * Modifies consent hash for a user, calls the PATCH /users/{user_id} endpoint.
+     *
+     * @param {string} userId - the user id to modify consent hash for
+     * @param {string} consentHash - the consent hash to set
+     * @returns {Promise} - batch handle id and pre-signed upload url
      */
-    patchTasks(taskId: string, taskResult?: any, taskError?: any) {
-      const body = taskResult ? { taskResult } : { taskError };
-      return this.makePatchRequest(`/tasks/${taskId}`, body);
-    }
-
     patchUser(userId: string, consentHash: string) {
       const body = { consentHash };
       return this.makePatchRequest(`/users/${userId}`, body);
     }
 
+    /**
+     * Gets consent hash and user id for a given user id, calls the GET /users/{user_id} endpoint.
+     *
+     * @param {string} userId - the user id to get consent hash for
+     * @returns {Promise} - batch handle id and pre-signed upload url
+     */
     getUser(userId: string) {
       return this.makeGetRequest(`/users/${userId}`);
     }
