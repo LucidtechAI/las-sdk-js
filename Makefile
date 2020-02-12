@@ -12,3 +12,6 @@ prism-start:
 		-h 0.0.0.0 \
 		stoplight/prism:3.2.8 mock -d -h 0.0.0.0 \
 		https://raw.githubusercontent.com/LucidtechAI/las-docs/rest-api-docs/apis/dev/oas.json
+
+docs:
+	npx typedoc --plugin typedoc-plugin-markdown
