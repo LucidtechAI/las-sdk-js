@@ -37,7 +37,7 @@ export class Client {
      * { label: value } representing the ground truth values for the document
      * @returns {Promise} - document handle id
      */
-    postDocuments(content: string, contentType: string, consentId: string, batchId?: string, feedback?: Array<{[key: string]: string}>) {
+    createDocument(content: string, contentType: string, consentId: string, batchId?: string, feedback?: Array<{[key: string]: string}>) {
       let body: any = {
         content: Buffer.from(content).toString('base64'),
         contentType,
@@ -60,7 +60,7 @@ export class Client {
       * @param {string} [consentId] - an identifier to mark the owner of the document handle
       * @returns {Promise} - documents from REST API contained in batch <batchId>
       */
-    getDocuments(batchId: string, consentId?: string) {
+    listDocuments(batchId: string, consentId?: string) {
       const query = consentId ? { batchId, consentId } : { batchId };
       return this.makeGetRequest('/documents', query);
     }
@@ -75,7 +75,8 @@ export class Client {
      * { label: value } representing the ground truth values for the document
      * @returns {Promise} - feedback response from REST API
     */
-    postDocumentId(documentId: string, feedback: Array<{[key: string]: string}>) {
+    updateDocument(documentId: string, feedback: Array<{[key: string]: string}>) {
+      // TODO add test for this method
       const body = {
         feedback,
       };
@@ -93,7 +94,7 @@ export class Client {
      * the document when runnin predictions
      * @returns {Promise} - prediction on document
      */
-    postPredictions(documentId: string, modelName: string, maxPages?: number, autoRotate?: boolean) {
+    createPrediction(documentId: string, modelName: string, maxPages?: number, autoRotate?: boolean) {
       let body: any = {
         documentId,
         modelName,
@@ -116,7 +117,7 @@ export class Client {
      * @param {string} description - a short description of the batch you intend to create
      * @returns {Promise} - batch handle id and pre-signed upload url
      */
-    postBatches(description: string) {
+    createBatch(description: string) {
       const body = {
         description,
       };
@@ -131,7 +132,8 @@ export class Client {
      * @param {string} consentHash - the consent hash to set
      * @returns {Promise} - batch handle id and pre-signed upload url
      */
-    patchUser(userId: string, consentHash: string) {
+    updateUser(userId: string, consentHash: string) {
+      // TODO add test for this method
       const body = { consentHash };
       return this.makePatchRequest(`/users/${userId}`, body);
     }
