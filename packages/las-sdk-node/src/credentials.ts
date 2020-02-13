@@ -21,7 +21,7 @@ export class ClientCredentials extends Credentials {
 
     protected getToken(): Promise<Token> {
       return new Promise<Token>((resolve, reject) => {
-        const endpoint = `https://${this.authEndpoint}/oauth2/token?grant_type=client_credentials`;
+        const endpoint = `https://${this.authEndpoint}/token?grant_type=client_credentials`;
         const headers = { 'Content-Type': 'application/x-www-form-urlencoded' };
         const auth = { username: this.clientId, password: this.clientSecret };
         const config = { headers, auth };
