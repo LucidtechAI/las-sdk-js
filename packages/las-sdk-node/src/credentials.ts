@@ -11,8 +11,8 @@ export class ClientCredentials extends Credentials {
 
     protected readonly storage?: TokenStorage<Token>;
 
-    constructor(apiKey: string, clientId: string, clientSecret: string, authEndpoint: string, storage?: TokenStorage<Token>) {
-      super(apiKey, storage);
+    constructor(apiEndpoint: string, apiKey: string, clientId: string, clientSecret: string, authEndpoint: string, storage?: TokenStorage<Token>) {
+      super(apiEndpoint, apiKey, storage);
 
       this.clientId = clientId;
       this.clientSecret = clientSecret;

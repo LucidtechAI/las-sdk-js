@@ -2,12 +2,13 @@ import { default as uuidv4 } from 'uuid/v4';
 import functions, { AuthorizationCodeCredentials, PKCE, PKCEDerived } from './credentials';
 
 function getCredentials(testLaunchUri: (arg0: string) => void, pkce?: PKCEDerived) {
+  const testApiEndpoint = 'http://localhost:4010';
   const testApiKey = 'testApiKey';
   const testClientId = 'testClientId';
-  const testAuthEndpoint = 'http://localhost:8080';
+  const testAuthEndpoint = 'http://localhost:4010';
   const testRedirectUri = 'testRedirectUri';
 
-  return new AuthorizationCodeCredentials(testApiKey, testClientId, testAuthEndpoint, testRedirectUri, testLaunchUri, pkce);
+  return new AuthorizationCodeCredentials(testApiEndpoint, testApiKey, testClientId, testAuthEndpoint, testRedirectUri, testLaunchUri, pkce);
 }
 
 test('Testing randomString', () => {

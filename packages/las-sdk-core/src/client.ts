@@ -7,12 +7,9 @@ import { buildURL } from './utils';
  * A high-level http client for communicating the Lucidtech REST API
  */
 export class Client {
-    apiEndpoint: string;
-
     credentials: Credentials;
 
-    constructor(apiEndpoint: string, credentials: Credentials) {
-      this.apiEndpoint = apiEndpoint;
+    constructor(credentials: Credentials) {
       this.credentials = credentials;
     }
 
@@ -56,12 +53,12 @@ export class Client {
     }
 
     /**
-      * @param {string} batchId - the batch id that contains the documents of interest
+      * @param {string} [batchId] - the batch id that contains the documents of interest
       * @param {string} [consentId] - an identifier to mark the owner of the document handle
       * @returns {Promise} - documents from REST API contained in batch <batchId>
       */
-    listDocuments(batchId: string, consentId?: string) {
-      const query = consentId ? { batchId, consentId } : { batchId };
+    listDocuments(batchId?: string, consentId?: string) {
+      const query = { batchId, consentId };
       return this.makeGetRequest('/documents', query);
     }
 
@@ -166,7 +163,7 @@ export class Client {
 
     private makeAuthorizedRequest(axiosFn: (url: string, body?: any, config?: AxiosRequestConfig) => Promise<any>, path: string, body?: any) {
       return new Promise<any>((resolve, reject) => {
-        const endpoint = `${this.apiEndpoint}${path}`;
+        const endpoint = `${this.credentials.apiEndpoint}${path}`;
         this.getAuthorizationHeaders().then((headers) => {
           const config = { headers };
           const handle = body

@@ -1,11 +1,15 @@
-export function buildURL(url: string, params?: { [ key: string ]: string|Array<string> }) {
+export function buildURL(url: string, params?: { [ key: string ]: undefined|string|Array<string> }) {
   if (!params) {
     return url;
   }
 
   const searchParams = new URLSearchParams();
-  const queryString = Object.entries(params).forEach((param) => {
-    const [ key, value ] = param;
+  Object.entries(params).forEach((param) => {
+    const [key, value] = param;
+
+    if (value === undefined) {
+      return;
+    }
 
     if (typeof value === 'string') {
       searchParams.set(key, value);

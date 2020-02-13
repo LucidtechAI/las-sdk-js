@@ -20,8 +20,8 @@ $ npm install @lucidtech/las-sdk-node
 import {ClientCredentials} from '@lucidtech/las-sdk-core';
 import {Client} from '@lucidtech/las-sdk-node';
 
-const credentials = new ClientCredentials('<apiKey>', '<clientId>',  '<clientSecret>', '<authEndpoint>');
-const client = new Client('<apiEndpoint>', credentials);
+const credentials = new ClientCredentials('<apiEndpoint>', '<apiKey>', '<clientId>',  '<clientSecret>', '<authEndpoint>');
+const client = new Client(credentials);
 
 const content = '<read image content>'
 client.postDocuments(content, 'image/jpeg', '<consentId>').then(documentResponse => {

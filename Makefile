@@ -25,4 +25,4 @@ endif
 
 .PHONY: docs
 docs:
-	npx typedoc --excludePrivate --excludeProtected --plugin typedoc-plugin-markdown packages/las-sdk-core
+	npx typedoc --toc --excludePrivate --excludeProtected --plugin typedoc-plugin-markdown packages/las-sdk-core

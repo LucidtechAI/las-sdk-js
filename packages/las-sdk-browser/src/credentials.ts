@@ -85,6 +85,7 @@ export class AuthorizationCodeCredentials extends Credentials {
     protected token?: Token;
 
     constructor(
+      apiEndpoint: string,
       apiKey: string,
       clientId: string,
       authEndpoint: string,
@@ -93,7 +94,7 @@ export class AuthorizationCodeCredentials extends Credentials {
       pkce?: PKCEDerived,
       storage?: TokenStorage<Token>,
     ) {
-      super(apiKey, storage);
+      super(apiEndpoint, apiKey, storage);
 
       this.clientId = clientId;
       this.authEndpoint = authEndpoint;
