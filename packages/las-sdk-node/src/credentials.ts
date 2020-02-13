@@ -28,8 +28,8 @@ export class ClientCredentials extends Credentials {
 
         axios.post(endpoint, null, config).then((response: AxiosResponse) => {
           const token = new Token(
-            response.data.accessToken,
-            Date.now() + 1000 * response.data.expiration,
+            response.data.access_token,
+            Date.now() + 1000 * response.data.expires_in,
           );
 
           resolve(token);
