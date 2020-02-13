@@ -1,6 +1,8 @@
 import { Credentials, Token } from './credentials';
 import { Client } from './client';
 
+const endpoint = 'http://localhost:4010';
+
 export class TestCredentials extends Credentials {
     testAccessToken: string;
 
@@ -9,12 +11,13 @@ export class TestCredentials extends Credentials {
     testRefreshToken: string;
 
     constructor(
+      testEndpoint: string,
       testApiKey: string,
       testAccessToken: string,
       testExpiresInSeconds: number,
       testRefreshToken: string,
     ) {
-      super(testApiKey);
+      super(testEndpoint, testApiKey);
 
       this.testAccessToken = testAccessToken;
       this.testExpiration = Date.now() + 1000 * testExpiresInSeconds;
@@ -38,9 +41,8 @@ export function getTestClient() {
   const testAccessToken = 'testAccessToken';
   const testExpiresInSeconds = 3600;
   const testRefreshToken = 'testRefreshToken';
-  const credentials = new TestCredentials(testApiKey, testAccessToken, testExpiresInSeconds, testRefreshToken);
-  const endpoint = 'http://localhost:4010';
-  return new Client(endpoint, credentials);
+  const credentials = new TestCredentials(endpoint, testApiKey, testAccessToken, testExpiresInSeconds, testRefreshToken);
+  return new Client(credentials);
 }
 
 test('Loading core helpers', () => {});

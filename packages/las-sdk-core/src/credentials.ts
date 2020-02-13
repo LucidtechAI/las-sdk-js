@@ -34,13 +34,16 @@ export class Token {
  * Use to fetch and store credentials and to generate/cache an access token
  */
 export abstract class Credentials {
+    readonly apiEndpoint: string;
+
     readonly apiKey: string;
 
     protected token?: Token;
 
     protected storage?: TokenStorage<Token>;
 
-    protected constructor(apiKey: string, storage?: TokenStorage<Token>) {
+    protected constructor(apiEndpoint: string, apiKey: string, storage?: TokenStorage<Token>) {
+      this.apiEndpoint = apiEndpoint;
       this.apiKey = apiKey;
       this.storage = storage;
     }
