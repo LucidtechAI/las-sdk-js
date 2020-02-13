@@ -56,12 +56,12 @@ export class Client {
     }
 
     /**
-      * @param {string} batchId - the batch id that contains the documents of interest
+      * @param {string} [batchId] - the batch id that contains the documents of interest
       * @param {string} [consentId] - an identifier to mark the owner of the document handle
       * @returns {Promise} - documents from REST API contained in batch <batchId>
       */
-    listDocuments(batchId: string, consentId?: string) {
-      const query = consentId ? { batchId, consentId } : { batchId };
+    listDocuments(batchId?: string, consentId?: string) {
+      const query = { batchId, consentId };
       return this.makeGetRequest('/documents', query);
     }
 
