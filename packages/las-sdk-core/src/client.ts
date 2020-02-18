@@ -145,6 +145,16 @@ export class Client {
       return this.makeGetRequest(`/users/${userId}`);
     }
 
+    /**
+     * Delete documents with this consent_id, calls the DELETE /consents/{consentId} endpoint.
+     *
+     * @param {string} consentId - Delete documents with this consent id
+     * @returns {Promise}
+     */
+    deleteConsent(consentId: string) {
+      return this.makeDeleteRequest(`/consents/${consentId}`);
+    }
+
     makeGetRequest(path: string, query?: any) {
       return this.makeAuthorizedRequest(axios.get, buildURL(path, query));
     }
@@ -196,3 +206,5 @@ export class Client {
       });
     }
 }
+
+export default Client;
