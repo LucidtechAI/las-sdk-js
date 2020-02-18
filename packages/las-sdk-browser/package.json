@@ -16,7 +16,7 @@
     "compile": "tsc",
     "upgrade": "npm update",
     "lint": "eslint ./src/**/*",
-    "test": "jest"
+    "test": "jest ./src"
   },
   "dependencies": {
     "@lucidtech/las-sdk-core": "file:../las-sdk-core",
