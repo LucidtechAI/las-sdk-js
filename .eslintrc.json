@@ -31,5 +31,6 @@
         "jest"
     ],
     "rules": {
+        "max-len": ["warn", { "code": 120 }]
     }
 }
