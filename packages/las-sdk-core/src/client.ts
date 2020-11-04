@@ -4,7 +4,7 @@ import { buildURL } from './utils';
 
 
 /**
- * A high-level http client for communicating the Lucidtech REST API
+ * A high-level http client for communicating with the Lucidtech REST API
  */
 export class Client {
     credentials: Credentials;
@@ -34,19 +34,21 @@ export class Client {
      * { label: value } representing the ground truth values for the document
      * @returns {Promise} - document handle id
      */
-    createDocument(content: string, contentType: string, consentId: string, batchId?: string, feedback?: Array<{[key: string]: string}>) {
+    createDocument(content: string, contentType: string, consentId?: string, batchId?: string, feedback?: Array<{[key: string]: string}>): Promise<any> {
       let body: any = {
         content: Buffer.from(content).toString('base64'),
         contentType,
-        consentId,
       };
 
-      if (!!batchId ) {
-        body = {...body, batchId};
+      if (consentId) {
+        body = { ...body, consentId };
+      }
+      if (batchId) {
+        body = { ...body, batchId };
       }
 
-      if (!!feedback) {
-        body = {...body, feedback};
+      if (feedback) {
+        body = { ...body, feedback };
       }
 
       return this.makePostRequest('/documents', body);
@@ -85,16 +87,16 @@ export class Client {
      * Run inference and create a prediction, calls the POST /predictions endpoint.
      *
      * @param {string} documentId - the document id to run inference and create a prediction on
-     * @param {string} modelName - the name of the model to use for inference
+     * @param {string} modelId - the model id to use for inference
      * @param {number} [maxPages] - maximum number of pages to run predicitons on
      * @param {boolean} [autoRotate] - whether or not to let the API try different rotations on
      * the document when runnin predictions
      * @returns {Promise} - prediction on document
      */
-    createPrediction(documentId: string, modelName: string, maxPages?: number, autoRotate?: boolean) {
+    createPrediction(documentId: string, modelId: string, maxPages?: number, autoRotate?: boolean): Promise<any> {
       let body: any = {
         documentId,
-        modelName,
+        modelId,
       };
 
       if (maxPages !== undefined) {
