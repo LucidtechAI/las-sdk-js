@@ -14,7 +14,8 @@
     "recompile": "lerna clean -y && lerna run compile",
     "build": "lerna clean -y && lerna run compile && jest",
     "lint": "lerna run --no-bail lint",
-    "publish": "lerna publish"
+    "publish": "lerna publish",
+    "test:watch": "jest --watch"
   },
   "devDependencies": {
     "@types/jest": "^24.0.18",
