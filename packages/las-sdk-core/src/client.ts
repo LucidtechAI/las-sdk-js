@@ -259,36 +259,39 @@ export class Client {
     }
 
     /**
-     * Modifies consent hash for a user, calls the PATCH /users/{user_id} endpoint.
+     * Creates a new user, calls the POST /users endpoint.
      *
-     * @param {string} userId - the user id to modify consent hash for
-     * @param {string} consentHash - the consent hash to set
-     * @returns {Promise} - batch handle id and pre-signed upload url
+     * @param {string} email Email to the new user
      */
-    updateUser(userId: string, consentHash: string) {
-      // TODO add test for this method
-      const body = { consentHash };
-      return this.makePatchRequest(`/users/${userId}`, body);
+    createUser(email: string): Promise<any> {
+      return this.makePostRequest('/users', { email });
     }
 
     /**
-     * Gets consent hash and user id for a given user id, calls the GET /users/{user_id} endpoint.
-     *
-     * @param {string} userId - the user id to get consent hash for
-     * @returns {Promise} - batch handle id and pre-signed upload url
+     * List users, calls the GET /users endpoint.
      */
-    getUser(userId: string) {
+    listUsers(): Promise<any> {
+      return this.makeGetRequest('/users');
+    }
+
+
+    /**
+     * Get information about a specific user, calls the GET /users/{user_id} endpoint.
+     *
+     * @param {string} userId - Id of the user
+     * @returns {Promise} - User response from REST API
+     */
+    getUser(userId: string): Promise<any> {
       return this.makeGetRequest(`/users/${userId}`);
     }
 
     /**
-     * Delete documents with this consent_id, calls the DELETE /consents/{consentId} endpoint.
+     * Delete the user with the provided user_id, calls the DELETE /users/{userId} endpoint.
      *
-     * @param {string} consentId - Delete documents with this consent id
-     * @returns {Promise}
+     * @param userId Id of the user
      */
-    deleteConsent(consentId: string) {
-      return this.makeDeleteRequest(`/consents/${consentId}`);
+    deleteUser(userId: string): Promise<any> {
+      return this.makeDeleteRequest(`/users/${userId}`);
     }
 
     makeGetRequest(path: string, query?: any) {
