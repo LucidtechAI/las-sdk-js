@@ -178,6 +178,48 @@ describe('Workflows', () => {
   });
 });
 
+describe('Users', () => {
+  describe('createUser', () => {
+    test('valid request', async () => {
+      const createUserPromise = client.createUser('test@test.com');
+      await expect(createUserPromise).resolves.toHaveProperty('email');
+      await expect(createUserPromise).resolves.toHaveProperty('userId');
+    });
+
+    test('invalid email', async () => {
+      const createUserPromise = client.createUser('invalidEmail');
+      await expect(createUserPromise).rejects.toBeDefined();
+    });
+  });
+
+  describe('getUser', () => {
+    test('valid request', async () => {
+      const userId = uuidv4();
+
+      const getUserPromise = client.getUser(userId);
+      await expect(getUserPromise).resolves.toHaveProperty('email');
+      await expect(getUserPromise).resolves.toHaveProperty('userId');
+    });
+  });
+
+  describe('deleteUser', () => {
+    test('valid request', async () => {
+      const userId = uuidv4();
+
+      const deleteUserPromise = client.deleteUser(userId);
+      await expect(deleteUserPromise).resolves.toHaveProperty('email');
+      await expect(deleteUserPromise).resolves.toHaveProperty('userId');
+    });
+  });
+
+  describe('listUsers', () => {
+    test('valid request', async () => {
+      const listUsersPromise = client.listUsers();
+      await expect(listUsersPromise).resolves.toHaveProperty('users');
+    });
+  });
+});
+
 describe('Predictions', () => {
   describe('createPredictions', () => {
     test('valid request', async () => {
