@@ -7,6 +7,7 @@ beforeEach(() => {
   client = getTestClient();
 });
 
+describe('documents', () => {
 describe('createDocument', () => {
   test('valid request body', async () => {
     const testContent = uuidv4();
@@ -71,12 +72,23 @@ describe('getDocument', () => {
   });
 });
 
+  describe('updateDocument', () => {
+    test('valid request', async () => {
+      const documentId = uuidv4();
+      const feedback = [{ label: 'test', value: 'test' }];
+      const updateDocumentPromise = client.updateDocument(documentId, feedback);
+      await expect(updateDocumentPromise).resolves.toHaveProperty('consentId');
+      await expect(updateDocumentPromise).resolves.toHaveProperty('documentId');
+      await expect(updateDocumentPromise).resolves.toHaveProperty('contentType');
+    });
+  });
 describe('listDocuments', () => {
   test('valid request', async () => {
     const testBatchId = uuidv4();
     const listDocumentsPromise = client.listDocuments(testBatchId);
     await expect(listDocumentsPromise).resolves.toBeDefined();
   });
+});
 });
 
 describe('createBatch', () => {

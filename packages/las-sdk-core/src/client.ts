@@ -73,16 +73,16 @@ export class Client {
      * This enables the API to learn from past mistakes.
      *
      * @param {string} documentId - the document id to run inference and create a prediction on
-     * @param {Array<{ [label: string]: string }>} feedback - a list of feedback items
-     * { label: value } representing the ground truth values for the document
+     * @param {Array<{ label: string, value: string }>} feedback - a list of feedback items
+     * { label, value } representing the ground truth values for the document
      * @returns {Promise} - feedback response from REST API
     */
-    updateDocument(documentId: string, feedback: Array<{[key: string]: string}>): Promise<any> {
+    updateDocument(documentId: string, feedback: Array<{ label: string; value: string}>): Promise<any> {
       const body = {
         feedback,
       };
 
-      return this.makePostRequest(`/documents/${documentId}`, body);
+      return this.makePatchRequest(`/documents/${documentId}`, body);
     }
 
     /**
