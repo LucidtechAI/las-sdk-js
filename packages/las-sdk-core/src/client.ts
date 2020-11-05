@@ -1,5 +1,6 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import { Credentials } from './credentials';
+import { PatchTransistionExecutionId, PostTransitionParams, PostTransitions } from './types';
 import { buildURL } from './utils';
 
 
@@ -81,6 +82,61 @@ export class Client {
       };
 
       return this.makePostRequest(`/documents/${documentId}`, body);
+    }
+
+    /**
+     * Creates a transition handle, calls the POST /transitions endpoint.
+     *
+     * @param {'docker' | 'manual'} transitionType Type of transition "docker"|"manual"
+     * @param {object} inputJsonSchema Json-schema that defines the input to the transition
+     * @param {object} outputJsonSchema Json-schema that defines the output of the transition
+     * @param {PostTransitionParams} params Extra parameters to the transition
+     */
+    createTransition(transitionType: 'docker' | 'manual', inputJsonSchema: object, outputJsonSchema: object, params?: PostTransitionParams): Promise<any> {
+      let body: PostTransitions = {
+        transitionType,
+        inputJsonSchema,
+        outputJsonSchema,
+      };
+
+      if (params) {
+        body = { ...body, params };
+      }
+      return this.makePostRequest('/transitions', body);
+    }
+
+    /**
+     * Start executing a manual transition, calls the POST /transitions/{transitionId}/executions endpoint.
+     *
+     * @param {string} transitionId Id of the transition
+     */
+    executeTransition(transitionId: string): Promise<any> {
+      return this.makePostRequest(`/transitions/${transitionId}/executions`, {});
+    }
+
+    /**
+     * Ends the processing of the transition execution, calls the PATCH /transitions/{transition_id}/executions/{execution_id} endpoint.
+     *
+     * @param {string} transitionId Id of the transition that performs the execution
+     * @param {string} executionId Id of the execution to update
+     * @param {'succeeded' | 'failed'} status Status of the execution 'succeeded|failed'
+     * @param {object} output Output from the execution, required when status is 'succeded'
+     * @param { message: string } error Error from the execution, required when status is 'failed', needs to contain 'message'
+     */
+    updateTransitionExecution(transitionId: string, executionId: string, status: 'succeeded' | 'failed', output?: object, error?: { message: string }): Promise<any> {
+      let body: PatchTransistionExecutionId = {
+        status,
+      };
+
+      if (output) {
+        body = { ...body, output };
+      }
+
+      if (error) {
+        body = { ...body, error };
+      }
+
+      return this.makePatchRequest(`/transitions/${transitionId}/executions/${executionId}`, body);
     }
 
     /**
