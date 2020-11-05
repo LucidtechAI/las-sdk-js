@@ -133,7 +133,7 @@ export class Client {
      * @param {string} executionId Id of the execution to update
      * @param {'succeeded' | 'failed'} status Status of the execution 'succeeded|failed'
      * @param {object} output Output from the execution, required when status is 'succeded'
-     * @param { message: string } error Error from the execution, required when status is 'failed', needs to contain 'message'
+     * @param {{ message: string}} error Error from the execution, required when status is 'failed', needs to contain 'message'
      */
     updateTransitionExecution(transitionId: string, executionId: string, status: 'succeeded' | 'failed', output?: object, error?: { message: string }): Promise<any> {
       let body: PatchTransistionExecutionId = {

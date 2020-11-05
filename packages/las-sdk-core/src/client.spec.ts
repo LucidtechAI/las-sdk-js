@@ -1,5 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import { getTestClient } from './helpers';
+import { PostTransitionParams } from './types';
 
 let client = getTestClient();
 
@@ -79,6 +80,46 @@ describe('Documents', () => {
       const testBatchId = uuidv4();
       const listDocumentsPromise = client.listDocuments(testBatchId);
       await expect(listDocumentsPromise).resolves.toBeDefined();
+    });
+  });
+});
+
+describe('Transitions', () => {
+  describe('createTransition', () => {
+    test.each<['manual'|'docker', PostTransitionParams | undefined, object, object]>([
+      ['manual', undefined, {}, {}],
+      ['docker', undefined, {}, {}],
+      ['docker', { imageUrl: 'test' }, {}, {}],
+      ['manual', { imageUrl: 'test', cpu: 512, memory: 1024 }, {}, {}],
+    ])('transitionType: %s, params: %o', async (transitionType, params, inputSchema, outputSchema) => {
+      const createTransitionPromise = client.createTransition(transitionType, inputSchema, outputSchema, params);
+      await expect(createTransitionPromise).resolves.toHaveProperty('transitionId');
+    });
+  });
+
+  describe('executeTransition', () => {
+    test('valid request', async () => {
+      const transitionId = uuidv4();
+      const executeTransitionPromise = client.executeTransition(transitionId);
+      await expect(executeTransitionPromise).resolves.toHaveProperty('executionId');
+      await expect(executeTransitionPromise).resolves.toHaveProperty('status');
+      await expect(executeTransitionPromise).resolves.toHaveProperty('transitionId');
+    });
+  });
+
+  describe('updateTransitionExecution', () => {
+    test.each<['succeeded'|'failed', object | undefined, { message: string } | undefined]>([
+      ['failed', undefined, { message: 'test' }],
+      ['succeeded', {}, undefined],
+      ['succeeded', {}, undefined],
+      ['failed', undefined, { message: 'test' }],
+    ])('status: %s, output: %o, error: %o', async (status, output, error) => {
+      const transitionId = uuidv4();
+      const executionId = uuidv4();
+      const updateTransitionExecutionPromise = client.updateTransitionExecution(transitionId, executionId, status, output, error);
+      await expect(updateTransitionExecutionPromise).resolves.toHaveProperty('executionId');
+      await expect(updateTransitionExecutionPromise).resolves.toHaveProperty('status');
+      await expect(updateTransitionExecutionPromise).resolves.toHaveProperty('transitionId');
     });
   });
 });
