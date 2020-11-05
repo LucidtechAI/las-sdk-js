@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import { getTestClient } from './helpers';
-import { PostTransitionParams } from './types';
+import { PostTransitionParams, WorkflowSpecification } from './types';
 
 let client = getTestClient();
 
@@ -120,6 +120,60 @@ describe('Transitions', () => {
       await expect(updateTransitionExecutionPromise).resolves.toHaveProperty('executionId');
       await expect(updateTransitionExecutionPromise).resolves.toHaveProperty('status');
       await expect(updateTransitionExecutionPromise).resolves.toHaveProperty('transitionId');
+    });
+  });
+});
+
+describe('Workflows', () => {
+  describe('createWorkflow', () => {
+    test.each<[WorkflowSpecification, string, string | undefined, { email: string } | undefined]>([
+      [{ definition: {} }, 'test', 'test', { email: 'test@test.com' }],
+      [{ definition: {} }, 'test', undefined, undefined],
+      [{ definition: {} }, 'test', undefined, { email: 'test@test.com' }],
+      [{ definition: {}, language: 'ASL', version: '1.0.0' }, 'test', 'test', { email: 'test@test.com' }],
+      [{ definition: {} }, 'test', 'test', { email: 'test@test.com' }],
+    ])('specification: %o, name: %s, description: %s, errorConfig: %o', async (specification, name, description, errorConfig) => {
+      const createWorkflowPromise = client.createWorkflow(specification, name, description, errorConfig);
+      await expect(createWorkflowPromise).resolves.toHaveProperty('name');
+      await expect(createWorkflowPromise).resolves.toHaveProperty('workflowId');
+    });
+  });
+
+  describe('listWorkflows', () => {
+    test('valid request', async () => {
+      const listWorkflowsPromise = client.listWorkflows();
+      await expect(listWorkflowsPromise).resolves.toHaveProperty('workflows');
+    });
+  });
+
+  describe('deleteWorkflow', () => {
+    test('valid request', async () => {
+      const workflowId = uuidv4();
+      const deleteWorkflowPromise = client.deleteWorkflow(workflowId);
+      await expect(deleteWorkflowPromise).resolves.toHaveProperty('name');
+      await expect(deleteWorkflowPromise).resolves.toHaveProperty('workflowId');
+    });
+  });
+
+  describe('executeWorkflow', () => {
+    test('valid request', async () => {
+      const workflowId = uuidv4();
+      const executeWorkflowPromise = client.executeWorkflow(workflowId, { some: 'input' });
+      await expect(executeWorkflowPromise).resolves.toHaveProperty('executionId');
+      await expect(executeWorkflowPromise).resolves.toHaveProperty('status');
+      await expect(executeWorkflowPromise).resolves.toHaveProperty('workflowId');
+    });
+  });
+
+  describe('listWorkflowExecutions', () => {
+    test.each([
+      undefined,
+      'test',
+    ])('status: %s', async () => {
+      const workflowId = uuidv4();
+      const listWorkflowExecutionsPromise = client.listWorkflowExecutions(workflowId);
+      await expect(listWorkflowExecutionsPromise).resolves.toHaveProperty('executions');
+      await expect(listWorkflowExecutionsPromise).resolves.toHaveProperty('workflowId');
     });
   });
 });
