@@ -1,4 +1,4 @@
-import { default as uuidv4 } from 'uuid/v4';
+import { v4 as uuidv4 } from 'uuid';
 import { getTestClient } from './helpers';
 
 let client = getTestClient();
