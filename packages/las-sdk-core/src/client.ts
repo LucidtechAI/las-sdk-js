@@ -1,5 +1,4 @@
 import axios, { AxiosRequestConfig } from 'axios';
-import { stat } from 'fs';
 import { Credentials } from './credentials';
 import {
   PatchTransistionExecutionId, PostTransitionParams, PostTransitions, PostWorkflows, WorkflowSpecification,
@@ -63,7 +62,7 @@ export class Client {
       * @param {string} [consentId] - an identifier to mark the owner of the document handle
       * @returns {Promise} - documents from REST API contained in batch <batchId>
       */
-    listDocuments(batchId?: string, consentId?: string) {
+    listDocuments(batchId?: string, consentId?: string): Promise<any> {
       const query = { batchId, consentId };
       return this.makeGetRequest('/documents', query);
     }
@@ -78,13 +77,23 @@ export class Client {
      * { label: value } representing the ground truth values for the document
      * @returns {Promise} - feedback response from REST API
     */
-    updateDocument(documentId: string, feedback: Array<{[key: string]: string}>) {
-      // TODO add test for this method
+    updateDocument(documentId: string, feedback: Array<{[key: string]: string}>): Promise<any> {
       const body = {
         feedback,
       };
 
       return this.makePostRequest(`/documents/${documentId}`, body);
+    }
+
+    /**
+     * Delete documents with the provided consentId, calls the DELETE /documents endpoint.
+     *
+     * @param consentId Id of the consent that marks the owner of the document handle
+     */
+    deleteDocument(consentId?: string): Promise<any> {
+      const query = consentId ? { consentId } : undefined;
+
+      return this.makeDeleteRequest('/documents', query);
     }
 
     /**
@@ -286,8 +295,8 @@ export class Client {
       return this.makeAuthorizedRequest(axios.get, buildURL(path, query));
     }
 
-    makeDeleteRequest(path: string) {
-      return this.makeAuthorizedRequest(axios.delete, path);
+    makeDeleteRequest(path: string, query?: any) {
+      return this.makeAuthorizedRequest(axios.delete, buildURL(path, query));
     }
 
     makePostRequest(path: string, body: any) {

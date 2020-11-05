@@ -1,4 +1,4 @@
-export function buildURL(url: string, params?: { [ key: string ]: undefined|string|Array<string> }) {
+export function buildURL(url: string, params?: { [ key: string ]: undefined|string|Array<string> }): string {
   if (!params) {
     return url;
   }
