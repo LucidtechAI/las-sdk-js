@@ -13,7 +13,7 @@ prism-start:
 		-p 4010:4010 \
 		-h 0.0.0.0 \
 		stoplight/prism:3.2.8 mock -d -h 0.0.0.0 \
-		https://raw.githubusercontent.com/LucidtechAI/las-docs/rest-api-docs/apis/dev/oas.json > /tmp/prism.cid
+		https://raw.githubusercontent.com/LucidtechAI/las-docs/magnus/new-api-spec/apis/dev/oas.json > /tmp/prism.cid
 
 .PHONY: prism-stop
 prism-stop:
