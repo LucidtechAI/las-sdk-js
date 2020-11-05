@@ -1,6 +1,9 @@
 import axios, { AxiosRequestConfig } from 'axios';
+import { stat } from 'fs';
 import { Credentials } from './credentials';
-import { PatchTransistionExecutionId, PostTransitionParams, PostTransitions } from './types';
+import {
+  PatchTransistionExecutionId, PostTransitionParams, PostTransitions, PostWorkflows, WorkflowSpecification,
+} from './types';
 import { buildURL } from './utils';
 
 
@@ -137,6 +140,72 @@ export class Client {
       }
 
       return this.makePatchRequest(`/transitions/${transitionId}/executions/${executionId}`, body);
+    }
+
+    /**
+     * Creates a new workflow, calls the POST /workflows endpoint.
+     *
+     * @param {WorkflowSpecification} specification Specification of the workflow
+     * @param {string} name Name of the workflow
+     * @param {string} description Description of the workflow
+     * @param {{ email: string }} errorConfig Configuration of error handler
+     */
+    createWorkflow(specification: WorkflowSpecification, name: string, description?: string, errorConfig?: { email: string }): Promise<any> {
+      let body: PostWorkflows = {
+        name,
+        specification,
+      };
+
+      if (description) {
+        body = { ...body, description };
+      }
+
+      if (errorConfig) {
+        body = { ...body, errorConfig };
+      }
+
+      return this.makePostRequest('/workflows', body);
+    }
+
+    /**
+     * List workflows, calls the GET /workflows endpoint.
+     */
+    listWorkflows(): Promise<any> {
+      return this.makeGetRequest('/workflows');
+    }
+
+    /**
+     * Delete the workflow with the provided workflowId, calls the DELETE /workflows/{workflowId} endpoint.
+     * @param workflowId Id of the workflow
+     */
+    deleteWorkflow(workflowId: string): Promise<any> {
+      return this.makeDeleteRequest(`/workflows/${workflowId}`);
+    }
+
+    /**
+     * Start a workflow execution, calls the POST /workflows/{workflowId}/executions endpoint.
+     *
+     * @param {string} workflowId Id of the workflow
+     * @param {object} input Input to the first step of the workflow
+     */
+    executeWorkflow(workflowId: string, input: object): Promise<any> {
+      const body = {
+        input,
+      };
+
+      return this.makePostRequest(`/workflows/${workflowId}/executions`, body);
+    }
+
+    /**
+     * List executions in a workflow, calls the GET /workflows/{workflowId}/executions endpoint.
+     *
+     * @param {string }workflowId Id of the workflow
+     * @param {string} status Status of the executions
+     */
+    listWorkflowExecutions(workflowId: string, status?: string): Promise<any> {
+      const query = status ? { status } : undefined;
+
+      return this.makeGetRequest(`/workflows/${workflowId}/executions`, query);
     }
 
     /**

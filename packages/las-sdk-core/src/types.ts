@@ -25,3 +25,18 @@ export type PatchTransistionExecutionId = {
   };
   output?: object;
 }
+
+export type WorkflowSpecification = {
+  definition: object;
+  language?: 'ASL';
+  version?: '1.0.0';
+}
+
+export type PostWorkflows = {
+  name: string;
+  specification: WorkflowSpecification;
+  description?: string;
+  errorConfig?: {
+    email: string;
+  };
+}
