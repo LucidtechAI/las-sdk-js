@@ -224,7 +224,7 @@ export class Client {
      * @param {string} modelId - the model id to use for inference
      * @param {number} [maxPages] - maximum number of pages to run predicitons on
      * @param {boolean} [autoRotate] - whether or not to let the API try different rotations on
-     * the document when runnin predictions
+     * the document when running predictions
      * @returns {Promise} - prediction on document
      */
     createPrediction(documentId: string, modelId: string, maxPages?: number, autoRotate?: boolean): Promise<any> {
