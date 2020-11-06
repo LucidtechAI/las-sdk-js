@@ -104,10 +104,36 @@ export type Feedback = {
   value: string | null;
 };
 
+export type PostPredictions = {
+  documentId: string;
+  modelId: string;
+  maxPages?: number;
+  autoRotate?: boolean;
+}
+
 export type Prediction = Feedback & {
   /** minimum: 0, maximum: 1 */
   confidence: number;
 };
+
+export type PredictionResponse = {
+  documentId: string;
+  predictions?: Array<Prediction>;
+}
+
+export type Batch = {
+  batchId: string;
+  description: string;
+}
+
+export type User = {
+  userId: string;
+  email: string;
+}
+
+export type UserList = {
+  users: Array<User>;
+}
 
 export type LasDocument = {
   contentType: ContentType;
