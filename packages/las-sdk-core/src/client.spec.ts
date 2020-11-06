@@ -67,10 +67,10 @@ describe('Documents', () => {
     });
   });
 
-  describe('deleteDocument', () => {
+  describe('deleteDocuments', () => {
     test('valid request', async () => {
-      const documentId = uuidv4();
-      const updateDocumentPromise = client.deleteDocument(documentId);
+      const consentId = uuidv4();
+      const updateDocumentPromise = client.deleteDocuments(consentId);
       await expect(updateDocumentPromise).resolves.toHaveProperty('documents');
     });
   });

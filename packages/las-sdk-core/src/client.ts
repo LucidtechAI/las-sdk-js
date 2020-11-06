@@ -90,7 +90,7 @@ export class Client {
      *
      * @param consentId Id of the consent that marks the owner of the document handle
      */
-    deleteDocument(consentId?: string): Promise<any> {
+    deleteDocuments(consentId?: string): Promise<any> {
       const query = consentId ? { consentId } : undefined;
 
       return this.makeDeleteRequest('/documents', query);
