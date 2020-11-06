@@ -1,6 +1,8 @@
-import axios, { AxiosRequestConfig } from 'axios';
+import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 import { Credentials } from './credentials';
 import {
+  AuthorizationHeaders,
+  AxiosFn,
   PatchTransistionExecutionId, PostTransitionParams, PostTransitions, PostWorkflows, WorkflowSpecification,
 } from './types';
 import { buildURL } from './utils';
@@ -294,55 +296,41 @@ export class Client {
       return this.makeDeleteRequest(`/users/${userId}`);
     }
 
-    makeGetRequest(path: string, query?: any) {
-      return this.makeAuthorizedRequest(axios.get, buildURL(path, query));
+    /* eslint-disable @typescript-eslint/no-explicit-any */
+    makeGetRequest<T = any>(path: string, query?: any): Promise<T> {
+      return this.makeAuthorizedRequest<T>(axios.get, buildURL(path, query));
     }
 
-    makeDeleteRequest(path: string, query?: any) {
+    makeDeleteRequest<T = any>(path: string, query?: any): Promise<T> {
       return this.makeAuthorizedRequest(axios.delete, buildURL(path, query));
     }
 
-    makePostRequest(path: string, body: any) {
+    makePostRequest<T = any>(path: string, body: any): Promise<T> {
       return this.makeAuthorizedRequest(axios.post, path, body);
     }
 
-    makePatchRequest(path: string, body: any) {
+    makePatchRequest<T = any>(path: string, body: any): Promise<T> {
       return this.makeAuthorizedRequest(axios.patch, path, body);
     }
 
-    private makeAuthorizedRequest(axiosFn: (url: string, body?: any, config?: AxiosRequestConfig) => Promise<any>, path: string, body?: any) {
-      return new Promise<any>((resolve, reject) => {
+    private async makeAuthorizedRequest<T = any>(axiosFn: AxiosFn, path: string, body?: any): Promise<T> {
         const endpoint = `${this.credentials.apiEndpoint}${path}`;
-        this.getAuthorizationHeaders().then((headers) => {
-          const config = { headers };
+      const headers = await this.getAuthorizationHeaders();
+      const config: AxiosRequestConfig = { headers };
           const handle = body
-            ? () => axiosFn(endpoint, body, config)
-            : () => axiosFn(endpoint, config);
+        ? (): Promise<AxiosResponse<T>> => axiosFn<T>(endpoint, body, config)
+        : (): Promise<AxiosResponse<T>> => axiosFn<T>(endpoint, config);
 
-          handle().then((response) => {
-            resolve(response.data);
-          }).catch((error) => {
-            reject(error);
-          });
-        }).catch((error) => {
-          reject(error);
-        });
-      });
+      return (await handle()).data;
     }
+    /* eslint-enable */
 
-    private getAuthorizationHeaders(): Promise<any> {
-      return new Promise<any>((resolve, reject) => {
-        this.credentials.getAccessToken().then((accessToken) => {
-          const headers = {
+    private async getAuthorizationHeaders(): Promise<AuthorizationHeaders> {
+      const accessToken = await this.credentials.getAccessToken();
+      return {
             'X-Api-Key': this.credentials.apiKey,
             Authorization: `Bearer ${accessToken}`,
           };
-
-          resolve(headers);
-        }).catch((error) => {
-          reject(error);
-        });
-      });
     }
 }
 

@@ -40,3 +40,12 @@ export type PostWorkflows = {
     email: string;
   };
 }
+
+
+export type AuthorizationHeaders = {
+    'X-Api-Key': string;
+    Authorization: string;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type AxiosFn = <T = any, R = AxiosResponse<T>>(url: string, body?: any, config?: AxiosRequestConfig) => Promise<R>
