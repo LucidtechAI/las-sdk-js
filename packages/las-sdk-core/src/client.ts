@@ -17,6 +17,7 @@ import {
   PredictionResponse,
   Transition,
   TransitionExecution,
+  TransitionList,
   TransitionType,
   User,
   UserList,
@@ -155,6 +156,17 @@ export class Client {
   }
 
   /**
+   * List transitions, calls the GET /transitions endpoint.
+   *
+   * @param transitionType Type of transition
+   * @returnsTransitions response from REST API
+   */
+  listTransitions(transitionType?: string): Promise<TransitionList> {
+    const query = transitionType ? { transitionType } : undefined;
+    return this.makeGetRequest('/transitions', query);
+  }
+
+  /**
    * Start executing a manual transition, calls the POST /transitions/{transitionId}/executions endpoint.
    *
    * @param transitionId Id of the transition
@@ -283,7 +295,12 @@ export class Client {
    * @param autoRotate Whether or not to let the API try different rotations on the document when running predictions
    * @returns Predicion response from REST API
    */
-  createPrediction(documentId: string, modelId: string, maxPages?: number, autoRotate?: boolean): Promise<PredictionResponse> {
+  createPrediction(
+    documentId: string,
+    modelId: string,
+    maxPages?: number,
+    autoRotate?: boolean,
+  ): Promise<PredictionResponse> {
     let body: PostPredictions = {
       documentId,
       modelId,

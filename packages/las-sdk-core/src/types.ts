@@ -45,6 +45,10 @@ export type Transition = {
   inputJsonSchema: unknown;
 };
 
+export type TransitionList = {
+  transitions: Array<Transition>;
+}
+
 export type PatchTransistionExecutionId = {
   status: 'succeeded' | 'failed';
   error?: {
