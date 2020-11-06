@@ -15,6 +15,10 @@ import {
   Transition,
   TransitionExecution,
   TransitionType,
+  Workflow,
+  WorkflowExecution,
+  WorkflowExecutionList,
+  WorkflowList,
   WorkflowSpecification,
 } from './types';
 import { buildURL } from './utils';
@@ -190,12 +194,18 @@ export class Client {
     /**
      * Creates a new workflow, calls the POST /workflows endpoint.
      *
-     * @param {WorkflowSpecification} specification Specification of the workflow
-     * @param {string} name Name of the workflow
-     * @param {string} description Description of the workflow
-     * @param {{ email: string }} errorConfig Configuration of error handler
+   * @param specification Specification of the workflow
+   * @param name Name of the workflow
+   * @param description Description of the workflow
+   * @param errorConfig Configuration of error handler
+   * @returns Workflow response from REST API
      */
-    createWorkflow(specification: WorkflowSpecification, name: string, description?: string, errorConfig?: { email: string }): Promise<any> {
+  createWorkflow(
+    specification: WorkflowSpecification,
+    name: string,
+    description?: string,
+    errorConfig?: { email: string },
+  ): Promise<Workflow> {
       let body: PostWorkflows = {
         name,
         specification,
@@ -209,48 +219,54 @@ export class Client {
         body = { ...body, errorConfig };
       }
 
-      return this.makePostRequest('/workflows', body);
+    return this.makePostRequest<Workflow>('/workflows', body);
     }
 
     /**
      * List workflows, calls the GET /workflows endpoint.
+   *
+   * @returns Workflows response from REST API
      */
-    listWorkflows(): Promise<any> {
-      return this.makeGetRequest('/workflows');
+  listWorkflows(): Promise<WorkflowList> {
+    return this.makeGetRequest<WorkflowList>('/workflows');
     }
 
     /**
      * Delete the workflow with the provided workflowId, calls the DELETE /workflows/{workflowId} endpoint.
+   *
      * @param workflowId Id of the workflow
+   * @returns Workflow response from REST API
      */
-    deleteWorkflow(workflowId: string): Promise<any> {
-      return this.makeDeleteRequest(`/workflows/${workflowId}`);
+  deleteWorkflow(workflowId: string): Promise<Workflow> {
+    return this.makeDeleteRequest<Workflow>(`/workflows/${workflowId}`);
     }
 
     /**
      * Start a workflow execution, calls the POST /workflows/{workflowId}/executions endpoint.
      *
-     * @param {string} workflowId Id of the workflow
-     * @param {object} input Input to the first step of the workflow
+   * @param workflowId Id of the workflow
+   * @param input Input to the first step of the workflow
+   * @returns Workflow execution response from REST API
      */
-    executeWorkflow(workflowId: string, input: object): Promise<any> {
+  executeWorkflow(workflowId: string, input: object): Promise<WorkflowExecution> {
       const body = {
         input,
       };
 
-      return this.makePostRequest(`/workflows/${workflowId}/executions`, body);
+    return this.makePostRequest<WorkflowExecution>(`/workflows/${workflowId}/executions`, body);
     }
 
     /**
      * List executions in a workflow, calls the GET /workflows/{workflowId}/executions endpoint.
      *
-     * @param {string }workflowId Id of the workflow
-     * @param {string} status Status of the executions
+   * @param workflowId Id of the workflow
+   * @param status Status of the executions
+   * @returns Workflow executions responses from REST API
      */
-    listWorkflowExecutions(workflowId: string, status?: string): Promise<any> {
+  listWorkflowExecutions(workflowId: string, status?: string): Promise<WorkflowExecutionList> {
       const query = status ? { status } : undefined;
 
-      return this.makeGetRequest(`/workflows/${workflowId}/executions`, query);
+    return this.makeGetRequest<WorkflowExecutionList>(`/workflows/${workflowId}/executions`, query);
     }
 
     /**

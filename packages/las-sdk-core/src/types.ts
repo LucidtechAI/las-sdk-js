@@ -66,6 +66,16 @@ export type WorkflowSpecification = {
   version?: '1.0.0';
 };
 
+export type Workflow = {
+  name: string;
+  workflowId: string;
+  description?: string;
+};
+
+export type WorkflowList = {
+  workflows: Array<Workflow>;
+};
+
 export type PostWorkflows = {
   name: string;
   specification: WorkflowSpecification;
@@ -73,6 +83,18 @@ export type PostWorkflows = {
   errorConfig?: {
     email: string;
   };
+};
+
+export type WorkflowExecution = {
+  executionId: string;
+  workflowId: string;
+  status?: 'succeeded' | 'failed' | 'running' | 'aborted';
+};
+
+export type WorkflowExecutionList = {
+  executions: Array<WorkflowExecution>;
+  workflowId: string;
+  status?: 'succeeded' | 'failed' | 'running' | 'aborted';
 };
 
 export type Feedback = {
