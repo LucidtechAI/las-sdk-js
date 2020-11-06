@@ -3,10 +3,18 @@ import { Credentials } from './credentials';
 import {
   AuthorizationHeaders,
   AxiosFn,
-  PatchTransistionExecutionId, PostTransitionParams, PostTransitions, PostWorkflows, WorkflowSpecification,
+  ContentType,
+  Feedback,
+  LasDocument,
+  LasDocumentList,
+  PatchTransistionExecutionId,
+  PostDocuments,
+  PostTransitionParams,
+  PostTransitions,
+  PostWorkflows,
+  WorkflowSpecification,
 } from './types';
 import { buildURL } from './utils';
-
 
 /**
  * A high-level http client for communicating with the Lucidtech REST API
@@ -19,28 +27,23 @@ export class Client {
     }
 
     /**
-     * Get document from the REST API, calls the GET /documets/{documentId} endpoint
-     *
-     * @param {string} documentId - the document id to run inference and create a prediction on
-     * @returns {Promise} - document response from REST API
-      */
-    getDocument(documentId: string) {
-      return this.makeGetRequest(`/documents/${documentId}`);
-    }
-
-    /**
      * Creates a document handle, calls the POST /documents endpoint.
      *
-     * @param {string} content - The contents to POST
-     * @param {string} contentType - A MIME type for the document handle
-     * @param {string} consentId - An identifier to mark the owner of the document handle
-     * @param {string} [batchId] - The batch to put the document it
-     * @param {Array<{ [label: string]: string }>} [feedback] A list of items
-     * { label: value } representing the ground truth values for the document
-     * @returns {Promise} - document handle id
+   * @param content Content to POST
+   * @param contentType MIME type for the document handle
+   * @param consentId Id of the consent that marks the owner of the document handle
+   * @param batchId Id of the associated batch
+   * @param feedback List of feedback items representing the ground truth values for the document
+   * @returns Document response from REST API
      */
-    createDocument(content: string, contentType: string, consentId?: string, batchId?: string, feedback?: Array<{[key: string]: string}>): Promise<any> {
-      let body: any = {
+  createDocument(
+    content: string,
+    contentType: ContentType,
+    consentId?: string,
+    batchId?: string,
+    feedback?: Array<Feedback>,
+  ): Promise<LasDocument> {
+    let body: PostDocuments = {
         content: Buffer.from(content).toString('base64'),
         contentType,
       };
@@ -56,17 +59,29 @@ export class Client {
         body = { ...body, feedback };
       }
 
-      return this.makePostRequest('/documents', body);
+    return this.makePostRequest<LasDocument>('/documents', body);
+  }
+
+  /**
+   * Get document from the REST API, calls the GET /documents/{documentId} endpoint.
+   *
+   * @param documentId Id of the document
+   * @returns Document response from REST API
+   */
+  getDocument(documentId: string): Promise<LasDocument> {
+    return this.makeGetRequest<LasDocument>(`/documents/${documentId}`);
     }
 
     /**
-      * @param {string} [batchId] - the batch id that contains the documents of interest
-      * @param {string} [consentId] - an identifier to mark the owner of the document handle
-      * @returns {Promise} - documents from REST API contained in batch <batchId>
+   * List documents available for inference, calls the GET /documents endpoint.
+   *
+   * @param batchId Id of the batch that contains the documents of interest
+   * @param consentId Id of the consent that marks the owner of the document handle
+   * @returns Documents response from REST API
       */
-    listDocuments(batchId?: string, consentId?: string): Promise<any> {
+  listDocuments(batchId?: string, consentId?: string): Promise<LasDocumentList> {
       const query = { batchId, consentId };
-      return this.makeGetRequest('/documents', query);
+    return this.makeGetRequest<LasDocumentList>('/documents', query);
     }
 
     /**
@@ -74,28 +89,28 @@ export class Client {
      * Posting feedback means posting the ground truth data for the particular document.
      * This enables the API to learn from past mistakes.
      *
-     * @param {string} documentId - the document id to run inference and create a prediction on
-     * @param {Array<{ label: string, value: string }>} feedback - a list of feedback items
-     * { label, value } representing the ground truth values for the document
-     * @returns {Promise} - feedback response from REST API
+   * @param documentId Id of the document
+   * @param feedback List of feedback items representing the ground truth values for the document
+   * @returns Document response from REST API
     */
-    updateDocument(documentId: string, feedback: Array<{ label: string; value: string}>): Promise<any> {
+  updateDocument(documentId: string, feedback: Array<Feedback>): Promise<LasDocument> {
       const body = {
         feedback,
       };
 
-      return this.makePatchRequest(`/documents/${documentId}`, body);
+    return this.makePatchRequest<LasDocument>(`/documents/${documentId}`, body);
     }
 
     /**
      * Delete documents with the provided consentId, calls the DELETE /documents endpoint.
+   * Will delete all documents when no consentId is provided.
      *
      * @param consentId Id of the consent that marks the owner of the document handle
      */
-    deleteDocuments(consentId?: string): Promise<any> {
+  deleteDocuments(consentId?: string): Promise<LasDocumentList> {
       const query = consentId ? { consentId } : undefined;
 
-      return this.makeDeleteRequest('/documents', query);
+    return this.makeDeleteRequest<LasDocumentList>('/documents', query);
     }
 
     /**
