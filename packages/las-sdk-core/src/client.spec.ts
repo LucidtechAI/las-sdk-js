@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import { getTestClient } from './helpers';
-import { PostTransitionParams, WorkflowSpecification } from './types';
+import { ContentType, PostTransitionParams, WorkflowSpecification } from './types';
 
 let client = getTestClient();
 
@@ -23,7 +23,7 @@ describe('Documents', () => {
 
     test('invalid Content-Type', async () => {
       const testContent = uuidv4();
-      const testContentType = 'erroneousContentType';
+      const testContentType = 'erroneousContentType' as unknown as ContentType;
       const testConsentId = uuidv4();
       const createDocumentPromise = client.createDocument(testContent, testContentType, testConsentId);
       await expect(createDocumentPromise).rejects.toBeDefined();
@@ -94,6 +94,13 @@ describe('Transitions', () => {
     ])('transitionType: %s, params: %o', async (transitionType, params, inputSchema, outputSchema) => {
       const createTransitionPromise = client.createTransition(transitionType, inputSchema, outputSchema, params);
       await expect(createTransitionPromise).resolves.toHaveProperty('transitionId');
+    });
+  });
+
+  describe('listTransitions', () => {
+    test('valid request', async () => {
+      const listTransitionsPromise = client.listTransitions();
+      await expect(listTransitionsPromise).resolves.toHaveProperty('transitions');
     });
   });
 
