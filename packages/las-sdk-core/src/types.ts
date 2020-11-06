@@ -14,7 +14,7 @@ export type LasDocumentList = {
   documents: Array<LasDocument>;
   consentId?: string;
   batchId?: string;
-}
+};
 
 export type PostTransitionParams = {
   environment?: object;
@@ -27,14 +27,23 @@ export type PostTransitionParams = {
   imageUrl: string;
   /** maximum 2048, minimum 256 */
   cpu?: number;
-}
+};
+
+export type TransitionType = 'docker' | 'manual';
 
 export type PostTransitions = {
-  transitionType: 'docker' | 'manual';
+  transitionType: TransitionType;
   inputJsonSchema: object;
   outputJsonSchema: object;
   params?: PostTransitionParams;
-}
+};
+
+export type Transition = {
+  transitionId: string;
+  transitionType: TransitionType;
+  outputJsonSchema?: unknown;
+  inputJsonSchema: unknown;
+};
 
 export type PatchTransistionExecutionId = {
   status: 'succeeded' | 'failed';
@@ -42,13 +51,20 @@ export type PatchTransistionExecutionId = {
     message: string;
   };
   output?: object;
-}
+};
+
+export type TransitionExecution = {
+  executionId: string;
+  input: unknown;
+  status: 'succeeded' | 'failed' | 'running' | 'aborted';
+  transitionId: string;
+};
 
 export type WorkflowSpecification = {
   definition: object;
   language?: 'ASL';
   version?: '1.0.0';
-}
+};
 
 export type PostWorkflows = {
   name: string;
@@ -57,19 +73,19 @@ export type PostWorkflows = {
   errorConfig?: {
     email: string;
   };
-}
+};
 
 export type Feedback = {
   /** maxLength: 36, minLength: 1, pattern: ^[0-9A-Za-z_]+$ */
   label: string;
   /** maxLength: 64, minLength: 1 */
   value: string | null;
-}
+};
 
 export type Prediction = Feedback & {
   /** minimum: 0, maximum: 1 */
   confidence: number;
-}
+};
 
 export type LasDocument = {
   contentType: ContentType;
@@ -87,12 +103,16 @@ export type LasDocument = {
   /** minimum: 1 */
   content?: string;
   predictions?: Array<Prediction>;
-}
+};
 
 export type AuthorizationHeaders = {
-    'X-Api-Key': string;
-    Authorization: string;
-}
+  'X-Api-Key': string;
+  Authorization: string;
+};
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type AxiosFn = <T = any, R = AxiosResponse<T>>(url: string, body?: any, config?: AxiosRequestConfig) => Promise<R>
+export type AxiosFn = <T = any, R = AxiosResponse<T>>(
+  url: string,
+  body?: any,
+  config?: AxiosRequestConfig
+) => Promise<R>;

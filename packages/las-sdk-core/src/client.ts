@@ -12,6 +12,9 @@ import {
   PostTransitionParams,
   PostTransitions,
   PostWorkflows,
+  Transition,
+  TransitionExecution,
+  TransitionType,
   WorkflowSpecification,
 } from './types';
 import { buildURL } from './utils';
@@ -106,6 +109,7 @@ export class Client {
    * Will delete all documents when no consentId is provided.
      *
      * @param consentId Id of the consent that marks the owner of the document handle
+   * @returns Documents response from REST API
      */
   deleteDocuments(consentId?: string): Promise<LasDocumentList> {
       const query = consentId ? { consentId } : undefined;
@@ -116,12 +120,18 @@ export class Client {
     /**
      * Creates a transition handle, calls the POST /transitions endpoint.
      *
-     * @param {'docker' | 'manual'} transitionType Type of transition "docker"|"manual"
-     * @param {object} inputJsonSchema Json-schema that defines the input to the transition
-     * @param {object} outputJsonSchema Json-schema that defines the output of the transition
-     * @param {PostTransitionParams} params Extra parameters to the transition
+   * @param transitionType Type of transition "docker"|"manual"
+   * @param inputJsonSchema Json-schema that defines the input to the transition
+   * @param outputJsonSchema Json-schema that defines the output of the transition
+   * @param params Extra parameters to the transition
+   * @returns Transition response from REST API
      */
-    createTransition(transitionType: 'docker' | 'manual', inputJsonSchema: object, outputJsonSchema: object, params?: PostTransitionParams): Promise<any> {
+  createTransition(
+    transitionType: TransitionType,
+    inputJsonSchema: object,
+    outputJsonSchema: object,
+    params?: PostTransitionParams,
+  ): Promise<Transition> {
       let body: PostTransitions = {
         transitionType,
         inputJsonSchema,
@@ -131,28 +141,37 @@ export class Client {
       if (params) {
         body = { ...body, params };
       }
-      return this.makePostRequest('/transitions', body);
+
+    return this.makePostRequest<Transition>('/transitions', body);
     }
 
     /**
      * Start executing a manual transition, calls the POST /transitions/{transitionId}/executions endpoint.
      *
-     * @param {string} transitionId Id of the transition
+   * @param transitionId Id of the transition
+   * @returns Transition execution response from REST API
      */
-    executeTransition(transitionId: string): Promise<any> {
-      return this.makePostRequest(`/transitions/${transitionId}/executions`, {});
+  executeTransition(transitionId: string): Promise<TransitionExecution> {
+    return this.makePostRequest<TransitionExecution>(`/transitions/${transitionId}/executions`, {});
     }
 
     /**
      * Ends the processing of the transition execution, calls the PATCH /transitions/{transition_id}/executions/{execution_id} endpoint.
      *
-     * @param {string} transitionId Id of the transition that performs the execution
-     * @param {string} executionId Id of the execution to update
-     * @param {'succeeded' | 'failed'} status Status of the execution 'succeeded|failed'
-     * @param {object} output Output from the execution, required when status is 'succeded'
-     * @param {{ message: string}} error Error from the execution, required when status is 'failed', needs to contain 'message'
+   * @param transitionId Id of the transition that performs the execution
+   * @param executionId Id of the execution to update
+   * @param status Status of the execution 'succeeded|failed'
+   * @param output Output from the execution, required when status is 'succeded'
+   * @param error Error from the execution, required when status is 'failed', needs to contain 'message'
+   * @returns Transition execution response from REST API
      */
-    updateTransitionExecution(transitionId: string, executionId: string, status: 'succeeded' | 'failed', output?: object, error?: { message: string }): Promise<any> {
+  updateTransitionExecution(
+    transitionId: string,
+    executionId: string,
+    status: 'succeeded' | 'failed',
+    output?: object,
+    error?: { message: string },
+  ): Promise<TransitionExecution> {
       let body: PatchTransistionExecutionId = {
         status,
       };
@@ -165,7 +184,7 @@ export class Client {
         body = { ...body, error };
       }
 
-      return this.makePatchRequest(`/transitions/${transitionId}/executions/${executionId}`, body);
+    return this.makePatchRequest<TransitionExecution>(`/transitions/${transitionId}/executions/${executionId}`, body);
     }
 
     /**
