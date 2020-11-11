@@ -157,6 +157,15 @@ export type LasDocument = {
   predictions?: Array<Prediction>;
 };
 
+export type Asset = {
+  assetId: string;
+  content?: string;
+}
+
+export type Assets = {
+  assets: Array<Asset>;
+}
+
 export type AuthorizationHeaders = {
   'X-Api-Key': string;
   Authorization: string;

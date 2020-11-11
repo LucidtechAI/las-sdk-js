@@ -1,6 +1,8 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 import { Credentials } from './credentials';
 import {
+  Asset,
+  Assets,
   AuthorizationHeaders,
   AxiosFn,
   Batch,
@@ -315,6 +317,35 @@ export class Client {
     }
 
     return this.makePostRequest<PredictionResponse>('/predictions', body);
+  }
+
+  /**
+   * Creates an asset handle, calls the POST /assets endpoint.
+   *
+   * @param content Content to POST
+   * @returns Asset response from REST API
+   */
+  createAsset(content: string): Promise<Asset> {
+    return this.makePostRequest<Asset>('/assets', { content: Buffer.from(content).toString('base64') });
+  }
+
+  /**
+   * List assets available, calls the GET /assets endpoint.
+   *
+   * @returns Assets response from REST API without the content of each asset
+   */
+  listAssets(): Promise<Assets> {
+    return this.makeGetRequest<Assets>('/assets');
+  }
+
+  /**
+   * Get asset from the REST API, calls the GET /assets/{assetId} endpoint.
+   *
+   * @param assetId Id of the asset
+   * @returns Asset response from REST API with content
+   */
+  getAsset(assetId: string): Promise<Asset> {
+    return this.makeGetRequest(`/assets/${assetId}`);
   }
 
   /**
