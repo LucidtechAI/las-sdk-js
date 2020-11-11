@@ -246,6 +246,32 @@ describe('Predictions', () => {
   });
 });
 
+describe('Assets', () => {
+  describe('createAsset', () => {
+    test('valid request', async () => {
+      const content = uuidv4();
+      const createAssetPromise = client.createAsset(content);
+      await expect(createAssetPromise).resolves.toHaveProperty('assetId');
+    });
+  });
+
+  describe('listAssets', () => {
+    test('valid request', async () => {
+      const listAssetsPromise = client.listAssets();
+      await expect(listAssetsPromise).resolves.toHaveProperty('assets');
+    });
+  });
+
+  describe('getAsset', () => {
+    test('valid request', async () => {
+      const assetId = uuidv4();
+      const getAssetPromise = client.getAsset(assetId);
+      await expect(getAssetPromise).resolves.toHaveProperty('assetId');
+      await expect(getAssetPromise).resolves.toHaveProperty('content');
+    });
+  });
+});
+
 describe('createBatch', () => {
   test('valid request', async () => {
     const description = 'I am going to create a new batch, give me a batch ID!';

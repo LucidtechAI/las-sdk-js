@@ -179,7 +179,8 @@ export class Client {
   }
 
   /**
-   * Ends the processing of the transition execution, calls the PATCH /transitions/{transition_id}/executions/{execution_id} endpoint.
+   * Ends the processing of the transition execution, calls the
+   * PATCH /transitions/{transition_id}/executions/{execution_id} endpoint.
    *
    * @param transitionId Id of the transition that performs the execution
    * @param executionId Id of the execution to update

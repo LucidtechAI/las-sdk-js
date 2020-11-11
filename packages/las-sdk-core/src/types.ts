@@ -174,6 +174,6 @@ export type AuthorizationHeaders = {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type AxiosFn = <T = any, R = AxiosResponse<T>>(
   url: string,
-  body?: any,
+  body?: any, // eslint-disable-line
   config?: AxiosRequestConfig
 ) => Promise<R>;
