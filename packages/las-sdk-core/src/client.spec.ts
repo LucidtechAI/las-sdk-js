@@ -81,6 +81,13 @@ describe('Documents', () => {
       const listDocumentsPromise = client.listDocuments(testBatchId);
       await expect(listDocumentsPromise).resolves.toBeDefined();
     });
+
+    test('accepts pagination params', async () => {
+      const maxResults = 1;
+      const nextToken = uuidv4();
+      const listDocumentsPromise = client.listDocuments(undefined, undefined, maxResults, nextToken);
+      await expect(listDocumentsPromise).resolves.toHaveProperty('nextToken');
+    });
   });
 });
 
@@ -101,6 +108,13 @@ describe('Transitions', () => {
     test('valid request', async () => {
       const listTransitionsPromise = client.listTransitions();
       await expect(listTransitionsPromise).resolves.toHaveProperty('transitions');
+    });
+
+    test('accepts pagination params', async () => {
+      const maxResults = 1;
+      const nextToken = uuidv4();
+      const listTransitionsPromise = client.listTransitions(undefined, maxResults, nextToken);
+      await expect(listTransitionsPromise).resolves.toHaveProperty('nextToken');
     });
   });
 
@@ -151,6 +165,13 @@ describe('Workflows', () => {
       const listWorkflowsPromise = client.listWorkflows();
       await expect(listWorkflowsPromise).resolves.toHaveProperty('workflows');
     });
+
+    test('accepts pagination params', async () => {
+      const maxResults = 1;
+      const nextToken = uuidv4();
+      const listWorkflowsPromise = client.listWorkflows(maxResults, nextToken);
+      await expect(listWorkflowsPromise).resolves.toHaveProperty('nextToken');
+    });
   });
 
   describe('deleteWorkflow', () => {
@@ -181,6 +202,14 @@ describe('Workflows', () => {
       const listWorkflowExecutionsPromise = client.listWorkflowExecutions(workflowId);
       await expect(listWorkflowExecutionsPromise).resolves.toHaveProperty('executions');
       await expect(listWorkflowExecutionsPromise).resolves.toHaveProperty('workflowId');
+    });
+
+    test('accepts pagination params', async () => {
+      const workflowId = uuidv4();
+      const maxResults = 1;
+      const nextToken = uuidv4();
+      const listWorkflowsPromise = client.listWorkflowExecutions(workflowId, undefined, maxResults, nextToken);
+      await expect(listWorkflowsPromise).resolves.toHaveProperty('nextToken');
     });
   });
 });
@@ -224,6 +253,13 @@ describe('Users', () => {
       const listUsersPromise = client.listUsers();
       await expect(listUsersPromise).resolves.toHaveProperty('users');
     });
+
+    test('accepts pagination params', async () => {
+      const maxResults = 1;
+      const nextToken = uuidv4();
+      const listUsersPromise = client.listUsers(maxResults, nextToken);
+      await expect(listUsersPromise).resolves.toHaveProperty('nextToken');
+    });
   });
 });
 
@@ -259,6 +295,13 @@ describe('Assets', () => {
     test('valid request', async () => {
       const listAssetsPromise = client.listAssets();
       await expect(listAssetsPromise).resolves.toHaveProperty('assets');
+    });
+
+    test('accepts pagination params', async () => {
+      const maxResults = 1;
+      const nextToken = uuidv4();
+      const listAssetsPromise = client.listAssets(maxResults, nextToken);
+      await expect(listAssetsPromise).resolves.toHaveProperty('nextToken');
     });
   });
 
