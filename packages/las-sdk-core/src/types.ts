@@ -16,18 +16,25 @@ export type LasDocumentList = {
   batchId?: string;
 };
 
-export type PostTransitionParams = {
+export type PostTransitionDockerParams = {
   environment?: object;
-  /** maximum 4096, minimum 512 */
-  memory?: number;
+  memory?: 512 | 1024 | 2048;
   credentials?: {
     password: string;
     username: string;
   };
   imageUrl: string;
-  /** maximum 2048, minimum 256 */
-  cpu?: number;
+  cpu?: 256;
 };
+
+export type PostTransitionManualParams = {
+  assets?: {
+    /** Pattern: ^las:asset:[a-f0-9]{32}$ */
+    jsRemoteComponent?: string;
+  } & Record<string, string>;
+}
+
+export type PostTransitionParams = PostTransitionDockerParams | PostTransitionManualParams
 
 export type TransitionType = 'docker' | 'manual';
 

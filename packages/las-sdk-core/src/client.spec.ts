@@ -23,7 +23,7 @@ describe('Documents', () => {
 
     test('invalid Content-Type', async () => {
       const testContent = uuidv4();
-      const testContentType = 'erroneousContentType' as unknown as ContentType;
+      const testContentType = ('erroneousContentType' as unknown) as ContentType;
       const testConsentId = uuidv4();
       const createDocumentPromise = client.createDocument(testContent, testContentType, testConsentId);
       await expect(createDocumentPromise).rejects.toBeDefined();
@@ -93,11 +93,12 @@ describe('Documents', () => {
 
 describe('Transitions', () => {
   describe('createTransition', () => {
-    test.each<['manual'|'docker', PostTransitionParams | undefined, object, object]>([
+    test.each<['manual' | 'docker', PostTransitionParams | undefined, object, object]>([
       ['manual', undefined, {}, {}],
       ['docker', undefined, {}, {}],
       ['docker', { imageUrl: 'test' }, {}, {}],
-      ['manual', { imageUrl: 'test', cpu: 512, memory: 1024 }, {}, {}],
+      ['docker', { imageUrl: 'test', cpu: 256, memory: 1024 }, {}, {}],
+      ['manual', { assets: { jsRemoteComponent: `las:asset:${uuidv4().replace(/-/g, '')}` } }, {}, {}],
     ])('transitionType: %s, params: %o', async (transitionType, params, inputSchema, outputSchema) => {
       const createTransitionPromise = client.createTransition(transitionType, inputSchema, outputSchema, params);
       await expect(createTransitionPromise).resolves.toHaveProperty('transitionId');
@@ -129,7 +130,7 @@ describe('Transitions', () => {
   });
 
   describe('updateTransitionExecution', () => {
-    test.each<['succeeded'|'failed', object | undefined, { message: string } | undefined]>([
+    test.each<['succeeded' | 'failed', object | undefined, { message: string } | undefined]>([
       ['failed', undefined, { message: 'test' }],
       ['succeeded', {}, undefined],
       ['succeeded', {}, undefined],
@@ -137,7 +138,13 @@ describe('Transitions', () => {
     ])('status: %s, output: %o, error: %o', async (status, output, error) => {
       const transitionId = uuidv4();
       const executionId = uuidv4();
-      const updateTransitionExecutionPromise = client.updateTransitionExecution(transitionId, executionId, status, output, error);
+      const updateTransitionExecutionPromise = client.updateTransitionExecution(
+        transitionId,
+        executionId,
+        status,
+        output,
+        error,
+      );
       await expect(updateTransitionExecutionPromise).resolves.toHaveProperty('executionId');
       await expect(updateTransitionExecutionPromise).resolves.toHaveProperty('status');
       await expect(updateTransitionExecutionPromise).resolves.toHaveProperty('transitionId');
@@ -153,11 +160,14 @@ describe('Workflows', () => {
       [{ definition: {} }, 'test', undefined, { email: 'test@test.com' }],
       [{ definition: {}, language: 'ASL', version: '1.0.0' }, 'test', 'test', { email: 'test@test.com' }],
       [{ definition: {} }, 'test', 'test', { email: 'test@test.com' }],
-    ])('specification: %o, name: %s, description: %s, errorConfig: %o', async (specification, name, description, errorConfig) => {
-      const createWorkflowPromise = client.createWorkflow(specification, name, description, errorConfig);
-      await expect(createWorkflowPromise).resolves.toHaveProperty('name');
-      await expect(createWorkflowPromise).resolves.toHaveProperty('workflowId');
-    });
+    ])(
+      'specification: %o, name: %s, description: %s, errorConfig: %o',
+      async (specification, name, description, errorConfig) => {
+        const createWorkflowPromise = client.createWorkflow(specification, name, description, errorConfig);
+        await expect(createWorkflowPromise).resolves.toHaveProperty('name');
+        await expect(createWorkflowPromise).resolves.toHaveProperty('workflowId');
+      },
+    );
   });
 
   describe('listWorkflows', () => {
@@ -194,10 +204,7 @@ describe('Workflows', () => {
   });
 
   describe('listWorkflowExecutions', () => {
-    test.each([
-      undefined,
-      'test',
-    ])('status: %s', async () => {
+    test.each([undefined, 'test'])('status: %s', async () => {
       const workflowId = uuidv4();
       const listWorkflowExecutionsPromise = client.listWorkflowExecutions(workflowId);
       await expect(listWorkflowExecutionsPromise).resolves.toHaveProperty('executions');
