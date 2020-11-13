@@ -112,7 +112,7 @@ export type Feedback = {
   /** maxLength: 36, minLength: 1, pattern: ^[0-9A-Za-z_]+$ */
   label: string;
   /** maxLength: 64, minLength: 1 */
-  value: string | null;
+  value: string | boolean | null;
 };
 
 export type PostPredictions = {
