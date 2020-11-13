@@ -25,4 +25,5 @@ endif
 
 .PHONY: docs
 docs:
-	npx typedoc --toc --excludePrivate --excludeProtected --plugin typedoc-plugin-markdown packages/las-sdk-core
+	npx typedoc --options "typedoc.json" packages/las-sdk-core && npx concat-md --decrease-title-levels temp-docs > docs.md && npx rimraf temp-docs
+
