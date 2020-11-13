@@ -320,6 +320,15 @@ describe('Assets', () => {
       await expect(getAssetPromise).resolves.toHaveProperty('content');
     });
   });
+
+  describe('updateAsset', () => {
+    test('valid request', async () => {
+      const assetId = uuidv4();
+      const content = uuidv4();
+      const updateAssetPromise = client.updateAsset(assetId, content);
+      await expect(updateAssetPromise).resolves.toHaveProperty('assetId');
+    });
+  });
 });
 
 describe('createBatch', () => {

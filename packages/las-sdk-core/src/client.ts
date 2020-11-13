@@ -112,7 +112,7 @@ export class Client {
   }
 
   /**
-   * Post feedback to the REST API, calls the POST /documents/{documentId} endpoint.
+   * Post feedback to the REST API, calls the PATCH /documents/{documentId} endpoint.
    * Posting feedback means posting the ground truth data for the particular document.
    * This enables the API to learn from past mistakes.
    *
@@ -369,10 +369,21 @@ export class Client {
    * Get asset from the REST API, calls the GET /assets/{assetId} endpoint.
    *
    * @param assetId Id of the asset
-   * @returns Asset response from REST API with content
+   * @returns Asset response from REST API
    */
   getAsset(assetId: string): Promise<Asset> {
     return this.makeGetRequest(`/assets/${assetId}`);
+  }
+
+  /**
+   * Updates an asset, calls the PATCH /assets/assetId endpoint.
+   *
+   * @param assetId Id of the asset
+   * @param content Content to PATCH
+   * @returns Asset response from REST API with content
+   */
+  updateAsset(assetId: string, content: string): Promise<Asset> {
+    return this.makePatchRequest(`/assets/${assetId}`, { content: Buffer.from(content).toString('base64') });
   }
 
   /**
