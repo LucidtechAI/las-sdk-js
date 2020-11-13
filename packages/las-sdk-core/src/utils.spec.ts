@@ -1,7 +1,7 @@
-import { buildURL } from './utils';
+import { buildURL, BuildURLParams } from './utils';
 
 describe('buildUrl', () => {
-  test.each<[Record<string, string | Array<string> | undefined> | undefined, string, string]>([
+  test.each<[BuildURLParams | undefined, string, string]>([
     [undefined, 'http://localhost/', 'http://localhost/'],
     [{ key: 'value' }, 'http://localhost/', 'http://localhost/?key=value'],
     [{ key1: 'value1', key2: 'value2' }, 'http://localhost/', 'http://localhost/?key1=value1&key2=value2'],
