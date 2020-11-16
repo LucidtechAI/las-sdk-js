@@ -14,6 +14,7 @@ export type LasDocumentList = {
   documents: Array<LasDocument>;
   consentId?: string;
   batchId?: string;
+  nextToken?: string;
 };
 
 export type PostTransitionDockerParams = {
@@ -54,6 +55,7 @@ export type Transition = {
 
 export type TransitionList = {
   transitions: Array<Transition>;
+  nextToken?: string;
 }
 
 export type PatchTransistionExecutionId = {
@@ -106,6 +108,7 @@ export type WorkflowExecutionList = {
   executions: Array<Required<WorkflowExecution>>;
   workflowId: string;
   status?: 'succeeded' | 'failed' | 'running' | 'aborted';
+  nextToken?: string;
 };
 
 export type Feedback = {
@@ -144,6 +147,7 @@ export type User = {
 
 export type UserList = {
   users: Array<User>;
+  nextToken?: string;
 }
 
 export type LasDocument = {
@@ -171,6 +175,7 @@ export type Asset = {
 
 export type Assets = {
   assets: Array<Asset>;
+  nextToken?: string;
 }
 
 export type AuthorizationHeaders = {
