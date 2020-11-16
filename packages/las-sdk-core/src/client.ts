@@ -303,7 +303,7 @@ export class Client {
    */
   listWorkflowExecutions(
     workflowId: string,
-    status?: string,
+    status?: string | Array<string>,
     maxResults?: number,
     nextToken?: string,
   ): Promise<WorkflowExecutionList> {

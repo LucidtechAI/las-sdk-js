@@ -103,7 +103,7 @@ export type WorkflowExecution = {
 };
 
 export type WorkflowExecutionList = {
-  executions: Array<WorkflowExecution>;
+  executions: Array<Required<WorkflowExecution>>;
   workflowId: string;
   status?: 'succeeded' | 'failed' | 'running' | 'aborted';
 };
