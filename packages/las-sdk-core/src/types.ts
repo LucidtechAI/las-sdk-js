@@ -101,8 +101,8 @@ export type PostWorkflows = {
 export type WorkflowExecution = {
   executionId: string;
   workflowId: string;
-  input: object;
-  output: object;
+  input: Record<any, any>;
+  output: Record<any, any>;
   status?: 'succeeded' | 'failed' | 'running' | 'aborted';
 };
 
