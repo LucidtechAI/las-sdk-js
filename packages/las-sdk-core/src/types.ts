@@ -51,6 +51,7 @@ export type Transition = {
   transitionType: TransitionType;
   outputJsonSchema?: unknown;
   inputJsonSchema: unknown;
+  assets?: Record<string, string>;
 };
 
 export type TransitionList = {
