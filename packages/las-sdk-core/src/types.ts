@@ -47,6 +47,8 @@ export type PostTransitions = {
 };
 
 export type Transition = {
+  name: string;
+  description: string;
   transitionId: string;
   transitionType: TransitionType;
   outputJsonSchema?: unknown;
