@@ -22,7 +22,11 @@ export function buildURL(url: string, params?: BuildURLParams): string {
       return;
     }
 
-    searchParams.append(key, value.join(','));
+    if (Array.isArray(value)) {
+      value.forEach((val) => {
+        searchParams.append(key, val);
+      });
+    }
   });
 
   return `${url}?${searchParams}`;

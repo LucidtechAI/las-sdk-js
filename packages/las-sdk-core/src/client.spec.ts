@@ -93,14 +93,14 @@ describe('Documents', () => {
 
 describe('Transitions', () => {
   describe('createTransition', () => {
-    test.each<['manual' | 'docker', PostTransitionParams | undefined, object, object]>([
-      ['manual', undefined, {}, {}],
-      ['docker', undefined, {}, {}],
-      ['docker', { imageUrl: 'test' }, {}, {}],
-      ['docker', { imageUrl: 'test', cpu: 256, memory: 1024 }, {}, {}],
-      ['manual', { assets: { jsRemoteComponent: `las:asset:${uuidv4().replace(/-/g, '')}` } }, {}, {}],
-    ])('transitionType: %s, params: %o', async (transitionType, params, inputSchema, outputSchema) => {
-      const createTransitionPromise = client.createTransition(transitionType, inputSchema, outputSchema, params);
+    test.each<['manual' | 'docker', PostTransitionParams | undefined, string, object, object]>([
+      ['manual', undefined, 'test', {}, {}],
+      ['docker', undefined, 'test', {}, {}],
+      ['docker', { imageUrl: 'test' }, 'test', {}, {}],
+      ['docker', { imageUrl: 'test', cpu: 256, memory: 1024 }, 'test', {}, {}],
+      ['manual', { assets: { jsRemoteComponent: `las:asset:${uuidv4().replace(/-/g, '')}` } }, 'test', {}, {}],
+    ])('transitionType: %s, params: %o', async (transitionType, params, name, inputSchema, outputSchema) => {
+      const createTransitionPromise = client.createTransition(name, transitionType, inputSchema, outputSchema, undefined, params);
       await expect(createTransitionPromise).resolves.toHaveProperty('transitionId');
     });
   });
@@ -204,9 +204,9 @@ describe('Workflows', () => {
   });
 
   describe('listWorkflowExecutions', () => {
-    test.each([undefined, 'test'])('status: %s', async () => {
+    test.each([undefined, 'test'])('status: %s', async (status) => {
       const workflowId = uuidv4();
-      const listWorkflowExecutionsPromise = client.listWorkflowExecutions(workflowId);
+      const listWorkflowExecutionsPromise = client.listWorkflowExecutions(workflowId, status);
       await expect(listWorkflowExecutionsPromise).resolves.toHaveProperty('executions');
       await expect(listWorkflowExecutionsPromise).resolves.toHaveProperty('workflowId');
     });

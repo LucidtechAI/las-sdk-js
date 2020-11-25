@@ -40,10 +40,12 @@ export type PostTransitionParams = PostTransitionDockerParams | PostTransitionMa
 export type TransitionType = 'docker' | 'manual';
 
 export type PostTransitions = {
+  name: string;
   transitionType: TransitionType;
   inputJsonSchema: object;
   outputJsonSchema: object;
   params?: PostTransitionParams;
+  description?: string;
 };
 
 export type Transition = {

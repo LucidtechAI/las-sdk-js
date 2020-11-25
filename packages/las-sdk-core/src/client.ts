@@ -90,15 +90,15 @@ export class Client {
   /**
    * List documents available for inference, calls the GET /documents endpoint.
    *
-   * @param batchId Id of the batch that contains the documents of interest
-   * @param consentId Id of the consent that marks the owner of the document handle
+   * @param batchId Ids of the batches that contains the documents of interest
+   * @param consentId Ids of the consents that marks the owner of the document handle
    * @param maxResults Maximum number of results to be returned
    * @param nextToken A unique token for each page, use the returned token to retrieve the next page.
    * @returns Documents response from REST API
    */
   listDocuments(
-    batchId?: string,
-    consentId?: string,
+    batchId?: string | Array<string>,
+    consentId?: string | Array<string>,
     maxResults?: number,
     nextToken?: string,
   ): Promise<LasDocumentList> {
@@ -132,10 +132,10 @@ export class Client {
    * Delete documents with the provided consentId, calls the DELETE /documents endpoint.
    * Will delete all documents when no consentId is provided.
    *
-   * @param consentId Id of the consent that marks the owner of the document handle
+   * @param consentId Ids of the consents that marks the owner of the document handle
    * @returns Documents response from REST API
    */
-  deleteDocuments(consentId?: string): Promise<LasDocumentList> {
+  deleteDocuments(consentId?: string | Array<string>): Promise<LasDocumentList> {
     const query = consentId ? { consentId } : undefined;
 
     return this.makeDeleteRequest<LasDocumentList>('/documents', query);
@@ -151,15 +151,19 @@ export class Client {
    * @returns Transition response from REST API
    */
   createTransition(
+    name: string,
     transitionType: TransitionType,
     inputJsonSchema: object,
     outputJsonSchema: object,
+    description?: string,
     params?: PostTransitionParams,
   ): Promise<Transition> {
     let body: PostTransitions = {
       transitionType,
       inputJsonSchema,
       outputJsonSchema,
+      name,
+      description,
     };
 
     if (params) {
@@ -172,12 +176,12 @@ export class Client {
   /**
    * List transitions, calls the GET /transitions endpoint.
    *
-   * @param transitionType Type of transition
+   * @param transitionType Types of transitions
    * @param maxResults Maximum number of results to be returned
    * @param nextToken A unique token for each page, use the returned token to retrieve the next page.
    * @returnsTransitions response from REST API
    */
-  listTransitions(transitionType?: string, maxResults?: number, nextToken?: string): Promise<TransitionList> {
+  listTransitions(transitionType?: string | Array<string>, maxResults?: number, nextToken?: string): Promise<TransitionList> {
     const query = { transitionType, maxResults, nextToken };
     return this.makeGetRequest('/transitions', query);
   }
@@ -296,7 +300,7 @@ export class Client {
    * List executions in a workflow, calls the GET /workflows/{workflowId}/executions endpoint.
    *
    * @param workflowId Id of the workflow
-   * @param status Status of the executions
+   * @param status Statuses of the executions
    * @param maxResults Maximum number of results to be returned
    * @param nextToken A unique token for each page, use the returned token to retrieve the next page.
    * @returns Workflow executions responses from REST API
