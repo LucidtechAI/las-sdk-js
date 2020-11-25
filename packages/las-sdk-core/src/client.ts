@@ -7,7 +7,7 @@ import {
   AxiosFn,
   Batch,
   ContentType,
-  Feedback,
+  GroundTruth,
   LasDocument,
   LasDocumentList,
   PatchTransistionExecutionId,
@@ -48,7 +48,7 @@ export class Client {
    * @param contentType MIME type for the document handle
    * @param consentId Id of the consent that marks the owner of the document handle
    * @param batchId Id of the associated batch
-   * @param feedback List of feedback items representing the ground truth values for the document
+   * @param groundTruth List of GroundTruth items representing the ground truth values for the document
    * @returns Document response from REST API
    */
   createDocument(
@@ -56,7 +56,7 @@ export class Client {
     contentType: ContentType,
     consentId?: string,
     batchId?: string,
-    feedback?: Array<Feedback>,
+    groundTruth?: Array<GroundTruth>,
   ): Promise<LasDocument> {
     let body: PostDocuments = {
       content: Buffer.from(content).toString('base64'),
@@ -70,8 +70,8 @@ export class Client {
       body = { ...body, batchId };
     }
 
-    if (feedback) {
-      body = { ...body, feedback };
+    if (groundTruth) {
+      body = { ...body, groundTruth };
     }
 
     return this.makePostRequest<LasDocument>('/documents', body);
@@ -112,17 +112,17 @@ export class Client {
   }
 
   /**
-   * Post feedback to the REST API, calls the PATCH /documents/{documentId} endpoint.
-   * Posting feedback means posting the ground truth data for the particular document.
+   * Post ground truth to the REST API, calls the PATCH /documents/{documentId} endpoint.
+   * Posting ground truth means posting the ground truth data for the particular document.
    * This enables the API to learn from past mistakes.
    *
    * @param documentId Id of the document
-   * @param feedback List of feedback items representing the ground truth values for the document
+   * @param groundTruth List of GroundTruth items representing the ground truth values for the document
    * @returns Document response from REST API
    */
-  updateDocument(documentId: string, feedback: Array<Feedback>): Promise<LasDocument> {
+  updateDocument(documentId: string, groundTruth: Array<GroundTruth>): Promise<LasDocument> {
     const body = {
-      feedback,
+      groundTruth,
     };
 
     return this.makePatchRequest<LasDocument>(`/documents/${documentId}`, body);

@@ -59,8 +59,8 @@ describe('Documents', () => {
   describe('updateDocument', () => {
     test('valid request', async () => {
       const documentId = uuidv4();
-      const feedback = [{ label: 'test', value: 'test' }];
-      const updateDocumentPromise = client.updateDocument(documentId, feedback);
+      const groundTruth = [{ label: 'test', value: 'test' }];
+      const updateDocumentPromise = client.updateDocument(documentId, groundTruth);
       await expect(updateDocumentPromise).resolves.toHaveProperty('consentId');
       await expect(updateDocumentPromise).resolves.toHaveProperty('documentId');
       await expect(updateDocumentPromise).resolves.toHaveProperty('contentType');

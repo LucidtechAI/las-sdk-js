@@ -5,7 +5,7 @@ export type ContentType = 'application/pdf' | 'image/jpeg';
 export interface PostDocuments {
   content: string;
   contentType: ContentType;
-  feedback?: Array<Feedback>;
+  groundTruth?: Array<GroundTruth>;
   consentId?: string;
   batchId?: string;
 }
@@ -116,7 +116,7 @@ export type WorkflowExecutionList = {
   nextToken?: string;
 };
 
-export type Feedback = {
+export type GroundTruth = {
   /** maxLength: 36, minLength: 1, pattern: ^[0-9A-Za-z_]+$ */
   label: string;
   /** maxLength: 64, minLength: 1 */
@@ -130,7 +130,7 @@ export type PostPredictions = {
   autoRotate?: boolean;
 }
 
-export type Prediction = Feedback & {
+export type Prediction = GroundTruth & {
   /** minimum: 0, maximum: 1 */
   confidence: number;
 };
@@ -159,7 +159,7 @@ export type LasDocument = {
   contentType: ContentType;
   /** pattern: ^las:document:[a-f0-9]{32}$ */
   documentId: string;
-  feedback?: Array<Feedback>;
+  groundTruth?: Array<GroundTruth>;
   /** pattern: ^las:consent:[a-f0-9]{32}$ */
   consentId?: string;
   /** minimum: 0 */
