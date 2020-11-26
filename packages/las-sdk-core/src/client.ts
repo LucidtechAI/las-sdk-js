@@ -210,7 +210,7 @@ export class Client {
   updateTransitionExecution(
     transitionId: string,
     executionId: string,
-    status: 'succeeded' | 'failed',
+    status: 'succeeded' | 'failed' | 'retry',
     output?: object,
     error?: { message: string },
   ): Promise<TransitionExecution> {
