@@ -64,7 +64,7 @@ export type TransitionList = {
 }
 
 export type PatchTransistionExecutionId = {
-  status: 'succeeded' | 'failed' | 'retry';
+  status: 'succeeded' | 'failed' | 'retry' | 'rejected';
   error?: {
     message: string;
   };
