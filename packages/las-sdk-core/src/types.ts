@@ -74,7 +74,7 @@ export type PatchTransistionExecutionId = {
 export type TransitionExecution = {
   executionId: string;
   input: unknown;
-  status: 'succeeded' | 'failed' | 'running' | 'aborted';
+  status: 'succeeded' | 'failed' | 'running' | 'rejected';
   transitionId: string;
 };
 
@@ -108,13 +108,13 @@ export type WorkflowExecution = {
   workflowId: string;
   input: Record<any, any>;
   output: Record<any, any>;
-  status?: 'succeeded' | 'failed' | 'running' | 'aborted';
+  status?: 'succeeded' | 'failed' | 'running' | 'rejected';
 };
 
 export type WorkflowExecutionList = {
   executions: Array<Required<WorkflowExecution>>;
   workflowId: string;
-  status?: 'succeeded' | 'failed' | 'running' | 'aborted';
+  status?: 'succeeded' | 'failed' | 'running' | 'rejected';
   nextToken?: string;
 };
 
