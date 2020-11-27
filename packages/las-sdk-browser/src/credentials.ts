@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/camelcase */
 import axios from 'axios';
 import { SHA256 } from 'crypto-js';
 import * as base64 from 'crypto-js/enc-base64';
