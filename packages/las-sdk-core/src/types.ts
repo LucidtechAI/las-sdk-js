@@ -76,9 +76,6 @@ export type TransitionExecution = {
   transitionId: string;
   input: Record<any, any>;
   status: 'succeeded' | 'failed' | 'retry' | 'running' | 'rejected';
-  startTime: string | null;
-  endTime: string | null;
-  completedBy: string | null;
 };
 
 export type WorkflowSpecification = {
@@ -112,6 +109,9 @@ export type WorkflowExecution = {
   input: Record<any, any>;
   output: Record<any, any>;
   status?: 'succeeded' | 'failed' | 'running' | 'rejected';
+  startTime: string | null;
+  endTime: string | null;
+  completedBy: string | null;
 };
 
 export type WorkflowExecutionList = {
