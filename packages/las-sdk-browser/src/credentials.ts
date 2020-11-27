@@ -76,6 +76,8 @@ export class AuthorizationCodeCredentials extends Credentials {
 
     private readonly redirectUri: string;
 
+    private readonly logoutRedirectUri?: string;
+
     private readonly launchUriFn: (uri: string) => void;
 
     private readonly pkce?: PKCEDerived;
@@ -93,12 +95,14 @@ export class AuthorizationCodeCredentials extends Credentials {
       launchUriFn: (uri: string) => void,
       pkce?: PKCEDerived,
       storage?: TokenStorage<Token>,
+      logoutRedirectUri?: string,
     ) {
       super(apiEndpoint, apiKey, storage);
 
       this.clientId = clientId;
       this.authEndpoint = authEndpoint;
       this.redirectUri = redirectUri;
+      this.logoutRedirectUri = logoutRedirectUri;
       this.launchUriFn = launchUriFn;
       this.pkce = pkce;
     }
@@ -120,7 +124,7 @@ export class AuthorizationCodeCredentials extends Credentials {
 
     protected refreshToken(): Promise<Token> {
       return new Promise<Token>((resolve, reject) => {
-        let token = this.token;
+        let { token } = this;
 
         if (!token && !!this.storage) {
           token = this.storage.getPersistentToken() || undefined;
@@ -205,7 +209,7 @@ export class AuthorizationCodeCredentials extends Credentials {
     initiateLogoutFlow(): void {
       const params = {
         client_id: this.clientId,
-        logout_uri: this.redirectUri,
+        logout_uri: this.logoutRedirectUri || this.redirectUri,
       };
 
       const endpoint = `https://${this.authEndpoint}/logout`;
