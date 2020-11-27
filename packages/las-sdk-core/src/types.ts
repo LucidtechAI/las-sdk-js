@@ -73,9 +73,12 @@ export type PatchTransistionExecutionId = {
 
 export type TransitionExecution = {
   executionId: string;
-  input: unknown;
-  status: 'succeeded' | 'failed' | 'running' | 'rejected';
   transitionId: string;
+  input: Record<any, any>;
+  status: 'succeeded' | 'failed' | 'retry' | 'running' | 'rejected';
+  startTime: string | null;
+  endTime: string | null;
+  completedBy: string | null;
 };
 
 export type WorkflowSpecification = {
