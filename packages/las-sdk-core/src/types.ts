@@ -51,8 +51,8 @@ export type PostTransitions = {
 export type PatchTransition = {
   name?: string;
   description?: string;
-  inputJsonSchema: Record<any, any>;
-  outputJsonSchema: Record<any, any>;
+  inputJsonSchema?: Record<any, any>;
+  outputJsonSchema?: Record<any, any>;
 }
 
 export type Transition = {
