@@ -119,6 +119,15 @@ describe('Transitions', () => {
     });
   });
 
+  describe('updateTransition', () => {
+    test('valid request', async () => {
+      const transitionId = uuidv4();
+      const updateTransitionPromise = client.updateTransition(transitionId, { name: 'new name' });
+      await expect(updateTransitionPromise).resolves.toHaveProperty('name');
+      await expect(updateTransitionPromise).resolves.toHaveProperty('transitionId');
+    });
+  });
+
   describe('executeTransition', () => {
     test('valid request', async () => {
       const transitionId = uuidv4();
@@ -181,6 +190,15 @@ describe('Workflows', () => {
       const nextToken = uuidv4();
       const listWorkflowsPromise = client.listWorkflows(maxResults, nextToken);
       await expect(listWorkflowsPromise).resolves.toHaveProperty('nextToken');
+    });
+  });
+
+  describe('updateWorkflow', () => {
+    test('valid request', async () => {
+      const workflowId = uuidv4();
+      const updateWorkflowPromise = client.updateWorkflow(workflowId, { name: 'New name' });
+      await expect(updateWorkflowPromise).resolves.toHaveProperty('name');
+      await expect(updateWorkflowPromise).resolves.toHaveProperty('workflowId');
     });
   });
 
