@@ -11,6 +11,8 @@ import {
   LasDocument,
   LasDocumentList,
   PatchTransistionExecutionId,
+  PatchTransition,
+  PatchWorkflow,
   PostDocuments,
   PostPredictions,
   PostTransitionParams,
@@ -179,11 +181,21 @@ export class Client {
    * @param transitionType Types of transitions
    * @param maxResults Maximum number of results to be returned
    * @param nextToken A unique token for each page, use the returned token to retrieve the next page.
-   * @returnsTransitions response from REST API
+   * @returns Transitions response from REST API
    */
   listTransitions(transitionType?: string | Array<string>, maxResults?: number, nextToken?: string): Promise<TransitionList> {
     const query = { transitionType, maxResults, nextToken };
     return this.makeGetRequest('/transitions', query);
+  }
+
+  /**
+   * Updates a transition, calls the PATCH /transitions/transitionId endpoint.
+   * @param transitionId Id of the transition
+   * @param transitionUpdate Transition fields to PATCH
+   * @returns Transition response from REST API
+   */
+  updateTransition(transitionId: string, transitionUpdate: PatchTransition): Promise<Transition> {
+    return this.makePatchRequest<Transition>(`/transitions/${transitionId}`, transitionUpdate);
   }
 
   /**
@@ -279,6 +291,16 @@ export class Client {
    */
   deleteWorkflow(workflowId: string): Promise<Workflow> {
     return this.makeDeleteRequest<Workflow>(`/workflows/${workflowId}`);
+  }
+
+  /**
+   * Updates a workflow, calls the PATCH /workflows/workflowId endpoint.
+   * @param workflowId Id of the workflow
+   * @param workflowUpdate Workflow fields to PATCH
+   * @returns Workflow response from REST API
+   */
+  updateWorkflow(workflowId: string, workflowUpdate: PatchWorkflow): Promise<Workflow> {
+    return this.makePatchRequest<Workflow>(`/workflows/${workflowId}`, workflowUpdate);
   }
 
   /**

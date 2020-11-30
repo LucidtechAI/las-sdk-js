@@ -48,6 +48,13 @@ export type PostTransitions = {
   description?: string;
 };
 
+export type PatchTransition = {
+  name?: string;
+  description?: string;
+  inputJsonSchema: Record<any, any>;
+  outputJsonSchema: Record<any, any>;
+}
+
 export type Transition = {
   name: string;
   description: string;
@@ -89,6 +96,11 @@ export type Workflow = {
   workflowId: string;
   description?: string;
 };
+
+export type PatchWorkflow = {
+  name?: string;
+  description?: string;
+}
 
 export type WorkflowList = {
   workflows: Array<Workflow>;
