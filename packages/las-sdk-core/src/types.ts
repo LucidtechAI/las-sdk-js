@@ -2,12 +2,57 @@ import { AxiosRequestConfig, AxiosResponse } from 'axios';
 
 export type ContentType = 'application/pdf' | 'image/jpeg';
 
-export interface PostDocuments {
+export interface CreatePredictionOptions {
+  maxPages?: number;
+  autoRotate?: boolean;
+}
+
+export interface PaginationInput {
+  maxResults?: number;
+  nextToken?: string;
+}
+
+export interface ListTransitionOptions {
+  transitionType?: string | Array<string>;
+  maxResults?: number;
+  nextToken?: string;
+}
+
+export interface CreateDocumentOptions {
   content: string;
   contentType: ContentType;
-  groundTruth?: Array<GroundTruth>;
   consentId?: string;
   batchId?: string;
+  groundTruth?: Array<GroundTruth>;
+}
+
+export interface CreateWorkflowOptions {
+  name: string;
+  specification: WorkflowSpecification;
+  description?: string;
+  errorConfig?: { email: string };
+}
+
+export interface ListDocumentsOptions {
+  batchId?: string | Array<string>;
+  consentId?: string | Array<string>;
+  maxResults?: number;
+  nextToken?: string;
+}
+
+export interface UpdateTransitionExecution {
+  status: 'succeeded' | 'failed' | 'retry' | 'rejected';
+  output?: Record<any, any>;
+  error?: { message: string };
+}
+
+export interface CreateTransitionOptions {
+  name: string;
+  transitionType: TransitionType;
+  inputJsonSchema: object;
+  outputJsonSchema: object;
+  description?: string;
+  params?: PostTransitionParams;
 }
 
 export type LasDocumentList = {
@@ -33,27 +78,18 @@ export type PostTransitionManualParams = {
     /** Pattern: ^las:asset:[a-f0-9]{32}$ */
     jsRemoteComponent?: string;
   } & Record<string, string>;
-}
+};
 
-export type PostTransitionParams = PostTransitionDockerParams | PostTransitionManualParams
+export type PostTransitionParams = PostTransitionDockerParams | PostTransitionManualParams;
 
 export type TransitionType = 'docker' | 'manual';
-
-export type PostTransitions = {
-  name: string;
-  transitionType: TransitionType;
-  inputJsonSchema: object;
-  outputJsonSchema: object;
-  params?: PostTransitionParams;
-  description?: string;
-};
 
 export type PatchTransition = {
   name?: string;
   description?: string;
   inputJsonSchema?: Record<any, any>;
   outputJsonSchema?: Record<any, any>;
-}
+};
 
 export type Transition = {
   name: string;
@@ -68,14 +104,6 @@ export type Transition = {
 export type TransitionList = {
   transitions: Array<Transition>;
   nextToken?: string;
-}
-
-export type PatchTransistionExecutionId = {
-  status: 'succeeded' | 'failed' | 'retry' | 'rejected';
-  error?: {
-    message: string;
-  };
-  output?: object;
 };
 
 export type TransitionExecution = {
@@ -97,22 +125,21 @@ export type Workflow = {
   description?: string;
 };
 
+export interface ListWorkflowExecutionsOptions {
+  status?: string | Array<string>;
+  maxResults?: number;
+  nextToken?: string;
+  sortBy?: 'startTime' | 'endTime';
+  order?: 'ascending' | 'descending';
+}
+
 export type PatchWorkflow = {
   name?: string;
   description?: string;
-}
+};
 
 export type WorkflowList = {
   workflows: Array<Workflow>;
-};
-
-export type PostWorkflows = {
-  name: string;
-  specification: WorkflowSpecification;
-  description?: string;
-  errorConfig?: {
-    email: string;
-  };
 };
 
 export type WorkflowExecution = {
@@ -145,7 +172,7 @@ export type PostPredictions = {
   modelId: string;
   maxPages?: number;
   autoRotate?: boolean;
-}
+};
 
 export type Prediction = GroundTruth & {
   /** minimum: 0, maximum: 1 */
@@ -155,22 +182,22 @@ export type Prediction = GroundTruth & {
 export type PredictionResponse = {
   documentId: string;
   predictions?: Array<Prediction>;
-}
+};
 
 export type Batch = {
   batchId: string;
   description: string;
-}
+};
 
 export type User = {
   userId: string;
   email: string;
-}
+};
 
 export type UserList = {
   users: Array<User>;
   nextToken?: string;
-}
+};
 
 export type LasDocument = {
   contentType: ContentType;
@@ -193,12 +220,12 @@ export type LasDocument = {
 export type Asset = {
   assetId: string;
   content?: string;
-}
+};
 
 export type Assets = {
   assets: Array<Asset>;
   nextToken?: string;
-}
+};
 
 export type AuthorizationHeaders = {
   'X-Api-Key': string;

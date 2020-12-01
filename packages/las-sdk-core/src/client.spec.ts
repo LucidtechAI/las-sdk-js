@@ -1,6 +1,8 @@
 import { v4 as uuidv4 } from 'uuid';
 import { getTestClient } from './helpers';
-import { ContentType, PostTransitionParams, WorkflowSpecification } from './types';
+import {
+  ContentType, CreateTransitionOptions, CreateWorkflowOptions, UpdateTransitionExecution,
+} from './types';
 
 let client = getTestClient();
 
@@ -15,7 +17,9 @@ describe('Documents', () => {
       const testContentType = 'image/jpeg';
       const testConsentId = `las:consent:${uuidv4().replace(/-/g, '')}`;
       const testBatchId = `las:batch:${uuidv4().replace(/-/g, '')}`;
-      const createDocumentPromise = client.createDocument(testContent, testContentType, testConsentId, testBatchId);
+      const createDocumentPromise = client.createDocument({
+        content: testContent, contentType: testContentType, consentId: testConsentId, batchId: testBatchId,
+      });
       await expect(createDocumentPromise).resolves.toHaveProperty('consentId');
       await expect(createDocumentPromise).resolves.toHaveProperty('contentType');
       await expect(createDocumentPromise).resolves.toHaveProperty('documentId');
@@ -25,7 +29,7 @@ describe('Documents', () => {
       const testContent = uuidv4();
       const testContentType = ('erroneousContentType' as unknown) as ContentType;
       const testConsentId = uuidv4();
-      const createDocumentPromise = client.createDocument(testContent, testContentType, testConsentId);
+      const createDocumentPromise = client.createDocument({ content: testContent, contentType: testContentType, consentId: testConsentId });
       await expect(createDocumentPromise).rejects.toBeDefined();
     });
 
@@ -33,7 +37,7 @@ describe('Documents', () => {
       const testContent = uuidv4();
       const testContentType = 'image/jpeg';
       const testConsentId = uuidv4();
-      const createDocumentPromise = client.createDocument(testContent, testContentType, testConsentId);
+      const createDocumentPromise = client.createDocument({ content: testContent, contentType: testContentType, consentId: testConsentId });
       await expect(createDocumentPromise).rejects.toBeDefined();
     });
 
@@ -41,7 +45,7 @@ describe('Documents', () => {
       const testContent = uuidv4();
       const testContentType = 'image/jpeg';
       const testConsentId = uuidv4();
-      const createDocumentPromise = client.createDocument(testContent, testContentType, testConsentId);
+      const createDocumentPromise = client.createDocument({ content: testContent, contentType: testContentType, consentId: testConsentId });
       await expect(createDocumentPromise).rejects.toBeDefined();
     });
   });
@@ -78,14 +82,14 @@ describe('Documents', () => {
   describe('listDocuments', () => {
     test('valid request', async () => {
       const testBatchId = uuidv4();
-      const listDocumentsPromise = client.listDocuments(testBatchId);
+      const listDocumentsPromise = client.listDocuments({ batchId: testBatchId });
       await expect(listDocumentsPromise).resolves.toBeDefined();
     });
 
     test('accepts pagination params', async () => {
       const maxResults = 1;
       const nextToken = uuidv4();
-      const listDocumentsPromise = client.listDocuments(undefined, undefined, maxResults, nextToken);
+      const listDocumentsPromise = client.listDocuments({ maxResults, nextToken });
       await expect(listDocumentsPromise).resolves.toHaveProperty('nextToken');
     });
   });
@@ -93,14 +97,24 @@ describe('Documents', () => {
 
 describe('Transitions', () => {
   describe('createTransition', () => {
-    test.each<['manual' | 'docker', PostTransitionParams | undefined, string, object, object]>([
-      ['manual', undefined, 'test', {}, {}],
-      ['docker', undefined, 'test', {}, {}],
-      ['docker', { imageUrl: 'test' }, 'test', {}, {}],
-      ['docker', { imageUrl: 'test', cpu: 256, memory: 1024 }, 'test', {}, {}],
-      ['manual', { assets: { jsRemoteComponent: `las:asset:${uuidv4().replace(/-/g, '')}` } }, 'test', {}, {}],
-    ])('transitionType: %s, params: %o', async (transitionType, params, name, inputSchema, outputSchema) => {
-      const createTransitionPromise = client.createTransition(name, transitionType, inputSchema, outputSchema, undefined, params);
+    test.each<CreateTransitionOptions>([
+      {
+        transitionType: 'manual', name: 'test', inputJsonSchema: {}, outputJsonSchema: {},
+      },
+      {
+        transitionType: 'docker', name: 'test', inputJsonSchema: {}, outputJsonSchema: {},
+      },
+      {
+        transitionType: 'docker', params: { imageUrl: 'test' }, name: 'test', inputJsonSchema: {}, outputJsonSchema: {},
+      },
+      {
+        transitionType: 'docker', params: { imageUrl: 'test', cpu: 256, memory: 1024 }, name: 'test', inputJsonSchema: {}, outputJsonSchema: {},
+      },
+      {
+        transitionType: 'manual', params: { assets: { jsRemoteComponent: `las:asset:${uuidv4().replace(/-/g, '')}` } }, name: 'test', inputJsonSchema: {}, outputJsonSchema: {},
+      },
+    ])('params: %o', async (input) => {
+      const createTransitionPromise = client.createTransition(input);
       await expect(createTransitionPromise).resolves.toHaveProperty('transitionId');
     });
   });
@@ -114,7 +128,7 @@ describe('Transitions', () => {
     test('accepts pagination params', async () => {
       const maxResults = 1;
       const nextToken = uuidv4();
-      const listTransitionsPromise = client.listTransitions(undefined, maxResults, nextToken);
+      const listTransitionsPromise = client.listTransitions({ maxResults, nextToken });
       await expect(listTransitionsPromise).resolves.toHaveProperty('nextToken');
     });
   });
@@ -139,20 +153,18 @@ describe('Transitions', () => {
   });
 
   describe('updateTransitionExecution', () => {
-    test.each<['succeeded' | 'failed', object | undefined, { message: string } | undefined]>([
-      ['failed', undefined, { message: 'test' }],
-      ['succeeded', {}, undefined],
-      ['succeeded', {}, undefined],
-      ['failed', undefined, { message: 'test' }],
-    ])('status: %s, output: %o, error: %o', async (status, output, error) => {
+    test.each<UpdateTransitionExecution>([
+      { status: 'failed', error: { message: 'test' } },
+      { status: 'succeeded', output: {} },
+      { status: 'succeeded', output: {} },
+      { status: 'failed', error: { message: 'test' } },
+    ])('input: %o', async (input) => {
       const transitionId = uuidv4();
       const executionId = uuidv4();
       const updateTransitionExecutionPromise = client.updateTransitionExecution(
         transitionId,
         executionId,
-        status,
-        output,
-        error,
+        input,
       );
       await expect(updateTransitionExecutionPromise).resolves.toHaveProperty('executionId');
       await expect(updateTransitionExecutionPromise).resolves.toHaveProperty('status');
@@ -163,16 +175,22 @@ describe('Transitions', () => {
 
 describe('Workflows', () => {
   describe('createWorkflow', () => {
-    test.each<[WorkflowSpecification, string, string | undefined, { email: string } | undefined]>([
-      [{ definition: {} }, 'test', 'test', { email: 'test@test.com' }],
-      [{ definition: {} }, 'test', undefined, undefined],
-      [{ definition: {} }, 'test', undefined, { email: 'test@test.com' }],
-      [{ definition: {}, language: 'ASL', version: '1.0.0' }, 'test', 'test', { email: 'test@test.com' }],
-      [{ definition: {} }, 'test', 'test', { email: 'test@test.com' }],
+    test.each<CreateWorkflowOptions>([
+      {
+        specification: { definition: {} }, name: 'test', description: 'test', errorConfig: { email: 'test@test.com' },
+      },
+      { specification: { definition: {} }, name: 'test' },
+      { specification: { definition: {} }, name: 'test', errorConfig: { email: 'test@test.com' } },
+      {
+        specification: { definition: {}, language: 'ASL', version: '1.0.0' }, name: 'test', description: 'test', errorConfig: { email: 'test@test.com' },
+      },
+      {
+        specification: { definition: {} }, name: 'test', description: 'test', errorConfig: { email: 'test@test.com' },
+      },
     ])(
-      'specification: %o, name: %s, description: %s, errorConfig: %o',
-      async (specification, name, description, errorConfig) => {
-        const createWorkflowPromise = client.createWorkflow(specification, name, description, errorConfig);
+      'input: %o',
+      async (input) => {
+        const createWorkflowPromise = client.createWorkflow(input);
         await expect(createWorkflowPromise).resolves.toHaveProperty('name');
         await expect(createWorkflowPromise).resolves.toHaveProperty('workflowId');
       },
@@ -188,7 +206,7 @@ describe('Workflows', () => {
     test('accepts pagination params', async () => {
       const maxResults = 1;
       const nextToken = uuidv4();
-      const listWorkflowsPromise = client.listWorkflows(maxResults, nextToken);
+      const listWorkflowsPromise = client.listWorkflows({ maxResults, nextToken });
       await expect(listWorkflowsPromise).resolves.toHaveProperty('nextToken');
     });
   });
@@ -224,7 +242,7 @@ describe('Workflows', () => {
   describe('listWorkflowExecutions', () => {
     test.each([undefined, 'test'])('status: %s', async (status) => {
       const workflowId = uuidv4();
-      const listWorkflowExecutionsPromise = client.listWorkflowExecutions(workflowId, status);
+      const listWorkflowExecutionsPromise = client.listWorkflowExecutions(workflowId, { status });
       await expect(listWorkflowExecutionsPromise).resolves.toHaveProperty('executions');
       await expect(listWorkflowExecutionsPromise).resolves.toHaveProperty('workflowId');
     });
@@ -233,7 +251,7 @@ describe('Workflows', () => {
       const workflowId = uuidv4();
       const maxResults = 1;
       const nextToken = uuidv4();
-      const listWorkflowsPromise = client.listWorkflowExecutions(workflowId, undefined, maxResults, nextToken);
+      const listWorkflowsPromise = client.listWorkflowExecutions(workflowId, { maxResults, nextToken });
       await expect(listWorkflowsPromise).resolves.toHaveProperty('nextToken');
     });
   });
@@ -282,7 +300,7 @@ describe('Users', () => {
     test('accepts pagination params', async () => {
       const maxResults = 1;
       const nextToken = uuidv4();
-      const listUsersPromise = client.listUsers(maxResults, nextToken);
+      const listUsersPromise = client.listUsers({ maxResults, nextToken });
       await expect(listUsersPromise).resolves.toHaveProperty('nextToken');
     });
   });
@@ -325,7 +343,7 @@ describe('Assets', () => {
     test('accepts pagination params', async () => {
       const maxResults = 1;
       const nextToken = uuidv4();
-      const listAssetsPromise = client.listAssets(maxResults, nextToken);
+      const listAssetsPromise = client.listAssets({ maxResults, nextToken });
       await expect(listAssetsPromise).resolves.toHaveProperty('nextToken');
     });
   });

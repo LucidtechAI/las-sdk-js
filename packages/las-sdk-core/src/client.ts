@@ -6,30 +6,31 @@ import {
   AuthorizationHeaders,
   AxiosFn,
   Batch,
-  ContentType,
+  CreateDocumentOptions,
+  CreatePredictionOptions,
+  CreateTransitionOptions,
+  CreateWorkflowOptions,
   GroundTruth,
   LasDocument,
   LasDocumentList,
-  PatchTransistionExecutionId,
+  ListDocumentsOptions,
+  ListTransitionOptions,
+  ListWorkflowExecutionsOptions,
+  PaginationInput,
   PatchTransition,
   PatchWorkflow,
-  PostDocuments,
   PostPredictions,
-  PostTransitionParams,
-  PostTransitions,
-  PostWorkflows,
   PredictionResponse,
   Transition,
   TransitionExecution,
   TransitionList,
-  TransitionType,
+  UpdateTransitionExecution,
   User,
   UserList,
   Workflow,
   WorkflowExecution,
   WorkflowExecutionList,
   WorkflowList,
-  WorkflowSpecification,
 } from './types';
 import { buildURL } from './utils';
 
@@ -46,35 +47,19 @@ export class Client {
   /**
    * Creates a document handle, calls the POST /documents endpoint.
    *
-   * @param content Content to POST
-   * @param contentType MIME type for the document handle
-   * @param consentId Id of the consent that marks the owner of the document handle
-   * @param batchId Id of the associated batch
-   * @param groundTruth List of GroundTruth items representing the ground truth values for the document
+   * @param input.content Content to POST
+   * @param input.contentType MIME type for the document handle
+   * @param input.consentId Id of the consent that marks the owner of the document handle
+   * @param input.batchId Id of the associated batch
+   * @param input.groundTruth List of GroundTruth items representing the ground truth values for the document
    * @returns Document response from REST API
    */
-  createDocument(
-    content: string,
-    contentType: ContentType,
-    consentId?: string,
-    batchId?: string,
-    groundTruth?: Array<GroundTruth>,
-  ): Promise<LasDocument> {
-    let body: PostDocuments = {
+  createDocument(input: CreateDocumentOptions): Promise<LasDocument> {
+    const { content, ...rest } = input;
+    const body: CreateDocumentOptions = {
       content: Buffer.from(content).toString('base64'),
-      contentType,
+      ...rest,
     };
-
-    if (consentId) {
-      body = { ...body, consentId };
-    }
-    if (batchId) {
-      body = { ...body, batchId };
-    }
-
-    if (groundTruth) {
-      body = { ...body, groundTruth };
-    }
 
     return this.makePostRequest<LasDocument>('/documents', body);
   }
@@ -92,25 +77,14 @@ export class Client {
   /**
    * List documents available for inference, calls the GET /documents endpoint.
    *
-   * @param batchId Ids of the batches that contains the documents of interest
-   * @param consentId Ids of the consents that marks the owner of the document handle
-   * @param maxResults Maximum number of results to be returned
-   * @param nextToken A unique token for each page, use the returned token to retrieve the next page.
+   * @param queryParameters.batchId Ids of the batches that contains the documents of interest
+   * @param queryParameters.consentId Ids of the consents that marks the owner of the document handle
+   * @param queryParameters.maxResults Maximum number of results to be returned
+   * @param queryParameters.nextToken A unique token for each page, use the returned token to retrieve the next page.
    * @returns Documents response from REST API
    */
-  listDocuments(
-    batchId?: string | Array<string>,
-    consentId?: string | Array<string>,
-    maxResults?: number,
-    nextToken?: string,
-  ): Promise<LasDocumentList> {
-    const query = {
-      batchId,
-      consentId,
-      maxResults,
-      nextToken,
-    };
-    return this.makeGetRequest<LasDocumentList>('/documents', query);
+  listDocuments(queryParameters?: ListDocumentsOptions): Promise<LasDocumentList> {
+    return this.makeGetRequest<LasDocumentList>('/documents', queryParameters);
   }
 
   /**
@@ -146,46 +120,28 @@ export class Client {
   /**
    * Creates a transition handle, calls the POST /transitions endpoint.
    *
-   * @param transitionType Type of transition "docker"|"manual"
-   * @param inputJsonSchema Json-schema that defines the input to the transition
-   * @param outputJsonSchema Json-schema that defines the output of the transition
-   * @param params Extra parameters to the transition
+   * @param input.transitionType Type of transition "docker"|"manual"
+   * @param input.inputJsonSchema Json-schema that defines the input to the transition
+   * @param input.outputJsonSchema Json-schema that defines the output of the transition
+   * @param input.params Extra parameters to the transition
    * @returns Transition response from REST API
    */
   createTransition(
-    name: string,
-    transitionType: TransitionType,
-    inputJsonSchema: object,
-    outputJsonSchema: object,
-    description?: string,
-    params?: PostTransitionParams,
+    input: CreateTransitionOptions,
   ): Promise<Transition> {
-    let body: PostTransitions = {
-      transitionType,
-      inputJsonSchema,
-      outputJsonSchema,
-      name,
-      description,
-    };
-
-    if (params) {
-      body = { ...body, params };
-    }
-
-    return this.makePostRequest<Transition>('/transitions', body);
+    return this.makePostRequest<Transition>('/transitions', input);
   }
 
   /**
    * List transitions, calls the GET /transitions endpoint.
    *
-   * @param transitionType Types of transitions
-   * @param maxResults Maximum number of results to be returned
-   * @param nextToken A unique token for each page, use the returned token to retrieve the next page.
+   * @param queryParameters.transitionType Types of transitions
+   * @param queryParameters.maxResults Maximum number of results to be returned
+   * @param queryParameters.nextToken A unique token for each page, use the returned token to retrieve the next page.
    * @returns Transitions response from REST API
    */
-  listTransitions(transitionType?: string | Array<string>, maxResults?: number, nextToken?: string): Promise<TransitionList> {
-    const query = { transitionType, maxResults, nextToken };
-    return this.makeGetRequest('/transitions', query);
+  listTransitions(queryParameters?: ListTransitionOptions): Promise<TransitionList> {
+    return this.makeGetRequest('/transitions', queryParameters);
   }
 
   /**
@@ -214,73 +170,40 @@ export class Client {
    *
    * @param transitionId Id of the transition that performs the execution
    * @param executionId Id of the execution to update
-   * @param status Status of the execution 'succeeded|failed'
-   * @param output Output from the execution, required when status is 'succeded'
-   * @param error Error from the execution, required when status is 'failed', needs to contain 'message'
+   * @param input.status Status of the execution 'succeeded|failed'
+   * @param input.output Output from the execution, required when status is 'succeded'
+   * @param input.error Error from the execution, required when status is 'failed', needs to contain 'message'
    * @returns Transition execution response from REST API
    */
   updateTransitionExecution(
     transitionId: string,
     executionId: string,
-    status: 'succeeded' | 'failed' | 'retry' | 'rejected',
-    output?: object,
-    error?: { message: string },
+    input: UpdateTransitionExecution,
   ): Promise<TransitionExecution> {
-    let body: PatchTransistionExecutionId = {
-      status,
-    };
-
-    if (output) {
-      body = { ...body, output };
-    }
-
-    if (error) {
-      body = { ...body, error };
-    }
-
-    return this.makePatchRequest<TransitionExecution>(`/transitions/${transitionId}/executions/${executionId}`, body);
+    return this.makePatchRequest<TransitionExecution>(`/transitions/${transitionId}/executions/${executionId}`, input);
   }
 
   /**
    * Creates a new workflow, calls the POST /workflows endpoint.
    *
-   * @param specification Specification of the workflow
-   * @param name Name of the workflow
-   * @param description Description of the workflow
-   * @param errorConfig Configuration of error handler
+   * @param input.specification Specification of the workflow
+   * @param input.name Name of the workflow
+   * @param input.description Description of the workflow
+   * @param input.errorConfig Configuration of error handler
    * @returns Workflow response from REST API
    */
-  createWorkflow(
-    specification: WorkflowSpecification,
-    name: string,
-    description?: string,
-    errorConfig?: { email: string },
-  ): Promise<Workflow> {
-    let body: PostWorkflows = {
-      name,
-      specification,
-    };
-
-    if (description) {
-      body = { ...body, description };
-    }
-
-    if (errorConfig) {
-      body = { ...body, errorConfig };
-    }
-
-    return this.makePostRequest<Workflow>('/workflows', body);
+  createWorkflow(input: CreateWorkflowOptions): Promise<Workflow> {
+    return this.makePostRequest<Workflow>('/workflows', input);
   }
 
   /**
    * List workflows, calls the GET /workflows endpoint.
-   * @param maxResults Maximum number of results to be returned
-   * @param nextToken A unique token for each page, use the returned token to retrieve the next page.
+   * @param queryParameters.maxResults Maximum number of results to be returned
+   * @param queryParameters.nextToken A unique token for each page, use the returned token to retrieve the next page.
    * @returns Workflows response from REST API
    */
-  listWorkflows(maxResults?: number, nextToken?: string): Promise<WorkflowList> {
-    const query = { maxResults, nextToken };
-    return this.makeGetRequest<WorkflowList>('/workflows', query);
+  listWorkflows(queryParameters?: PaginationInput): Promise<WorkflowList> {
+    return this.makeGetRequest<WorkflowList>('/workflows', queryParameters);
   }
 
   /**
@@ -322,20 +245,16 @@ export class Client {
    * List executions in a workflow, calls the GET /workflows/{workflowId}/executions endpoint.
    *
    * @param workflowId Id of the workflow
-   * @param status Statuses of the executions
-   * @param maxResults Maximum number of results to be returned
-   * @param nextToken A unique token for each page, use the returned token to retrieve the next page.
+   * @param queryParameters.status Statuses of the executions
+   * @param queryParameters.maxResults Maximum number of results to be returned
+   * @param queryParameters.nextToken A unique token for each page, use the returned token to retrieve the next page.
    * @returns Workflow executions responses from REST API
    */
   listWorkflowExecutions(
     workflowId: string,
-    status?: string | Array<string>,
-    maxResults?: number,
-    nextToken?: string,
+    queryParameters?: ListWorkflowExecutionsOptions,
   ): Promise<WorkflowExecutionList> {
-    const query = { status, maxResults, nextToken };
-
-    return this.makeGetRequest<WorkflowExecutionList>(`/workflows/${workflowId}/executions`, query);
+    return this.makeGetRequest<WorkflowExecutionList>(`/workflows/${workflowId}/executions`, queryParameters);
   }
 
   /**
@@ -343,27 +262,22 @@ export class Client {
    *
    * @param documentId Id of the document to run inference and create a prediction on
    * @param modelId Id of the model to use for inference
-   * @param maxPages Maximum number of pages to run predictions on
-   * @param autoRotate Whether or not to let the API try different rotations on the document when running predictions
+   * @param options.maxPages Maximum number of pages to run predictions on
+   * @param options.autoRotate Whether or not to let the API try different rotations on the document when running predictions
    * @returns Predicion response from REST API
    */
   createPrediction(
     documentId: string,
     modelId: string,
-    maxPages?: number,
-    autoRotate?: boolean,
+    options?: CreatePredictionOptions,
   ): Promise<PredictionResponse> {
     let body: PostPredictions = {
       documentId,
       modelId,
     };
 
-    if (maxPages !== undefined) {
-      body = { ...body, maxPages };
-    }
-
-    if (autoRotate !== undefined) {
-      body = { ...body, autoRotate };
+    if (options) {
+      body = { ...body, ...options };
     }
 
     return this.makePostRequest<PredictionResponse>('/predictions', body);
@@ -382,13 +296,12 @@ export class Client {
   /**
    * List assets available, calls the GET /assets endpoint.
    *
-   * @param maxResults Maximum number of results to be returned
-   * @param nextToken A unique token for each page, use the returned token to retrieve the next page.
+   * @param queryParameters.maxResults Maximum number of results to be returned
+   * @param queryParameters.nextToken A unique token for each page, use the returned token to retrieve the next page.
    * @returns Assets response from REST API without the content of each asset
    */
-  listAssets(maxResults?: number, nextToken?: string): Promise<Assets> {
-    const query = { maxResults, nextToken };
-    return this.makeGetRequest<Assets>('/assets', query);
+  listAssets(queryParameters?: PaginationInput): Promise<Assets> {
+    return this.makeGetRequest<Assets>('/assets', queryParameters);
   }
 
   /**
@@ -439,13 +352,12 @@ export class Client {
   /**
    * List users, calls the GET /users endpoint.
    *
-   * @param maxResults Maximum number of results to be returned
-   * @param nextToken A unique token for each page, use the returned token to retrieve the next page.
+   * @param queryParameters.maxResults Maximum number of results to be returned
+   * @param queryParameters.nextToken A unique token for each page, use the returned token to retrieve the next page.
    * @returns User response from REST API
    */
-  listUsers(maxResults?: number, nextToken?: string): Promise<UserList> {
-    const query = { maxResults, nextToken };
-    return this.makeGetRequest<UserList>('/users', query);
+  listUsers(queryParameters?: PaginationInput): Promise<UserList> {
+    return this.makeGetRequest<UserList>('/users', queryParameters);
   }
 
   /**
