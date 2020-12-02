@@ -42,7 +42,7 @@ export interface ListDocumentsOptions {
 
 export type TransitionExecutionList = {
   transitionId: string;
-  executions: TransitionExecution;
+  executions: Array<TransitionExecution>;
   nextToken: string | null;
 };
 
