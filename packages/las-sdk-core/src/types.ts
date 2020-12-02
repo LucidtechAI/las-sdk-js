@@ -40,6 +40,19 @@ export interface ListDocumentsOptions {
   nextToken?: string;
 }
 
+export type TransitionExecutionList = {
+  transitionId: string;
+  executions: TransitionExecution;
+  nextToken: string | null;
+};
+
+export interface TransitionExecutionListOptions {
+  status?: 'succeeded' | 'failed' | 'retry' | 'running' | 'rejected';
+  executionId?: string | Array<string>;
+  maxResults?: number;
+  nextToken?: string;
+}
+
 export interface UpdateTransitionExecution {
   status: 'succeeded' | 'failed' | 'retry' | 'rejected';
   output?: Record<any, any>;

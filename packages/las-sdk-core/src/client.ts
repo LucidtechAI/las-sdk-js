@@ -23,6 +23,8 @@ import {
   PredictionResponse,
   Transition,
   TransitionExecution,
+  TransitionExecutionList,
+  TransitionExecutionListOptions,
   TransitionList,
   UpdateTransitionExecution,
   User,
@@ -54,7 +56,7 @@ export class Client {
    * @param input.groundTruth List of GroundTruth items representing the ground truth values for the document
    * @returns Document response from REST API
    */
-  createDocument(input: CreateDocumentOptions): Promise<LasDocument> {
+  async createDocument(input: CreateDocumentOptions): Promise<LasDocument> {
     const { content, ...rest } = input;
     const body: CreateDocumentOptions = {
       content: Buffer.from(content).toString('base64'),
@@ -70,7 +72,7 @@ export class Client {
    * @param documentId Id of the document
    * @returns Document response from REST API
    */
-  getDocument(documentId: string): Promise<LasDocument> {
+  async getDocument(documentId: string): Promise<LasDocument> {
     return this.makeGetRequest<LasDocument>(`/documents/${documentId}`);
   }
 
@@ -83,7 +85,7 @@ export class Client {
    * @param queryParameters.nextToken A unique token for each page, use the returned token to retrieve the next page.
    * @returns Documents response from REST API
    */
-  listDocuments(queryParameters?: ListDocumentsOptions): Promise<LasDocumentList> {
+  async listDocuments(queryParameters?: ListDocumentsOptions): Promise<LasDocumentList> {
     return this.makeGetRequest<LasDocumentList>('/documents', queryParameters);
   }
 
@@ -96,7 +98,7 @@ export class Client {
    * @param groundTruth List of GroundTruth items representing the ground truth values for the document
    * @returns Document response from REST API
    */
-  updateDocument(documentId: string, groundTruth: Array<GroundTruth>): Promise<LasDocument> {
+  async updateDocument(documentId: string, groundTruth: Array<GroundTruth>): Promise<LasDocument> {
     const body = {
       groundTruth,
     };
@@ -111,7 +113,7 @@ export class Client {
    * @param consentId Ids of the consents that marks the owner of the document handle
    * @returns Documents response from REST API
    */
-  deleteDocuments(consentId?: string | Array<string>): Promise<LasDocumentList> {
+  async deleteDocuments(consentId?: string | Array<string>): Promise<LasDocumentList> {
     const query = consentId ? { consentId } : undefined;
 
     return this.makeDeleteRequest<LasDocumentList>('/documents', query);
@@ -126,9 +128,7 @@ export class Client {
    * @param input.params Extra parameters to the transition
    * @returns Transition response from REST API
    */
-  createTransition(
-    input: CreateTransitionOptions,
-  ): Promise<Transition> {
+  async createTransition(input: CreateTransitionOptions): Promise<Transition> {
     return this.makePostRequest<Transition>('/transitions', input);
   }
 
@@ -140,7 +140,7 @@ export class Client {
    * @param queryParameters.nextToken A unique token for each page, use the returned token to retrieve the next page.
    * @returns Transitions response from REST API
    */
-  listTransitions(queryParameters?: ListTransitionOptions): Promise<TransitionList> {
+  async listTransitions(queryParameters?: ListTransitionOptions): Promise<TransitionList> {
     return this.makeGetRequest('/transitions', queryParameters);
   }
 
@@ -150,7 +150,7 @@ export class Client {
    * @param transitionUpdate Transition fields to PATCH
    * @returns Transition response from REST API
    */
-  updateTransition(transitionId: string, transitionUpdate: PatchTransition): Promise<Transition> {
+  async updateTransition(transitionId: string, transitionUpdate: PatchTransition): Promise<Transition> {
     return this.makePatchRequest<Transition>(`/transitions/${transitionId}`, transitionUpdate);
   }
 
@@ -160,7 +160,7 @@ export class Client {
    * @param transitionId Id of the transition
    * @returns Transition execution response from REST API
    */
-  executeTransition(transitionId: string): Promise<TransitionExecution> {
+  async executeTransition(transitionId: string): Promise<TransitionExecution> {
     return this.makePostRequest<TransitionExecution>(`/transitions/${transitionId}/executions`, {});
   }
 
@@ -175,12 +175,29 @@ export class Client {
    * @param input.error Error from the execution, required when status is 'failed', needs to contain 'message'
    * @returns Transition execution response from REST API
    */
-  updateTransitionExecution(
+  async updateTransitionExecution(
     transitionId: string,
     executionId: string,
     input: UpdateTransitionExecution,
   ): Promise<TransitionExecution> {
     return this.makePatchRequest<TransitionExecution>(`/transitions/${transitionId}/executions/${executionId}`, input);
+  }
+
+  /**
+   * List executions in a transition, calls the GET /transitions/{transitionId}/executions endpoint.
+   *
+   * @param transitionId Id of the transition
+   * @param queryParameters.status Statuses of the executions
+   * @param queryParameters.executionId Ids of the executions
+   * @param queryParameters.maxResults Maximum number of results to be returned
+   * @param queryParameters.nextToken A unique token for each page, use the returned token to retrieve the next page.
+   * @returns Transition executions responses from REST API
+   */
+  async listTransitionExecution(
+    transitionId: string,
+    queryParameters?: TransitionExecutionListOptions,
+  ): Promise<TransitionExecutionList> {
+    return this.makeGetRequest<TransitionExecutionList>(`/transitions/${transitionId}/executions`, queryParameters);
   }
 
   /**
@@ -192,7 +209,7 @@ export class Client {
    * @param input.errorConfig Configuration of error handler
    * @returns Workflow response from REST API
    */
-  createWorkflow(input: CreateWorkflowOptions): Promise<Workflow> {
+  async createWorkflow(input: CreateWorkflowOptions): Promise<Workflow> {
     return this.makePostRequest<Workflow>('/workflows', input);
   }
 
@@ -202,7 +219,7 @@ export class Client {
    * @param queryParameters.nextToken A unique token for each page, use the returned token to retrieve the next page.
    * @returns Workflows response from REST API
    */
-  listWorkflows(queryParameters?: PaginationInput): Promise<WorkflowList> {
+  async listWorkflows(queryParameters?: PaginationInput): Promise<WorkflowList> {
     return this.makeGetRequest<WorkflowList>('/workflows', queryParameters);
   }
 
@@ -212,7 +229,7 @@ export class Client {
    * @param workflowId Id of the workflow
    * @returns Workflow response from REST API
    */
-  deleteWorkflow(workflowId: string): Promise<Workflow> {
+  async deleteWorkflow(workflowId: string): Promise<Workflow> {
     return this.makeDeleteRequest<Workflow>(`/workflows/${workflowId}`);
   }
 
@@ -222,7 +239,7 @@ export class Client {
    * @param workflowUpdate Workflow fields to PATCH
    * @returns Workflow response from REST API
    */
-  updateWorkflow(workflowId: string, workflowUpdate: PatchWorkflow): Promise<Workflow> {
+  async updateWorkflow(workflowId: string, workflowUpdate: PatchWorkflow): Promise<Workflow> {
     return this.makePatchRequest<Workflow>(`/workflows/${workflowId}`, workflowUpdate);
   }
 
@@ -233,7 +250,7 @@ export class Client {
    * @param input Input to the first step of the workflow
    * @returns Workflow execution response from REST API
    */
-  executeWorkflow(workflowId: string, input: object): Promise<WorkflowExecution> {
+  async executeWorkflow(workflowId: string, input: object): Promise<WorkflowExecution> {
     const body = {
       input,
     };
@@ -250,7 +267,7 @@ export class Client {
    * @param queryParameters.nextToken A unique token for each page, use the returned token to retrieve the next page.
    * @returns Workflow executions responses from REST API
    */
-  listWorkflowExecutions(
+  async listWorkflowExecutions(
     workflowId: string,
     queryParameters?: ListWorkflowExecutionsOptions,
   ): Promise<WorkflowExecutionList> {
@@ -266,7 +283,7 @@ export class Client {
    * @param options.autoRotate Whether or not to let the API try different rotations on the document when running predictions
    * @returns Predicion response from REST API
    */
-  createPrediction(
+  async createPrediction(
     documentId: string,
     modelId: string,
     options?: CreatePredictionOptions,
@@ -289,7 +306,7 @@ export class Client {
    * @param content Content to POST
    * @returns Asset response from REST API
    */
-  createAsset(content: string): Promise<Asset> {
+  async createAsset(content: string): Promise<Asset> {
     return this.makePostRequest<Asset>('/assets', { content: Buffer.from(content).toString('base64') });
   }
 
@@ -300,7 +317,7 @@ export class Client {
    * @param queryParameters.nextToken A unique token for each page, use the returned token to retrieve the next page.
    * @returns Assets response from REST API without the content of each asset
    */
-  listAssets(queryParameters?: PaginationInput): Promise<Assets> {
+  async listAssets(queryParameters?: PaginationInput): Promise<Assets> {
     return this.makeGetRequest<Assets>('/assets', queryParameters);
   }
 
@@ -310,7 +327,7 @@ export class Client {
    * @param assetId Id of the asset
    * @returns Asset response from REST API
    */
-  getAsset(assetId: string): Promise<Asset> {
+  async getAsset(assetId: string): Promise<Asset> {
     return this.makeGetRequest(`/assets/${assetId}`);
   }
 
@@ -321,7 +338,7 @@ export class Client {
    * @param content Content to PATCH
    * @returns Asset response from REST API with content
    */
-  updateAsset(assetId: string, content: string): Promise<Asset> {
+  async updateAsset(assetId: string, content: string): Promise<Asset> {
     return this.makePatchRequest(`/assets/${assetId}`, { content: Buffer.from(content).toString('base64') });
   }
 
@@ -331,7 +348,7 @@ export class Client {
    * @param description Description of the batch
    * @returns Batch response from REST API
    */
-  createBatch(description: string): Promise<Batch> {
+  async createBatch(description: string): Promise<Batch> {
     const body = {
       description,
     };
@@ -345,7 +362,7 @@ export class Client {
    * @param email Email to the new user
    * @returns User response from REST API
    */
-  createUser(email: string): Promise<User> {
+  async createUser(email: string): Promise<User> {
     return this.makePostRequest<User>('/users', { email });
   }
 
@@ -356,7 +373,7 @@ export class Client {
    * @param queryParameters.nextToken A unique token for each page, use the returned token to retrieve the next page.
    * @returns User response from REST API
    */
-  listUsers(queryParameters?: PaginationInput): Promise<UserList> {
+  async listUsers(queryParameters?: PaginationInput): Promise<UserList> {
     return this.makeGetRequest<UserList>('/users', queryParameters);
   }
 
@@ -366,7 +383,7 @@ export class Client {
    * @param userId Id of the user
    * @returns User response from REST API
    */
-  getUser(userId: string): Promise<User> {
+  async getUser(userId: string): Promise<User> {
     return this.makeGetRequest<User>(`/users/${userId}`);
   }
 
@@ -376,24 +393,24 @@ export class Client {
    * @param userId Id of the user
    * @returns User response from REST API
    */
-  deleteUser(userId: string): Promise<User> {
+  async deleteUser(userId: string): Promise<User> {
     return this.makeDeleteRequest(`/users/${userId}`);
   }
 
   /* eslint-disable @typescript-eslint/no-explicit-any */
-  makeGetRequest<T = any>(path: string, query?: any): Promise<T> {
+  async makeGetRequest<T = any>(path: string, query?: any): Promise<T> {
     return this.makeAuthorizedRequest<T>(axios.get, buildURL(path, query));
   }
 
-  makeDeleteRequest<T = any>(path: string, query?: any): Promise<T> {
+  async makeDeleteRequest<T = any>(path: string, query?: any): Promise<T> {
     return this.makeAuthorizedRequest(axios.delete, buildURL(path, query));
   }
 
-  makePostRequest<T = any>(path: string, body: any): Promise<T> {
+  async makePostRequest<T = any>(path: string, body: any): Promise<T> {
     return this.makeAuthorizedRequest(axios.post, path, body);
   }
 
-  makePatchRequest<T = any>(path: string, body: any): Promise<T> {
+  async makePatchRequest<T = any>(path: string, body: any): Promise<T> {
     return this.makeAuthorizedRequest(axios.patch, path, body);
   }
 
