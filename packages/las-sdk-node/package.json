@@ -1,6 +1,6 @@
 {
   "name": "@lucidtech/las-sdk-node",
-  "version": "3.2.1",
+  "version": "3.2.2",
   "author": "Lucidtech AS <hello@lucidtech.ai>",
   "maintainers": [
     "August André Kvernmo <august@lucidtech.ai>"
