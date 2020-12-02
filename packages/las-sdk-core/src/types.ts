@@ -164,7 +164,7 @@ export type WorkflowExecution = {
   startTime: string | null;
   endTime: string | null;
   completedBy: string | null;
-  transitionExecution: Record<string, Array<string>>;
+  transitionExecutions: Record<string, Array<string>>;
 };
 
 export type WorkflowExecutionList = {
