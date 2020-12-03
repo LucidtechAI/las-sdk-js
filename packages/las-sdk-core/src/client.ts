@@ -21,6 +21,9 @@ import {
   PatchWorkflow,
   PostPredictions,
   PredictionResponse,
+  Secret,
+  SecretInput,
+  SecretList,
   Transition,
   TransitionExecution,
   TransitionExecutionList,
@@ -395,6 +398,39 @@ export class Client {
    */
   async deleteUser(userId: string): Promise<User> {
     return this.makeDeleteRequest(`/users/${userId}`);
+  }
+
+  /**
+   * Creates an secret handle, calls the POST /secrets endpoint.
+   *
+   * @param input.data Object containing the data you want to keep secret
+   * @param input.description Description of the secret
+   * @returns Secret response from REST API
+   */
+  async createSecret(input: SecretInput): Promise<Secret> {
+    return this.makePostRequest<Secret>('/secrets', input);
+  }
+
+  /**
+   * List secrets available, calls the GET /secrets endpoint.
+   *
+   * @param queryParameters.maxResults Maximum number of results to be returned
+   * @param queryParameters.nextToken A unique token for each page, use the returned token to retrieve the next page.
+   * @returns Secrets response from REST API without the username of each secret
+   */
+  async listSecrets(queryParameters?: PaginationInput): Promise<SecretList> {
+    return this.makeGetRequest<SecretList>('/secrets', queryParameters);
+  }
+
+  /**
+   * Updates a secret, calls the PATCH /secrets/secretId endpoint.
+   *
+   * @param secretId Id of the secret
+   * @param input.data Object containing the data you want to keep secret
+   * @param input.description Description of the secret
+   */
+  async updateSecret(secretId: string, input: SecretInput): Promise<Secret> {
+    return this.makePatchRequest(`/secrets/${secretId}`, input);
   }
 
   /* eslint-disable @typescript-eslint/no-explicit-any */

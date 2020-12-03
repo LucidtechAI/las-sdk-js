@@ -213,6 +213,21 @@ export type UserList = {
   nextToken?: string;
 };
 
+export type Secret = {
+  secredId: string;
+  description?: string | null;
+};
+
+export type SecretList = {
+  secrets: Array<Secret>;
+  nextToken?: string | null;
+}
+
+export interface SecretInput {
+  data: Record<any, any>;
+  description?: string;
+}
+
 export type LasDocument = {
   contentType: ContentType;
   /** pattern: ^las:document:[a-f0-9]{32}$ */
