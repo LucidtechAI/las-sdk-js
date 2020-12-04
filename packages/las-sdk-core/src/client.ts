@@ -196,7 +196,7 @@ export class Client {
    * @param queryParameters.nextToken A unique token for each page, use the returned token to retrieve the next page.
    * @returns Transition executions responses from REST API
    */
-  async listTransitionExecution(
+  async listTransitionExecutions(
     transitionId: string,
     queryParameters?: TransitionExecutionListOptions,
   ): Promise<TransitionExecutionList> {
@@ -278,12 +278,25 @@ export class Client {
   }
 
   /**
+   * Deletes the execution with the provided execution_id from workflow_id,
+   * calls the DELETE /workflows/{workflowId}/executions/{executionId} endpoint.
+   *
+   * @param workflowId Id of the workflow
+   * @param executionId Id of the execution
+   * @returns WorkflowExecution response from REST API
+   */
+  async deleteWorkflowExecution(workflowId: string, executionId: string): Promise<WorkflowExecution> {
+    return this.makeDeleteRequest(`/workflows/${workflowId}/executions/${executionId}`);
+  }
+
+  /**
    * Create a prediction on a document using specified model, calls the POST /predictions endpoint.
    *
    * @param documentId Id of the document to run inference and create a prediction on
    * @param modelId Id of the model to use for inference
    * @param options.maxPages Maximum number of pages to run predictions on
-   * @param options.autoRotate Whether or not to let the API try different rotations on the document when running predictions
+   * @param options.autoRotate Whether or not to let the API try different rotations on the document
+   * when running predictions
    * @returns Predicion response from REST API
    */
   async createPrediction(

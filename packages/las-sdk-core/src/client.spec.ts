@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import { getTestClient } from './helpers';
 import {
-  ContentType, CreateTransitionOptions, CreateWorkflowOptions, UpdateTransitionExecution,
+  ContentType, CreateTransitionOptions, CreateWorkflowOptions, SecretInput, UpdateTransitionExecution,
 } from './types';
 
 let client = getTestClient();
@@ -171,6 +171,14 @@ describe('Transitions', () => {
       await expect(updateTransitionExecutionPromise).resolves.toHaveProperty('transitionId');
     });
   });
+
+  describe('listTransitionExecutions', () => {
+    test('valid request', async () => {
+      const listTransitionExecutionsPromise = client.listTransitionExecutions('foo');
+      await expect(listTransitionExecutionsPromise).resolves.toHaveProperty('executionId');
+      await expect(listTransitionExecutionsPromise).resolves.toHaveProperty('transitionId');
+    });
+  });
 });
 
 describe('Workflows', () => {
@@ -255,6 +263,15 @@ describe('Workflows', () => {
       await expect(listWorkflowsPromise).resolves.toHaveProperty('nextToken');
     });
   });
+
+  describe('deleteWorkflowExecution', () => {
+    test('valid request', async () => {
+      const workflowId = uuidv4();
+      const executionId = uuidv4();
+      const deleteWorkflowExecutionPromise = client.deleteWorkflowExecution(workflowId, executionId);
+      await expect(deleteWorkflowExecutionPromise).resolves.toHaveProperty('workflowId');
+    });
+  });
 });
 
 describe('Users', () => {
@@ -302,6 +319,45 @@ describe('Users', () => {
       const nextToken = uuidv4();
       const listUsersPromise = client.listUsers({ maxResults, nextToken });
       await expect(listUsersPromise).resolves.toHaveProperty('nextToken');
+    });
+  });
+});
+
+describe('Secrets', () => {
+  describe('createSecret', () => {
+    test('valid request', async () => {
+      const input = { data: { username: 'foo', password: 'bar' } };
+      const createSecretPromise = client.createSecret(input);
+      await expect(createSecretPromise).resolves.toHaveProperty('secretId');
+    });
+  });
+
+  describe('listSecrets', () => {
+    test('valid request', async () => {
+      const listSecretsPromise = client.listSecrets();
+      await expect(listSecretsPromise).resolves.toHaveProperty('secrets');
+    });
+
+    test.each<[number|undefined, string|undefined]>([
+      [100, 'foo'],
+      [undefined, 'foo'],
+      [undefined, undefined],
+      [1, undefined],
+    ])('accepts pagination parameters: %s, %s', async (maxResults?: number, nextToken?: string) => {
+      const listSecretsPromise = client.listSecrets({ maxResults, nextToken });
+      await expect(listSecretsPromise).resolves.toHaveProperty('secrets');
+    });
+  });
+
+  describe('updateSecret', () => {
+    test.each<SecretInput>([
+      { data: { user: 'foo' } },
+      { data: {}, description: 'bar' },
+      { data: {} },
+      { data: {} },
+    ])('with input: %o', async (input) => {
+      const updateSecretPromise = client.updateSecret('foo', input);
+      await expect(updateSecretPromise).resolves.toHaveProperty('secretId');
     });
   });
 });
