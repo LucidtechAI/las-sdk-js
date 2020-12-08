@@ -1,7 +1,8 @@
 import { v4 as uuidv4 } from 'uuid';
+import { TransitionType, WorkflowSpecification } from '../lib/types';
 import { getTestClient } from './helpers';
 import {
-  ContentType, CreateTransitionOptions, CreateWorkflowOptions, SecretInput, UpdateTransitionExecution,
+  ContentType, CreateTransitionOptions, CreateWorkflowOptions, SecretOptions, UpdateTransitionExecution,
 } from './types';
 
 let client = getTestClient();
@@ -17,9 +18,7 @@ describe('Documents', () => {
       const testContentType = 'image/jpeg';
       const testConsentId = `las:consent:${uuidv4().replace(/-/g, '')}`;
       const testBatchId = `las:batch:${uuidv4().replace(/-/g, '')}`;
-      const createDocumentPromise = client.createDocument({
-        content: testContent, contentType: testContentType, consentId: testConsentId, batchId: testBatchId,
-      });
+      const createDocumentPromise = client.createDocument(testContent, testContentType, { consentId: testConsentId, batchId: testBatchId });
       await expect(createDocumentPromise).resolves.toHaveProperty('consentId');
       await expect(createDocumentPromise).resolves.toHaveProperty('contentType');
       await expect(createDocumentPromise).resolves.toHaveProperty('documentId');
@@ -29,7 +28,7 @@ describe('Documents', () => {
       const testContent = uuidv4();
       const testContentType = ('erroneousContentType' as unknown) as ContentType;
       const testConsentId = uuidv4();
-      const createDocumentPromise = client.createDocument({ content: testContent, contentType: testContentType, consentId: testConsentId });
+      const createDocumentPromise = client.createDocument(testContent, testContentType, { consentId: testConsentId });
       await expect(createDocumentPromise).rejects.toBeDefined();
     });
 
@@ -37,7 +36,7 @@ describe('Documents', () => {
       const testContent = uuidv4();
       const testContentType = 'image/jpeg';
       const testConsentId = uuidv4();
-      const createDocumentPromise = client.createDocument({ content: testContent, contentType: testContentType, consentId: testConsentId });
+      const createDocumentPromise = client.createDocument(testContent, testContentType, { consentId: testConsentId });
       await expect(createDocumentPromise).rejects.toBeDefined();
     });
 
@@ -45,7 +44,7 @@ describe('Documents', () => {
       const testContent = uuidv4();
       const testContentType = 'image/jpeg';
       const testConsentId = uuidv4();
-      const createDocumentPromise = client.createDocument({ content: testContent, contentType: testContentType, consentId: testConsentId });
+      const createDocumentPromise = client.createDocument(testContent, testContentType, { consentId: testConsentId });
       await expect(createDocumentPromise).rejects.toBeDefined();
     });
   });
@@ -74,7 +73,7 @@ describe('Documents', () => {
   describe('deleteDocuments', () => {
     test('valid request', async () => {
       const consentId = uuidv4();
-      const updateDocumentPromise = client.deleteDocuments(consentId);
+      const updateDocumentPromise = client.deleteDocuments({ consentId });
       await expect(updateDocumentPromise).resolves.toHaveProperty('documents');
     });
   });
@@ -97,24 +96,14 @@ describe('Documents', () => {
 
 describe('Transitions', () => {
   describe('createTransition', () => {
-    test.each<CreateTransitionOptions>([
-      {
-        transitionType: 'manual', name: 'test', inputJsonSchema: {}, outputJsonSchema: {},
-      },
-      {
-        transitionType: 'docker', name: 'test', inputJsonSchema: {}, outputJsonSchema: {},
-      },
-      {
-        transitionType: 'docker', params: { imageUrl: 'test' }, name: 'test', inputJsonSchema: {}, outputJsonSchema: {},
-      },
-      {
-        transitionType: 'docker', params: { imageUrl: 'test', cpu: 256, memory: 1024 }, name: 'test', inputJsonSchema: {}, outputJsonSchema: {},
-      },
-      {
-        transitionType: 'manual', params: { assets: { jsRemoteComponent: `las:asset:${uuidv4().replace(/-/g, '')}` } }, name: 'test', inputJsonSchema: {}, outputJsonSchema: {},
-      },
-    ])('params: %o', async (input) => {
-      const createTransitionPromise = client.createTransition(input);
+    test.each<[string, TransitionType, object, object, CreateTransitionOptions | undefined]>([
+      ['test', 'manual', {}, {}, undefined],
+      ['test', 'docker', {}, {}, undefined],
+      ['test', 'docker', {}, {}, { params: { imageUrl: 'test' } }],
+      ['test', 'docker', {}, {}, { params: { imageUrl: 'test', cpu: 256, memory: 1024 } }],
+      ['test', 'docker', {}, {}, { params: { assets: { jsRemoteComponent: `las:asset:${uuidv4().replace(/-/g, '')}` } } }],
+    ])('params: %s', async (name, transitionType, input, output, options) => {
+      const createTransitionPromise = client.createTransition(name, transitionType, input, output, options);
       await expect(createTransitionPromise).resolves.toHaveProperty('transitionId');
     });
   });
@@ -183,22 +172,16 @@ describe('Transitions', () => {
 
 describe('Workflows', () => {
   describe('createWorkflow', () => {
-    test.each<CreateWorkflowOptions>([
-      {
-        specification: { definition: {} }, name: 'test', description: 'test', errorConfig: { email: 'test@test.com' },
-      },
-      { specification: { definition: {} }, name: 'test' },
-      { specification: { definition: {} }, name: 'test', errorConfig: { email: 'test@test.com' } },
-      {
-        specification: { definition: {}, language: 'ASL', version: '1.0.0' }, name: 'test', description: 'test', errorConfig: { email: 'test@test.com' },
-      },
-      {
-        specification: { definition: {} }, name: 'test', description: 'test', errorConfig: { email: 'test@test.com' },
-      },
+    test.each<[string, WorkflowSpecification, CreateWorkflowOptions | undefined]>([
+      ['test', { definition: {} } as WorkflowSpecification, { description: 'test', errorConfig: { email: 'test@test.com' } }],
+      ['test', { definition: {} } as WorkflowSpecification, undefined],
+      ['test', { definition: {} } as WorkflowSpecification, { errorConfig: { email: 'test@test.com' } }],
+      ['test', { definition: {}, language: 'ASL', version: '1.0.0' } as WorkflowSpecification, { description: 'test', errorConfig: { email: 'test@test.com' } }],
+      ['test', { definition: {} } as WorkflowSpecification, { description: 'test', errorConfig: { email: 'test@test.com' } }],
     ])(
       'input: %o',
-      async (input) => {
-        const createWorkflowPromise = client.createWorkflow(input);
+      async (name, specification, options) => {
+        const createWorkflowPromise = client.createWorkflow(name, specification, options);
         await expect(createWorkflowPromise).resolves.toHaveProperty('name');
         await expect(createWorkflowPromise).resolves.toHaveProperty('workflowId');
       },
@@ -350,13 +333,12 @@ describe('Secrets', () => {
   });
 
   describe('updateSecret', () => {
-    test.each<SecretInput>([
-      { data: { user: 'foo' } },
-      { data: {}, description: 'bar' },
-      { data: {} },
-      { data: {} },
-    ])('with input: %o', async (input) => {
-      const updateSecretPromise = client.updateSecret('foo', input);
+    test.each<[Record<any, any>, SecretOptions | undefined]>([
+      [{ user: 'foo' }, undefined],
+      [{}, { description: 'bar' }],
+      [{}, undefined],
+    ])('with input: %o', async (data, options) => {
+      const updateSecretPromise = client.updateSecret('foo', data, options);
       await expect(updateSecretPromise).resolves.toHaveProperty('secretId');
     });
   });

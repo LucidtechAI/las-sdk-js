@@ -24,7 +24,7 @@ const credentials = new ClientCredentials('<apiEndpoint>', '<apiKey>', '<clientI
 const client = new Client(credentials);
 
 const content = '<read image content>'
-client.postDocuments(content, 'image/jpeg', '<consentId>').then(documentResponse => {
+client.createDocument(content, 'image/jpeg').then(documentResponse => {
     console.log(documentResponse);
 }).catch(error => {
     console.log(error);

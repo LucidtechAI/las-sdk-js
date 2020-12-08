@@ -1,4 +1,5 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
+import { TransitionType, WorkflowSpecification } from '../lib/types';
 import { Credentials } from './credentials';
 import {
   Asset,
@@ -6,10 +7,12 @@ import {
   AuthorizationHeaders,
   AxiosFn,
   Batch,
+  ContentType,
   CreateDocumentOptions,
   CreatePredictionOptions,
   CreateTransitionOptions,
   CreateWorkflowOptions,
+  DeleteDocumentOptions,
   GroundTruth,
   LasDocument,
   LasDocumentList,
@@ -22,8 +25,8 @@ import {
   PostPredictions,
   PredictionResponse,
   Secret,
-  SecretInput,
   SecretList,
+  SecretOptions,
   Transition,
   TransitionExecution,
   TransitionExecutionList,
@@ -52,19 +55,26 @@ export class Client {
   /**
    * Creates a document handle, calls the POST /documents endpoint.
    *
-   * @param input.content Content to POST
-   * @param input.contentType MIME type for the document handle
-   * @param input.consentId Id of the consent that marks the owner of the document handle
-   * @param input.batchId Id of the associated batch
-   * @param input.groundTruth List of GroundTruth items representing the ground truth values for the document
+   * @param content Content to POST
+   * @param contentType MIME type for the document handle
+   * @param options.consentId Id of the consent that marks the owner of the document handle
+   * @param options.batchId Id of the associated batch
+   * @param options.groundTruth List of GroundTruth items representing the ground truth values for the document
    * @returns Document response from REST API
    */
-  async createDocument(input: CreateDocumentOptions): Promise<LasDocument> {
-    const { content, ...rest } = input;
-    const body: CreateDocumentOptions = {
+  async createDocument(
+    content: string,
+    contentType: ContentType,
+    options?: CreateDocumentOptions,
+  ): Promise<LasDocument> {
+    let body = {
       content: Buffer.from(content).toString('base64'),
-      ...rest,
+      contentType,
     };
+
+    if (options) {
+      body = { ...body, ...options };
+    }
 
     return this.makePostRequest<LasDocument>('/documents', body);
   }
@@ -113,26 +123,43 @@ export class Client {
    * Delete documents with the provided consentId, calls the DELETE /documents endpoint.
    * Will delete all documents when no consentId is provided.
    *
-   * @param consentId Ids of the consents that marks the owner of the document handle
+   * @param options.consentId Ids of the consents that marks the owner of the document handle
    * @returns Documents response from REST API
    */
-  async deleteDocuments(consentId?: string | Array<string>): Promise<LasDocumentList> {
-    const query = consentId ? { consentId } : undefined;
-
-    return this.makeDeleteRequest<LasDocumentList>('/documents', query);
+  async deleteDocuments(options?: DeleteDocumentOptions): Promise<LasDocumentList> {
+    return this.makeDeleteRequest<LasDocumentList>('/documents', options);
   }
 
   /**
    * Creates a transition handle, calls the POST /transitions endpoint.
    *
-   * @param input.transitionType Type of transition "docker"|"manual"
-   * @param input.inputJsonSchema Json-schema that defines the input to the transition
-   * @param input.outputJsonSchema Json-schema that defines the output of the transition
-   * @param input.params Extra parameters to the transition
+   * @param name Name of transition
+   * @param transitionType Type of transition "docker"|"manual"
+   * @param inputJsonSchema Json-schema that defines the input to the transition
+   * @param outputJsonSchema Json-schema that defines the output of the transition
+   * @param options.description Description of the transition
+   * @param options.params Extra parameters to the transition
    * @returns Transition response from REST API
    */
-  async createTransition(input: CreateTransitionOptions): Promise<Transition> {
-    return this.makePostRequest<Transition>('/transitions', input);
+  async createTransition(
+    name: string,
+    transitionType: TransitionType,
+    inputJsonSchema: object,
+    outputJsonSchema: object,
+    options?: CreateTransitionOptions,
+  ): Promise<Transition> {
+    let body = {
+      name,
+      transitionType,
+      inputJsonSchema,
+      outputJsonSchema,
+    };
+
+    if (options) {
+      body = { ...body, ...options };
+    }
+
+    return this.makePostRequest<Transition>('/transitions', body);
   }
 
   /**
@@ -206,14 +233,23 @@ export class Client {
   /**
    * Creates a new workflow, calls the POST /workflows endpoint.
    *
-   * @param input.specification Specification of the workflow
-   * @param input.name Name of the workflow
-   * @param input.description Description of the workflow
-   * @param input.errorConfig Configuration of error handler
+   * @param name Name of the workflow
+   * @param specification Specification of the workflow
+   * @param options.description Description of the workflow
+   * @param options.errorConfig Configuration of error handler
    * @returns Workflow response from REST API
    */
-  async createWorkflow(input: CreateWorkflowOptions): Promise<Workflow> {
-    return this.makePostRequest<Workflow>('/workflows', input);
+  async createWorkflow(name: string,
+    specification: WorkflowSpecification, options?: CreateWorkflowOptions): Promise<Workflow> {
+    let body = {
+      name, specification,
+    };
+
+    if (options) {
+      body = { ...body, ...options };
+    }
+
+    return this.makePostRequest<Workflow>('/workflows', body);
   }
 
   /**
@@ -355,7 +391,8 @@ export class Client {
    * @returns Asset response from REST API with content
    */
   async updateAsset(assetId: string, content: string): Promise<Asset> {
-    return this.makePatchRequest(`/assets/${assetId}`, { content: Buffer.from(content).toString('base64') });
+    const body = { content: Buffer.from(content).toString('base64') };
+    return this.makePatchRequest(`/assets/${assetId}`, body);
   }
 
   /**
@@ -416,12 +453,18 @@ export class Client {
   /**
    * Creates an secret handle, calls the POST /secrets endpoint.
    *
-   * @param input.data Object containing the data you want to keep secret
-   * @param input.description Description of the secret
+   * @param data Object containing the data you want to keep secret
+   * @param options.description Description of the secret
    * @returns Secret response from REST API
    */
-  async createSecret(input: SecretInput): Promise<Secret> {
-    return this.makePostRequest<Secret>('/secrets', input);
+  async createSecret(data: Record<any, any>, options?: SecretOptions): Promise<Secret> {
+    let body = { data };
+
+    if (options) {
+      body = { ...body, ...options };
+    }
+
+    return this.makePostRequest<Secret>('/secrets', body);
   }
 
   /**
@@ -439,11 +482,17 @@ export class Client {
    * Updates a secret, calls the PATCH /secrets/secretId endpoint.
    *
    * @param secretId Id of the secret
-   * @param input.data Object containing the data you want to keep secret
-   * @param input.description Description of the secret
+   * @param data Object containing the data you want to keep secret
+   * @param options.description Description of the secret
    */
-  async updateSecret(secretId: string, input: SecretInput): Promise<Secret> {
-    return this.makePatchRequest(`/secrets/${secretId}`, input);
+  async updateSecret(secretId: string, data: Record<any, any>, options?: SecretOptions): Promise<Secret> {
+    let body = { data };
+
+    if (options) {
+      body = { ...body, ...options };
+    }
+
+    return this.makePatchRequest(`/secrets/${secretId}`, body);
   }
 
   /* eslint-disable @typescript-eslint/no-explicit-any */

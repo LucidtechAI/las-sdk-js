@@ -19,16 +19,12 @@ export interface ListTransitionOptions {
 }
 
 export interface CreateDocumentOptions {
-  content: string;
-  contentType: ContentType;
   consentId?: string;
   batchId?: string;
   groundTruth?: Array<GroundTruth>;
 }
 
 export interface CreateWorkflowOptions {
-  name: string;
-  specification: WorkflowSpecification;
   description?: string;
   errorConfig?: { email: string };
 }
@@ -60,10 +56,6 @@ export interface UpdateTransitionExecution {
 }
 
 export interface CreateTransitionOptions {
-  name: string;
-  transitionType: TransitionType;
-  inputJsonSchema: object;
-  outputJsonSchema: object;
   description?: string;
   params?: PostTransitionParams;
 }
@@ -181,6 +173,10 @@ export type GroundTruth = {
   value: string | boolean | null;
 };
 
+export interface DeleteDocumentOptions {
+  consentId?: string | Array<string>;
+}
+
 export type PostPredictions = {
   documentId: string;
   modelId: string;
@@ -223,8 +219,7 @@ export type SecretList = {
   nextToken?: string | null;
 }
 
-export interface SecretInput {
-  data: Record<any, any>;
+export interface SecretOptions {
   description?: string;
 }
 
