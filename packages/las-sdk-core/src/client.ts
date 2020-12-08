@@ -1,5 +1,4 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
-import { TransitionType, WorkflowSpecification } from '../lib/types';
 import { Credentials } from './credentials';
 import {
   Asset,
@@ -32,6 +31,7 @@ import {
   TransitionExecutionList,
   TransitionExecutionListOptions,
   TransitionList,
+  TransitionType,
   UpdateTransitionExecution,
   User,
   UserList,
@@ -39,6 +39,7 @@ import {
   WorkflowExecution,
   WorkflowExecutionList,
   WorkflowList,
+  WorkflowSpecification,
 } from './types';
 import { buildURL } from './utils';
 
@@ -239,10 +240,14 @@ export class Client {
    * @param options.errorConfig Configuration of error handler
    * @returns Workflow response from REST API
    */
-  async createWorkflow(name: string,
-    specification: WorkflowSpecification, options?: CreateWorkflowOptions): Promise<Workflow> {
+  async createWorkflow(
+    name: string,
+    specification: WorkflowSpecification,
+    options?: CreateWorkflowOptions,
+  ): Promise<Workflow> {
     let body = {
-      name, specification,
+      name,
+      specification,
     };
 
     if (options) {

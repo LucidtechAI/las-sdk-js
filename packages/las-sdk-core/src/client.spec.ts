@@ -1,8 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
-import { TransitionType, WorkflowSpecification } from '../lib/types';
 import { getTestClient } from './helpers';
 import {
-  ContentType, CreateTransitionOptions, CreateWorkflowOptions, SecretOptions, UpdateTransitionExecution,
+  ContentType, CreateTransitionOptions, CreateWorkflowOptions, SecretOptions, UpdateTransitionExecution, TransitionType, WorkflowSpecification,
 } from './types';
 
 let client = getTestClient();
