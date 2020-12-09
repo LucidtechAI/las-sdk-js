@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import { getTestClient } from './helpers';
 import {
-  ContentType, CreateTransitionOptions, CreateWorkflowOptions, SecretOptions, UpdateTransitionExecution, TransitionType, WorkflowSpecification,
+  ContentType, PostTransitionOptions, PostWorkflowOptions, PatchSecretOptions, PatchTransitionExecution, TransitionType, WorkflowSpecification,
 } from './types';
 
 let client = getTestClient();
@@ -62,7 +62,7 @@ describe('Documents', () => {
     test('valid request', async () => {
       const documentId = uuidv4();
       const groundTruth = [{ label: 'test', value: 'test' }];
-      const updateDocumentPromise = client.updateDocument(documentId, groundTruth);
+      const updateDocumentPromise = client.updateDocument(documentId, { groundTruth });
       await expect(updateDocumentPromise).resolves.toHaveProperty('consentId');
       await expect(updateDocumentPromise).resolves.toHaveProperty('documentId');
       await expect(updateDocumentPromise).resolves.toHaveProperty('contentType');
@@ -95,14 +95,14 @@ describe('Documents', () => {
 
 describe('Transitions', () => {
   describe('createTransition', () => {
-    test.each<[string, TransitionType, object, object, CreateTransitionOptions | undefined]>([
-      ['test', 'manual', {}, {}, undefined],
-      ['test', 'docker', {}, {}, undefined],
-      ['test', 'docker', {}, {}, { params: { imageUrl: 'test' } }],
-      ['test', 'docker', {}, {}, { params: { imageUrl: 'test', cpu: 256, memory: 1024 } }],
-      ['test', 'docker', {}, {}, { params: { assets: { jsRemoteComponent: `las:asset:${uuidv4().replace(/-/g, '')}` } } }],
-    ])('params: %s', async (name, transitionType, input, output, options) => {
-      const createTransitionPromise = client.createTransition(name, transitionType, input, output, options);
+    test.each<[string, TransitionType, PostTransitionOptions | undefined]>([
+      ['test', 'manual', {}],
+      ['test', 'docker', {}],
+      ['test', 'docker', { params: { imageUrl: 'test' } }],
+      ['test', 'docker', { params: { imageUrl: 'test', cpu: 256, memory: 1024 } }],
+      ['test', 'docker', { params: { assets: { jsRemoteComponent: `las:asset:${uuidv4().replace(/-/g, '')}` } } }],
+    ])('params: %s', async (name, transitionType, options) => {
+      const createTransitionPromise = client.createTransition(name, transitionType, options);
       await expect(createTransitionPromise).resolves.toHaveProperty('transitionId');
     });
   });
@@ -141,7 +141,7 @@ describe('Transitions', () => {
   });
 
   describe('updateTransitionExecution', () => {
-    test.each<UpdateTransitionExecution>([
+    test.each<PatchTransitionExecution>([
       { status: 'failed', error: { message: 'test' } },
       { status: 'succeeded', output: {} },
       { status: 'succeeded', output: {} },
@@ -171,7 +171,7 @@ describe('Transitions', () => {
 
 describe('Workflows', () => {
   describe('createWorkflow', () => {
-    test.each<[string, WorkflowSpecification, CreateWorkflowOptions | undefined]>([
+    test.each<[string, WorkflowSpecification, PostWorkflowOptions | undefined]>([
       ['test', { definition: {} } as WorkflowSpecification, { description: 'test', errorConfig: { email: 'test@test.com' } }],
       ['test', { definition: {} } as WorkflowSpecification, undefined],
       ['test', { definition: {} } as WorkflowSpecification, { errorConfig: { email: 'test@test.com' } }],
@@ -332,12 +332,12 @@ describe('Secrets', () => {
   });
 
   describe('updateSecret', () => {
-    test.each<[Record<any, any>, SecretOptions | undefined]>([
-      [{ user: 'foo' }, undefined],
-      [{}, { description: 'bar' }],
-      [{}, undefined],
-    ])('with input: %o', async (data, options) => {
-      const updateSecretPromise = client.updateSecret('foo', data, options);
+    test.each<PatchSecretOptions>([
+      { data: { user: 'foo' } },
+      { description: 'bar' },
+      {},
+    ])('with input: %o', async (options) => {
+      const updateSecretPromise = client.updateSecret('foo', options);
       await expect(updateSecretPromise).resolves.toHaveProperty('secretId');
     });
   });
@@ -398,7 +398,7 @@ describe('Assets', () => {
     test('valid request', async () => {
       const assetId = uuidv4();
       const content = uuidv4();
-      const updateAssetPromise = client.updateAsset(assetId, content);
+      const updateAssetPromise = client.updateAsset(assetId, { content });
       await expect(updateAssetPromise).resolves.toHaveProperty('assetId');
     });
   });
@@ -407,7 +407,7 @@ describe('Assets', () => {
 describe('createBatch', () => {
   test('valid request', async () => {
     const description = 'I am going to create a new batch, give me a batch ID!';
-    const createBatchPromise = client.createBatch(description);
+    const createBatchPromise = client.createBatch({ description });
     await expect(createBatchPromise).resolves.toHaveProperty('batchId');
   });
 });
