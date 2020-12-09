@@ -56,6 +56,8 @@ export interface UpdateTransitionExecution {
 }
 
 export interface CreateTransitionOptions {
+  inputJsonSchema?: Record<any, any>;
+  outputJsonSchema?: Record<any, any>;
   description?: string;
   params?: PostTransitionParams;
 }

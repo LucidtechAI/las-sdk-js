@@ -136,8 +136,8 @@ export class Client {
    *
    * @param name Name of transition
    * @param transitionType Type of transition "docker"|"manual"
-   * @param inputJsonSchema Json-schema that defines the input to the transition
-   * @param outputJsonSchema Json-schema that defines the output of the transition
+   * @param options.inputJsonSchema Json-schema that defines the input to the transition
+   * @param options.outputJsonSchema Json-schema that defines the output of the transition
    * @param options.description Description of the transition
    * @param options.params Extra parameters to the transition
    * @returns Transition response from REST API
@@ -145,15 +145,11 @@ export class Client {
   async createTransition(
     name: string,
     transitionType: TransitionType,
-    inputJsonSchema: object,
-    outputJsonSchema: object,
     options?: CreateTransitionOptions,
   ): Promise<Transition> {
     let body = {
       name,
       transitionType,
-      inputJsonSchema,
-      outputJsonSchema,
     };
 
     if (options) {
