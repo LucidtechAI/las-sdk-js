@@ -390,15 +390,15 @@ export class Client {
    * Updates an asset, calls the PATCH /assets/assetId endpoint.
    *
    * @param assetId Id of the asset
-   * @param option.content Content to PATCH
+   * @param update.content Content to PATCH
    * @returns Asset response from REST API with content
    */
-  async updateAsset(assetId: string, options: PatchAssetOptions): Promise<Asset> {
+  async updateAsset(assetId: string, update: PatchAssetOptions): Promise<Asset> {
     let body;
-    if (options) {
-      body = { ...options };
-      if (options.content) {
-        body = { ...body, content: Buffer.from(options.content).toString('base64') };
+    if (update) {
+      body = { ...update };
+      if (update.content) {
+        body = { ...body, content: Buffer.from(update.content).toString('base64') };
       }
     }
 
@@ -489,11 +489,11 @@ export class Client {
    * Updates a secret, calls the PATCH /secrets/secretId endpoint.
    *
    * @param secretId Id of the secret
-   * @param options.data Object containing the data you want to keep secret
-   * @param options.description Description of the secret
+   * @param update.data Object containing the data you want to keep secret
+   * @param update.description Description of the secret
    */
-  async updateSecret(secretId: string, options?: PatchSecretOptions): Promise<Secret> {
-    return this.makePatchRequest(`/secrets/${secretId}`, options);
+  async updateSecret(secretId: string, update: PatchSecretOptions): Promise<Secret> {
+    return this.makePatchRequest(`/secrets/${secretId}`, update);
   }
 
   /* eslint-disable @typescript-eslint/no-explicit-any */
