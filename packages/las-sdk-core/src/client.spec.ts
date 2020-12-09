@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import { getTestClient } from './helpers';
 import {
-  ContentType, PostTransitionOptions, PostWorkflowOptions, PatchSecretOptions, PatchTransitionExecution, TransitionType, WorkflowSpecification,
+  ContentType, CreateTransitionOptions, CreateWorkflowOptions, UpdateSecretOptions, UpdateTransitionExecution, TransitionType, WorkflowSpecification,
 } from './types';
 
 let client = getTestClient();
@@ -95,14 +95,14 @@ describe('Documents', () => {
 
 describe('Transitions', () => {
   describe('createTransition', () => {
-    test.each<[string, TransitionType, PostTransitionOptions | undefined]>([
-      ['test', 'manual', {}],
-      ['test', 'docker', {}],
-      ['test', 'docker', { params: { imageUrl: 'test' } }],
-      ['test', 'docker', { params: { imageUrl: 'test', cpu: 256, memory: 1024 } }],
-      ['test', 'docker', { params: { assets: { jsRemoteComponent: `las:asset:${uuidv4().replace(/-/g, '')}` } } }],
-    ])('params: %s', async (name, transitionType, options) => {
-      const createTransitionPromise = client.createTransition(name, transitionType, options);
+    test.each<[TransitionType, CreateTransitionOptions | undefined]>([
+      ['manual', {}],
+      ['docker', {}],
+      ['docker', { params: { imageUrl: 'test' } }],
+      ['docker', { params: { imageUrl: 'test', cpu: 256, memory: 1024 } }],
+      ['docker', { params: { assets: { jsRemoteComponent: `las:asset:${uuidv4().replace(/-/g, '')}` } } }],
+    ])('params: %s', async (transitionType, options) => {
+      const createTransitionPromise = client.createTransition(transitionType, options);
       await expect(createTransitionPromise).resolves.toHaveProperty('transitionId');
     });
   });
@@ -141,7 +141,7 @@ describe('Transitions', () => {
   });
 
   describe('updateTransitionExecution', () => {
-    test.each<PatchTransitionExecution>([
+    test.each<UpdateTransitionExecution>([
       { status: 'failed', error: { message: 'test' } },
       { status: 'succeeded', output: {} },
       { status: 'succeeded', output: {} },
@@ -171,7 +171,7 @@ describe('Transitions', () => {
 
 describe('Workflows', () => {
   describe('createWorkflow', () => {
-    test.each<[string, WorkflowSpecification, PostWorkflowOptions | undefined]>([
+    test.each<[string, WorkflowSpecification, CreateWorkflowOptions | undefined]>([
       ['test', { definition: {} } as WorkflowSpecification, { description: 'test', errorConfig: { email: 'test@test.com' } }],
       ['test', { definition: {} } as WorkflowSpecification, undefined],
       ['test', { definition: {} } as WorkflowSpecification, { errorConfig: { email: 'test@test.com' } }],
@@ -332,7 +332,7 @@ describe('Secrets', () => {
   });
 
   describe('updateSecret', () => {
-    test.each<PatchSecretOptions>([
+    test.each<UpdateSecretOptions>([
       { data: { user: 'foo' } },
       { description: 'bar' },
       {},

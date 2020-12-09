@@ -17,19 +17,19 @@ import {
   ListUsersOptions,
   ListWorkflowExecutionsOptions,
   ListWorkflowOptions,
-  PatchAssetOptions,
-  PatchDocumentOptions,
-  PatchSecretOptions,
-  PatchTransitionExecution,
-  PatchTransitionOptions,
-  PatchWorkflowOptions,
-  PostBatchOptions,
-  PostDocumentOptions,
+  UpdateAssetOptions,
+  UpdateDocumentOptions,
+  UpdateSecretOptions,
+  UpdateTransitionExecution,
+  UpdateTransitionOptions,
+  UpdateWorkflowOptions,
+  CreateBatchOptions,
+  CreateDocumentOptions,
   PostPredictions,
-  PostPredictionsOptions,
-  PostSecretOptions,
-  PostTransitionOptions,
-  PostWorkflowOptions,
+  CreatePredictionsOptions,
+  CreateSecretOptions,
+  CreateTransitionOptions,
+  CreateWorkflowOptions,
   PredictionResponse,
   Secret,
   SecretList,
@@ -69,7 +69,7 @@ export class Client {
    * @param options.groundTruth List of GroundTruth items representing the ground truth values for the document
    * @returns Document response from REST API
    */
-  async createDocument(content: string, contentType: ContentType, options?: PostDocumentOptions): Promise<LasDocument> {
+  async createDocument(content: string, contentType: ContentType, options?: CreateDocumentOptions): Promise<LasDocument> {
     let body = {
       content: Buffer.from(content).toString('base64'),
       contentType,
@@ -114,7 +114,7 @@ export class Client {
    * @param update.groundTruth List of GroundTruth items representing the ground truth values for the document
    * @returns Document response from REST API
    */
-  async updateDocument(documentId: string, update: PatchDocumentOptions): Promise<LasDocument> {
+  async updateDocument(documentId: string, update: UpdateDocumentOptions): Promise<LasDocument> {
     return this.makePatchRequest<LasDocument>(`/documents/${documentId}`, update);
   }
 
@@ -141,12 +141,10 @@ export class Client {
    * @returns Transition response from REST API
    */
   async createTransition(
-    name: string,
     transitionType: TransitionType,
-    options?: PostTransitionOptions,
+    options?: CreateTransitionOptions,
   ): Promise<Transition> {
     let body = {
-      name,
       transitionType,
     };
 
@@ -176,7 +174,7 @@ export class Client {
    * @param update Transition fields to PATCH
    * @returns Transition response from REST API
    */
-  async updateTransition(transitionId: string, update: PatchTransitionOptions): Promise<Transition> {
+  async updateTransition(transitionId: string, update: UpdateTransitionOptions): Promise<Transition> {
     return this.makePatchRequest<Transition>(`/transitions/${transitionId}`, update);
   }
 
@@ -204,7 +202,7 @@ export class Client {
   async updateTransitionExecution(
     transitionId: string,
     executionId: string,
-    update: PatchTransitionExecution,
+    update: UpdateTransitionExecution,
   ): Promise<TransitionExecution> {
     return this.makePatchRequest<TransitionExecution>(`/transitions/${transitionId}/executions/${executionId}`, update);
   }
@@ -238,7 +236,7 @@ export class Client {
   async createWorkflow(
     name: string,
     specification: WorkflowSpecification,
-    options?: PostWorkflowOptions,
+    options?: CreateWorkflowOptions,
   ): Promise<Workflow> {
     let body = {
       name,
@@ -279,7 +277,7 @@ export class Client {
    * @param update Workflow fields to PATCH
    * @returns Workflow response from REST API
    */
-  async updateWorkflow(workflowId: string, update: PatchWorkflowOptions): Promise<Workflow> {
+  async updateWorkflow(workflowId: string, update: UpdateWorkflowOptions): Promise<Workflow> {
     return this.makePatchRequest<Workflow>(`/workflows/${workflowId}`, update);
   }
 
@@ -341,7 +339,7 @@ export class Client {
   async createPrediction(
     documentId: string,
     modelId: string,
-    options?: PostPredictionsOptions,
+    options?: CreatePredictionsOptions,
   ): Promise<PredictionResponse> {
     let body: PostPredictions = {
       documentId,
@@ -393,7 +391,7 @@ export class Client {
    * @param update.content Content to PATCH
    * @returns Asset response from REST API with content
    */
-  async updateAsset(assetId: string, update: PatchAssetOptions): Promise<Asset> {
+  async updateAsset(assetId: string, update: UpdateAssetOptions): Promise<Asset> {
     let body;
     if (update) {
       body = { ...update };
@@ -412,7 +410,7 @@ export class Client {
    * @param options.description Description of the batch
    * @returns Batch response from REST API
    */
-  async createBatch(options: PostBatchOptions): Promise<Batch> {
+  async createBatch(options: CreateBatchOptions): Promise<Batch> {
     return this.makePostRequest<Batch>('/batches', options);
   }
 
@@ -464,7 +462,7 @@ export class Client {
    * @param options.description Description of the secret
    * @returns Secret response from REST API
    */
-  async createSecret(data: Record<any, any>, options?: PostSecretOptions): Promise<Secret> {
+  async createSecret(data: Record<any, any>, options?: CreateSecretOptions): Promise<Secret> {
     let body = { data };
 
     if (options) {
@@ -492,7 +490,7 @@ export class Client {
    * @param update.data Object containing the data you want to keep secret
    * @param update.description Description of the secret
    */
-  async updateSecret(secretId: string, update: PatchSecretOptions): Promise<Secret> {
+  async updateSecret(secretId: string, update: UpdateSecretOptions): Promise<Secret> {
     return this.makePatchRequest(`/secrets/${secretId}`, update);
   }
 

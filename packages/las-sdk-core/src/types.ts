@@ -4,7 +4,7 @@ import { AxiosRequestConfig, AxiosResponse } from 'axios';
 
 export type ContentType = 'application/pdf' | 'image/jpeg';
 
-export interface PostPredictionsOptions {
+export interface CreatePredictionsOptions {
   maxPages?: number;
   autoRotate?: boolean;
 }
@@ -20,13 +20,13 @@ export interface ListTransitionOptions {
   nextToken?: string;
 }
 
-export interface PostDocumentOptions {
+export interface CreateDocumentOptions {
   consentId?: string;
   batchId?: string;
   groundTruth?: Array<GroundTruth>;
 }
 
-export interface PatchDocumentOptions {
+export interface UpdateDocumentOptions {
   groundTruth?: Array<GroundTruth>;
 }
 
@@ -50,17 +50,18 @@ export interface TransitionExecutionListOptions {
   nextToken?: string;
 }
 
-export interface PatchTransitionExecution {
+export interface UpdateTransitionExecution {
   status: 'succeeded' | 'failed' | 'retry' | 'rejected';
   output?: Record<any, any>;
   error?: { message: string };
 }
 
-export interface PostTransitionOptions {
+export interface CreateTransitionOptions {
+  name?: string;
   inputJsonSchema?: Record<any, any>;
   outputJsonSchema?: Record<any, any>;
   description?: string;
-  params?: PostTransitionParams;
+  params?: CreateTransitionParams;
 }
 
 export type LasDocumentList = {
@@ -70,7 +71,7 @@ export type LasDocumentList = {
   nextToken?: string;
 };
 
-export type PostTransitionDockerParams = {
+export type CreateTransitionDockerParams = {
   environment?: object;
   memory?: 512 | 1024 | 2048;
   credentials?: {
@@ -81,18 +82,18 @@ export type PostTransitionDockerParams = {
   cpu?: 256;
 };
 
-export type PostTransitionManualParams = {
+export type CreateTransitionManualParams = {
   assets?: {
     /** Pattern: ^las:asset:[a-f0-9]{32}$ */
     jsRemoteComponent?: string;
   } & Record<string, string>;
 };
 
-export type PostTransitionParams = PostTransitionDockerParams | PostTransitionManualParams;
+export type CreateTransitionParams = CreateTransitionDockerParams | CreateTransitionManualParams;
 
 export type TransitionType = 'docker' | 'manual';
 
-export type PatchTransitionOptions = {
+export type UpdateTransitionOptions = {
   name?: string;
   description?: string;
   inputJsonSchema?: Record<any, any>;
@@ -142,12 +143,12 @@ export type ListWorkflowExecutionsOptions = PaginationOptions & {
   order?: 'ascending' | 'descending';
 };
 
-export type PostWorkflowOptions = {
+export type CreateWorkflowOptions = {
   description?: string;
   errorConfig?: { email: string };
 };
 
-export interface PatchWorkflowOptions {
+export interface UpdateWorkflowOptions {
   name?: string;
   description?: string;
 }
@@ -185,7 +186,7 @@ export interface DeleteDocumentOptions {
   consentId?: string | Array<string>;
 }
 
-export type PostPredictions = PostPredictionsOptions & {
+export type PostPredictions = CreatePredictionsOptions & {
   documentId: string;
   modelId: string;
 };
@@ -230,11 +231,11 @@ export type SecretList = {
   nextToken?: string | null;
 };
 
-export interface PostSecretOptions {
+export interface CreateSecretOptions {
   description?: string;
 }
 
-export interface PatchSecretOptions {
+export interface UpdateSecretOptions {
   data?: Record<any, any>;
   description?: string;
 }
@@ -267,12 +268,12 @@ export type AssetList = {
   nextToken?: string;
 };
 
-export type PostBatchOptions = {
+export type CreateBatchOptions = {
   name?: string;
   description?: string;
 }
 
-export interface PatchAssetOptions {
+export interface UpdateAssetOptions {
   content?: string;
 }
 
