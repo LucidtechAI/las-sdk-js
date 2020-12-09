@@ -2,37 +2,42 @@ import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 import { Credentials } from './credentials';
 import {
   Asset,
-  Assets,
+  AssetList,
   AuthorizationHeaders,
   AxiosFn,
   Batch,
   ContentType,
-  CreateDocumentOptions,
-  CreatePredictionOptions,
-  CreateTransitionOptions,
-  CreateWorkflowOptions,
   DeleteDocumentOptions,
-  GroundTruth,
   LasDocument,
   LasDocumentList,
+  ListAssetsOptions,
   ListDocumentsOptions,
+  ListSecretsOptions,
   ListTransitionOptions,
+  ListUsersOptions,
   ListWorkflowExecutionsOptions,
-  PaginationInput,
-  PatchTransition,
-  PatchWorkflow,
+  ListWorkflowOptions,
+  PatchAssetOptions,
+  PatchDocumentOptions,
+  PatchSecretOptions,
+  PatchTransitionExecution,
+  PatchTransitionOptions,
+  PatchWorkflowOptions,
+  PostDocumentOptions,
   PostPredictions,
+  PostPredictionsOptions,
+  PostSecretOptions,
+  PostTransitionOptions,
+  PostWorkflowOptions,
   PredictionResponse,
   Secret,
   SecretList,
-  SecretOptions,
   Transition,
   TransitionExecution,
   TransitionExecutionList,
   TransitionExecutionListOptions,
   TransitionList,
   TransitionType,
-  UpdateTransitionExecution,
   User,
   UserList,
   Workflow,
@@ -63,11 +68,7 @@ export class Client {
    * @param options.groundTruth List of GroundTruth items representing the ground truth values for the document
    * @returns Document response from REST API
    */
-  async createDocument(
-    content: string,
-    contentType: ContentType,
-    options?: CreateDocumentOptions,
-  ): Promise<LasDocument> {
+  async createDocument(content: string, contentType: ContentType, options?: PostDocumentOptions): Promise<LasDocument> {
     let body = {
       content: Buffer.from(content).toString('base64'),
       contentType,
@@ -93,14 +94,14 @@ export class Client {
   /**
    * List documents available for inference, calls the GET /documents endpoint.
    *
-   * @param queryParameters.batchId Ids of the batches that contains the documents of interest
-   * @param queryParameters.consentId Ids of the consents that marks the owner of the document handle
-   * @param queryParameters.maxResults Maximum number of results to be returned
-   * @param queryParameters.nextToken A unique token for each page, use the returned token to retrieve the next page.
+   * @param options.batchId Ids of the batches that contains the documents of interest
+   * @param options.consentId Ids of the consents that marks the owner of the document handle
+   * @param options.maxResults Maximum number of results to be returned
+   * @param options.nextToken A unique token for each page, use the returned token to retrieve the next page.
    * @returns Documents response from REST API
    */
-  async listDocuments(queryParameters?: ListDocumentsOptions): Promise<LasDocumentList> {
-    return this.makeGetRequest<LasDocumentList>('/documents', queryParameters);
+  async listDocuments(options?: ListDocumentsOptions): Promise<LasDocumentList> {
+    return this.makeGetRequest<LasDocumentList>('/documents', options);
   }
 
   /**
@@ -109,15 +110,11 @@ export class Client {
    * This enables the API to learn from past mistakes.
    *
    * @param documentId Id of the document
-   * @param groundTruth List of GroundTruth items representing the ground truth values for the document
+   * @param update.groundTruth List of GroundTruth items representing the ground truth values for the document
    * @returns Document response from REST API
    */
-  async updateDocument(documentId: string, groundTruth: Array<GroundTruth>): Promise<LasDocument> {
-    const body = {
-      groundTruth,
-    };
-
-    return this.makePatchRequest<LasDocument>(`/documents/${documentId}`, body);
+  async updateDocument(documentId: string, update: PatchDocumentOptions): Promise<LasDocument> {
+    return this.makePatchRequest<LasDocument>(`/documents/${documentId}`, update);
   }
 
   /**
@@ -145,7 +142,7 @@ export class Client {
   async createTransition(
     name: string,
     transitionType: TransitionType,
-    options?: CreateTransitionOptions,
+    options?: PostTransitionOptions,
   ): Promise<Transition> {
     let body = {
       name,
@@ -162,23 +159,24 @@ export class Client {
   /**
    * List transitions, calls the GET /transitions endpoint.
    *
-   * @param queryParameters.transitionType Types of transitions
-   * @param queryParameters.maxResults Maximum number of results to be returned
-   * @param queryParameters.nextToken A unique token for each page, use the returned token to retrieve the next page.
+   * @param options.transitionType Types of transitions
+   * @param options.maxResults Maximum number of results to be returned
+   * @param options.nextToken A unique token for each page, use the returned token to retrieve the next page.
    * @returns Transitions response from REST API
    */
-  async listTransitions(queryParameters?: ListTransitionOptions): Promise<TransitionList> {
-    return this.makeGetRequest('/transitions', queryParameters);
+  async listTransitions(options?: ListTransitionOptions): Promise<TransitionList> {
+    return this.makeGetRequest('/transitions', options);
   }
 
   /**
    * Updates a transition, calls the PATCH /transitions/transitionId endpoint.
+   *
    * @param transitionId Id of the transition
-   * @param transitionUpdate Transition fields to PATCH
+   * @param update Transition fields to PATCH
    * @returns Transition response from REST API
    */
-  async updateTransition(transitionId: string, transitionUpdate: PatchTransition): Promise<Transition> {
-    return this.makePatchRequest<Transition>(`/transitions/${transitionId}`, transitionUpdate);
+  async updateTransition(transitionId: string, update: PatchTransitionOptions): Promise<Transition> {
+    return this.makePatchRequest<Transition>(`/transitions/${transitionId}`, update);
   }
 
   /**
@@ -197,34 +195,34 @@ export class Client {
    *
    * @param transitionId Id of the transition that performs the execution
    * @param executionId Id of the execution to update
-   * @param input.status Status of the execution 'succeeded|failed'
-   * @param input.output Output from the execution, required when status is 'succeded'
-   * @param input.error Error from the execution, required when status is 'failed', needs to contain 'message'
+   * @param update.status Status of the execution 'succeeded|failed'
+   * @param update.output Output from the execution, required when status is 'succeded'
+   * @param update.error Error from the execution, required when status is 'failed', needs to contain 'message'
    * @returns Transition execution response from REST API
    */
   async updateTransitionExecution(
     transitionId: string,
     executionId: string,
-    input: UpdateTransitionExecution,
+    update: PatchTransitionExecution,
   ): Promise<TransitionExecution> {
-    return this.makePatchRequest<TransitionExecution>(`/transitions/${transitionId}/executions/${executionId}`, input);
+    return this.makePatchRequest<TransitionExecution>(`/transitions/${transitionId}/executions/${executionId}`, update);
   }
 
   /**
    * List executions in a transition, calls the GET /transitions/{transitionId}/executions endpoint.
    *
    * @param transitionId Id of the transition
-   * @param queryParameters.status Statuses of the executions
-   * @param queryParameters.executionId Ids of the executions
-   * @param queryParameters.maxResults Maximum number of results to be returned
-   * @param queryParameters.nextToken A unique token for each page, use the returned token to retrieve the next page.
+   * @param options.status Statuses of the executions
+   * @param options.executionId Ids of the executions
+   * @param options.maxResults Maximum number of results to be returned
+   * @param options.nextToken A unique token for each page, use the returned token to retrieve the next page.
    * @returns Transition executions responses from REST API
    */
   async listTransitionExecutions(
     transitionId: string,
-    queryParameters?: TransitionExecutionListOptions,
+    options?: TransitionExecutionListOptions,
   ): Promise<TransitionExecutionList> {
-    return this.makeGetRequest<TransitionExecutionList>(`/transitions/${transitionId}/executions`, queryParameters);
+    return this.makeGetRequest<TransitionExecutionList>(`/transitions/${transitionId}/executions`, options);
   }
 
   /**
@@ -239,7 +237,7 @@ export class Client {
   async createWorkflow(
     name: string,
     specification: WorkflowSpecification,
-    options?: CreateWorkflowOptions,
+    options?: PostWorkflowOptions,
   ): Promise<Workflow> {
     let body = {
       name,
@@ -255,12 +253,13 @@ export class Client {
 
   /**
    * List workflows, calls the GET /workflows endpoint.
-   * @param queryParameters.maxResults Maximum number of results to be returned
-   * @param queryParameters.nextToken A unique token for each page, use the returned token to retrieve the next page.
+   *
+   * @param options.maxResults Maximum number of results to be returned
+   * @param options.nextToken A unique token for each page, use the returned token to retrieve the next page.
    * @returns Workflows response from REST API
    */
-  async listWorkflows(queryParameters?: PaginationInput): Promise<WorkflowList> {
-    return this.makeGetRequest<WorkflowList>('/workflows', queryParameters);
+  async listWorkflows(options?: ListWorkflowOptions): Promise<WorkflowList> {
+    return this.makeGetRequest<WorkflowList>('/workflows', options);
   }
 
   /**
@@ -276,11 +275,11 @@ export class Client {
   /**
    * Updates a workflow, calls the PATCH /workflows/workflowId endpoint.
    * @param workflowId Id of the workflow
-   * @param workflowUpdate Workflow fields to PATCH
+   * @param update Workflow fields to PATCH
    * @returns Workflow response from REST API
    */
-  async updateWorkflow(workflowId: string, workflowUpdate: PatchWorkflow): Promise<Workflow> {
-    return this.makePatchRequest<Workflow>(`/workflows/${workflowId}`, workflowUpdate);
+  async updateWorkflow(workflowId: string, update: PatchWorkflowOptions): Promise<Workflow> {
+    return this.makePatchRequest<Workflow>(`/workflows/${workflowId}`, update);
   }
 
   /**
@@ -302,16 +301,18 @@ export class Client {
    * List executions in a workflow, calls the GET /workflows/{workflowId}/executions endpoint.
    *
    * @param workflowId Id of the workflow
-   * @param queryParameters.status Statuses of the executions
-   * @param queryParameters.maxResults Maximum number of results to be returned
-   * @param queryParameters.nextToken A unique token for each page, use the returned token to retrieve the next page.
+   * @param options.status Statuses of the executions
+   * @param options.maxResults Maximum number of results to be returned
+   * @param options.nextToken A unique token for each page, use the returned token to retrieve the next page.
+   * @param options.sortBy What field to sort by ('startTime' | 'endTime')
+   * @param options.order Sort order ('ascending' | 'descending')
    * @returns Workflow executions responses from REST API
    */
   async listWorkflowExecutions(
     workflowId: string,
-    queryParameters?: ListWorkflowExecutionsOptions,
+    options?: ListWorkflowExecutionsOptions,
   ): Promise<WorkflowExecutionList> {
-    return this.makeGetRequest<WorkflowExecutionList>(`/workflows/${workflowId}/executions`, queryParameters);
+    return this.makeGetRequest<WorkflowExecutionList>(`/workflows/${workflowId}/executions`, options);
   }
 
   /**
@@ -339,7 +340,7 @@ export class Client {
   async createPrediction(
     documentId: string,
     modelId: string,
-    options?: CreatePredictionOptions,
+    options?: PostPredictionsOptions,
   ): Promise<PredictionResponse> {
     let body: PostPredictions = {
       documentId,
@@ -366,12 +367,12 @@ export class Client {
   /**
    * List assets available, calls the GET /assets endpoint.
    *
-   * @param queryParameters.maxResults Maximum number of results to be returned
-   * @param queryParameters.nextToken A unique token for each page, use the returned token to retrieve the next page.
+   * @param options.maxResults Maximum number of results to be returned
+   * @param options.nextToken A unique token for each page, use the returned token to retrieve the next page.
    * @returns Assets response from REST API without the content of each asset
    */
-  async listAssets(queryParameters?: PaginationInput): Promise<Assets> {
-    return this.makeGetRequest<Assets>('/assets', queryParameters);
+  async listAssets(options?: ListAssetsOptions): Promise<AssetList> {
+    return this.makeGetRequest<AssetList>('/assets', options);
   }
 
   /**
@@ -388,11 +389,18 @@ export class Client {
    * Updates an asset, calls the PATCH /assets/assetId endpoint.
    *
    * @param assetId Id of the asset
-   * @param content Content to PATCH
+   * @param option.content Content to PATCH
    * @returns Asset response from REST API with content
    */
-  async updateAsset(assetId: string, content: string): Promise<Asset> {
-    const body = { content: Buffer.from(content).toString('base64') };
+  async updateAsset(assetId: string, options: PatchAssetOptions): Promise<Asset> {
+    let body;
+    if (options) {
+      body = { ...options };
+      if (options.content) {
+        body = { ...body, content: Buffer.from(options.content).toString('base64') };
+      }
+    }
+
     return this.makePatchRequest(`/assets/${assetId}`, body);
   }
 
@@ -423,12 +431,12 @@ export class Client {
   /**
    * List users, calls the GET /users endpoint.
    *
-   * @param queryParameters.maxResults Maximum number of results to be returned
-   * @param queryParameters.nextToken A unique token for each page, use the returned token to retrieve the next page.
+   * @param options.maxResults Maximum number of results to be returned
+   * @param options.nextToken A unique token for each page, use the returned token to retrieve the next page.
    * @returns User response from REST API
    */
-  async listUsers(queryParameters?: PaginationInput): Promise<UserList> {
-    return this.makeGetRequest<UserList>('/users', queryParameters);
+  async listUsers(options?: ListUsersOptions): Promise<UserList> {
+    return this.makeGetRequest<UserList>('/users', options);
   }
 
   /**
@@ -458,7 +466,7 @@ export class Client {
    * @param options.description Description of the secret
    * @returns Secret response from REST API
    */
-  async createSecret(data: Record<any, any>, options?: SecretOptions): Promise<Secret> {
+  async createSecret(data: Record<any, any>, options?: PostSecretOptions): Promise<Secret> {
     let body = { data };
 
     if (options) {
@@ -471,29 +479,23 @@ export class Client {
   /**
    * List secrets available, calls the GET /secrets endpoint.
    *
-   * @param queryParameters.maxResults Maximum number of results to be returned
-   * @param queryParameters.nextToken A unique token for each page, use the returned token to retrieve the next page.
+   * @param options.maxResults Maximum number of results to be returned
+   * @param options.nextToken A unique token for each page, use the returned token to retrieve the next page.
    * @returns Secrets response from REST API without the username of each secret
    */
-  async listSecrets(queryParameters?: PaginationInput): Promise<SecretList> {
-    return this.makeGetRequest<SecretList>('/secrets', queryParameters);
+  async listSecrets(options?: ListSecretsOptions): Promise<SecretList> {
+    return this.makeGetRequest<SecretList>('/secrets', options);
   }
 
   /**
    * Updates a secret, calls the PATCH /secrets/secretId endpoint.
    *
    * @param secretId Id of the secret
-   * @param data Object containing the data you want to keep secret
+   * @param options.data Object containing the data you want to keep secret
    * @param options.description Description of the secret
    */
-  async updateSecret(secretId: string, data: Record<any, any>, options?: SecretOptions): Promise<Secret> {
-    let body = { data };
-
-    if (options) {
-      body = { ...body, ...options };
-    }
-
-    return this.makePatchRequest(`/secrets/${secretId}`, body);
+  async updateSecret(secretId: string, options?: PatchSecretOptions): Promise<Secret> {
+    return this.makePatchRequest(`/secrets/${secretId}`, options);
   }
 
   /* eslint-disable @typescript-eslint/no-explicit-any */

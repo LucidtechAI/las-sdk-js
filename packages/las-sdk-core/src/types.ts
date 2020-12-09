@@ -1,13 +1,15 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { AxiosRequestConfig, AxiosResponse } from 'axios';
 
 export type ContentType = 'application/pdf' | 'image/jpeg';
 
-export interface CreatePredictionOptions {
+export interface PostPredictionsOptions {
   maxPages?: number;
   autoRotate?: boolean;
 }
 
-export interface PaginationInput {
+export interface PaginationOptions {
   maxResults?: number;
   nextToken?: string;
 }
@@ -18,15 +20,14 @@ export interface ListTransitionOptions {
   nextToken?: string;
 }
 
-export interface CreateDocumentOptions {
+export interface PostDocumentOptions {
   consentId?: string;
   batchId?: string;
   groundTruth?: Array<GroundTruth>;
 }
 
-export interface CreateWorkflowOptions {
-  description?: string;
-  errorConfig?: { email: string };
+export interface PatchDocumentOptions {
+  groundTruth?: Array<GroundTruth>;
 }
 
 export interface ListDocumentsOptions {
@@ -49,13 +50,13 @@ export interface TransitionExecutionListOptions {
   nextToken?: string;
 }
 
-export interface UpdateTransitionExecution {
+export interface PatchTransitionExecution {
   status: 'succeeded' | 'failed' | 'retry' | 'rejected';
   output?: Record<any, any>;
   error?: { message: string };
 }
 
-export interface CreateTransitionOptions {
+export interface PostTransitionOptions {
   inputJsonSchema?: Record<any, any>;
   outputJsonSchema?: Record<any, any>;
   description?: string;
@@ -91,7 +92,7 @@ export type PostTransitionParams = PostTransitionDockerParams | PostTransitionMa
 
 export type TransitionType = 'docker' | 'manual';
 
-export type PatchTransition = {
+export type PatchTransitionOptions = {
   name?: string;
   description?: string;
   inputJsonSchema?: Record<any, any>;
@@ -133,18 +134,23 @@ export type Workflow = {
   description?: string;
 };
 
-export interface ListWorkflowExecutionsOptions {
+export type ListWorkflowOptions = PaginationOptions;
+
+export type ListWorkflowExecutionsOptions = PaginationOptions & {
   status?: string | Array<string>;
-  maxResults?: number;
-  nextToken?: string;
   sortBy?: 'startTime' | 'endTime';
   order?: 'ascending' | 'descending';
-}
+};
 
-export type PatchWorkflow = {
+export type PostWorkflowOptions = {
+  description?: string;
+  errorConfig?: { email: string };
+};
+
+export interface PatchWorkflowOptions {
   name?: string;
   description?: string;
-};
+}
 
 export type WorkflowList = {
   workflows: Array<Workflow>;
@@ -179,11 +185,9 @@ export interface DeleteDocumentOptions {
   consentId?: string | Array<string>;
 }
 
-export type PostPredictions = {
+export type PostPredictions = PostPredictionsOptions & {
   documentId: string;
   modelId: string;
-  maxPages?: number;
-  autoRotate?: boolean;
 };
 
 export type Prediction = GroundTruth & {
@@ -206,6 +210,8 @@ export type User = {
   email: string;
 };
 
+export type ListUsersOptions = PaginationOptions;
+
 export type UserList = {
   users: Array<User>;
   nextToken?: string;
@@ -216,12 +222,19 @@ export type Secret = {
   description?: string | null;
 };
 
+export type ListSecretsOptions = PaginationOptions;
+
 export type SecretList = {
   secrets: Array<Secret>;
   nextToken?: string | null;
+};
+
+export interface PostSecretOptions {
+  description?: string;
 }
 
-export interface SecretOptions {
+export interface PatchSecretOptions {
+  data?: Record<any, any>;
   description?: string;
 }
 
@@ -248,19 +261,24 @@ export type Asset = {
   content?: string;
 };
 
-export type Assets = {
+export type AssetList = {
   assets: Array<Asset>;
   nextToken?: string;
 };
+
+export interface PatchAssetOptions {
+  content?: string;
+}
+
+export type ListAssetsOptions = PaginationOptions;
 
 export type AuthorizationHeaders = {
   'X-Api-Key': string;
   Authorization: string;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type AxiosFn = <T = any, R = AxiosResponse<T>>(
   url: string,
-  body?: any, // eslint-disable-line
+  body?: any,
   config?: AxiosRequestConfig
 ) => Promise<R>;
