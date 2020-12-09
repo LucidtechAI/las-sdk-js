@@ -23,6 +23,7 @@ import {
   PatchTransitionExecution,
   PatchTransitionOptions,
   PatchWorkflowOptions,
+  PostBatchOptions,
   PostDocumentOptions,
   PostPredictions,
   PostPredictionsOptions,
@@ -407,15 +408,12 @@ export class Client {
   /**
    * Creates a batch, calls the POST /batches endpoint.
    *
-   * @param description Description of the batch
+   * @param options.name Name of the batch
+   * @param options.description Description of the batch
    * @returns Batch response from REST API
    */
-  async createBatch(description: string): Promise<Batch> {
-    const body = {
-      description,
-    };
-
-    return this.makePostRequest<Batch>('/batches', body);
+  async createBatch(options: PostBatchOptions): Promise<Batch> {
+    return this.makePostRequest<Batch>('/batches', options);
   }
 
   /**

@@ -202,6 +202,7 @@ export type PredictionResponse = {
 
 export type Batch = {
   batchId: string;
+  name: string;
   description: string;
 };
 
@@ -265,6 +266,11 @@ export type AssetList = {
   assets: Array<Asset>;
   nextToken?: string;
 };
+
+export type PostBatchOptions = {
+  name?: string;
+  description?: string;
+}
 
 export interface PatchAssetOptions {
   content?: string;
