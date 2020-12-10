@@ -165,7 +165,7 @@ export type WorkflowExecution = {
   status?: 'succeeded' | 'failed' | 'running' | 'rejected';
   startTime: string | null;
   endTime: string | null;
-  transitionExecutions: Record<string, Array<string>>;
+  transitionExecutions: Record<string, Array<string>> | null;
 };
 
 export type WorkflowExecutionList = {
