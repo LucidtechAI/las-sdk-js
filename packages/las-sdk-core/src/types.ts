@@ -14,10 +14,8 @@ export interface PaginationOptions {
   nextToken?: string;
 }
 
-export interface ListTransitionOptions {
+export type ListTransitionOptions = PaginationOptions & {
   transitionType?: string | Array<string>;
-  maxResults?: number;
-  nextToken?: string;
 }
 
 export interface CreateDocumentOptions {
@@ -30,11 +28,9 @@ export interface UpdateDocumentOptions {
   groundTruth?: Array<GroundTruth>;
 }
 
-export interface ListDocumentsOptions {
+export type ListDocumentsOptions = PaginationOptions & {
   batchId?: string | Array<string>;
   consentId?: string | Array<string>;
-  maxResults?: number;
-  nextToken?: string;
 }
 
 export type TransitionExecutionList = {
@@ -43,11 +39,11 @@ export type TransitionExecutionList = {
   nextToken: string | null;
 };
 
-export interface TransitionExecutionListOptions {
+export type TransitionExecutionListOptions = PaginationOptions & {
   status?: 'succeeded' | 'failed' | 'retry' | 'running' | 'rejected';
   executionId?: string | Array<string>;
-  maxResults?: number;
-  nextToken?: string;
+  sortBy?: 'startTime' | 'endTime';
+  order?: 'ascending' | 'descending';
 }
 
 export interface UpdateTransitionExecution {
