@@ -261,8 +261,23 @@ export type Asset = {
 
 export type AssetList = {
   assets: Array<Asset>;
-  nextToken?: string;
+  nextToken: string | null;
 };
+
+export type Model = {
+  modelId: string;
+  description: string | null;
+  height: number;
+  name: string | null;
+  width: number;
+}
+
+export type ListModelsOptions = PaginationOptions;
+
+export type ModelList = {
+  models: Array<Model>;
+  nextToken: string | null;
+}
 
 export type CreateBatchOptions = {
   name?: string;

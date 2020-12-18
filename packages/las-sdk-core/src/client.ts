@@ -46,6 +46,8 @@ import {
   WorkflowExecutionList,
   WorkflowList,
   WorkflowSpecification,
+  ListModelsOptions,
+  ModelList,
 } from './types';
 import { buildURL } from './utils';
 
@@ -481,6 +483,17 @@ export class Client {
    */
   async listSecrets(options?: ListSecretsOptions): Promise<SecretList> {
     return this.makeGetRequest<SecretList>('/secrets', options);
+  }
+
+  /**
+   * List models available, calls the GET /models endpoint.
+   *
+   * @param options.maxResults Maximum number of results to be returned
+   * @param options.nextToken A unique token for each page, use the returned token to retrieve the next page.
+   * @returns Models response from the REST API
+   */
+  async listModels(options?: ListModelsOptions): Promise<ModelList> {
+    return this.makeGetRequest<ModelList>('/models', options);
   }
 
   /**

@@ -411,3 +411,12 @@ describe('createBatch', () => {
     await expect(createBatchPromise).resolves.toHaveProperty('batchId');
   });
 });
+
+describe('Models', () => {
+  describe('listModels', () => {
+    test('valid request', async () => {
+      const listModelsPromise = client.listModels();
+      await expect(listModelsPromise).resolves.toHaveProperty('models');
+    });
+  });
+});
