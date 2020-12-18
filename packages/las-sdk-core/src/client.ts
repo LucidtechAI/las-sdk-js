@@ -48,6 +48,8 @@ import {
   WorkflowSpecification,
   ListModelsOptions,
   ModelList,
+  ListPredictionsOptions,
+  PredictionList,
 } from './types';
 import { buildURL } from './utils';
 
@@ -353,6 +355,10 @@ export class Client {
     }
 
     return this.makePostRequest<PredictionResponse>('/predictions', body);
+  }
+
+  async listPredictions(options?: ListPredictionsOptions): Promise<PredictionList> {
+    return this.makeGetRequest<PredictionList>('/predictions', options);
   }
 
   /**

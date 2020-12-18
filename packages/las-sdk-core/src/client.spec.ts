@@ -360,6 +360,13 @@ describe('Predictions', () => {
       await expect(createPredictionPromise).rejects.toBeDefined();
     });
   });
+
+  describe('listPredictions', () => {
+    test('valid request', async () => {
+      const listPredictionsPromise = client.listPredictions();
+      await expect(listPredictionsPromise).resolves.toHaveProperty('predictions');
+    });
+  });
 });
 
 describe('Assets', () => {

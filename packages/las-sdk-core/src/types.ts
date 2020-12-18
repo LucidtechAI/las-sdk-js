@@ -193,9 +193,20 @@ export type Prediction = GroundTruth & {
 };
 
 export type PredictionResponse = {
+  predictionId: string;
+  modelId: string;
   documentId: string;
+  inferenceTime: number;
+  timestamp: number;
   predictions?: Array<Prediction>;
 };
+
+export type ListPredictionsOptions = PaginationOptions;
+
+export type PredictionList = {
+  predictions: Array<PredictionResponse>;
+  nextToken: string | null;
+}
 
 export type Batch = {
   batchId: string;
