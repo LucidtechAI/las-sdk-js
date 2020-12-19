@@ -46,6 +46,7 @@
   },
   "dependencies": {
     "@lucidtech/las-sdk-browser": "file:packages/las-sdk-browser",
-    "@lucidtech/las-sdk-node": "file:packages/las-sdk-node"
+    "@lucidtech/las-sdk-node": "file:packages/las-sdk-node",
+    "buffer": "^6.0.3"
   }
 }

@@ -1,4 +1,6 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
+import { Buffer } from 'buffer';
+
 import { Credentials } from './credentials';
 import {
   Asset,
@@ -66,16 +68,17 @@ export class Client {
   /**
    * Creates a document handle, calls the POST /documents endpoint.
    *
-   * @param content Content to POST
+   * @param content Content to POST (base64 string | Buffer)
    * @param contentType MIME type for the document handle
    * @param options.consentId Id of the consent that marks the owner of the document handle
    * @param options.batchId Id of the associated batch
    * @param options.groundTruth List of GroundTruth items representing the ground truth values for the document
    * @returns Document response from REST API
    */
-  async createDocument(content: string, contentType: ContentType, options?: CreateDocumentOptions): Promise<LasDocument> {
+  async createDocument(content: string | Buffer, contentType: ContentType, options?: CreateDocumentOptions): Promise<LasDocument> {
+    const encodedContent = typeof content === 'string' ? content : Buffer.from(content).toString('base64');
     let body = {
-      content: Buffer.from(content).toString('base64'),
+      content: encodedContent,
       contentType,
     };
 
@@ -364,11 +367,12 @@ export class Client {
   /**
    * Creates an asset handle, calls the POST /assets endpoint.
    *
-   * @param content Content to POST
+   * @param content Content to POST (base64-encoded string | Buffer)
    * @returns Asset response from REST API
    */
   async createAsset(content: string): Promise<Asset> {
-    return this.makePostRequest<Asset>('/assets', { content: Buffer.from(content).toString('base64') });
+    const encodedContent = typeof content === 'string' ? content : Buffer.from(content).toString('base64');
+    return this.makePostRequest<Asset>('/assets', { content: encodedContent });
   }
 
   /**
@@ -396,7 +400,7 @@ export class Client {
    * Updates an asset, calls the PATCH /assets/assetId endpoint.
    *
    * @param assetId Id of the asset
-   * @param update.content Content to PATCH
+   * @param update.content Content to PATCH (base64-encoded string | Buffer)
    * @returns Asset response from REST API with content
    */
   async updateAsset(assetId: string, update: UpdateAssetOptions): Promise<Asset> {
@@ -404,7 +408,8 @@ export class Client {
     if (update) {
       body = { ...update };
       if (update.content) {
-        body = { ...body, content: Buffer.from(update.content).toString('base64') };
+        const encodedContent = typeof update.content === 'string' ? update.content : Buffer.from(update.content).toString('base64');
+        body = { ...body, content: encodedContent };
       }
     }
 

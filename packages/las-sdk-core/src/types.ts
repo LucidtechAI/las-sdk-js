@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { AxiosRequestConfig, AxiosResponse } from 'axios';
+import { Buffer } from 'buffer';
 
 export type ContentType = 'application/pdf' | 'image/jpeg';
 
@@ -296,7 +297,7 @@ export type CreateBatchOptions = {
 }
 
 export interface UpdateAssetOptions {
-  content?: string;
+  content?: string | Buffer;
 }
 
 export type ListAssetsOptions = PaginationOptions;
