@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { AxiosRequestConfig, AxiosResponse } from 'axios';
-import { Buffer } from 'buffer';
 
 export type ContentType = 'application/pdf' | 'image/jpeg';
 
@@ -163,6 +162,7 @@ export type WorkflowExecution = {
   startTime: string | null;
   endTime: string | null;
   transitionExecutions: Record<string, Array<string>> | null;
+  completedBy: Array<string>;
 };
 
 export type WorkflowExecutionList = {
