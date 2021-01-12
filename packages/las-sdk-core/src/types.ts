@@ -304,6 +304,12 @@ export interface UpdateAssetOptions {
 
 export type ListAssetsOptions = PaginationOptions;
 
+export type Log = {
+  logId: string;
+  events: Array<Record<any, any>>;
+  transitionId?: string | null;
+}
+
 export type AuthorizationHeaders = {
   'X-Api-Key': string;
   Authorization: string;

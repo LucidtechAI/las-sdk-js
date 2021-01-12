@@ -426,3 +426,13 @@ describe('Models', () => {
     });
   });
 });
+
+describe('Logs', () => {
+  describe('getLog', () => {
+    test('valid request', async () => {
+      const getLogPromise = client.getLog('logId');
+      await expect(getLogPromise).resolves.toHaveProperty('logId');
+      await expect(getLogPromise).resolves.toHaveProperty('events');
+    });
+  });
+});

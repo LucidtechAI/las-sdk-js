@@ -52,6 +52,7 @@ import {
   ModelList,
   ListPredictionsOptions,
   PredictionList,
+  Log,
 } from './types';
 import { buildURL } from './utils';
 
@@ -505,6 +506,16 @@ export class Client {
    */
   async listModels(options?: ListModelsOptions): Promise<ModelList> {
     return this.makeGetRequest<ModelList>('/models', options);
+  }
+
+  /**
+   * Get log, calls the GET /logs/{logId} endpoint.
+   *
+   * @param logId Id of the log
+   * @returns Log response from REST API
+   */
+  async getLog(logId: string): Promise<Log> {
+    return this.makeGetRequest<Log>(`/logs/${logId}`);
   }
 
   /**
