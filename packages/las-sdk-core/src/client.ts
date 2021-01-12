@@ -513,6 +513,7 @@ export class Client {
    * @param secretId Id of the secret
    * @param update.data Object containing the data you want to keep secret
    * @param update.description Description of the secret
+   * @param update.name Name of the secret
    */
   async updateSecret(secretId: string, update: UpdateSecretOptions): Promise<Secret> {
     return this.makePatchRequest(`/secrets/${secretId}`, update);

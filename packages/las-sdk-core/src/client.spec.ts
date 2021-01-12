@@ -98,10 +98,10 @@ describe('Transitions', () => {
     test.each<[TransitionType, CreateTransitionOptions | undefined]>([
       ['manual', {}],
       ['docker', {}],
-      ['docker', { params: { imageUrl: 'test' } }],
-      ['docker', { params: { imageUrl: 'test', cpu: 256, memory: 1024 } }],
-      ['docker', { params: { assets: { jsRemoteComponent: `las:asset:${uuidv4().replace(/-/g, '')}` } } }],
-    ])('params: %s', async (transitionType, options) => {
+      ['docker', { parameters: { imageUrl: 'test' } }],
+      ['docker', { parameters: { imageUrl: 'test', cpu: 256, memory: 1024 } }],
+      ['docker', { parameters: { assets: { jsRemoteComponent: `las:asset:${uuidv4().replace(/-/g, '')}` } } }],
+    ])('parameters: %s', async (transitionType, options) => {
       const createTransitionPromise = client.createTransition(transitionType, options);
       await expect(createTransitionPromise).resolves.toHaveProperty('transitionId');
     });
@@ -163,8 +163,7 @@ describe('Transitions', () => {
   describe('listTransitionExecutions', () => {
     test('valid request', async () => {
       const listTransitionExecutionsPromise = client.listTransitionExecutions('foo');
-      await expect(listTransitionExecutionsPromise).resolves.toHaveProperty('executionId');
-      await expect(listTransitionExecutionsPromise).resolves.toHaveProperty('transitionId');
+      await expect(listTransitionExecutionsPromise).resolves.toHaveProperty('executions');
     });
   });
 });
@@ -335,7 +334,7 @@ describe('Secrets', () => {
     test.each<UpdateSecretOptions>([
       { data: { user: 'foo' } },
       { description: 'bar' },
-      {},
+      { name: 'foo' },
     ])('with input: %o', async (options) => {
       const updateSecretPromise = client.updateSecret('foo', options);
       await expect(updateSecretPromise).resolves.toHaveProperty('secretId');

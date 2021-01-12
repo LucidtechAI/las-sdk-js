@@ -54,11 +54,11 @@ export interface UpdateTransitionExecution {
 }
 
 export interface CreateTransitionOptions {
-  name?: string;
+  name?: string | null;
   inputJsonSchema?: Record<any, any>;
   outputJsonSchema?: Record<any, any>;
-  description?: string;
-  params?: CreateTransitionParams;
+  description?: string | null;
+  parameters?: CreateTransitionParams;
 }
 
 export type LasDocumentList = {
@@ -229,7 +229,8 @@ export type UserList = {
 
 export type Secret = {
   secredId: string;
-  description?: string | null;
+  description: string | null;
+  name: string | null;
 };
 
 export type ListSecretsOptions = PaginationOptions;
@@ -245,7 +246,8 @@ export interface CreateSecretOptions {
 
 export interface UpdateSecretOptions {
   data?: Record<any, any>;
-  description?: string;
+  description?: string | null;
+  name?: string | null;
 }
 
 export type LasDocument = {
