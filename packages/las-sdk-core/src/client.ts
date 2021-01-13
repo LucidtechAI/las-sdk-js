@@ -531,23 +531,23 @@ export class Client {
   }
 
   /* eslint-disable @typescript-eslint/no-explicit-any */
-  async makeGetRequest<T = any>(path: string, query?: any): Promise<T> {
+  async makeGetRequest<T>(path: string, query?: any): Promise<T> {
     return this.makeAuthorizedRequest<T>(axios.get, buildURL(path, query));
   }
 
-  async makeDeleteRequest<T = any>(path: string, query?: any): Promise<T> {
+  async makeDeleteRequest<T>(path: string, query?: any): Promise<T> {
     return this.makeAuthorizedRequest(axios.delete, buildURL(path, query));
   }
 
-  async makePostRequest<T = any>(path: string, body: any): Promise<T> {
+  async makePostRequest<T>(path: string, body: any): Promise<T> {
     return this.makeAuthorizedRequest(axios.post, path, body);
   }
 
-  async makePatchRequest<T = any>(path: string, body: any): Promise<T> {
+  async makePatchRequest<T>(path: string, body: any): Promise<T> {
     return this.makeAuthorizedRequest(axios.patch, path, body);
   }
 
-  private async makeAuthorizedRequest<T = any>(axiosFn: AxiosFn, path: string, body?: any): Promise<T> {
+  private async makeAuthorizedRequest<T>(axiosFn: AxiosFn, path: string, body?: any): Promise<T> {
     const endpoint = `${this.credentials.apiEndpoint}${path}`;
     const headers = await this.getAuthorizationHeaders();
     const config: AxiosRequestConfig = { headers };
