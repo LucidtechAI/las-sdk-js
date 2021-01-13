@@ -119,11 +119,11 @@ export class Client {
    * This enables the API to learn from past mistakes.
    *
    * @param documentId Id of the document
-   * @param update.groundTruth List of GroundTruth items representing the ground truth values for the document
+   * @param data.groundTruth List of GroundTruth items representing the ground truth values for the document
    * @returns Document response from REST API
    */
-  async updateDocument(documentId: string, update: UpdateDocumentOptions): Promise<LasDocument> {
-    return this.makePatchRequest<LasDocument>(`/documents/${documentId}`, update);
+  async updateDocument(documentId: string, data: UpdateDocumentOptions): Promise<LasDocument> {
+    return this.makePatchRequest<LasDocument>(`/documents/${documentId}`, data);
   }
 
   /**
@@ -179,11 +179,11 @@ export class Client {
    * Updates a transition, calls the PATCH /transitions/transitionId endpoint.
    *
    * @param transitionId Id of the transition
-   * @param update Transition fields to PATCH
+   * @param data Transition fields to PATCH
    * @returns Transition response from REST API
    */
-  async updateTransition(transitionId: string, update: UpdateTransitionOptions): Promise<Transition> {
-    return this.makePatchRequest<Transition>(`/transitions/${transitionId}`, update);
+  async updateTransition(transitionId: string, data: UpdateTransitionOptions): Promise<Transition> {
+    return this.makePatchRequest<Transition>(`/transitions/${transitionId}`, data);
   }
 
   /**
@@ -202,17 +202,17 @@ export class Client {
    *
    * @param transitionId Id of the transition that performs the execution
    * @param executionId Id of the execution to update
-   * @param update.status Status of the execution 'succeeded|failed'
-   * @param update.output Output from the execution, required when status is 'succeded'
-   * @param update.error Error from the execution, required when status is 'failed', needs to contain 'message'
+   * @param data.status Status of the execution 'succeeded|failed'
+   * @param data.output Output from the execution, required when status is 'succeded'
+   * @param data.error Error from the execution, required when status is 'failed', needs to contain 'message'
    * @returns Transition execution response from REST API
    */
   async updateTransitionExecution(
     transitionId: string,
     executionId: string,
-    update: UpdateTransitionExecution,
+    data: UpdateTransitionExecution,
   ): Promise<TransitionExecution> {
-    return this.makePatchRequest<TransitionExecution>(`/transitions/${transitionId}/executions/${executionId}`, update);
+    return this.makePatchRequest<TransitionExecution>(`/transitions/${transitionId}/executions/${executionId}`, data);
   }
 
   /**
@@ -282,11 +282,11 @@ export class Client {
   /**
    * Updates a workflow, calls the PATCH /workflows/workflowId endpoint.
    * @param workflowId Id of the workflow
-   * @param update Workflow fields to PATCH
+   * @param data Workflow fields to PATCH
    * @returns Workflow response from REST API
    */
-  async updateWorkflow(workflowId: string, update: UpdateWorkflowOptions): Promise<Workflow> {
-    return this.makePatchRequest<Workflow>(`/workflows/${workflowId}`, update);
+  async updateWorkflow(workflowId: string, data: UpdateWorkflowOptions): Promise<Workflow> {
+    return this.makePatchRequest<Workflow>(`/workflows/${workflowId}`, data);
   }
 
   /**
@@ -401,15 +401,15 @@ export class Client {
    * Updates an asset, calls the PATCH /assets/assetId endpoint.
    *
    * @param assetId Id of the asset
-   * @param update.content Content to PATCH (base64-encoded string | Buffer)
+   * @param data.content Content to PATCH (base64-encoded string | Buffer)
    * @returns Asset response from REST API with content
    */
-  async updateAsset(assetId: string, update: UpdateAssetOptions): Promise<Asset> {
+  async updateAsset(assetId: string, data: UpdateAssetOptions): Promise<Asset> {
     let body;
-    if (update) {
-      body = { ...update };
-      if (update.content) {
-        const encodedContent = typeof update.content === 'string' ? update.content : Buffer.from(update.content).toString('base64');
+    if (data) {
+      body = { ...data };
+      if (data.content) {
+        const encodedContent = typeof data.content === 'string' ? data.content : Buffer.from(data.content).toString('base64');
         body = { ...body, content: encodedContent };
       }
     }
@@ -522,12 +522,12 @@ export class Client {
    * Updates a secret, calls the PATCH /secrets/secretId endpoint.
    *
    * @param secretId Id of the secret
-   * @param update.data Object containing the data you want to keep secret
-   * @param update.description Description of the secret
-   * @param update.name Name of the secret
+   * @param data.data Object containing the data you want to keep secret
+   * @param data.description Description of the secret
+   * @param data.name Name of the secret
    */
-  async updateSecret(secretId: string, update: UpdateSecretOptions): Promise<Secret> {
-    return this.makePatchRequest(`/secrets/${secretId}`, update);
+  async updateSecret(secretId: string, data: UpdateSecretOptions): Promise<Secret> {
+    return this.makePatchRequest(`/secrets/${secretId}`, data);
   }
 
   /* eslint-disable @typescript-eslint/no-explicit-any */
