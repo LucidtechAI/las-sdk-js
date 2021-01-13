@@ -117,6 +117,8 @@ export type TransitionExecution = {
   input: Record<any, any>;
   status: 'succeeded' | 'failed' | 'retry' | 'running' | 'rejected';
   completedBy: string | null;
+  startTime: string | null;
+  endTime: string | null;
 };
 
 export type WorkflowSpecification = {
