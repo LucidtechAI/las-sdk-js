@@ -16,7 +16,8 @@
     "lint": "lerna run --no-bail lint",
     "publish": "lerna publish",
     "test:watch": "jest --watch",
-    "coverage": "jest --collectCoverage"
+    "coverage": "jest --collectCoverage",
+    "docs": "typedoc packages/las-sdk-core/src && npx concat-md --decrease-title-levels temp-docs > docs.md && npx rimraf temp-docs"
   },
   "devDependencies": {
     "@types/jest": "^26.0.20",
@@ -37,7 +38,7 @@
     "ts-loader": "^8.0.14",
     "ts-node": "^9.1.1",
     "typedoc": "^0.20.14",
-    "typedoc-plugin-markdown": "^2.2.16",
+    "typedoc-plugin-markdown": "^3.4.0",
     "typescript": "^4.1.3",
     "uuid": "^3.3.3",
     "webpack": "^4.39.3",
