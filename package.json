@@ -14,7 +14,9 @@
     "recompile": "lerna clean -y && lerna run compile",
     "build": "lerna clean -y && lerna run compile && jest",
     "lint": "lerna run --no-bail lint",
-    "publish": "lerna publish"
+    "publish": "lerna publish",
+    "test:watch": "jest --watch",
+    "coverage": "jest --collectCoverage"
   },
   "devDependencies": {
     "@types/jest": "^24.0.18",
@@ -44,6 +46,7 @@
   },
   "dependencies": {
     "@lucidtech/las-sdk-browser": "file:packages/las-sdk-browser",
-    "@lucidtech/las-sdk-node": "file:packages/las-sdk-node"
+    "@lucidtech/las-sdk-node": "file:packages/las-sdk-node",
+    "buffer": "^6.0.3"
   }
 }

@@ -13,7 +13,7 @@ prism-start:
 		-p 4010:4010 \
 		-h 0.0.0.0 \
 		stoplight/prism:3.2.8 mock -d -h 0.0.0.0 \
-		https://raw.githubusercontent.com/LucidtechAI/las-docs/rest-api-docs/apis/dev/oas.json > /tmp/prism.cid
+		https://raw.githubusercontent.com/LucidtechAI/las-docs/master/apis/dev/oas.json > /tmp/prism.cid
 
 .PHONY: prism-stop
 prism-stop:
@@ -25,4 +25,5 @@ endif
 
 .PHONY: docs
 docs:
-	npx typedoc --toc --excludePrivate --excludeProtected --plugin typedoc-plugin-markdown packages/las-sdk-core
+	npx typedoc --options "typedoc.json" packages/las-sdk-core && npx concat-md --decrease-title-levels temp-docs > docs.md && npx rimraf temp-docs
+

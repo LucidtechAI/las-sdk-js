@@ -31,5 +31,9 @@
         "jest"
     ],
     "rules": {
+        "max-len": ["warn", { "code": 120 }],
+        "import/no-extraneous-dependencies": ["error", {"devDependencies": true}],
+        "max-classes-per-file": "off",
+        "import/prefer-default-export": "off"
     }
 }

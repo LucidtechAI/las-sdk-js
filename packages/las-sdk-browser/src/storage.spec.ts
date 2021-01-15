@@ -1,6 +1,6 @@
 import { Token } from '@lucidtech/las-sdk-core';
 import { SessionStorage } from './storage';
-import { MockStorage } from './helpers.spec';
+import { MockStorage } from './helpers';
 
 
 it('Tests getting and setting token in session storage', () => {

@@ -1,4 +1,6 @@
-export function buildURL(url: string, params?: { [ key: string ]: undefined|string|Array<string> }) {
+export type BuildURLParams = Record<string, undefined|string|Array<string>|number>
+
+export function buildURL(url: string, params?: BuildURLParams): string {
   if (!params) {
     return url;
   }
@@ -6,8 +8,12 @@ export function buildURL(url: string, params?: { [ key: string ]: undefined|stri
   const searchParams = new URLSearchParams();
   Object.entries(params).forEach((param) => {
     const [key, value] = param;
-
     if (value === undefined) {
+      return;
+    }
+
+    if (typeof value === 'number') {
+      searchParams.set(key, value.toString());
       return;
     }
 
@@ -16,7 +22,11 @@ export function buildURL(url: string, params?: { [ key: string ]: undefined|stri
       return;
     }
 
-    searchParams.append(key, value.join(','));
+    if (Array.isArray(value)) {
+      value.forEach((val) => {
+        searchParams.append(key, val);
+      });
+    }
   });
 
   return `${url}?${searchParams}`;

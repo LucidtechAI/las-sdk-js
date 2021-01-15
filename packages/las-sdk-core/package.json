@@ -1,6 +1,6 @@
 {
   "name": "@lucidtech/las-sdk-core",
-  "version": "2.0.1-alpha.0",
+  "version": "3.2.4",
   "author": "Lucidtech AS <hello@lucidtech.ai>",
   "maintainers": [
     "August André Kvernmo <august@lucidtech.ai>"
@@ -24,5 +24,9 @@
   "jest": {
     "preset": "ts-jest",
     "testEnvironment": "node"
+  },
+  "devDependencies": {
+    "@types/uuid": "^8.3.0",
+    "uuid": "^8.3.1"
   }
 }

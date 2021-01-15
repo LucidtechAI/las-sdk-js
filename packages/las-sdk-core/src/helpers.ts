@@ -44,5 +44,3 @@ export function getTestClient() {
   const credentials = new TestCredentials(endpoint, testApiKey, testAccessToken, testExpiresInSeconds, testRefreshToken);
   return new Client(credentials);
 }
-
-test('Loading core helpers', () => {});

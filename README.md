@@ -17,14 +17,14 @@ $ npm install @lucidtech/las-sdk-node
 ## Usage
 
 ```javascript
-import {ClientCredentials} from '@lucidtech/las-sdk-core';
-import {Client} from '@lucidtech/las-sdk-node';
+import { Client } from '@lucidtech/las-sdk-core';
+import { ClientCredentials } from '@lucidtech/las-sdk-node';
 
 const credentials = new ClientCredentials('<apiEndpoint>', '<apiKey>', '<clientId>',  '<clientSecret>', '<authEndpoint>');
 const client = new Client(credentials);
 
 const content = '<read image content>'
-client.postDocuments(content, 'image/jpeg', '<consentId>').then(documentResponse => {
+client.createDocument(content, 'image/jpeg').then(documentResponse => {
     console.log(documentResponse);
 }).catch(error => {
     console.log(error);

@@ -1,6 +1,4 @@
-import { TestCredentials, sleep } from './helpers.spec';
-import { Token } from './credentials';
-
+import { TestCredentials, sleep } from './helpers';
 
 test('Testing getAccessToken', async () => {
   const testEndpoint = 'http://localhost:4010';

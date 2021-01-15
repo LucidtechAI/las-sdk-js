@@ -13,5 +13,3 @@ export class MockStorage {
       this.storage[key] = value;
     }
 }
-
-test('Loading browser helpers', () => {});

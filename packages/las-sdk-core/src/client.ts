@@ -1,210 +1,571 @@
-import axios, { AxiosRequestConfig } from 'axios';
+import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
+import { Buffer } from 'buffer';
+
 import { Credentials } from './credentials';
+import {
+  Asset,
+  AssetList,
+  AuthorizationHeaders,
+  AxiosFn,
+  Batch,
+  ContentType,
+  DeleteDocumentOptions,
+  LasDocument,
+  LasDocumentList,
+  ListAssetsOptions,
+  ListDocumentsOptions,
+  ListSecretsOptions,
+  ListTransitionOptions,
+  ListUsersOptions,
+  ListWorkflowExecutionsOptions,
+  ListWorkflowOptions,
+  UpdateAssetOptions,
+  UpdateDocumentOptions,
+  UpdateSecretOptions,
+  UpdateTransitionExecution,
+  UpdateTransitionOptions,
+  UpdateWorkflowOptions,
+  CreateBatchOptions,
+  CreateDocumentOptions,
+  PostPredictions,
+  CreatePredictionsOptions,
+  CreateSecretOptions,
+  CreateTransitionOptions,
+  CreateWorkflowOptions,
+  PredictionResponse,
+  Secret,
+  SecretList,
+  Transition,
+  TransitionExecution,
+  TransitionExecutionList,
+  TransitionExecutionListOptions,
+  TransitionList,
+  TransitionType,
+  User,
+  UserList,
+  Workflow,
+  WorkflowExecution,
+  WorkflowExecutionList,
+  WorkflowList,
+  WorkflowSpecification,
+  ListModelsOptions,
+  ModelList,
+  ListPredictionsOptions,
+  PredictionList,
+  Log,
+} from './types';
 import { buildURL } from './utils';
 
-
 /**
- * A high-level http client for communicating the Lucidtech REST API
+ * A high-level http client for communicating with the Lucidtech REST API
  */
 export class Client {
-    credentials: Credentials;
+  credentials: Credentials;
 
-    constructor(credentials: Credentials) {
-      this.credentials = credentials;
+  constructor(credentials: Credentials) {
+    this.credentials = credentials;
+  }
+
+  /**
+   * Creates a document handle, calls the POST /documents endpoint.
+   *
+   * @param content Content to POST (base64 string | Buffer)
+   * @param contentType MIME type for the document handle
+   * @param options.consentId Id of the consent that marks the owner of the document handle
+   * @param options.batchId Id of the associated batch
+   * @param options.groundTruth List of GroundTruth items representing the ground truth values for the document
+   * @returns Document response from REST API
+   */
+  async createDocument(content: string | Buffer, contentType: ContentType, options?: CreateDocumentOptions): Promise<LasDocument> {
+    const encodedContent = typeof content === 'string' ? content : Buffer.from(content).toString('base64');
+    let body = {
+      content: encodedContent,
+      contentType,
+    };
+
+    if (options) {
+      body = { ...body, ...options };
     }
 
-    /**
-     * Get document from the REST API, calls the GET /documets/{documentId} endpoint
-     *
-     * @param {string} documentId - the document id to run inference and create a prediction on
-     * @returns {Promise} - document response from REST API
-      */
-    getDocument(documentId: string) {
-      return this.makeGetRequest(`/documents/${documentId}`);
+    return this.makePostRequest<LasDocument>('/documents', body);
+  }
+
+  /**
+   * Get document from the REST API, calls the GET /documents/{documentId} endpoint.
+   *
+   * @param documentId Id of the document
+   * @returns Document response from REST API
+   */
+  async getDocument(documentId: string): Promise<LasDocument> {
+    return this.makeGetRequest<LasDocument>(`/documents/${documentId}`);
+  }
+
+  /**
+   * List documents available for inference, calls the GET /documents endpoint.
+   *
+   * @param options.batchId Ids of the batches that contains the documents of interest
+   * @param options.consentId Ids of the consents that marks the owner of the document handle
+   * @param options.maxResults Maximum number of results to be returned
+   * @param options.nextToken A unique token for each page, use the returned token to retrieve the next page.
+   * @returns Documents response from REST API
+   */
+  async listDocuments(options?: ListDocumentsOptions): Promise<LasDocumentList> {
+    return this.makeGetRequest<LasDocumentList>('/documents', options);
+  }
+
+  /**
+   * Post ground truth to the REST API, calls the PATCH /documents/{documentId} endpoint.
+   * Posting ground truth means posting the ground truth data for the particular document.
+   * This enables the API to learn from past mistakes.
+   *
+   * @param documentId Id of the document
+   * @param data.groundTruth List of GroundTruth items representing the ground truth values for the document
+   * @returns Document response from REST API
+   */
+  async updateDocument(documentId: string, data: UpdateDocumentOptions): Promise<LasDocument> {
+    return this.makePatchRequest<LasDocument>(`/documents/${documentId}`, data);
+  }
+
+  /**
+   * Delete documents with the provided consentId, calls the DELETE /documents endpoint.
+   * Will delete all documents when no consentId is provided.
+   *
+   * @param options.consentId Ids of the consents that marks the owner of the document handle
+   * @returns Documents response from REST API
+   */
+  async deleteDocuments(options?: DeleteDocumentOptions): Promise<LasDocumentList> {
+    return this.makeDeleteRequest<LasDocumentList>('/documents', options);
+  }
+
+  /**
+   * Creates a transition handle, calls the POST /transitions endpoint.
+   *
+   * @param name Name of transition
+   * @param transitionType Type of transition "docker"|"manual"
+   * @param options.inputJsonSchema Json-schema that defines the input to the transition
+   * @param options.outputJsonSchema Json-schema that defines the output of the transition
+   * @param options.description Description of the transition
+   * @param options.params Extra parameters to the transition
+   * @returns Transition response from REST API
+   */
+  async createTransition(
+    transitionType: TransitionType,
+    options?: CreateTransitionOptions,
+  ): Promise<Transition> {
+    let body = {
+      transitionType,
+    };
+
+    if (options) {
+      body = { ...body, ...options };
     }
 
-    /**
-     * Creates a document handle, calls the POST /documents endpoint.
-     *
-     * @param {string} content - The contents to POST
-     * @param {string} contentType - A MIME type for the document handle
-     * @param {string} consentId - An identifier to mark the owner of the document handle
-     * @param {string} [batchId] - The batch to put the document it
-     * @param {Array<{ [label: string]: string }>} [feedback] A list of items
-     * { label: value } representing the ground truth values for the document
-     * @returns {Promise} - document handle id
-     */
-    createDocument(content: string, contentType: string, consentId: string, batchId?: string, feedback?: Array<{[key: string]: string}>) {
-      let body: any = {
-        content: Buffer.from(content).toString('base64'),
-        contentType,
-        consentId,
-      };
+    return this.makePostRequest<Transition>('/transitions', body);
+  }
 
-      if (!!batchId ) {
-        body = {...body, batchId};
+  /**
+   * List transitions, calls the GET /transitions endpoint.
+   *
+   * @param options.transitionType Types of transitions
+   * @param options.maxResults Maximum number of results to be returned
+   * @param options.nextToken A unique token for each page, use the returned token to retrieve the next page.
+   * @returns Transitions response from REST API
+   */
+  async listTransitions(options?: ListTransitionOptions): Promise<TransitionList> {
+    return this.makeGetRequest('/transitions', options);
+  }
+
+  /**
+   * Updates a transition, calls the PATCH /transitions/transitionId endpoint.
+   *
+   * @param transitionId Id of the transition
+   * @param data Transition fields to PATCH
+   * @returns Transition response from REST API
+   */
+  async updateTransition(transitionId: string, data: UpdateTransitionOptions): Promise<Transition> {
+    return this.makePatchRequest<Transition>(`/transitions/${transitionId}`, data);
+  }
+
+  /**
+   * Start executing a manual transition, calls the POST /transitions/{transitionId}/executions endpoint.
+   *
+   * @param transitionId Id of the transition
+   * @returns Transition execution response from REST API
+   */
+  async executeTransition(transitionId: string): Promise<TransitionExecution> {
+    return this.makePostRequest<TransitionExecution>(`/transitions/${transitionId}/executions`, {});
+  }
+
+  /**
+   * Ends the processing of the transition execution, calls the
+   * PATCH /transitions/{transition_id}/executions/{execution_id} endpoint.
+   *
+   * @param transitionId Id of the transition that performs the execution
+   * @param executionId Id of the execution to update
+   * @param data.status Status of the execution 'succeeded|failed'
+   * @param data.output Output from the execution, required when status is 'succeded'
+   * @param data.error Error from the execution, required when status is 'failed', needs to contain 'message'
+   * @returns Transition execution response from REST API
+   */
+  async updateTransitionExecution(
+    transitionId: string,
+    executionId: string,
+    data: UpdateTransitionExecution,
+  ): Promise<TransitionExecution> {
+    return this.makePatchRequest<TransitionExecution>(`/transitions/${transitionId}/executions/${executionId}`, data);
+  }
+
+  /**
+   * List executions in a transition, calls the GET /transitions/{transitionId}/executions endpoint.
+   *
+   * @param transitionId Id of the transition
+   * @param options.status Statuses of the executions
+   * @param options.executionId Ids of the executions
+   * @param options.maxResults Maximum number of results to be returned
+   * @param options.nextToken A unique token for each page, use the returned token to retrieve the next page.
+   * @returns Transition executions responses from REST API
+   */
+  async listTransitionExecutions(
+    transitionId: string,
+    options?: TransitionExecutionListOptions,
+  ): Promise<TransitionExecutionList> {
+    return this.makeGetRequest<TransitionExecutionList>(`/transitions/${transitionId}/executions`, options);
+  }
+
+  /**
+   * Creates a new workflow, calls the POST /workflows endpoint.
+   *
+   * @param name Name of the workflow
+   * @param specification Specification of the workflow
+   * @param options.description Description of the workflow
+   * @param options.errorConfig Configuration of error handler
+   * @returns Workflow response from REST API
+   */
+  async createWorkflow(
+    name: string,
+    specification: WorkflowSpecification,
+    options?: CreateWorkflowOptions,
+  ): Promise<Workflow> {
+    let body = {
+      name,
+      specification,
+    };
+
+    if (options) {
+      body = { ...body, ...options };
+    }
+
+    return this.makePostRequest<Workflow>('/workflows', body);
+  }
+
+  /**
+   * List workflows, calls the GET /workflows endpoint.
+   *
+   * @param options.maxResults Maximum number of results to be returned
+   * @param options.nextToken A unique token for each page, use the returned token to retrieve the next page.
+   * @returns Workflows response from REST API
+   */
+  async listWorkflows(options?: ListWorkflowOptions): Promise<WorkflowList> {
+    return this.makeGetRequest<WorkflowList>('/workflows', options);
+  }
+
+  /**
+   * Delete the workflow with the provided workflowId, calls the DELETE /workflows/{workflowId} endpoint.
+   *
+   * @param workflowId Id of the workflow
+   * @returns Workflow response from REST API
+   */
+  async deleteWorkflow(workflowId: string): Promise<Workflow> {
+    return this.makeDeleteRequest<Workflow>(`/workflows/${workflowId}`);
+  }
+
+  /**
+   * Updates a workflow, calls the PATCH /workflows/workflowId endpoint.
+   * @param workflowId Id of the workflow
+   * @param data Workflow fields to PATCH
+   * @returns Workflow response from REST API
+   */
+  async updateWorkflow(workflowId: string, data: UpdateWorkflowOptions): Promise<Workflow> {
+    return this.makePatchRequest<Workflow>(`/workflows/${workflowId}`, data);
+  }
+
+  /**
+   * Start a workflow execution, calls the POST /workflows/{workflowId}/executions endpoint.
+   *
+   * @param workflowId Id of the workflow
+   * @param input Input to the first step of the workflow
+   * @returns Workflow execution response from REST API
+   */
+  async executeWorkflow(workflowId: string, input: object): Promise<WorkflowExecution> {
+    const body = {
+      input,
+    };
+
+    return this.makePostRequest<WorkflowExecution>(`/workflows/${workflowId}/executions`, body);
+  }
+
+  /**
+   * List executions in a workflow, calls the GET /workflows/{workflowId}/executions endpoint.
+   *
+   * @param workflowId Id of the workflow
+   * @param options.status Statuses of the executions
+   * @param options.maxResults Maximum number of results to be returned
+   * @param options.nextToken A unique token for each page, use the returned token to retrieve the next page.
+   * @param options.sortBy What field to sort by ('startTime' | 'endTime')
+   * @param options.order Sort order ('ascending' | 'descending')
+   * @returns Workflow executions responses from REST API
+   */
+  async listWorkflowExecutions(
+    workflowId: string,
+    options?: ListWorkflowExecutionsOptions,
+  ): Promise<WorkflowExecutionList> {
+    return this.makeGetRequest<WorkflowExecutionList>(`/workflows/${workflowId}/executions`, options);
+  }
+
+  /**
+   * Deletes the execution with the provided execution_id from workflow_id,
+   * calls the DELETE /workflows/{workflowId}/executions/{executionId} endpoint.
+   *
+   * @param workflowId Id of the workflow
+   * @param executionId Id of the execution
+   * @returns WorkflowExecution response from REST API
+   */
+  async deleteWorkflowExecution(workflowId: string, executionId: string): Promise<WorkflowExecution> {
+    return this.makeDeleteRequest(`/workflows/${workflowId}/executions/${executionId}`);
+  }
+
+  /**
+   * Create a prediction on a document using specified model, calls the POST /predictions endpoint.
+   *
+   * @param documentId Id of the document to run inference and create a prediction on
+   * @param modelId Id of the model to use for inference
+   * @param options.maxPages Maximum number of pages to run predictions on
+   * @param options.autoRotate Whether or not to let the API try different rotations on the document
+   * when running predictions
+   * @returns Predicion response from REST API
+   */
+  async createPrediction(
+    documentId: string,
+    modelId: string,
+    options?: CreatePredictionsOptions,
+  ): Promise<PredictionResponse> {
+    let body: PostPredictions = {
+      documentId,
+      modelId,
+    };
+
+    if (options) {
+      body = { ...body, ...options };
+    }
+
+    return this.makePostRequest<PredictionResponse>('/predictions', body);
+  }
+
+  async listPredictions(options?: ListPredictionsOptions): Promise<PredictionList> {
+    return this.makeGetRequest<PredictionList>('/predictions', options);
+  }
+
+  /**
+   * Creates an asset handle, calls the POST /assets endpoint.
+   *
+   * @param content Content to POST (base64-encoded string | Buffer)
+   * @returns Asset response from REST API
+   */
+  async createAsset(content: string): Promise<Asset> {
+    const encodedContent = typeof content === 'string' ? content : Buffer.from(content).toString('base64');
+    return this.makePostRequest<Asset>('/assets', { content: encodedContent });
+  }
+
+  /**
+   * List assets available, calls the GET /assets endpoint.
+   *
+   * @param options.maxResults Maximum number of results to be returned
+   * @param options.nextToken A unique token for each page, use the returned token to retrieve the next page.
+   * @returns Assets response from REST API without the content of each asset
+   */
+  async listAssets(options?: ListAssetsOptions): Promise<AssetList> {
+    return this.makeGetRequest<AssetList>('/assets', options);
+  }
+
+  /**
+   * Get asset from the REST API, calls the GET /assets/{assetId} endpoint.
+   *
+   * @param assetId Id of the asset
+   * @returns Asset response from REST API
+   */
+  async getAsset(assetId: string): Promise<Asset> {
+    return this.makeGetRequest(`/assets/${assetId}`);
+  }
+
+  /**
+   * Updates an asset, calls the PATCH /assets/assetId endpoint.
+   *
+   * @param assetId Id of the asset
+   * @param data.content Content to PATCH (base64-encoded string | Buffer)
+   * @returns Asset response from REST API with content
+   */
+  async updateAsset(assetId: string, data: UpdateAssetOptions): Promise<Asset> {
+    let body;
+    if (data) {
+      body = { ...data };
+      if (data.content) {
+        const encodedContent = typeof data.content === 'string' ? data.content : Buffer.from(data.content).toString('base64');
+        body = { ...body, content: encodedContent };
       }
-
-      if (!!feedback) {
-        body = {...body, feedback};
-      }
-
-      return this.makePostRequest('/documents', body);
     }
 
-    /**
-      * @param {string} [batchId] - the batch id that contains the documents of interest
-      * @param {string} [consentId] - an identifier to mark the owner of the document handle
-      * @returns {Promise} - documents from REST API contained in batch <batchId>
-      */
-    listDocuments(batchId?: string, consentId?: string) {
-      const query = { batchId, consentId };
-      return this.makeGetRequest('/documents', query);
+    return this.makePatchRequest(`/assets/${assetId}`, body);
+  }
+
+  /**
+   * Creates a batch, calls the POST /batches endpoint.
+   *
+   * @param options.name Name of the batch
+   * @param options.description Description of the batch
+   * @returns Batch response from REST API
+   */
+  async createBatch(options: CreateBatchOptions): Promise<Batch> {
+    return this.makePostRequest<Batch>('/batches', options);
+  }
+
+  /**
+   * Creates a new user, calls the POST /users endpoint.
+   *
+   * @param email Email to the new user
+   * @returns User response from REST API
+   */
+  async createUser(email: string): Promise<User> {
+    return this.makePostRequest<User>('/users', { email });
+  }
+
+  /**
+   * List users, calls the GET /users endpoint.
+   *
+   * @param options.maxResults Maximum number of results to be returned
+   * @param options.nextToken A unique token for each page, use the returned token to retrieve the next page.
+   * @returns User response from REST API
+   */
+  async listUsers(options?: ListUsersOptions): Promise<UserList> {
+    return this.makeGetRequest<UserList>('/users', options);
+  }
+
+  /**
+   * Get information about a specific user, calls the GET /users/{user_id} endpoint.
+   *
+   * @param userId Id of the user
+   * @returns User response from REST API
+   */
+  async getUser(userId: string): Promise<User> {
+    return this.makeGetRequest<User>(`/users/${userId}`);
+  }
+
+  /**
+   * Delete the user with the provided user_id, calls the DELETE /users/{userId} endpoint.
+   *
+   * @param userId Id of the user
+   * @returns User response from REST API
+   */
+  async deleteUser(userId: string): Promise<User> {
+    return this.makeDeleteRequest(`/users/${userId}`);
+  }
+
+  /**
+   * Creates an secret handle, calls the POST /secrets endpoint.
+   *
+   * @param data Object containing the data you want to keep secret
+   * @param options.description Description of the secret
+   * @returns Secret response from REST API
+   */
+  async createSecret(data: Record<any, any>, options?: CreateSecretOptions): Promise<Secret> {
+    let body = { data };
+
+    if (options) {
+      body = { ...body, ...options };
     }
 
-    /**
-     * Post feedback to the REST API, calls the POST /documents/{documentId} endpoint.
-     * Posting feedback means posting the ground truth data for the particular document.
-     * This enables the API to learn from past mistakes.
-     *
-     * @param {string} documentId - the document id to run inference and create a prediction on
-     * @param {Array<{ [label: string]: string }>} feedback - a list of feedback items
-     * { label: value } representing the ground truth values for the document
-     * @returns {Promise} - feedback response from REST API
-    */
-    updateDocument(documentId: string, feedback: Array<{[key: string]: string}>) {
-      // TODO add test for this method
-      const body = {
-        feedback,
-      };
+    return this.makePostRequest<Secret>('/secrets', body);
+  }
 
-      return this.makePostRequest(`/documents/${documentId}`, body);
-    }
+  /**
+   * List secrets available, calls the GET /secrets endpoint.
+   *
+   * @param options.maxResults Maximum number of results to be returned
+   * @param options.nextToken A unique token for each page, use the returned token to retrieve the next page.
+   * @returns Secrets response from REST API without the username of each secret
+   */
+  async listSecrets(options?: ListSecretsOptions): Promise<SecretList> {
+    return this.makeGetRequest<SecretList>('/secrets', options);
+  }
 
-    /**
-     * Run inference and create a prediction, calls the POST /predictions endpoint.
-     *
-     * @param {string} documentId - the document id to run inference and create a prediction on
-     * @param {string} modelName - the name of the model to use for inference
-     * @param {number} [maxPages] - maximum number of pages to run predicitons on
-     * @param {boolean} [autoRotate] - whether or not to let the API try different rotations on
-     * the document when runnin predictions
-     * @returns {Promise} - prediction on document
-     */
-    createPrediction(documentId: string, modelName: string, maxPages?: number, autoRotate?: boolean) {
-      let body: any = {
-        documentId,
-        modelName,
-      };
+  /**
+   * List models available, calls the GET /models endpoint.
+   *
+   * @param options.maxResults Maximum number of results to be returned
+   * @param options.nextToken A unique token for each page, use the returned token to retrieve the next page.
+   * @returns Models response from the REST API
+   */
+  async listModels(options?: ListModelsOptions): Promise<ModelList> {
+    return this.makeGetRequest<ModelList>('/models', options);
+  }
 
-      if (maxPages !== undefined) {
-        body = { ...body, maxPages };
-      }
+  /**
+   * Get log, calls the GET /logs/{logId} endpoint.
+   *
+   * @param logId Id of the log
+   * @returns Log response from REST API
+   */
+  async getLog(logId: string): Promise<Log> {
+    return this.makeGetRequest<Log>(`/logs/${logId}`);
+  }
 
-      if (autoRotate !== undefined) {
-        body = { ...body, autoRotate };
-      }
+  /**
+   * Updates a secret, calls the PATCH /secrets/secretId endpoint.
+   *
+   * @param secretId Id of the secret
+   * @param data.data Object containing the data you want to keep secret
+   * @param data.description Description of the secret
+   * @param data.name Name of the secret
+   */
+  async updateSecret(secretId: string, data: UpdateSecretOptions): Promise<Secret> {
+    return this.makePatchRequest(`/secrets/${secretId}`, data);
+  }
 
-      return this.makePostRequest('/predictions', body);
-    }
+  /* eslint-disable @typescript-eslint/no-explicit-any */
+  async makeGetRequest<T>(path: string, query?: any): Promise<T> {
+    return this.makeAuthorizedRequest<T>(axios.get, buildURL(path, query));
+  }
 
-    /**
-     * Creates a batch handle, calls the POST /batches endpoint
-     *
-     * @param {string} description - a short description of the batch you intend to create
-     * @returns {Promise} - batch handle id and pre-signed upload url
-     */
-    createBatch(description: string) {
-      const body = {
-        description,
-      };
+  async makeDeleteRequest<T>(path: string, query?: any): Promise<T> {
+    return this.makeAuthorizedRequest(axios.delete, buildURL(path, query));
+  }
 
-      return this.makePostRequest('/batches', body);
-    }
+  async makePostRequest<T>(path: string, body: any): Promise<T> {
+    return this.makeAuthorizedRequest(axios.post, path, body);
+  }
 
-    /**
-     * Modifies consent hash for a user, calls the PATCH /users/{user_id} endpoint.
-     *
-     * @param {string} userId - the user id to modify consent hash for
-     * @param {string} consentHash - the consent hash to set
-     * @returns {Promise} - batch handle id and pre-signed upload url
-     */
-    updateUser(userId: string, consentHash: string) {
-      // TODO add test for this method
-      const body = { consentHash };
-      return this.makePatchRequest(`/users/${userId}`, body);
-    }
+  async makePatchRequest<T>(path: string, body: any): Promise<T> {
+    return this.makeAuthorizedRequest(axios.patch, path, body);
+  }
 
-    /**
-     * Gets consent hash and user id for a given user id, calls the GET /users/{user_id} endpoint.
-     *
-     * @param {string} userId - the user id to get consent hash for
-     * @returns {Promise} - batch handle id and pre-signed upload url
-     */
-    getUser(userId: string) {
-      return this.makeGetRequest(`/users/${userId}`);
-    }
+  private async makeAuthorizedRequest<T>(axiosFn: AxiosFn, path: string, body?: any): Promise<T> {
+    const endpoint = `${this.credentials.apiEndpoint}${path}`;
+    const headers = await this.getAuthorizationHeaders();
+    const config: AxiosRequestConfig = { headers };
+    const handle = body
+      ? (): Promise<AxiosResponse<T>> => axiosFn<T>(endpoint, body, config)
+      : (): Promise<AxiosResponse<T>> => axiosFn<T>(endpoint, config);
 
-    /**
-     * Delete documents with this consent_id, calls the DELETE /consents/{consentId} endpoint.
-     *
-     * @param {string} consentId - Delete documents with this consent id
-     * @returns {Promise}
-     */
-    deleteConsent(consentId: string) {
-      return this.makeDeleteRequest(`/consents/${consentId}`);
-    }
+    return (await handle()).data;
+  }
+  /* eslint-enable */
 
-    makeGetRequest(path: string, query?: any) {
-      return this.makeAuthorizedRequest(axios.get, buildURL(path, query));
-    }
-
-    makeDeleteRequest(path: string) {
-      return this.makeAuthorizedRequest(axios.delete, path);
-    }
-
-    makePostRequest(path: string, body: any) {
-      return this.makeAuthorizedRequest(axios.post, path, body);
-    }
-
-    makePatchRequest(path: string, body: any) {
-      return this.makeAuthorizedRequest(axios.patch, path, body);
-    }
-
-    private makeAuthorizedRequest(axiosFn: (url: string, body?: any, config?: AxiosRequestConfig) => Promise<any>, path: string, body?: any) {
-      return new Promise<any>((resolve, reject) => {
-        const endpoint = `${this.credentials.apiEndpoint}${path}`;
-        this.getAuthorizationHeaders().then((headers) => {
-          const config = { headers };
-          const handle = body
-            ? () => axiosFn(endpoint, body, config)
-            : () => axiosFn(endpoint, config);
-
-          handle().then((response) => {
-            resolve(response.data);
-          }).catch((error) => {
-            reject(error);
-          });
-        }).catch((error) => {
-          reject(error);
-        });
-      });
-    }
-
-    private getAuthorizationHeaders(): Promise<any> {
-      return new Promise<any>((resolve, reject) => {
-        this.credentials.getAccessToken().then((accessToken) => {
-          const headers = {
-            'X-Api-Key': this.credentials.apiKey,
-            Authorization: `Bearer ${accessToken}`,
-          };
-
-          resolve(headers);
-        }).catch((error) => {
-          reject(error);
-        });
-      });
-    }
+  private async getAuthorizationHeaders(): Promise<AuthorizationHeaders> {
+    const accessToken = await this.credentials.getAccessToken();
+    return {
+      'X-Api-Key': this.credentials.apiKey,
+      Authorization: `Bearer ${accessToken}`,
+    };
+  }
 }
 
 export default Client;
