@@ -54,6 +54,7 @@ import {
   PredictionList,
   Log,
   UpdateUserOptions,
+  CreateUserOptions,
 } from './types';
 import { buildURL } from './utils';
 
@@ -433,10 +434,16 @@ export class Client {
    * Creates a new user, calls the POST /users endpoint.
    *
    * @param email Email to the new user
+   * @param data.name Name of the user
+   * @param data.avatar base64 encoded JPEG avatar of the user
    * @returns User response from REST API
    */
-  async createUser(email: string): Promise<User> {
-    return this.makePostRequest<User>('/users', { email });
+  async createUser(email: string, data?: CreateUserOptions): Promise<User> {
+    let body = { email };
+    if (data) {
+      body = { ...body, ...data };
+    }
+    return this.makePostRequest<User>('/users', body);
   }
 
   /**
