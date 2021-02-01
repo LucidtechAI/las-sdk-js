@@ -220,7 +220,14 @@ export type Batch = {
 export type User = {
   userId: string;
   email: string;
+  avatar: string | null;
+  name: string | null;
 };
+
+export type UpdateUserOptions = {
+  avatar?: string | null;
+  name?: string | null;
+}
 
 export type ListUsersOptions = PaginationOptions;
 

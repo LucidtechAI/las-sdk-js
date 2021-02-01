@@ -53,6 +53,7 @@ import {
   ListPredictionsOptions,
   PredictionList,
   Log,
+  UpdateUserOptions,
 } from './types';
 import { buildURL } from './utils';
 
@@ -457,6 +458,18 @@ export class Client {
    */
   async getUser(userId: string): Promise<User> {
     return this.makeGetRequest<User>(`/users/${userId}`);
+  }
+
+  /**
+   * Updates a user, calls the PATCH /users/{userId} endpoint.
+   *
+   * @param userId Id of the user
+   * @param data.name Name of the user
+   * @param data.avatar base64 encoded JPEG avatar of the user
+   * @returns User response from REST API
+   */
+  async updateUser(userId: string, data: UpdateUserOptions): Promise<User> {
+    return this.makePatchRequest(`/users/${userId}`, data);
   }
 
   /**
