@@ -1,9 +1,7 @@
 {
   "plugin": ["typedoc-plugin-markdown"],
-  "mode": "file",
   "exclude": ["**/*+(spec|test|helpers|utils).ts"],
   "excludePrivate": true,
   "excludeProtected": true,
-  "excludeNotExported": true,
   "out": "temp-docs"
 }
