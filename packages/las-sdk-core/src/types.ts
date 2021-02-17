@@ -201,7 +201,7 @@ export type PredictionResponse = {
   documentId: string;
   inferenceTime: number;
   timestamp: number;
-  predictions?: Array<Prediction>;
+  predictions: Array<Prediction>;
 };
 
 export type ListPredictionsOptions = PaginationOptions;
@@ -220,7 +220,19 @@ export type Batch = {
 export type User = {
   userId: string;
   email: string;
+  avatar: string | null;
+  name: string | null;
 };
+
+export type CreateUserOptions = {
+  name?: string | null;
+  avatar?: string | null;
+}
+
+export type UpdateUserOptions = {
+  name?: string | null;
+  avatar?: string | null;
+}
 
 export type ListUsersOptions = PaginationOptions;
 
@@ -272,11 +284,15 @@ export type LasDocument = {
 
 export type Asset = {
   assetId: string;
-  content?: string;
+  content: string;
 };
 
+export type AssetWithoutContent = {
+  assetId: string;
+}
+
 export type AssetList = {
-  assets: Array<Asset>;
+  assets: Array<AssetWithoutContent>;
   nextToken: string | null;
 };
 

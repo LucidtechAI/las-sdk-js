@@ -1,6 +1,6 @@
 {
   "name": "@lucidtech/las-sdk-node",
-  "version": "3.3.0",
+  "version": "3.4.2",
   "author": "Lucidtech AS <hello@lucidtech.ai>",
   "maintainers": [
     "August André Kvernmo <august@lucidtech.ai>"
@@ -11,7 +11,7 @@
     "access": "public"
   },
   "main": "lib/index.js",
-  "typings": "lib/index.d.ts",
+  "types": "lib/index.d.ts",
   "scripts": {
     "compile": "tsc",
     "upgrade": "npm update",

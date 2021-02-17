@@ -283,6 +283,15 @@ describe('Users', () => {
     });
   });
 
+  describe('updateUser', () => {
+    test('valid request', async () => {
+      const userId = uuidv4();
+      const updateUserPromise = client.updateUser(userId, { name: 'I want a new name'});
+      await expect(updateUserPromise).resolves.toHaveProperty('email');
+      await expect(updateUserPromise).resolves.toHaveProperty('name');
+    })
+  })
+
   describe('deleteUser', () => {
     test('valid request', async () => {
       const userId = uuidv4();
