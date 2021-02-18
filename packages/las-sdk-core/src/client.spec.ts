@@ -15,6 +15,7 @@ const transitionId = () => `las:transition:${uuidWithoutDashes()}`;
 const consentId = () => `las:consent:${uuidWithoutDashes()}`;
 const batchId = () => `las:batch:${uuidWithoutDashes()}`;
 const documentId = () => `las:document:${uuidWithoutDashes()}`;
+const workflowId = () => `las:workflow:${uuidWithoutDashes()}`;
 
 beforeEach(() => {
   client = getTestClient();
@@ -211,6 +212,14 @@ describe('Workflows', () => {
       },
     );
   });
+
+  describe('getWorkflow', () => {
+    test('valid request', async () => {
+      const id = workflowId();
+      const getWorkflowPromise = client.getWorkflow(id);
+      await expect(getWorkflowPromise).resolves.toHaveProperty('workflowId');
+    });
+  })
 
   describe('listWorkflows', () => {
     test('valid request', async () => {
