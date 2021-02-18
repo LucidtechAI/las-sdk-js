@@ -166,6 +166,16 @@ export class Client {
   }
 
   /**
+   * Get the transition with the provided transitionId, calls the GET /transitions/{transitionId} endpoint.
+   *
+   * @param transitionId Id of the transition
+   * @returns Transition response from REST API
+   */
+  async getTransition(transitionId: string): Promise<Transition> {
+    return this.makeGetRequest(`/transitions/${transitionId}`);
+  }
+
+  /**
    * List transitions, calls the GET /transitions endpoint.
    *
    * @param options.transitionType Types of transitions

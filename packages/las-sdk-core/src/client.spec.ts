@@ -10,6 +10,12 @@ import {
 
 let client = getTestClient();
 
+const uuidWithoutDashes = () => uuidv4().replace(/-/g, '');
+const transitionId = () => `las:transition:${uuidWithoutDashes()}`;
+const consentId = () => `las:consent:${uuidWithoutDashes()}`;
+const batchId = () => `las:batch:${uuidWithoutDashes()}`;
+const documentId = () => `las:document:${uuidWithoutDashes()}`;
+
 beforeEach(() => {
   client = getTestClient();
 });
@@ -19,8 +25,8 @@ describe('Documents', () => {
     test('valid request body', async () => {
       const testContent = uuidv4();
       const testContentType = 'image/jpeg';
-      const testConsentId = `las:consent:${uuidv4().replace(/-/g, '')}`;
-      const testBatchId = `las:batch:${uuidv4().replace(/-/g, '')}`;
+      const testConsentId = consentId();
+      const testBatchId = batchId();
       const createDocumentPromise = client.createDocument(testContent, testContentType, { consentId: testConsentId, batchId: testBatchId });
       await expect(createDocumentPromise).resolves.toHaveProperty('consentId');
       await expect(createDocumentPromise).resolves.toHaveProperty('contentType');
@@ -110,6 +116,14 @@ describe('Transitions', () => {
       await expect(createTransitionPromise).resolves.toHaveProperty('transitionId');
     });
   });
+
+  describe('getTransition', () => {
+    test('valid request', async () => {
+      const id = transitionId();
+      const getTransitionPromise = client.getTransition(id);
+      await expect(getTransitionPromise).resolves.toHaveProperty('transitionId');
+    })
+  })
 
   describe('listTransitions', () => {
     test('valid request', async () => {
