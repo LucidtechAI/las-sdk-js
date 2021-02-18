@@ -148,6 +148,14 @@ describe('Transitions', () => {
     });
   });
 
+  describe('deleteTransition', () => {
+    test('valid request', async () => {
+      const id = transitionId();
+      const deleteTransitionPromise = client.deleteTransition(id);
+      await expect(deleteTransitionPromise).resolves.toHaveProperty('transitionId');
+    })
+  })
+
   describe('executeTransition', () => {
     test('valid request', async () => {
       const transitionId = uuidv4();
