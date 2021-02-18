@@ -199,6 +199,17 @@ export class Client {
   }
 
   /**
+   * Delete the transition with the provided transitionId, calls the DELETE /transitions/{transitionId} endpoint.
+   * Will fail if transition is in use by one or more workflows.
+   *
+   * @param transitionId Id of the transition
+   * @returns Transition response from REST API
+   */
+  async deleteTransition(transitionId: string): Promise<Transition> {
+    return this.makeDeleteRequest(`/transitions/${transitionId}`);
+  }
+
+  /**
    * Start executing a manual transition, calls the POST /transitions/{transitionId}/executions endpoint.
    *
    * @param transitionId Id of the transition
