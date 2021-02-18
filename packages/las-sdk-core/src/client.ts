@@ -282,6 +282,16 @@ export class Client {
   }
 
   /**
+   * Get the workflow with the provided workflowId, calls the GET /workflows/{workflowId} endpoint.
+   *
+   * @param workflowId Id of the workflow
+   * @returns Workflow response from REST API
+   */
+  async getWorkflow(workflowId: string): Promise<Workflow> {
+    return this.makeGetRequest(`/workflows/${workflowId}`);
+  }
+
+  /**
    * List workflows, calls the GET /workflows endpoint.
    *
    * @param options.maxResults Maximum number of results to be returned
