@@ -113,5 +113,7 @@ fabric.properties
 # Build output
 dist/
 lib/
-docs.md
-
+doc-report
+docs
+tsdoc-metadata.json
+temp

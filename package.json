@@ -17,9 +17,11 @@
     "publish": "lerna publish",
     "test:watch": "jest --watch",
     "coverage": "jest --collectCoverage",
-    "docs": "typedoc packages/las-sdk-core/src && npx concat-md --decrease-title-levels temp-docs > docs.md && npx rimraf temp-docs"
+    "docs": "api-extractor run && api-documenter markdown -i ./temp -o ./docs"
   },
   "devDependencies": {
+    "@microsoft/api-documenter": "^7.12.7",
+    "@microsoft/api-extractor": "^7.13.1",
     "@types/jest": "^26.0.20",
     "@types/jsdom": "^12.2.4",
     "@types/node": "^12.19.14",
