@@ -78,7 +78,11 @@ export class Client {
    * @param options.groundTruth List of GroundTruth items representing the ground truth values for the document
    * @returns Document response from REST API
    */
-  async createDocument(content: string | Buffer, contentType: ContentType, options?: CreateDocumentOptions): Promise<LasDocument> {
+  async createDocument(
+    content: string | Buffer,
+    contentType: ContentType,
+    options?: CreateDocumentOptions,
+  ): Promise<LasDocument> {
     const encodedContent = typeof content === 'string' ? content : Buffer.from(content).toString('base64');
     let body = {
       content: encodedContent,
@@ -150,10 +154,7 @@ export class Client {
    * @param options.params Extra parameters to the transition
    * @returns Transition response from REST API
    */
-  async createTransition(
-    transitionType: TransitionType,
-    options?: CreateTransitionOptions,
-  ): Promise<Transition> {
+  async createTransition(transitionType: TransitionType, options?: CreateTransitionOptions): Promise<Transition> {
     let body = {
       transitionType,
     };
@@ -228,6 +229,7 @@ export class Client {
    * @param data.status Status of the execution 'succeeded|failed'
    * @param data.output Output from the execution, required when status is 'succeded'
    * @param data.error Error from the execution, required when status is 'failed', needs to contain 'message'
+   * @param data.startTime Utc start time that will replace the original start time of the execution
    * @returns Transition execution response from REST API
    */
   async updateTransitionExecution(
@@ -253,6 +255,19 @@ export class Client {
     options?: TransitionExecutionListOptions,
   ): Promise<TransitionExecutionList> {
     return this.makeGetRequest<TransitionExecutionList>(`/transitions/${transitionId}/executions`, options);
+  }
+
+  /**
+   * Send heartbeat for a manual execution to signal that we are still working on it.
+   * Must be done at minimum once every 60 seconds or the transition execution will time out.
+   * Calls the POST /transitions/{transitionId}/executions/{executionId}/heartbeats endpoint.
+   *
+   * @param transitionId Id of the transition
+   * @param transitionExecutionId Id of the transition execution
+   * @returns Empty response
+   */
+  async sendHeartbeat(transitionId: string, transitionExecutionId: string): Promise<unknown> {
+    return this.makePostRequest(`/transitions/${transitionId}/executions/${transitionExecutionId}/heartbeats`, {});
   }
 
   /**
@@ -375,6 +390,8 @@ export class Client {
    * @param options.maxPages Maximum number of pages to run predictions on
    * @param options.autoRotate Whether or not to let the API try different rotations on the document
    * when running predictions
+   * @param options.imageQuality: Image quality for prediction ("LOW|HIGH"). High quality could give
+   * better result but will also take longer time.
    * @returns Predicion response from REST API
    */
   async createPrediction(
