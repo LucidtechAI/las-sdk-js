@@ -7,6 +7,7 @@ export type ContentType = 'application/pdf' | 'image/jpeg';
 export interface CreatePredictionsOptions {
   maxPages?: number;
   autoRotate?: boolean;
+  imageQuality?: 'LOW' | 'HIGH';
 }
 
 export interface PaginationOptions {
@@ -50,6 +51,7 @@ export interface UpdateTransitionExecution {
   status: 'succeeded' | 'failed' | 'retry' | 'rejected';
   output?: Record<any, any>;
   error?: { message: string };
+  startTime?: string;
 }
 
 export interface CreateTransitionOptions {
