@@ -18,7 +18,7 @@ let client = getTestClient();
 
 const uuidWithoutDashes = () => uuidv4().replace(/-/g, '');
 const transitionId = () => `las:transition:${uuidWithoutDashes()}`;
-const transitionExecutionId = () => `las:execution:${uuidWithoutDashes()}`;
+const transitionExecutionId = () => `las:transition-execution:${uuidWithoutDashes()}`;
 const consentId = () => `las:consent:${uuidWithoutDashes()}`;
 const batchId = () => `las:batch:${uuidWithoutDashes()}`;
 const documentId = () => `las:document:${uuidWithoutDashes()}`;
