@@ -2,7 +2,7 @@
 
 import { AxiosRequestConfig, AxiosResponse } from 'axios';
 
-export type ContentType = 'application/pdf' | 'image/jpeg';
+export type ContentType = 'application/pdf' | 'image/jpeg' | 'image/png' | 'image/tiff';
 
 export interface CreatePredictionsOptions {
   maxPages?: number;
