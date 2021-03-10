@@ -45,6 +45,13 @@ describe('Documents', () => {
       await expect(createDocumentPromise).resolves.toHaveProperty('documentId');
     });
 
+    test.each<ContentType>(['image/jpeg', 'application/pdf', 'image/png', 'image/tiff'])('allows content type: %s', async (contentType) => {
+      const testContent = uuidv4();
+      const createDocumentPromise = client.createDocument(testContent, contentType);
+      await expect(createDocumentPromise).resolves.toHaveProperty('contentType');
+      await expect(createDocumentPromise).resolves.toHaveProperty('documentId');
+    });
+
     test('invalid Content-Type', async () => {
       const testContent = uuidv4();
       const testContentType = ('erroneousContentType' as unknown) as ContentType;
