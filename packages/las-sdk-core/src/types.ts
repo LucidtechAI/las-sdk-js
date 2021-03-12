@@ -265,7 +265,9 @@ export interface UpdateSecretOptions {
   name?: string | null;
 }
 
-export type LasDocumentWithoutContent = {
+export type LasDocumentWithoutContent = Omit<LasDocument, 'content'>;
+
+export type LasDocument = {
   contentType: ContentType;
   /** pattern: ^las:document:[a-f0-9]{32}$ */
   documentId: string;
@@ -274,20 +276,16 @@ export type LasDocumentWithoutContent = {
   consentId?: string;
   /** pattern: ^las:batch:[a-f0-9]{32}$ */
   batchId?: string;
-}
-
-export type LasDocument = LasDocumentWithoutContent & {
   /** minimum: 1 */
   content: string;
 };
 
-export type Asset = AssetWithoutContent & {
+export type Asset = {
+  assetId: string;
   content: string;
 };
 
-export type AssetWithoutContent = {
-  assetId: string;
-}
+export type AssetWithoutContent = Omit<Asset, 'content'>;
 
 export type AssetList = {
   assets: Array<AssetWithoutContent>;
