@@ -63,8 +63,7 @@ export interface CreateTransitionOptions {
 }
 
 export type LasDocumentList = {
-  documents: Array<LasDocument>;
-  consentId?: string;
+  documents: Array<LasDocumentWithoutContent>;
   batchId?: string;
   nextToken?: string;
 };
@@ -266,26 +265,23 @@ export interface UpdateSecretOptions {
   name?: string | null;
 }
 
-export type LasDocument = {
+export type LasDocumentWithoutContent = {
   contentType: ContentType;
   /** pattern: ^las:document:[a-f0-9]{32}$ */
   documentId: string;
   groundTruth?: Array<GroundTruth>;
   /** pattern: ^las:consent:[a-f0-9]{32}$ */
   consentId?: string;
-  /** minimum: 0 */
-  inferenceTime?: number;
   /** pattern: ^las:batch:[a-f0-9]{32}$ */
   batchId?: string;
+}
+
+export type LasDocument = LasDocumentWithoutContent & {
   /** minimum: 1 */
-  updated?: number;
-  /** minimum: 1 */
-  content?: string;
-  predictions?: Array<Prediction>;
+  content: string;
 };
 
-export type Asset = {
-  assetId: string;
+export type Asset = AssetWithoutContent & {
   content: string;
 };
 
