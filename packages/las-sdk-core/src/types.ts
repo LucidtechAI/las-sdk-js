@@ -105,6 +105,7 @@ export type Transition = {
   outputJsonSchema?: unknown;
   inputJsonSchema: unknown;
   assets?: Record<string, string>;
+  parameters: Record<string, any>;
 };
 
 export type TransitionList = {
