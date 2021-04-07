@@ -191,7 +191,7 @@ describe('Transitions', () => {
       { status: 'succeeded', output: {} },
       { status: 'succeeded', output: {} },
       { status: 'failed', error: { message: 'test' } },
-      { status: 'succeeded', output: { something: 'test' }, startTime: '2020-01-01 09:31:00.002431' },
+      { status: 'succeeded', output: { something: 'test' }, startTime: '2020-01-01 09:31:00.002431Z' },
     ])('input: %o', async (input) => {
       const testTransitionId = transitionId();
       const testExecutionId = transitionExecutionId();
