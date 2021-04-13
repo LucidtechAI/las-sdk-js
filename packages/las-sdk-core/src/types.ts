@@ -306,7 +306,7 @@ export type Field = {
 }
 
 export type Model = {
-  created: string | null;
+  createdTime: string | null;
   description: string | null;
   fieldConfig: Record<string, Field> | null;
   height: number;
@@ -314,7 +314,7 @@ export type Model = {
   name: string | null;
   preprocessConfig: PreprocessConfig;
   status: 'active' | 'training';
-  updated: string | null;
+  updatedTime: string | null;
   width: number;
 }
 
