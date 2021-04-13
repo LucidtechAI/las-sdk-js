@@ -306,12 +306,15 @@ export type Field = {
 }
 
 export type Model = {
-  modelId: string;
+  created: string | null;
   description: string | null;
   fieldConfig: Record<string, Field> | null;
   height: number;
+  modelId: string;
   name: string | null;
   preprocessConfig: PreprocessConfig;
+  status: 'active' | 'training';
+  updated: string | null;
   width: number;
 }
 
