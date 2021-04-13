@@ -8,11 +8,13 @@ import {
   AuthorizationHeaders,
   AxiosFn,
   Batch,
+  BatchList,
   ContentType,
   DeleteDocumentOptions,
   LasDocument,
   LasDocumentList,
   ListAssetsOptions,
+  ListBatchesOptions,
   ListDocumentsOptions,
   ListSecretsOptions,
   ListTransitionOptions,
@@ -476,6 +478,17 @@ export class Client {
    */
   async createBatch(options: CreateBatchOptions): Promise<Batch> {
     return this.makePostRequest<Batch>('/batches', options);
+  }
+
+  /**
+   * List batches, calls the GET /batches endpoint.
+   *
+   * @param options.maxResults Maximum number of results to be returned
+   * @param options.nextToken A unique token for each page, use the returned token to retrieve the next page.
+   * @returns BatchList response from REST API
+   */
+  async listBatches(options?: ListBatchesOptions): Promise<BatchList> {
+    return this.makeGetRequest<BatchList>('/batches', options);
   }
 
   /**

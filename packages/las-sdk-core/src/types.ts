@@ -219,6 +219,13 @@ export type Batch = {
   description: string;
 };
 
+export type BatchList = {
+  batches: Array<Batch>;
+  nextToken: string | null;
+};
+
+export type ListBatchesOptions = PaginationOptions;
+
 export type User = {
   userId: string;
   email: string;
