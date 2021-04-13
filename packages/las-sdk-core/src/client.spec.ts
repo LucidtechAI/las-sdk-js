@@ -507,6 +507,7 @@ describe('Batches', () => {
       await expect(createBatchPromise).resolves.toHaveProperty('batchId');
       await expect(createBatchPromise).resolves.toHaveProperty('description');
       await expect(createBatchPromise).resolves.toHaveProperty('createdTime');
+      await expect(createBatchPromise).resolves.toHaveProperty('numDocuments');
     });
   });
 

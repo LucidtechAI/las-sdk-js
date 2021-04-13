@@ -218,6 +218,7 @@ export type Batch = {
   createdTime: string;
   name: string;
   description: string;
+  numDocuments: number;
 };
 
 export type BatchList = {
