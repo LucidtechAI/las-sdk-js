@@ -293,11 +293,25 @@ export type AssetList = {
   nextToken: string | null;
 };
 
+type PreprocessConfig = {
+  autoRotate: boolean;
+  imageQuality: 'LOW' | 'HIGH';
+  maxPages: number;
+}
+
+type Field = {
+  description: string;
+  maxLength: number;
+  type: 'all' | 'alphanum' | 'alphanumext' | 'amount' | 'date' | 'letter' | 'number' | 'phone';
+}
+
 export type Model = {
   modelId: string;
   description: string | null;
+  fieldConfig: Record<string, Field> | null;
   height: number;
   name: string | null;
+  preprocessConfig: PreprocessConfig;
   width: number;
 }
 
