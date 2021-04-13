@@ -293,13 +293,13 @@ export type AssetList = {
   nextToken: string | null;
 };
 
-type PreprocessConfig = {
+export type PreprocessConfig = {
   autoRotate: boolean;
   imageQuality: 'LOW' | 'HIGH';
   maxPages: number;
 }
 
-type Field = {
+export type Field = {
   description: string;
   maxLength: number;
   type: 'all' | 'alphanum' | 'alphanumext' | 'amount' | 'date' | 'letter' | 'number' | 'phone';
