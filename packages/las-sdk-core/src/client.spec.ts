@@ -499,11 +499,29 @@ describe('Assets', () => {
   });
 });
 
-describe('createBatch', () => {
-  test('valid request', async () => {
-    const description = 'I am going to create a new batch, give me a batch ID!';
-    const createBatchPromise = client.createBatch({ description });
-    await expect(createBatchPromise).resolves.toHaveProperty('batchId');
+describe('Batches', () => {
+  describe('createBatch', () => {
+    test('valid request', async () => {
+      const description = 'I am going to create a new batch, give me a batch ID!';
+      const createBatchPromise = client.createBatch({ description });
+      await expect(createBatchPromise).resolves.toHaveProperty('batchId');
+      await expect(createBatchPromise).resolves.toHaveProperty('description');
+      await expect(createBatchPromise).resolves.toHaveProperty('createdTime');
+    });
+  });
+
+  describe('listBatches', () => {
+    test('valid request', async () => {
+      const listBatchesPromise = client.listBatches();
+      await expect(listBatchesPromise).resolves.toHaveProperty('batches');
+    });
+
+    test('accepts pagination params', async () => {
+      const maxResults = 1;
+      const nextToken = uuidv4();
+      const listBatchesPromise = client.listBatches({ maxResults, nextToken });
+      await expect(listBatchesPromise).resolves.toHaveProperty('nextToken');
+    });
   });
 });
 

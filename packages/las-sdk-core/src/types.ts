@@ -215,9 +215,17 @@ export type PredictionList = {
 
 export type Batch = {
   batchId: string;
+  createdTime: string;
   name: string;
   description: string;
 };
+
+export type BatchList = {
+  batches: Array<Batch>;
+  nextToken: string | null;
+};
+
+export type ListBatchesOptions = PaginationOptions;
 
 export type User = {
   userId: string;
