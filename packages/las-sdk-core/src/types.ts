@@ -215,6 +215,7 @@ export type PredictionList = {
 
 export type Batch = {
   batchId: string;
+  createdTime: string;
   name: string;
   description: string;
 };
