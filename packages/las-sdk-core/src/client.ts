@@ -80,8 +80,8 @@ export class Client {
    */
   async createAppClient(name: string | null, description: string | null): Promise<AppClient> {
     const body = {
-      name: name,
-      description: description,
+      name,
+      description,
     };
 
     return this.makePostRequest<AppClient>('/appClients', body);
