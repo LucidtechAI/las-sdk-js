@@ -499,12 +499,30 @@ describe('Assets', () => {
   });
 });
 
-describe('createBatch', () => {
-  test('valid request', async () => {
-    const description = 'I am going to create a new batch, give me a batch ID!';
-    const createBatchPromise = client.createBatch({ description });
-    await expect(createBatchPromise).resolves.toHaveProperty('batchId');
-    await expect(createBatchPromise).resolves.toHaveProperty('numDocuments');
+describe('Batches', () => {
+  describe('createBatch', () => {
+    test('valid request', async () => {
+      const description = 'I am going to create a new batch, give me a batch ID!';
+      const createBatchPromise = client.createBatch({ description });
+      await expect(createBatchPromise).resolves.toHaveProperty('batchId');
+      await expect(createBatchPromise).resolves.toHaveProperty('description');
+      await expect(createBatchPromise).resolves.toHaveProperty('createdTime');
+      await expect(createBatchPromise).resolves.toHaveProperty('numDocuments');
+    });
+  });
+
+  describe('listBatches', () => {
+    test('valid request', async () => {
+      const listBatchesPromise = client.listBatches();
+      await expect(listBatchesPromise).resolves.toHaveProperty('batches');
+    });
+
+    test('accepts pagination params', async () => {
+      const maxResults = 1;
+      const nextToken = uuidv4();
+      const listBatchesPromise = client.listBatches({ maxResults, nextToken });
+      await expect(listBatchesPromise).resolves.toHaveProperty('nextToken');
+    });
   });
 });
 
@@ -523,6 +541,44 @@ describe('Logs', () => {
       const getLogPromise = client.getLog('logId');
       await expect(getLogPromise).resolves.toHaveProperty('logId');
       await expect(getLogPromise).resolves.toHaveProperty('events');
+    });
+  });
+});
+
+describe('AppClients', () => {
+  describe('createAppClient', () => {
+    test('valid request', async () => {
+      const createAppClientPromise = client.createAppClient('name', 'description');
+      await expect(createAppClientPromise).resolves.toHaveProperty('appClientId');
+      await expect(createAppClientPromise).resolves.toHaveProperty('name');
+      await expect(createAppClientPromise).resolves.toHaveProperty('description');
+      await expect(createAppClientPromise).resolves.toHaveProperty('clientId');
+      await expect(createAppClientPromise).resolves.toHaveProperty('clientSecret');
+    });
+  });
+
+  describe('deleteAppClient', () => {
+    test('valid request', async () => {
+      const appClientId = uuidv4();
+      const deleteAppClientPromise = client.deleteAppClient(appClientId);
+      await expect(deleteAppClientPromise).resolves.toHaveProperty('appClientId');
+      await expect(deleteAppClientPromise).resolves.toHaveProperty('name');
+      await expect(deleteAppClientPromise).resolves.toHaveProperty('description');
+      await expect(deleteAppClientPromise).resolves.toHaveProperty('clientId');
+    });
+  });
+
+  describe('listAppClients', () => {
+    test('valid request', async () => {
+      const listAppClientsPromise = client.listAppClients();
+      await expect(listAppClientsPromise).resolves.toHaveProperty('appClients');
+    });
+
+    test('accepts pagination params', async () => {
+      const maxResults = 1;
+      const nextToken = uuidv4();
+      const listAppClientsPromise = client.listAppClients({ maxResults, nextToken });
+      await expect(listAppClientsPromise).resolves.toHaveProperty('nextToken');
     });
   });
 });

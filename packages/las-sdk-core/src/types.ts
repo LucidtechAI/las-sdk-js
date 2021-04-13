@@ -215,10 +215,18 @@ export type PredictionList = {
 
 export type Batch = {
   batchId: string;
+  createdTime: string;
   name: string;
   description: string;
   numDocuments: number;
 };
+
+export type BatchList = {
+  batches: Array<Batch>;
+  nextToken: string | null;
+};
+
+export type ListBatchesOptions = PaginationOptions;
 
 export type User = {
   userId: string;
@@ -282,6 +290,21 @@ export type LasDocument = {
   content: string;
 };
 
+export type AppClient = {
+  appClientId: string;
+  name: string | null;
+  description: string | null;
+  clientId: string;
+  clientSecret?: string;
+};
+
+export type AppClientList = {
+  appClients: Array<AppClient>;
+  nextToken: string | null;
+};
+
+export type ListAppClientsOptions = PaginationOptions;
+
 export type Asset = {
   assetId: string;
   content: string;
@@ -294,11 +317,28 @@ export type AssetList = {
   nextToken: string | null;
 };
 
+export type PreprocessConfig = {
+  autoRotate: boolean;
+  imageQuality: 'LOW' | 'HIGH';
+  maxPages: number;
+}
+
+export type Field = {
+  description: string;
+  maxLength: number;
+  type: 'all' | 'alphanum' | 'alphanumext' | 'amount' | 'date' | 'letter' | 'number' | 'phone';
+}
+
 export type Model = {
-  modelId: string;
+  createdTime: string | null;
   description: string | null;
+  fieldConfig: Record<string, Field> | null;
   height: number;
+  modelId: string;
   name: string | null;
+  preprocessConfig: PreprocessConfig;
+  status: 'active' | 'training';
+  updatedTime: string | null;
   width: number;
 }
 

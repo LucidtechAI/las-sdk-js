@@ -3,16 +3,21 @@ import { Buffer } from 'buffer';
 
 import { Credentials } from './credentials';
 import {
+  AppClient,
+  AppClientList,
   Asset,
   AssetList,
   AuthorizationHeaders,
   AxiosFn,
   Batch,
+  BatchList,
   ContentType,
   DeleteDocumentOptions,
   LasDocument,
   LasDocumentList,
+  ListAppClientsOptions,
   ListAssetsOptions,
+  ListBatchesOptions,
   ListDocumentsOptions,
   ListSecretsOptions,
   ListTransitionOptions,
@@ -66,6 +71,43 @@ export class Client {
 
   constructor(credentials: Credentials) {
     this.credentials = credentials;
+  }
+
+  /**
+   * Creates an app client, calls the POST /appClients endpoint.
+   *
+   * @param name Name of app client
+   * @param description Description of app client
+   * @returns AppClient response from REST API
+   */
+  async createAppClient(name: string | null, description: string | null): Promise<AppClient> {
+    const body = {
+      name,
+      description,
+    };
+
+    return this.makePostRequest<AppClient>('/appClients', body);
+  }
+
+  /**
+   * List app clients, calls the GET /appClients endpoint.
+   *
+   * @param options.maxResults Maximum number of results to be returned
+   * @param options.nextToken A unique token for each page, use the returned token to retrieve the next page.
+   * @returns AppClientList response from REST API
+   */
+  async listAppClients(options?: ListAppClientsOptions): Promise<AppClientList> {
+    return this.makeGetRequest<AppClientList>('/appClients', options);
+  }
+
+  /**
+   * Delete the app client, calls the DELETE /appClients/{appClientId} endpoint.
+   *
+   * @param appClientId of the app client
+   * @returns AppClient response from REST API
+   */
+  async deleteAppClient(appClientId: string): Promise<AppClient> {
+    return this.makeDeleteRequest(`/appClients/${appClientId}`);
   }
 
   /**
@@ -476,6 +518,17 @@ export class Client {
    */
   async createBatch(options: CreateBatchOptions): Promise<Batch> {
     return this.makePostRequest<Batch>('/batches', options);
+  }
+
+  /**
+   * List batches, calls the GET /batches endpoint.
+   *
+   * @param options.maxResults Maximum number of results to be returned
+   * @param options.nextToken A unique token for each page, use the returned token to retrieve the next page.
+   * @returns BatchList response from REST API
+   */
+  async listBatches(options?: ListBatchesOptions): Promise<BatchList> {
+    return this.makeGetRequest<BatchList>('/batches', options);
   }
 
   /**
