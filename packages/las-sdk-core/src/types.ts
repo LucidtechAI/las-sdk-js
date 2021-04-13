@@ -301,11 +301,28 @@ export type AssetList = {
   nextToken: string | null;
 };
 
+export type PreprocessConfig = {
+  autoRotate: boolean;
+  imageQuality: 'LOW' | 'HIGH';
+  maxPages: number;
+}
+
+export type Field = {
+  description: string;
+  maxLength: number;
+  type: 'all' | 'alphanum' | 'alphanumext' | 'amount' | 'date' | 'letter' | 'number' | 'phone';
+}
+
 export type Model = {
-  modelId: string;
+  createdTime: string | null;
   description: string | null;
+  fieldConfig: Record<string, Field> | null;
   height: number;
+  modelId: string;
   name: string | null;
+  preprocessConfig: PreprocessConfig;
+  status: 'active' | 'training';
+  updatedTime: string | null;
   width: number;
 }
 
