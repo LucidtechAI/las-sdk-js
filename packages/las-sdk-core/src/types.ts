@@ -289,6 +289,21 @@ export type LasDocument = {
   content: string;
 };
 
+export type AppClient = {
+  appClientId: string;
+  name: string | null;
+  description: string | null;
+  clientId: string;
+  clientSecret?: string;
+};
+
+export type AppClientList = {
+  appClients: Array<AppClient>;
+  nextToken: string | null;
+};
+
+export type ListAppClientsOptions = PaginationOptions;
+
 export type Asset = {
   assetId: string;
   content: string;
