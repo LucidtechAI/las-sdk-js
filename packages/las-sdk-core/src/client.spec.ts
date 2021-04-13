@@ -504,6 +504,7 @@ describe('createBatch', () => {
     const description = 'I am going to create a new batch, give me a batch ID!';
     const createBatchPromise = client.createBatch({ description });
     await expect(createBatchPromise).resolves.toHaveProperty('batchId');
+    await expect(createBatchPromise).resolves.toHaveProperty('numDocuments');
   });
 });
 

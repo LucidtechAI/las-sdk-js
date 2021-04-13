@@ -217,6 +217,7 @@ export type Batch = {
   batchId: string;
   name: string;
   description: string;
+  numDocuments: number;
 };
 
 export type User = {
