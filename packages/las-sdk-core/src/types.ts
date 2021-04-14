@@ -296,7 +296,7 @@ export type AppClient = {
   callbackUrls: Array<string> | null;
   clientId: string;
   clientSecret?: string;
-  createdTime: string;
+  createdTime: string | null;
   description: string | null;
   hasSecret: boolean;
   logoutUrls: Array<string> | null;
