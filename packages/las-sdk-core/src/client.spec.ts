@@ -570,7 +570,6 @@ describe('AppClients', () => {
       await expect(deleteAppClientPromise).resolves.toHaveProperty('appClientId');
       await expect(deleteAppClientPromise).resolves.toHaveProperty('callbackUrls');
       await expect(deleteAppClientPromise).resolves.toHaveProperty('clientId');
-      await expect(deleteAppClientPromise).resolves.toHaveProperty('clientSecret');
       await expect(deleteAppClientPromise).resolves.toHaveProperty('createdTime');
       await expect(deleteAppClientPromise).resolves.toHaveProperty('description');
       await expect(deleteAppClientPromise).resolves.toHaveProperty('hasSecret');
