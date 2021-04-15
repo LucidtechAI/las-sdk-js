@@ -549,11 +549,16 @@ describe('AppClients', () => {
   describe('createAppClient', () => {
     test('valid request', async () => {
       const createAppClientPromise = client.createAppClient('name', 'description');
+      await expect(createAppClientPromise).resolves.toHaveProperty('apiKey');
       await expect(createAppClientPromise).resolves.toHaveProperty('appClientId');
-      await expect(createAppClientPromise).resolves.toHaveProperty('name');
-      await expect(createAppClientPromise).resolves.toHaveProperty('description');
+      await expect(createAppClientPromise).resolves.toHaveProperty('callbackUrls');
       await expect(createAppClientPromise).resolves.toHaveProperty('clientId');
       await expect(createAppClientPromise).resolves.toHaveProperty('clientSecret');
+      await expect(createAppClientPromise).resolves.toHaveProperty('createdTime');
+      await expect(createAppClientPromise).resolves.toHaveProperty('description');
+      await expect(createAppClientPromise).resolves.toHaveProperty('hasSecret');
+      await expect(createAppClientPromise).resolves.toHaveProperty('logoutUrls');
+      await expect(createAppClientPromise).resolves.toHaveProperty('name');
     });
   });
 
@@ -561,10 +566,15 @@ describe('AppClients', () => {
     test('valid request', async () => {
       const appClientId = uuidv4();
       const deleteAppClientPromise = client.deleteAppClient(appClientId);
+      await expect(deleteAppClientPromise).resolves.toHaveProperty('apiKey');
       await expect(deleteAppClientPromise).resolves.toHaveProperty('appClientId');
-      await expect(deleteAppClientPromise).resolves.toHaveProperty('name');
-      await expect(deleteAppClientPromise).resolves.toHaveProperty('description');
+      await expect(deleteAppClientPromise).resolves.toHaveProperty('callbackUrls');
       await expect(deleteAppClientPromise).resolves.toHaveProperty('clientId');
+      await expect(deleteAppClientPromise).resolves.toHaveProperty('createdTime');
+      await expect(deleteAppClientPromise).resolves.toHaveProperty('description');
+      await expect(deleteAppClientPromise).resolves.toHaveProperty('hasSecret');
+      await expect(deleteAppClientPromise).resolves.toHaveProperty('logoutUrls');
+      await expect(deleteAppClientPromise).resolves.toHaveProperty('name');
     });
   });
 

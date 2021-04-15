@@ -291,11 +291,16 @@ export type LasDocument = {
 };
 
 export type AppClient = {
+  apiKey: string;
   appClientId: string;
-  name: string | null;
-  description: string | null;
+  callbackUrls: Array<string> | null;
   clientId: string;
   clientSecret?: string;
+  createdTime: string | null;
+  description: string | null;
+  hasSecret: boolean;
+  logoutUrls: Array<string> | null;
+  name: string | null;
 };
 
 export type AppClientList = {
