@@ -65,7 +65,7 @@ export interface CreateTransitionOptions {
 export type LasDocumentList = {
   documents: Array<LasDocumentWithoutContent>;
   batchId?: string;
-  nextToken?: string;
+  nextToken: string | null;
 };
 
 export type CreateTransitionDockerParams = {
@@ -110,7 +110,7 @@ export type Transition = {
 
 export type TransitionList = {
   transitions: Array<Transition>;
-  nextToken?: string;
+  nextToken: string | null;
 };
 
 export type TransitionExecution = {
@@ -173,7 +173,7 @@ export type WorkflowExecutionList = {
   executions: Array<Required<WorkflowExecution>>;
   workflowId: string;
   status?: 'succeeded' | 'failed' | 'running' | 'rejected';
-  nextToken?: string;
+  nextToken: string | null;
 };
 
 export type GroundTruth = {
@@ -183,7 +183,7 @@ export type GroundTruth = {
   value: string | boolean | null;
 };
 
-export interface DeleteDocumentOptions {
+export type DeleteDocumentOptions = PaginationOptions & {
   batchId?: string | Array<string>;
   consentId?: string | Array<string>;
 }
@@ -253,7 +253,7 @@ export type ListUsersOptions = PaginationOptions;
 
 export type UserList = {
   users: Array<User>;
-  nextToken?: string;
+  nextToken: string | null;
 };
 
 export type Secret = {
@@ -266,7 +266,7 @@ export type ListSecretsOptions = PaginationOptions;
 
 export type SecretList = {
   secrets: Array<Secret>;
-  nextToken?: string | null;
+  nextToken: string | null;
 };
 
 export interface CreateSecretOptions {

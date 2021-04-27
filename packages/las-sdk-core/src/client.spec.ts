@@ -99,16 +99,27 @@ describe('Documents', () => {
   });
 
   describe('deleteDocuments', () => {
-    test('valid request', async () => {
+    test('with batchId', async () => {
       const batchId = uuidv4();
-      let deleteDocumentsPromise = client.deleteDocuments({ batchId });
+      const deleteDocumentsPromise = client.deleteDocuments({ batchId });
       await expect(deleteDocumentsPromise).resolves.toHaveProperty('documents');
+    });
 
+    test('with consentId', async () => {
       const consentId = uuidv4();
-      deleteDocumentsPromise = client.deleteDocuments({ consentId });
+      const deleteDocumentsPromise = client.deleteDocuments({ consentId });
       await expect(deleteDocumentsPromise).resolves.toHaveProperty('documents');
+    });
 
-      deleteDocumentsPromise = client.deleteDocuments({ batchId, consentId });
+    test('with nextToken', async () => {
+      const nextToken = uuidv4();
+      let deleteDocumentsPromise = client.deleteDocuments({ nextToken });
+      await expect(deleteDocumentsPromise).resolves.toHaveProperty('documents');
+    });
+
+    test('with maxResults', async () => {
+      const maxResults = 100;
+      let deleteDocumentsPromise = client.deleteDocuments({ maxResults });
       await expect(deleteDocumentsPromise).resolves.toHaveProperty('documents');
     });
   });
@@ -529,9 +540,24 @@ describe('Batches', () => {
       const batchId = uuidv4();
       const deleteBatchPromise = client.deleteBatch(batchId);
       await expect(deleteBatchPromise).resolves.toHaveProperty('batchId');
+      await expect(deleteBatchPromise).resolves.toHaveProperty('containsPersonallyIdentifiableInformation');
       await expect(deleteBatchPromise).resolves.toHaveProperty('createdTime');
       await expect(deleteBatchPromise).resolves.toHaveProperty('description');
       await expect(deleteBatchPromise).resolves.toHaveProperty('numDocuments');
+      await expect(deleteBatchPromise).resolves.toHaveProperty('retentionInDays');
+      await expect(deleteBatchPromise).resolves.toHaveProperty('storageLocation');
+    });
+
+    test('with documents', async () => {
+      const batchId = uuidv4();
+      const deleteBatchPromise = client.deleteBatch(batchId, true);
+      await expect(deleteBatchPromise).resolves.toHaveProperty('batchId');
+      await expect(deleteBatchPromise).resolves.toHaveProperty('containsPersonallyIdentifiableInformation');
+      await expect(deleteBatchPromise).resolves.toHaveProperty('createdTime');
+      await expect(deleteBatchPromise).resolves.toHaveProperty('description');
+      await expect(deleteBatchPromise).resolves.toHaveProperty('numDocuments');
+      await expect(deleteBatchPromise).resolves.toHaveProperty('retentionInDays');
+      await expect(deleteBatchPromise).resolves.toHaveProperty('storageLocation');
     });
   });
 

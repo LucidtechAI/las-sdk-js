@@ -535,9 +535,17 @@ export class Client {
    * Deletes a batch, calls the DELETE /batches/{batchId} endpoint.
    *
    * @param batchId Id of the batch
+   * @param deleteDocuments Set to true to delete documents in batch before deleting batch
    * @returns Batch response from REST API
    */
-  async deleteBatch(batchId: string): Promise<Batch> {
+  async deleteBatch(batchId: string, deleteDocuments: boolean = false): Promise<Batch> {
+    if (deleteDocuments) {
+      let response = await this.deleteDocuments({batchId});
+      while (response.nextToken) {
+        response = await this.deleteDocuments({batchId, nextToken: response.nextToken})
+      }
+    }
+
     return this.makeDeleteRequest<Batch>(`/batches/${batchId}`);
   }
 
