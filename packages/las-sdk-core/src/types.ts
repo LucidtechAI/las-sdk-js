@@ -216,10 +216,13 @@ export type PredictionList = {
 
 export type Batch = {
   batchId: string;
+  containsPersonallyIdentifiableInformation: boolean;
   createdTime: string;
-  name: string;
   description: string;
+  name: string;
   numDocuments: number;
+  retentionInDays: number;
+  storageLocation: 'EU';
 };
 
 export type BatchList = {
@@ -358,6 +361,7 @@ export type ModelList = {
 export type CreateBatchOptions = {
   name?: string;
   description?: string;
+  containsPersonallyIdentifiableInformation?: boolean;
 }
 
 export interface UpdateAssetOptions {
