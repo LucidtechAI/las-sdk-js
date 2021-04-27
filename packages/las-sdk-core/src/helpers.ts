@@ -4,31 +4,31 @@ import { Client } from './client';
 const endpoint = 'http://localhost:4010';
 
 export class TestCredentials extends Credentials {
-    testAccessToken: string;
+  testAccessToken: string;
 
-    testExpiration: number;
+  testExpiration: number;
 
-    testRefreshToken: string;
+  testRefreshToken: string;
 
-    constructor(
-      testEndpoint: string,
-      testApiKey: string,
-      testAccessToken: string,
-      testExpiresInSeconds: number,
-      testRefreshToken: string,
-    ) {
-      super(testEndpoint, testApiKey);
+  constructor(
+    testEndpoint: string,
+    testApiKey: string,
+    testAccessToken: string,
+    testExpiresInSeconds: number,
+    testRefreshToken: string,
+  ) {
+    super(testEndpoint, testApiKey);
 
-      this.testAccessToken = testAccessToken;
-      this.testExpiration = Date.now() + 1000 * testExpiresInSeconds;
-      this.testRefreshToken = testRefreshToken;
-    }
+    this.testAccessToken = testAccessToken;
+    this.testExpiration = Date.now() + 1000 * testExpiresInSeconds;
+    this.testRefreshToken = testRefreshToken;
+  }
 
-    getToken(): Promise<Token> {
-      return new Promise<Token>((resolve, reject) => {
-        resolve(new Token(this.testAccessToken, this.testExpiration, this.testRefreshToken));
-      });
-    }
+  getToken(): Promise<Token> {
+    return new Promise<Token>((resolve, reject) => {
+      resolve(new Token(this.testAccessToken, this.testExpiration, this.testRefreshToken));
+    });
+  }
 }
 
 

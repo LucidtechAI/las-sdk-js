@@ -231,7 +231,7 @@ export class Client {
   }
 
   /**
-   * Updates a transition, calls the PATCH /transitions/transitionId endpoint.
+   * Updates a transition, calls the PATCH /transitions/{transitionId} endpoint.
    *
    * @param transitionId Id of the transition
    * @param data Transition fields to PATCH
@@ -264,7 +264,7 @@ export class Client {
 
   /**
    * Ends the processing of the transition execution, calls the
-   * PATCH /transitions/{transition_id}/executions/{execution_id} endpoint.
+   * PATCH /transitions/{transition_id}/executions/{executionId} endpoint.
    *
    * @param transitionId Id of the transition that performs the execution
    * @param executionId Id of the execution to update
@@ -370,7 +370,7 @@ export class Client {
   }
 
   /**
-   * Updates a workflow, calls the PATCH /workflows/workflowId endpoint.
+   * Updates a workflow, calls the PATCH /workflows/{workflowId} endpoint.
    * @param workflowId Id of the workflow
    * @param data Workflow fields to PATCH
    * @returns Workflow response from REST API
@@ -490,7 +490,7 @@ export class Client {
   }
 
   /**
-   * Updates an asset, calls the PATCH /assets/assetId endpoint.
+   * Updates an asset, calls the PATCH /assets/{assetId} endpoint.
    *
    * @param assetId Id of the asset
    * @param data.content Content to PATCH (base64-encoded string | Buffer)
@@ -532,6 +532,24 @@ export class Client {
   }
 
   /**
+   * Deletes a batch, calls the DELETE /batches/{batchId} endpoint.
+   *
+   * @param batchId Id of the batch
+   * @param deleteDocuments Set to true to delete documents in batch before deleting batch
+   * @returns Batch response from REST API
+   */
+  async deleteBatch(batchId: string, deleteDocuments: boolean = false): Promise<Batch> {
+    if (deleteDocuments) {
+      let response = await this.deleteDocuments({batchId});
+      while (response.nextToken) {
+        response = await this.deleteDocuments({batchId, nextToken: response.nextToken})
+      }
+    }
+
+    return this.makeDeleteRequest<Batch>(`/batches/${batchId}`);
+  }
+
+  /**
    * Creates a new user, calls the POST /users endpoint.
    *
    * @param email Email to the new user
@@ -559,7 +577,7 @@ export class Client {
   }
 
   /**
-   * Get information about a specific user, calls the GET /users/{user_id} endpoint.
+   * Get information about a specific user, calls the GET /users/{userId} endpoint.
    *
    * @param userId Id of the user
    * @returns User response from REST API
@@ -581,7 +599,7 @@ export class Client {
   }
 
   /**
-   * Delete the user with the provided user_id, calls the DELETE /users/{userId} endpoint.
+   * Delete a user, calls the DELETE /users/{userId} endpoint.
    *
    * @param userId Id of the user
    * @returns User response from REST API
@@ -640,7 +658,7 @@ export class Client {
   }
 
   /**
-   * Updates a secret, calls the PATCH /secrets/secretId endpoint.
+   * Updates a secret, calls the PATCH /secrets/{secretId} endpoint.
    *
    * @param secretId Id of the secret
    * @param data.data Object containing the data you want to keep secret
