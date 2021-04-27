@@ -100,9 +100,16 @@ describe('Documents', () => {
 
   describe('deleteDocuments', () => {
     test('valid request', async () => {
+      const batchId = uuidv4();
+      let deleteDocumentsPromise = client.deleteDocuments({ batchId });
+      await expect(deleteDocumentsPromise).resolves.toHaveProperty('documents');
+
       const consentId = uuidv4();
-      const updateDocumentPromise = client.deleteDocuments({ consentId });
-      await expect(updateDocumentPromise).resolves.toHaveProperty('documents');
+      deleteDocumentsPromise = client.deleteDocuments({ consentId });
+      await expect(deleteDocumentsPromise).resolves.toHaveProperty('documents');
+
+      deleteDocumentsPromise = client.deleteDocuments({ batchId, consentId });
+      await expect(deleteDocumentsPromise).resolves.toHaveProperty('documents');
     });
   });
 
