@@ -511,6 +511,17 @@ describe('Batches', () => {
     });
   });
 
+  describe('deleteBatch', () => {
+    test('valid request', async () => {
+      const batchId = uuidv4();
+      const deleteBatchPromise = client.deleteBatch(batchId);
+      await expect(deleteBatchPromise).resolves.toHaveProperty('batchId');
+      await expect(deleteBatchPromise).resolves.toHaveProperty('createdTime');
+      await expect(deleteBatchPromise).resolves.toHaveProperty('description');
+      await expect(deleteBatchPromise).resolves.toHaveProperty('numDocuments');
+    });
+  });
+
   describe('listBatches', () => {
     test('valid request', async () => {
       const listBatchesPromise = client.listBatches();
