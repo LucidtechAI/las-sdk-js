@@ -184,6 +184,7 @@ export type GroundTruth = {
 };
 
 export interface DeleteDocumentOptions {
+  batchId?: string | Array<string>;
   consentId?: string | Array<string>;
 }
 
