@@ -503,11 +503,17 @@ describe('Batches', () => {
   describe('createBatch', () => {
     test('valid request', async () => {
       const description = 'I am going to create a new batch, give me a batch ID!';
-      const createBatchPromise = client.createBatch({ description });
+      const name = 'my batch name';
+      const containsPersonallyIdentifiableInformation = false;
+      const options = { description, name, containsPersonallyIdentifiableInformation };
+      const createBatchPromise = client.createBatch(options);
       await expect(createBatchPromise).resolves.toHaveProperty('batchId');
-      await expect(createBatchPromise).resolves.toHaveProperty('description');
+      await expect(createBatchPromise).resolves.toHaveProperty('containsPersonallyIdentifiableInformation');
       await expect(createBatchPromise).resolves.toHaveProperty('createdTime');
+      await expect(createBatchPromise).resolves.toHaveProperty('description');
       await expect(createBatchPromise).resolves.toHaveProperty('numDocuments');
+      await expect(createBatchPromise).resolves.toHaveProperty('retentionInDays');
+      await expect(createBatchPromise).resolves.toHaveProperty('storageLocation');
     });
   });
 
