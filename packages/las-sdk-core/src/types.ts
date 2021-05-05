@@ -121,6 +121,7 @@ export type TransitionExecution = {
   completedBy: string | null;
   startTime: string | null;
   endTime: string | null;
+  logId: string | null;
 };
 
 export type WorkflowSpecification = {
@@ -153,6 +154,10 @@ export interface UpdateWorkflowOptions {
   description?: string;
 }
 
+export interface UpdateWorkflowExecutionOptions {
+  nextTransitionId: string;
+}
+
 export type WorkflowList = {
   workflows: Array<Workflow>;
 };
@@ -162,9 +167,10 @@ export type WorkflowExecution = {
   workflowId: string;
   input: Record<any, any>;
   output: Record<any, any>;
-  status?: 'succeeded' | 'failed' | 'running' | 'rejected';
+  status: 'succeeded' | 'failed' | 'running' | 'rejected' | 'retry' | 'error';
   startTime: string | null;
   endTime: string | null;
+  logId: string | null;
   transitionExecutions: Record<string, Array<string>> | null;
   completedBy: Array<string>;
 };
