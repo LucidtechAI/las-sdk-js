@@ -19,6 +19,7 @@ let client = getTestClient();
 const uuidWithoutDashes = () => uuidv4().replace(/-/g, '');
 const transitionId = () => `las:transition:${uuidWithoutDashes()}`;
 const transitionExecutionId = () => `las:transition-execution:${uuidWithoutDashes()}`;
+const workflowExecutionId = () => `las:workflow-execution:${uuidWithoutDashes()}`;
 const consentId = () => `las:consent:${uuidWithoutDashes()}`;
 const batchId = () => `las:batch:${uuidWithoutDashes()}`;
 const documentId = () => `las:document:${uuidWithoutDashes()}`;
@@ -312,6 +313,42 @@ describe('Workflows', () => {
       await expect(executeWorkflowPromise).resolves.toHaveProperty('executionId');
       await expect(executeWorkflowPromise).resolves.toHaveProperty('status');
       await expect(executeWorkflowPromise).resolves.toHaveProperty('workflowId');
+    });
+  });
+
+  describe('getWorkflowExecution', () => {
+    test('valid request', async () => {
+      const testWorkflowId = workflowId();
+      const testWorkflowExecutionId = workflowExecutionId();
+      const getWorkflowExecutionPromise = client.getWorkflowExecution(testWorkflowId, testWorkflowExecutionId);
+      await expect(getWorkflowExecutionPromise).resolves.toHaveProperty('executionId');
+      await expect(getWorkflowExecutionPromise).resolves.toHaveProperty('completedBy');
+      await expect(getWorkflowExecutionPromise).resolves.toHaveProperty('endTime');
+      await expect(getWorkflowExecutionPromise).resolves.toHaveProperty('input');
+      await expect(getWorkflowExecutionPromise).resolves.toHaveProperty('output');
+      await expect(getWorkflowExecutionPromise).resolves.toHaveProperty('startTime');
+      await expect(getWorkflowExecutionPromise).resolves.toHaveProperty('status');
+      await expect(getWorkflowExecutionPromise).resolves.toHaveProperty('transitionExecutions');
+      await expect(getWorkflowExecutionPromise).resolves.toHaveProperty('workflowId');
+    });
+  });
+
+  describe('updateWorkflowExecution', () => {
+    test('valid request', async () => {
+      const testWorkflowId = workflowId();
+      const testWorkflowExecutionId = workflowExecutionId();
+      const nextTransitionId = transitionId();
+      const data = { nextTransitionId }
+      const getWorkflowExecutionPromise = client.updateWorkflowExecution(testWorkflowId, testWorkflowExecutionId, data);
+      await expect(getWorkflowExecutionPromise).resolves.toHaveProperty('executionId');
+      await expect(getWorkflowExecutionPromise).resolves.toHaveProperty('completedBy');
+      await expect(getWorkflowExecutionPromise).resolves.toHaveProperty('endTime');
+      await expect(getWorkflowExecutionPromise).resolves.toHaveProperty('input');
+      await expect(getWorkflowExecutionPromise).resolves.toHaveProperty('output');
+      await expect(getWorkflowExecutionPromise).resolves.toHaveProperty('startTime');
+      await expect(getWorkflowExecutionPromise).resolves.toHaveProperty('status');
+      await expect(getWorkflowExecutionPromise).resolves.toHaveProperty('transitionExecutions');
+      await expect(getWorkflowExecutionPromise).resolves.toHaveProperty('workflowId');
     });
   });
 

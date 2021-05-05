@@ -60,6 +60,7 @@ import {
   Log,
   UpdateUserOptions,
   CreateUserOptions,
+  UpdateWorkflowExecutionOptions,
 } from './types';
 import { buildURL } from './utils';
 
@@ -413,6 +414,31 @@ export class Client {
   }
 
   /**
+   * Get a workflow execution, calls the GET /workflows/{workflow_id}/executions/{execution_id} endpoint.
+   *
+   * @param workflowId Id of the workflow that performs the execution
+   * @param executionId Id of the execution to get
+   * @returns Workflow execution response from REST API
+   */
+  async getWorkflowExecution(workflowId: string, executionId: string): Promise<WorkflowExecution> {
+    return this.makeGetRequest(`/workflows/${workflowId}/executions/${executionId}`);
+  }
+
+  /**
+   * Retry or end the processing of a workflow execution,
+   * calls the PATCH /workflows/{workflow_id}/executions/{execution_id} endpoint.
+   *
+   * @param workflowId Id of the workflow that performs the execution
+   * @param executionId Id of the execution to update
+   * @param data.nextTransitionId The next transition to transition into. To end the workflow-execution,
+   *  use: las:transition:commons-failed.
+   * @returns Workflow execution response from REST API
+   */
+  async updateWorkflowExecution(workflowId: string, executionId: string, data: UpdateWorkflowExecutionOptions): Promise<WorkflowExecution> {
+    return this.makePatchRequest(`/workflows/${workflowId}/executions/${executionId}`, data);
+  }
+
+  /**
    * Deletes the execution with the provided execution_id from workflow_id,
    * calls the DELETE /workflows/{workflowId}/executions/{executionId} endpoint.
    *
@@ -538,11 +564,12 @@ export class Client {
    * @param deleteDocuments Set to true to delete documents in batch before deleting batch
    * @returns Batch response from REST API
    */
-  async deleteBatch(batchId: string, deleteDocuments: boolean = false): Promise<Batch> {
+  async deleteBatch(batchId: string, deleteDocuments = false): Promise<Batch> {
     if (deleteDocuments) {
-      let response = await this.deleteDocuments({batchId});
+      let response = await this.deleteDocuments({ batchId });
       while (response.nextToken) {
-        response = await this.deleteDocuments({batchId, nextToken: response.nextToken})
+        // eslint-disable-next-line no-await-in-loop
+        response = await this.deleteDocuments({ batchId, nextToken: response.nextToken });
       }
     }
 
