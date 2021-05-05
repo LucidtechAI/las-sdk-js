@@ -264,6 +264,17 @@ export class Client {
   }
 
   /**
+   * Get an execution of a transition, calls the GET /transitions/{transitionId}/executions/{executionId} endpoint
+   *
+   * @param transitionId Id of the transition
+   * @param transitionExecutionId Id of the execution
+   * @returns Transition execution responses from REST API
+   */
+  async getTransitionExecution(transitionId: string, transitionExecutionId: string): Promise<TransitionExecution> {
+    return this.makeGetRequest(`/transitions/${transitionId}/executions/${transitionExecutionId}`);
+  }
+
+  /**
    * Ends the processing of the transition execution, calls the
    * PATCH /transitions/{transition_id}/executions/{executionId} endpoint.
    *
@@ -434,7 +445,11 @@ export class Client {
    *  use: las:transition:commons-failed.
    * @returns Workflow execution response from REST API
    */
-  async updateWorkflowExecution(workflowId: string, executionId: string, data: UpdateWorkflowExecutionOptions): Promise<WorkflowExecution> {
+  async updateWorkflowExecution(
+    workflowId: string,
+    executionId: string,
+    data: UpdateWorkflowExecutionOptions,
+  ): Promise<WorkflowExecution> {
     return this.makePatchRequest(`/workflows/${workflowId}/executions/${executionId}`, data);
   }
 

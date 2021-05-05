@@ -204,6 +204,17 @@ describe('Transitions', () => {
     });
   });
 
+  describe('getTransitionExecution', () => {
+    test('valid request', async () => {
+      const testTransitionId = transitionId();
+      const testTransitionExecutionId = transitionExecutionId();
+      const getTransitionExecutionPromise = client.getTransitionExecution(testTransitionId, testTransitionExecutionId);
+      await expect(getTransitionExecutionPromise).resolves.toHaveProperty('executionId');
+      await expect(getTransitionExecutionPromise).resolves.toHaveProperty('status');
+      await expect(getTransitionExecutionPromise).resolves.toHaveProperty('transitionId');
+    });
+  });
+
   describe('updateTransitionExecution', () => {
     test.each<UpdateTransitionExecution>([
       { status: 'failed', error: { message: 'test' } },
