@@ -276,7 +276,7 @@ export class Client {
 
   /**
    * Ends the processing of the transition execution, calls the
-   * PATCH /transitions/{transition_id}/executions/{executionId} endpoint.
+   * PATCH /transitions/{transitionId}/executions/{executionId} endpoint.
    *
    * @param transitionId Id of the transition that performs the execution
    * @param executionId Id of the execution to update
@@ -425,7 +425,7 @@ export class Client {
   }
 
   /**
-   * Get a workflow execution, calls the GET /workflows/{workflow_id}/executions/{execution_id} endpoint.
+   * Get a workflow execution, calls the GET /workflows/{workflowId}/executions/{executionId} endpoint.
    *
    * @param workflowId Id of the workflow that performs the execution
    * @param executionId Id of the execution to get
@@ -437,7 +437,7 @@ export class Client {
 
   /**
    * Retry or end the processing of a workflow execution,
-   * calls the PATCH /workflows/{workflow_id}/executions/{execution_id} endpoint.
+   * calls the PATCH /workflows/{workflowId}/executions/{executionId} endpoint.
    *
    * @param workflowId Id of the workflow that performs the execution
    * @param executionId Id of the execution to update
@@ -454,7 +454,7 @@ export class Client {
   }
 
   /**
-   * Deletes the execution with the provided execution_id from workflow_id,
+   * Deletes the execution with the provided executionId from workflowId,
    * calls the DELETE /workflows/{workflowId}/executions/{executionId} endpoint.
    *
    * @param workflowId Id of the workflow

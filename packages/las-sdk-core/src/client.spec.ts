@@ -212,6 +212,10 @@ describe('Transitions', () => {
       await expect(getTransitionExecutionPromise).resolves.toHaveProperty('executionId');
       await expect(getTransitionExecutionPromise).resolves.toHaveProperty('status');
       await expect(getTransitionExecutionPromise).resolves.toHaveProperty('transitionId');
+      await expect(getTransitionExecutionPromise).resolves.toHaveProperty('completedBy');
+      await expect(getTransitionExecutionPromise).resolves.toHaveProperty('input');
+      await expect(getTransitionExecutionPromise).resolves.toHaveProperty('startTime');
+      await expect(getTransitionExecutionPromise).resolves.toHaveProperty('endTime');
     });
   });
 
