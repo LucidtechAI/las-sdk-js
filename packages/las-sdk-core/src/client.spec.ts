@@ -1,10 +1,7 @@
 /**
  * @jest-environment node
  */
-import uuid = require("uuid");
-
-
-mport { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 import { getTestClient } from './helpers';
 import {
   ContentType,
