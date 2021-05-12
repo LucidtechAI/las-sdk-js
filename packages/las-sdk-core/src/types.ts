@@ -300,6 +300,19 @@ export type LasDocument = {
   content: string;
 };
 
+export type CreateAppClientOptions = {
+  callbackUrls?: Array<string>;
+  description?: string;
+  generateSecret?: boolean;
+  logoutUrls?: Array<string>;
+  name?: string;
+}
+
+export type UpdateAppClientOptions = {
+  description?: string;
+  name?: string;
+}
+
 export type AppClient = {
   apiKey: string;
   appClientId: string;
@@ -344,15 +357,33 @@ export type Field = {
   type: 'all' | 'alphanum' | 'alphanumext' | 'amount' | 'date' | 'letter' | 'number' | 'phone';
 }
 
+export type FieldConfig = Record<string, Field>;
+
+export type CreateModelOptions = {
+  description?: string;
+  name?: string;
+  preprocessConfig?: PreprocessConfig;
+}
+
+export type UpdateModelOptions = {
+  description?: string;
+  fieldConfig?: FieldConfig;
+  height?: number;
+  name?: string;
+  preprocessConfig?: PreprocessConfig;
+  status?: 'training';
+  width?: number;
+}
+
 export type Model = {
   createdTime: string | null;
   description: string | null;
-  fieldConfig: Record<string, Field> | null;
+  fieldConfig: FieldConfig | null;
   height: number;
   modelId: string;
   name: string | null;
   preprocessConfig: PreprocessConfig;
-  status: 'active' | 'training';
+  status: 'active' | 'inactive' | 'training';
   updatedTime: string | null;
   width: number;
 }
@@ -368,6 +399,11 @@ export type CreateBatchOptions = {
   name?: string;
   description?: string;
   containsPersonallyIdentifiableInformation?: boolean;
+}
+
+export type UpdateBatchOptions = {
+  description?: string;
+  name?: string;
 }
 
 export interface UpdateAssetOptions {

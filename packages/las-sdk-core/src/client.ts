@@ -12,31 +12,35 @@ import {
   Batch,
   BatchList,
   ContentType,
+  CreateAppClientOptions,
+  CreateBatchOptions,
+  CreateDocumentOptions,
+  CreateModelOptions,
+  CreatePredictionsOptions,
+  CreateSecretOptions,
+  CreateTransitionOptions,
+  CreateUserOptions,
+  CreateWorkflowOptions,
   DeleteDocumentOptions,
+  FieldConfig,
   LasDocument,
   LasDocumentList,
   ListAppClientsOptions,
   ListAssetsOptions,
   ListBatchesOptions,
   ListDocumentsOptions,
+  ListModelsOptions,
+  ListPredictionsOptions,
   ListSecretsOptions,
   ListTransitionOptions,
   ListUsersOptions,
   ListWorkflowExecutionsOptions,
   ListWorkflowOptions,
-  UpdateAssetOptions,
-  UpdateDocumentOptions,
-  UpdateSecretOptions,
-  UpdateTransitionExecution,
-  UpdateTransitionOptions,
-  UpdateWorkflowOptions,
-  CreateBatchOptions,
-  CreateDocumentOptions,
+  Log,
+  Model,
+  ModelList,
   PostPredictions,
-  CreatePredictionsOptions,
-  CreateSecretOptions,
-  CreateTransitionOptions,
-  CreateWorkflowOptions,
+  PredictionList,
   PredictionResponse,
   Secret,
   SecretList,
@@ -46,6 +50,17 @@ import {
   TransitionExecutionListOptions,
   TransitionList,
   TransitionType,
+  UpdateAppClientOptions,
+  UpdateAssetOptions,
+  UpdateBatchOptions,
+  UpdateDocumentOptions,
+  UpdateModelOptions,
+  UpdateSecretOptions,
+  UpdateTransitionExecution,
+  UpdateTransitionOptions,
+  UpdateUserOptions,
+  UpdateWorkflowExecutionOptions,
+  UpdateWorkflowOptions,
   User,
   UserList,
   Workflow,
@@ -53,14 +68,6 @@ import {
   WorkflowExecutionList,
   WorkflowList,
   WorkflowSpecification,
-  ListModelsOptions,
-  ModelList,
-  ListPredictionsOptions,
-  PredictionList,
-  Log,
-  UpdateUserOptions,
-  CreateUserOptions,
-  UpdateWorkflowExecutionOptions,
 } from './types';
 import { buildURL } from './utils';
 
@@ -77,17 +84,27 @@ export class Client {
   /**
    * Creates an app client, calls the POST /appClients endpoint.
    *
-   * @param name Name of app client
-   * @param description Description of app client
+   * @param options.callbackUrls List of callback urls
+   * @param options.description Description of app client
+   * @param options.generateSecret Set to true to generate credentials for the client_credentials grant type
+   * @param options.logoutUrls List of logout urls
+   * @param options.name Name of app client
    * @returns AppClient response from REST API
    */
-  async createAppClient(name: string | null, description: string | null): Promise<AppClient> {
-    const body = {
-      name,
-      description,
-    };
+  async createAppClient(options: CreateAppClientOptions): Promise<AppClient> {
+    return this.makePostRequest<AppClient>('/appClients', options);
+  }
 
-    return this.makePostRequest<AppClient>('/appClients', body);
+  /**
+   * Updates an appClient, calls the PATCH /appClients/{appClientId} endpoint.
+   *
+   * @param appClientId Id of the appClient
+   * @param options.description Description of app client
+   * @param options.name Name of app client
+   * @returns AppClient response from REST API with content
+   */
+  async updateAppClient(appClientId: string, options: UpdateAppClientOptions): Promise<AppClient> {
+    return this.makePatchRequest(`/appClients/${appClientId}`, options);
   }
 
   /**
@@ -562,6 +579,18 @@ export class Client {
   }
 
   /**
+   * Updates an batch, calls the PATCH /batches/{batchId} endpoint.
+   *
+   * @param batchId Id of the batch
+   * @param options.description Description of batch
+   * @param options.name Name of batch
+   * @returns Batch response from REST API with content
+   */
+  async updateBatch(batchId: string, options: UpdateBatchOptions): Promise<Batch> {
+    return this.makePatchRequest(`/batches/${batchId}`, options);
+  }
+
+  /**
    * List batches, calls the GET /batches endpoint.
    *
    * @param options.maxResults Maximum number of results to be returned
@@ -676,6 +705,59 @@ export class Client {
    */
   async listSecrets(options?: ListSecretsOptions): Promise<SecretList> {
     return this.makeGetRequest<SecretList>('/secrets', options);
+  }
+
+  /**
+   * Creates a model, calls the POST /models endpoint.
+   *
+   * @param fieldConfig Specification of the fields that the model is going to predict
+   * @param width The number of pixels to be used for the input image width of your model
+   * @param height The number of pixels to be used for the input image height of your model
+   * @param options.description Description of the model
+   * @param options.name Name of the model
+   * @param options.preprocessConfig Specification of the processing steps prior to the prediction of an image
+   * @returns Model response from REST API
+   */
+  async createModel(
+    fieldConfig: FieldConfig,
+    width: number,
+    height: number,
+    options?: CreateModelOptions,
+  ): Promise<Model> {
+    let body = { fieldConfig, width, height };
+
+    if (options) {
+      body = { ...body, ...options };
+    }
+
+    return this.makePostRequest<Model>('/models', body);
+  }
+
+  /**
+   * Get model from the REST API, calls the GET /models/{modelId} endpoint.
+   *
+   * @param modelId Id of the model
+   * @returns Model response from REST API
+   */
+  async getModel(modelId: string): Promise<Model> {
+    return this.makeGetRequest(`/models/${modelId}`);
+  }
+
+  /**
+   * Updates a model, calls the PATCH /models/{modelId} endpoint.
+   *
+   * @param modelId Id of the model
+   * @param options.description Description of the model
+   * @param options.fieldConfig Specification of the fields that the model is going to predict
+   * @param options.height The number of pixels to be used for the input image height of your model
+   * @param options.name Name of the model
+   * @param options.preprocessConfig Specification of the processing steps prior to the prediction of an image
+   * @param options.status Update status to training
+   * @param options.width The number of pixels to be used for the input image width of your model
+   * @returns Model response from REST API
+   */
+  async updateModel(modelId: string, options: UpdateModelOptions): Promise<Model> {
+    return this.makePatchRequest(`/models/${modelId}`, options);
   }
 
   /**

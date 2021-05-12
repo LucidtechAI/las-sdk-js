@@ -6,11 +6,15 @@ import { v4 as uuidv4 } from 'uuid';
 import { getTestClient } from './helpers';
 import {
   ContentType,
+  CreateAppClientOptions,
+  CreateModelOptions,
   CreateTransitionOptions,
   CreateWorkflowOptions,
+  FieldConfig,
+  TransitionType,
+  UpdateModelOptions,
   UpdateSecretOptions,
   UpdateTransitionExecution,
-  TransitionType,
   WorkflowSpecification,
 } from './types';
 
@@ -259,19 +263,27 @@ describe('Workflows', () => {
     test.each<[string, WorkflowSpecification, CreateWorkflowOptions | undefined]>([
       [
         'test',
-        { definition: {} } as WorkflowSpecification,
-        { description: 'test', errorConfig: { email: 'test@test.com' } },
-      ],
-      ['test', { definition: {} } as WorkflowSpecification, undefined],
-      ['test', { definition: {} } as WorkflowSpecification, { errorConfig: { email: 'test@test.com' } }],
-      [
-        'test',
-        { definition: {}, language: 'ASL', version: '1.0.0' } as WorkflowSpecification,
+        { definition: {} },
         { description: 'test', errorConfig: { email: 'test@test.com' } },
       ],
       [
         'test',
-        { definition: {} } as WorkflowSpecification,
+        { definition: {} },
+        undefined,
+      ],
+      [
+        'test',
+        { definition: {} },
+        { errorConfig: { email: 'test@test.com' } },
+      ],
+      [
+        'test',
+        { definition: {}, language: 'ASL', version: '1.0.0' },
+        { description: 'test', errorConfig: { email: 'test@test.com' } },
+      ],
+      [
+        'test',
+        { definition: {} },
         { description: 'test', errorConfig: { email: 'test@test.com' } },
       ],
     ])('input: %o', async (name, specification, options) => {
@@ -353,7 +365,7 @@ describe('Workflows', () => {
       const testWorkflowId = workflowId();
       const testWorkflowExecutionId = workflowExecutionId();
       const nextTransitionId = transitionId();
-      const data = { nextTransitionId }
+      const data = { nextTransitionId };
       const getWorkflowExecutionPromise = client.updateWorkflowExecution(testWorkflowId, testWorkflowExecutionId, data);
       await expect(getWorkflowExecutionPromise).resolves.toHaveProperty('executionId');
       await expect(getWorkflowExecutionPromise).resolves.toHaveProperty('completedBy');
@@ -587,6 +599,23 @@ describe('Batches', () => {
     });
   });
 
+  describe('updateBatch', () => {
+    test('valid request', async () => {
+      const batchId = uuidv4();
+      const description = 'I am going to create a new batch, give me a batch ID!';
+      const name = 'my batch name';
+      const options = { description, name };
+      const updateBatchPromise = client.updateBatch(batchId, options);
+      await expect(updateBatchPromise).resolves.toHaveProperty('batchId');
+      await expect(updateBatchPromise).resolves.toHaveProperty('containsPersonallyIdentifiableInformation');
+      await expect(updateBatchPromise).resolves.toHaveProperty('createdTime');
+      await expect(updateBatchPromise).resolves.toHaveProperty('description');
+      await expect(updateBatchPromise).resolves.toHaveProperty('numDocuments');
+      await expect(updateBatchPromise).resolves.toHaveProperty('retentionInDays');
+      await expect(updateBatchPromise).resolves.toHaveProperty('storageLocation');
+    });
+  });
+
   describe('deleteBatch', () => {
     test('valid request', async () => {
       const batchId = uuidv4();
@@ -629,6 +658,97 @@ describe('Batches', () => {
 });
 
 describe('Models', () => {
+  describe('createModel', () => {
+    test.each<[FieldConfig, number, number, CreateModelOptions | undefined]>([
+      [
+        {
+          total_amount: { type: 'amount', maxLength: 20, description: 'Total Amount' },
+          purchase_date: { type: 'date', maxLength: 10, description: 'Purchase Date' },
+          supplier_id: { type: 'alphanum', maxLength: 25, description: 'Supplier ID' },
+        },
+        100,
+        100,
+        {
+          preprocessConfig: { autoRotate: true, imageQuality: 'HIGH', maxPages: 3 },
+          name: 'My model name',
+          description: 'My model description',
+        },
+      ],
+      [
+        {
+          total_amount: { type: 'amount', maxLength: 20, description: 'Total Amount' },
+          purchase_date: { type: 'date', maxLength: 10, description: 'Purchase Date' },
+          supplier_id: { type: 'alphanum', maxLength: 25, description: 'Supplier ID' },
+        },
+        100,
+        100,
+        undefined
+      ],
+    ])('input: %o', async (fieldConfig, width, height, options) => {
+      const createModelPromise = client.createModel(fieldConfig, width, height, options);
+      await expect(createModelPromise).resolves.toHaveProperty('createdTime');
+      await expect(createModelPromise).resolves.toHaveProperty('description');
+      await expect(createModelPromise).resolves.toHaveProperty('fieldConfig');
+      await expect(createModelPromise).resolves.toHaveProperty('height');
+      await expect(createModelPromise).resolves.toHaveProperty('modelId');
+      await expect(createModelPromise).resolves.toHaveProperty('name');
+      await expect(createModelPromise).resolves.toHaveProperty('preprocessConfig');
+      await expect(createModelPromise).resolves.toHaveProperty('status');
+      await expect(createModelPromise).resolves.toHaveProperty('updatedTime');
+      await expect(createModelPromise).resolves.toHaveProperty('width');
+    });
+  });
+
+  describe('getModel', () => {
+    test('valid request', async () => {
+      const modelId = uuidv4();
+      const getModelPromise = client.getModel(modelId);
+      await expect(getModelPromise).resolves.toHaveProperty('createdTime');
+      await expect(getModelPromise).resolves.toHaveProperty('description');
+      await expect(getModelPromise).resolves.toHaveProperty('fieldConfig');
+      await expect(getModelPromise).resolves.toHaveProperty('height');
+      await expect(getModelPromise).resolves.toHaveProperty('modelId');
+      await expect(getModelPromise).resolves.toHaveProperty('name');
+      await expect(getModelPromise).resolves.toHaveProperty('preprocessConfig');
+      await expect(getModelPromise).resolves.toHaveProperty('status');
+      await expect(getModelPromise).resolves.toHaveProperty('updatedTime');
+      await expect(getModelPromise).resolves.toHaveProperty('width');
+    });
+  });
+
+  describe('updateModel', () => {
+    test.each<[string, UpdateModelOptions]>([
+      [
+        uuidv4(),
+        {
+          fieldConfig: {
+            total_amount: { type: 'amount', maxLength: 20, description: 'Total Amount' },
+            purchase_date: { type: 'date', maxLength: 10, description: 'Purchase Date' },
+            supplier_id: { type: 'alphanum', maxLength: 25, description: 'Supplier ID' },
+          },
+          preprocessConfig: { autoRotate: true, imageQuality: 'HIGH', maxPages: 3 },
+          name: 'My model name',
+          description: 'My model description',
+          width: 100,
+          height: 100,
+          status: 'training'
+        },
+      ],
+    ])('input: %o', async (modelId, options) => {
+      const updateModelPromise = client.updateModel(modelId, options);
+      await expect(updateModelPromise).resolves.toHaveProperty('createdTime');
+      await expect(updateModelPromise).resolves.toHaveProperty('description');
+      await expect(updateModelPromise).resolves.toHaveProperty('fieldConfig');
+      await expect(updateModelPromise).resolves.toHaveProperty('height');
+      await expect(updateModelPromise).resolves.toHaveProperty('modelId');
+      await expect(updateModelPromise).resolves.toHaveProperty('name');
+      await expect(updateModelPromise).resolves.toHaveProperty('preprocessConfig');
+      await expect(updateModelPromise).resolves.toHaveProperty('status');
+      await expect(updateModelPromise).resolves.toHaveProperty('updatedTime');
+      await expect(updateModelPromise).resolves.toHaveProperty('width');
+    });
+  });
+
   describe('listModels', () => {
     test('valid request', async () => {
       const listModelsPromise = client.listModels();
@@ -649,8 +769,25 @@ describe('Logs', () => {
 
 describe('AppClients', () => {
   describe('createAppClient', () => {
-    test('valid request', async () => {
-      const createAppClientPromise = client.createAppClient('name', 'description');
+    test.each<[CreateAppClientOptions]>([
+      [
+        {
+          generateSecret: true,
+          name: 'App client name',
+          description: 'App client description',
+        },
+      ],
+      [
+        {
+          generateSecret: false,
+          name: 'App client name',
+          description: 'App client description',
+          callbackUrls: [ 'http://localhost:3030/authCallback' ],
+          logoutUrls: [ 'http://localhost:3030/logout' ],
+        },
+      ],
+    ])('input: %o', async (options) => {
+      const createAppClientPromise = client.createAppClient(options);
       await expect(createAppClientPromise).resolves.toHaveProperty('apiKey');
       await expect(createAppClientPromise).resolves.toHaveProperty('appClientId');
       await expect(createAppClientPromise).resolves.toHaveProperty('callbackUrls');
@@ -661,6 +798,26 @@ describe('AppClients', () => {
       await expect(createAppClientPromise).resolves.toHaveProperty('hasSecret');
       await expect(createAppClientPromise).resolves.toHaveProperty('logoutUrls');
       await expect(createAppClientPromise).resolves.toHaveProperty('name');
+    });
+  });
+
+  describe('updateAppClient', () => {
+    test('valid request', async () => {
+      const appClientId = uuidv4();
+      const description = 'My app client description';
+      const name = 'My app client name';
+      const options = { description, name };
+      const updateAppClientPromise = client.updateAppClient(appClientId, options);
+      await expect(updateAppClientPromise).resolves.toHaveProperty('apiKey');
+      await expect(updateAppClientPromise).resolves.toHaveProperty('appClientId');
+      await expect(updateAppClientPromise).resolves.toHaveProperty('callbackUrls');
+      await expect(updateAppClientPromise).resolves.toHaveProperty('clientId');
+      await expect(updateAppClientPromise).resolves.toHaveProperty('clientSecret');
+      await expect(updateAppClientPromise).resolves.toHaveProperty('createdTime');
+      await expect(updateAppClientPromise).resolves.toHaveProperty('description');
+      await expect(updateAppClientPromise).resolves.toHaveProperty('hasSecret');
+      await expect(updateAppClientPromise).resolves.toHaveProperty('logoutUrls');
+      await expect(updateAppClientPromise).resolves.toHaveProperty('name');
     });
   });
 
