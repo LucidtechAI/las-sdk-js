@@ -686,7 +686,6 @@ describe('Models', () => {
       ],
     ])('input: %o', async (fieldConfig, width, height, options) => {
       const createModelPromise = client.createModel(fieldConfig, width, height, options);
-      await expect(createModelPromise).resolves.toHaveProperty('createdTime');
       await expect(createModelPromise).resolves.toHaveProperty('description');
       await expect(createModelPromise).resolves.toHaveProperty('fieldConfig');
       await expect(createModelPromise).resolves.toHaveProperty('height');
@@ -703,7 +702,6 @@ describe('Models', () => {
     test('valid request', async () => {
       const modelId = uuidv4();
       const getModelPromise = client.getModel(modelId);
-      await expect(getModelPromise).resolves.toHaveProperty('createdTime');
       await expect(getModelPromise).resolves.toHaveProperty('description');
       await expect(getModelPromise).resolves.toHaveProperty('fieldConfig');
       await expect(getModelPromise).resolves.toHaveProperty('height');
@@ -736,7 +734,6 @@ describe('Models', () => {
       ],
     ])('input: %o', async (modelId, options) => {
       const updateModelPromise = client.updateModel(modelId, options);
-      await expect(updateModelPromise).resolves.toHaveProperty('createdTime');
       await expect(updateModelPromise).resolves.toHaveProperty('description');
       await expect(updateModelPromise).resolves.toHaveProperty('fieldConfig');
       await expect(updateModelPromise).resolves.toHaveProperty('height');
