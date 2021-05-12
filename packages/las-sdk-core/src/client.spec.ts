@@ -1,8 +1,10 @@
 /**
  * @jest-environment node
  */
+import uuid = require("uuid");
 
-import { v4 as uuidv4 } from 'uuid';
+
+mport { v4 as uuidv4 } from 'uuid';
 import { getTestClient } from './helpers';
 import {
   ContentType,
@@ -11,7 +13,7 @@ import {
   UpdateSecretOptions,
   UpdateTransitionExecution,
   TransitionType,
-  WorkflowSpecification,
+  WorkflowSpecification, CreateModelOptions, FieldConfig, PreprocessConfig, Field, UpdateModelOptions,
 } from './types';
 
 let client = getTestClient();
@@ -629,6 +631,97 @@ describe('Batches', () => {
 });
 
 describe('Models', () => {
+  describe('createModel', () => {
+    test.each<[FieldConfig, number, number, CreateModelOptions | undefined]>([
+      [
+        {
+          total_amount: { type: 'amount', maxLength: 20, description: 'Total Amount' } as Field,
+          purchase_date: { type: 'date', maxLength: 10, description: 'Purchase Date' } as Field,
+          supplier_id: { type: 'alphanum', maxLength: 25, description: 'Supplier ID' } as Field,
+        } as FieldConfig,
+        100,
+        100,
+        {
+          preprocessConfig: { autoRotate: true, imageQuality: 'HIGH', maxPages: 3 } as PreprocessConfig,
+          name: 'My model name',
+          description: 'My model description',
+        } as CreateModelOptions
+      ],
+      [
+        {
+          total_amount: { type: 'amount', maxLength: 20, description: 'Total Amount' } as Field,
+          purchase_date: { type: 'date', maxLength: 10, description: 'Purchase Date' } as Field,
+          supplier_id: { type: 'alphanum', maxLength: 25, description: 'Supplier ID' } as Field,
+        } as FieldConfig,
+        100,
+        100,
+        undefined
+      ],
+    ])('input: %o', async (fieldConfig, width, height, options) => {
+      const createModelPromise = client.createModel(fieldConfig, width, height, options);
+      await expect(createModelPromise).resolves.toHaveProperty('createdTime');
+      await expect(createModelPromise).resolves.toHaveProperty('description');
+      await expect(createModelPromise).resolves.toHaveProperty('fieldConfig');
+      await expect(createModelPromise).resolves.toHaveProperty('height');
+      await expect(createModelPromise).resolves.toHaveProperty('modelId');
+      await expect(createModelPromise).resolves.toHaveProperty('name');
+      await expect(createModelPromise).resolves.toHaveProperty('preprocessConfig');
+      await expect(createModelPromise).resolves.toHaveProperty('status');
+      await expect(createModelPromise).resolves.toHaveProperty('updatedTime');
+      await expect(createModelPromise).resolves.toHaveProperty('width');
+    });
+  });
+
+  describe('getModel', () => {
+    test('valid request', async () => {
+      const modelId = uuidv4();
+      const getModelPromise = client.getModel(modelId);
+      await expect(getModelPromise).resolves.toHaveProperty('createdTime');
+      await expect(getModelPromise).resolves.toHaveProperty('description');
+      await expect(getModelPromise).resolves.toHaveProperty('fieldConfig');
+      await expect(getModelPromise).resolves.toHaveProperty('height');
+      await expect(getModelPromise).resolves.toHaveProperty('modelId');
+      await expect(getModelPromise).resolves.toHaveProperty('name');
+      await expect(getModelPromise).resolves.toHaveProperty('preprocessConfig');
+      await expect(getModelPromise).resolves.toHaveProperty('status');
+      await expect(getModelPromise).resolves.toHaveProperty('updatedTime');
+      await expect(getModelPromise).resolves.toHaveProperty('width');
+    });
+  });
+
+  describe('updateModel', () => {
+    test.each<[string, UpdateModelOptions]>([
+      [
+        uuidv4(),
+        {
+          fieldConfig: {
+            total_amount: { type: 'amount', maxLength: 20, description: 'Total Amount' } as Field,
+            purchase_date: { type: 'date', maxLength: 10, description: 'Purchase Date' } as Field,
+            supplier_id: { type: 'alphanum', maxLength: 25, description: 'Supplier ID' } as Field,
+          } as FieldConfig,
+          preprocessConfig: { autoRotate: true, imageQuality: 'HIGH', maxPages: 3 } as PreprocessConfig,
+          name: 'My model name',
+          description: 'My model description',
+          width: 100,
+          height: 100,
+          status: 'training'
+        } as UpdateModelOptions
+      ],
+    ])('input: %o', async (modelId, options) => {
+      const updateModelPromise = client.updateModel(modelId, options);
+      await expect(updateModelPromise).resolves.toHaveProperty('createdTime');
+      await expect(updateModelPromise).resolves.toHaveProperty('description');
+      await expect(updateModelPromise).resolves.toHaveProperty('fieldConfig');
+      await expect(updateModelPromise).resolves.toHaveProperty('height');
+      await expect(updateModelPromise).resolves.toHaveProperty('modelId');
+      await expect(updateModelPromise).resolves.toHaveProperty('name');
+      await expect(updateModelPromise).resolves.toHaveProperty('preprocessConfig');
+      await expect(updateModelPromise).resolves.toHaveProperty('status');
+      await expect(updateModelPromise).resolves.toHaveProperty('updatedTime');
+      await expect(updateModelPromise).resolves.toHaveProperty('width');
+    });
+  });
+
   describe('listModels', () => {
     test('valid request', async () => {
       const listModelsPromise = client.listModels();

@@ -11,6 +11,9 @@ import {
   AxiosFn,
   Batch,
   BatchList,
+  Model,
+  UpdateModelOptions,
+  FieldConfig,
   ContentType,
   DeleteDocumentOptions,
   LasDocument,
@@ -37,6 +40,7 @@ import {
   CreateSecretOptions,
   CreateTransitionOptions,
   CreateWorkflowOptions,
+  CreateModelOptions,
   PredictionResponse,
   Secret,
   SecretList,
@@ -676,6 +680,59 @@ export class Client {
    */
   async listSecrets(options?: ListSecretsOptions): Promise<SecretList> {
     return this.makeGetRequest<SecretList>('/secrets', options);
+  }
+
+  /**
+   * Creates a model, calls the POST /models endpoint.
+   *
+   * @param fieldConfig Specification of the fields that the model is going to predict
+   * @param width The number of pixels to be used for the input image width of your model
+   * @param height The number of pixels to be used for the input image height of your model
+   * @param options.description Description of the model
+   * @param options.name Name of the model
+   * @param options.preprocessConfig Specification of the processing steps prior to the prediction of an image
+   * @returns Model response from REST API
+   */
+  async createModel(
+    fieldConfig: FieldConfig,
+    width: number,
+    height: number,
+    options?: CreateModelOptions,
+  ): Promise<Model> {
+    let body = { fieldConfig, width, height };
+
+    if (options) {
+      body = { ...body, ...options };
+    }
+
+    return this.makePostRequest<Model>('/models', body);
+  }
+
+  /**
+   * Get model from the REST API, calls the GET /models/{modelId} endpoint.
+   *
+   * @param modelId Id of the model
+   * @returns Model response from REST API
+   */
+  async getModel(modelId: string): Promise<Model> {
+    return this.makeGetRequest(`/models/${modelId}`);
+  }
+
+  /**
+   * Updates a model, calls the PATCH /models/{modelId} endpoint.
+   *
+   * @param modelId Id of the model
+   * @param options.description Description of the model
+   * @param options.fieldConfig Specification of the fields that the model is going to predict
+   * @param options.height The number of pixels to be used for the input image height of your model
+   * @param options.name Name of the model
+   * @param options.preprocessConfig Specification of the processing steps prior to the prediction of an image
+   * @param options.status Update status to training
+   * @param options.width The number of pixels to be used for the input image width of your model
+   * @returns Model response from REST API
+   */
+  async updateModel(modelId: string, options: UpdateModelOptions): Promise<Model> {
+    return this.makePatchRequest(`/models/${modelId}`, options);
   }
 
   /**
