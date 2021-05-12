@@ -13,7 +13,13 @@ import {
   UpdateSecretOptions,
   UpdateTransitionExecution,
   TransitionType,
-  WorkflowSpecification, CreateModelOptions, FieldConfig, PreprocessConfig, Field, UpdateModelOptions,
+  WorkflowSpecification,
+  CreateModelOptions,
+  FieldConfig,
+  PreprocessConfig,
+  Field,
+  UpdateModelOptions,
+  CreateAppClientOptions,
 } from './types';
 
 let client = getTestClient();
@@ -742,8 +748,26 @@ describe('Logs', () => {
 
 describe('AppClients', () => {
   describe('createAppClient', () => {
+    test.each<[CreateAppClientOptions]>([
+      [
+        {
+          generateSecret: true,
+          name: 'App client name',
+          description: 'App client description',
+        } as CreateAppClientOptions,
+      ],
+      [
+        {
+          generateSecret: false,
+          name: 'App client name',
+          description: 'App client description',
+          callbackUrls: [ 'http://localhost:3030/authCallback' ],
+          logoutUrls: [ 'http://localhost:3030/logout' ],
+        } as CreateAppClientOptions,
+      ],
+    ])('input: %o', async (options) => {
     test('valid request', async () => {
-      const createAppClientPromise = client.createAppClient('name', 'description');
+      const createAppClientPromise = client.createAppClient(options);
       await expect(createAppClientPromise).resolves.toHaveProperty('apiKey');
       await expect(createAppClientPromise).resolves.toHaveProperty('appClientId');
       await expect(createAppClientPromise).resolves.toHaveProperty('callbackUrls');

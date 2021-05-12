@@ -13,6 +13,7 @@ import {
   BatchList,
   Model,
   UpdateModelOptions,
+  CreateAppClientOptions,
   FieldConfig,
   ContentType,
   DeleteDocumentOptions,
@@ -81,17 +82,15 @@ export class Client {
   /**
    * Creates an app client, calls the POST /appClients endpoint.
    *
-   * @param name Name of app client
-   * @param description Description of app client
+   * @param options.callbackUrls List of callback urls
+   * @param options.description Description of app client
+   * @param options.generateSecret Set to true to generate credentials for the client_credentials grant type
+   * @param options.logoutUrls List of logout urls
+   * @param options.name Name of app client
    * @returns AppClient response from REST API
    */
-  async createAppClient(name: string | null, description: string | null): Promise<AppClient> {
-    const body = {
-      name,
-      description,
-    };
-
-    return this.makePostRequest<AppClient>('/appClients', body);
+  async createAppClient(options: CreateAppClientOptions): Promise<AppClient> {
+    return this.makePostRequest<AppClient>('/appClients', options);
   }
 
   /**

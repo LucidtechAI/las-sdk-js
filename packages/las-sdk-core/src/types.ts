@@ -300,6 +300,14 @@ export type LasDocument = {
   content: string;
 };
 
+export type CreateAppClientOptions = {
+  callbackUrls?: Array<string>;
+  description?: string;
+  generateSecret?: boolean;
+  logoutUrls?: Array<string>;
+  name?: string;
+}
+
 export type AppClient = {
   apiKey: string;
   appClientId: string;
