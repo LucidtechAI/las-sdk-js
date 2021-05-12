@@ -10,9 +10,7 @@ import {
   CreateModelOptions,
   CreateTransitionOptions,
   CreateWorkflowOptions,
-  Field,
   FieldConfig,
-  PreprocessConfig,
   TransitionType,
   UpdateModelOptions,
   UpdateSecretOptions,
@@ -265,19 +263,27 @@ describe('Workflows', () => {
     test.each<[string, WorkflowSpecification, CreateWorkflowOptions | undefined]>([
       [
         'test',
-        { definition: {} } as WorkflowSpecification,
-        { description: 'test', errorConfig: { email: 'test@test.com' } },
-      ],
-      ['test', { definition: {} } as WorkflowSpecification, undefined],
-      ['test', { definition: {} } as WorkflowSpecification, { errorConfig: { email: 'test@test.com' } }],
-      [
-        'test',
-        { definition: {}, language: 'ASL', version: '1.0.0' } as WorkflowSpecification,
+        { definition: {} },
         { description: 'test', errorConfig: { email: 'test@test.com' } },
       ],
       [
         'test',
-        { definition: {} } as WorkflowSpecification,
+        { definition: {} },
+        undefined,
+      ],
+      [
+        'test',
+        { definition: {} },
+        { errorConfig: { email: 'test@test.com' } },
+      ],
+      [
+        'test',
+        { definition: {}, language: 'ASL', version: '1.0.0' },
+        { description: 'test', errorConfig: { email: 'test@test.com' } },
+      ],
+      [
+        'test',
+        { definition: {} },
         { description: 'test', errorConfig: { email: 'test@test.com' } },
       ],
     ])('input: %o', async (name, specification, options) => {
@@ -359,7 +365,7 @@ describe('Workflows', () => {
       const testWorkflowId = workflowId();
       const testWorkflowExecutionId = workflowExecutionId();
       const nextTransitionId = transitionId();
-      const data = { nextTransitionId }
+      const data = { nextTransitionId };
       const getWorkflowExecutionPromise = client.updateWorkflowExecution(testWorkflowId, testWorkflowExecutionId, data);
       await expect(getWorkflowExecutionPromise).resolves.toHaveProperty('executionId');
       await expect(getWorkflowExecutionPromise).resolves.toHaveProperty('completedBy');
@@ -656,24 +662,24 @@ describe('Models', () => {
     test.each<[FieldConfig, number, number, CreateModelOptions | undefined]>([
       [
         {
-          total_amount: { type: 'amount', maxLength: 20, description: 'Total Amount' } as Field,
-          purchase_date: { type: 'date', maxLength: 10, description: 'Purchase Date' } as Field,
-          supplier_id: { type: 'alphanum', maxLength: 25, description: 'Supplier ID' } as Field,
-        } as FieldConfig,
+          total_amount: { type: 'amount', maxLength: 20, description: 'Total Amount' },
+          purchase_date: { type: 'date', maxLength: 10, description: 'Purchase Date' },
+          supplier_id: { type: 'alphanum', maxLength: 25, description: 'Supplier ID' },
+        },
         100,
         100,
         {
-          preprocessConfig: { autoRotate: true, imageQuality: 'HIGH', maxPages: 3 } as PreprocessConfig,
+          preprocessConfig: { autoRotate: true, imageQuality: 'HIGH', maxPages: 3 },
           name: 'My model name',
           description: 'My model description',
-        } as CreateModelOptions
+        },
       ],
       [
         {
-          total_amount: { type: 'amount', maxLength: 20, description: 'Total Amount' } as Field,
-          purchase_date: { type: 'date', maxLength: 10, description: 'Purchase Date' } as Field,
-          supplier_id: { type: 'alphanum', maxLength: 25, description: 'Supplier ID' } as Field,
-        } as FieldConfig,
+          total_amount: { type: 'amount', maxLength: 20, description: 'Total Amount' },
+          purchase_date: { type: 'date', maxLength: 10, description: 'Purchase Date' },
+          supplier_id: { type: 'alphanum', maxLength: 25, description: 'Supplier ID' },
+        },
         100,
         100,
         undefined
@@ -716,17 +722,17 @@ describe('Models', () => {
         uuidv4(),
         {
           fieldConfig: {
-            total_amount: { type: 'amount', maxLength: 20, description: 'Total Amount' } as Field,
-            purchase_date: { type: 'date', maxLength: 10, description: 'Purchase Date' } as Field,
-            supplier_id: { type: 'alphanum', maxLength: 25, description: 'Supplier ID' } as Field,
-          } as FieldConfig,
-          preprocessConfig: { autoRotate: true, imageQuality: 'HIGH', maxPages: 3 } as PreprocessConfig,
+            total_amount: { type: 'amount', maxLength: 20, description: 'Total Amount' },
+            purchase_date: { type: 'date', maxLength: 10, description: 'Purchase Date' },
+            supplier_id: { type: 'alphanum', maxLength: 25, description: 'Supplier ID' },
+          },
+          preprocessConfig: { autoRotate: true, imageQuality: 'HIGH', maxPages: 3 },
           name: 'My model name',
           description: 'My model description',
           width: 100,
           height: 100,
           status: 'training'
-        } as UpdateModelOptions
+        },
       ],
     ])('input: %o', async (modelId, options) => {
       const updateModelPromise = client.updateModel(modelId, options);
@@ -769,7 +775,7 @@ describe('AppClients', () => {
           generateSecret: true,
           name: 'App client name',
           description: 'App client description',
-        } as CreateAppClientOptions,
+        },
       ],
       [
         {
@@ -778,7 +784,7 @@ describe('AppClients', () => {
           description: 'App client description',
           callbackUrls: [ 'http://localhost:3030/authCallback' ],
           logoutUrls: [ 'http://localhost:3030/logout' ],
-        } as CreateAppClientOptions,
+        },
       ],
     ])('input: %o', async (options) => {
     test('valid request', async () => {
