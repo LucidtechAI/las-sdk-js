@@ -787,7 +787,6 @@ describe('AppClients', () => {
         },
       ],
     ])('input: %o', async (options) => {
-    test('valid request', async () => {
       const createAppClientPromise = client.createAppClient(options);
       await expect(createAppClientPromise).resolves.toHaveProperty('apiKey');
       await expect(createAppClientPromise).resolves.toHaveProperty('appClientId');
