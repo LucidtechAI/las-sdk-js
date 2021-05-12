@@ -308,6 +308,11 @@ export type CreateAppClientOptions = {
   name?: string;
 }
 
+export type UpdateAppClientOptions = {
+  description?: string;
+  name?: string;
+}
+
 export type AppClient = {
   apiKey: string;
   appClientId: string;
@@ -394,6 +399,11 @@ export type CreateBatchOptions = {
   name?: string;
   description?: string;
   containsPersonallyIdentifiableInformation?: boolean;
+}
+
+export type UpdateBatchOptions = {
+  description?: string;
+  name?: string;
 }
 
 export interface UpdateAssetOptions {

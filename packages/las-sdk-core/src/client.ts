@@ -50,7 +50,9 @@ import {
   TransitionExecutionListOptions,
   TransitionList,
   TransitionType,
+  UpdateAppClientOptions,
   UpdateAssetOptions,
+  UpdateBatchOptions,
   UpdateDocumentOptions,
   UpdateModelOptions,
   UpdateSecretOptions,
@@ -91,6 +93,18 @@ export class Client {
    */
   async createAppClient(options: CreateAppClientOptions): Promise<AppClient> {
     return this.makePostRequest<AppClient>('/appClients', options);
+  }
+
+  /**
+   * Updates an appClient, calls the PATCH /appClients/{appClientId} endpoint.
+   *
+   * @param appClientId Id of the appClient
+   * @param options.description Description of app client
+   * @param options.name Name of app client
+   * @returns AppClient response from REST API with content
+   */
+  async updateAppClient(appClientId: string, options: UpdateAppClientOptions): Promise<AppClient> {
+    return this.makePatchRequest(`/appClients/${appClientId}`, options);
   }
 
   /**
@@ -562,6 +576,18 @@ export class Client {
    */
   async createBatch(options: CreateBatchOptions): Promise<Batch> {
     return this.makePostRequest<Batch>('/batches', options);
+  }
+
+  /**
+   * Updates an batch, calls the PATCH /batches/{batchId} endpoint.
+   *
+   * @param batchId Id of the batch
+   * @param options.description Description of batch
+   * @param options.name Name of batch
+   * @returns Batch response from REST API with content
+   */
+  async updateBatch(batchId: string, options: UpdateBatchOptions): Promise<Batch> {
+    return this.makePatchRequest(`/batches/${batchId}`, options);
   }
 
   /**

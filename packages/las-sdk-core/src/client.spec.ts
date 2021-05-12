@@ -595,6 +595,23 @@ describe('Batches', () => {
     });
   });
 
+  describe('updateBatch', () => {
+    test('valid request', async () => {
+      const batchId = uuidv4();
+      const description = 'I am going to create a new batch, give me a batch ID!';
+      const name = 'my batch name';
+      const options = { description, name };
+      const updateBatchPromise = client.updateBatch(batchId, options);
+      await expect(updateBatchPromise).resolves.toHaveProperty('batchId');
+      await expect(updateBatchPromise).resolves.toHaveProperty('containsPersonallyIdentifiableInformation');
+      await expect(updateBatchPromise).resolves.toHaveProperty('createdTime');
+      await expect(updateBatchPromise).resolves.toHaveProperty('description');
+      await expect(updateBatchPromise).resolves.toHaveProperty('numDocuments');
+      await expect(updateBatchPromise).resolves.toHaveProperty('retentionInDays');
+      await expect(updateBatchPromise).resolves.toHaveProperty('storageLocation');
+    });
+  });
+
   describe('deleteBatch', () => {
     test('valid request', async () => {
       const batchId = uuidv4();
@@ -778,6 +795,26 @@ describe('AppClients', () => {
       await expect(createAppClientPromise).resolves.toHaveProperty('hasSecret');
       await expect(createAppClientPromise).resolves.toHaveProperty('logoutUrls');
       await expect(createAppClientPromise).resolves.toHaveProperty('name');
+    });
+  });
+
+  describe('updateAppClient', () => {
+    test('valid request', async () => {
+      const appClientId = uuidv4();
+      const description = 'My app client description';
+      const name = 'My app client name';
+      const options = { description, name };
+      const updateAppClientPromise = client.updateAppClient(appClientId, options);
+      await expect(updateAppClientPromise).resolves.toHaveProperty('apiKey');
+      await expect(updateAppClientPromise).resolves.toHaveProperty('appClientId');
+      await expect(updateAppClientPromise).resolves.toHaveProperty('callbackUrls');
+      await expect(updateAppClientPromise).resolves.toHaveProperty('clientId');
+      await expect(updateAppClientPromise).resolves.toHaveProperty('clientSecret');
+      await expect(updateAppClientPromise).resolves.toHaveProperty('createdTime');
+      await expect(updateAppClientPromise).resolves.toHaveProperty('description');
+      await expect(updateAppClientPromise).resolves.toHaveProperty('hasSecret');
+      await expect(updateAppClientPromise).resolves.toHaveProperty('logoutUrls');
+      await expect(updateAppClientPromise).resolves.toHaveProperty('name');
     });
   });
 
