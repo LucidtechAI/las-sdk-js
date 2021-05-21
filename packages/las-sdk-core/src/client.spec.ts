@@ -784,6 +784,8 @@ describe('AppClients', () => {
           description: 'App client description',
           callbackUrls: [ 'http://localhost:3030/authCallback' ],
           logoutUrls: [ 'http://localhost:3030/logout' ],
+          loginUrls: [ 'http://localhost:3030/login' ],
+          defaultLoginUrl: 'http://localhost:3030/login',
         },
       ],
     ])('input: %o', async (options) => {
@@ -797,6 +799,8 @@ describe('AppClients', () => {
       await expect(createAppClientPromise).resolves.toHaveProperty('description');
       await expect(createAppClientPromise).resolves.toHaveProperty('hasSecret');
       await expect(createAppClientPromise).resolves.toHaveProperty('logoutUrls');
+      await expect(createAppClientPromise).resolves.toHaveProperty('loginUrls');
+      await expect(createAppClientPromise).resolves.toHaveProperty('defaultLoginUrl');
       await expect(createAppClientPromise).resolves.toHaveProperty('name');
     });
   });
@@ -817,6 +821,8 @@ describe('AppClients', () => {
       await expect(updateAppClientPromise).resolves.toHaveProperty('description');
       await expect(updateAppClientPromise).resolves.toHaveProperty('hasSecret');
       await expect(updateAppClientPromise).resolves.toHaveProperty('logoutUrls');
+      await expect(updateAppClientPromise).resolves.toHaveProperty('loginUrls');
+      await expect(updateAppClientPromise).resolves.toHaveProperty('defaultLoginUrl');
       await expect(updateAppClientPromise).resolves.toHaveProperty('name');
     });
   });
@@ -833,6 +839,8 @@ describe('AppClients', () => {
       await expect(deleteAppClientPromise).resolves.toHaveProperty('description');
       await expect(deleteAppClientPromise).resolves.toHaveProperty('hasSecret');
       await expect(deleteAppClientPromise).resolves.toHaveProperty('logoutUrls');
+      await expect(deleteAppClientPromise).resolves.toHaveProperty('loginUrls');
+      await expect(deleteAppClientPromise).resolves.toHaveProperty('defaultLoginUrl');
       await expect(deleteAppClientPromise).resolves.toHaveProperty('name');
     });
   });
