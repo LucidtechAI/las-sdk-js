@@ -305,6 +305,8 @@ export type CreateAppClientOptions = {
   description?: string;
   generateSecret?: boolean;
   logoutUrls?: Array<string>;
+  loginUrls?: Array<string>;
+  defaultLoginUrl?: string;
   name?: string;
 }
 
@@ -323,6 +325,8 @@ export type AppClient = {
   description: string | null;
   hasSecret: boolean;
   logoutUrls: Array<string> | null;
+  loginUrls: Array<string> | null;
+  defaultLoginUrl: string | null;
   name: string | null;
 };
 
