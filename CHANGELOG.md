@@ -1,5 +1,9 @@
 # Changelog 
 
+## Version 4.1.0 - 2021-05-21
+
+- Added defaultLoginUrl and loginUrls to AppClient
+
 ## Version 4.0.0 - 2021-05-12
 
 - Added createModel
