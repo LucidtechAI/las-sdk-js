@@ -527,6 +527,16 @@ export class Client {
   }
 
   /**
+   * Delete an asset, calls the DELETE /assets/{assetId} endpoint.
+   *
+   * @param assetId of the app client
+   * @returns Asset response from REST API
+   */
+  async deleteAsset(assetId: string): Promise<Asset> {
+    return this.makeDeleteRequest(`/assets/${assetId}`);
+  }
+
+  /**
    * List assets available, calls the GET /assets endpoint.
    *
    * @param options.maxResults Maximum number of results to be returned
@@ -758,6 +768,16 @@ export class Client {
    */
   async updateModel(modelId: string, options: UpdateModelOptions): Promise<Model> {
     return this.makePatchRequest(`/models/${modelId}`, options);
+  }
+
+  /**
+   * Delete an model, calls the DELETE /models/{modelId} endpoint.
+   *
+   * @param modelId of the app client
+   * @returns Model response from REST API
+   */
+  async deleteModel(modelId: string): Promise<Model> {
+    return this.makeDeleteRequest(`/models/${modelId}`);
   }
 
   /**

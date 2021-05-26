@@ -548,6 +548,15 @@ describe('Assets', () => {
     });
   });
 
+  describe('deleteAsset', () => {
+    test('valid request', async () => {
+      const assetId = uuidv4();
+      const deleteAssetPromise = client.deleteAsset(assetId);
+      await expect(deleteAssetPromise).resolves.toHaveProperty('assetId');
+      await expect(deleteAssetPromise).resolves.toHaveProperty('content');
+    });
+  });
+
   describe('listAssets', () => {
     test('valid request', async () => {
       const listAssetsPromise = client.listAssets();
@@ -746,6 +755,23 @@ describe('Models', () => {
       await expect(updateModelPromise).resolves.toHaveProperty('status');
       await expect(updateModelPromise).resolves.toHaveProperty('updatedTime');
       await expect(updateModelPromise).resolves.toHaveProperty('width');
+    });
+  });
+
+  describe('deleteModel', () => {
+    test('valid request', async () => {
+      const modelId = uuidv4();
+      const deleteModelPromise = client.deleteModel(modelId);
+      await expect(deleteModelPromise).resolves.toHaveProperty('createdTime');
+      await expect(deleteModelPromise).resolves.toHaveProperty('description');
+      await expect(deleteModelPromise).resolves.toHaveProperty('fieldConfig');
+      await expect(deleteModelPromise).resolves.toHaveProperty('height');
+      await expect(deleteModelPromise).resolves.toHaveProperty('modelId');
+      await expect(deleteModelPromise).resolves.toHaveProperty('name');
+      await expect(deleteModelPromise).resolves.toHaveProperty('preprocessConfig');
+      await expect(deleteModelPromise).resolves.toHaveProperty('status');
+      await expect(deleteModelPromise).resolves.toHaveProperty('updatedTime');
+      await expect(deleteModelPromise).resolves.toHaveProperty('width');
     });
   });
 

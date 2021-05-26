@@ -1,5 +1,9 @@
 # Changelog 
 
+## Version 4.2.0 - 2021-05-26
+
+- Added deleteModel
+
 ## Version 4.1.0 - 2021-05-21
 
 - Added defaultLoginUrl and loginUrls to AppClient
