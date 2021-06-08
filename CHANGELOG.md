@@ -1,5 +1,10 @@
 # Changelog 
 
+## Version 4.3.0 - 2021-06-08
+
+- Added getOrganization
+- Added updateOrganization
+
 ## Version 4.2.0 - 2021-05-26
 
 - Added deleteAsset
