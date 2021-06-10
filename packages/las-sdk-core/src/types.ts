@@ -131,10 +131,25 @@ export type WorkflowSpecification = {
 };
 
 export type Workflow = {
-  name: string;
+  name: string | null;
   workflowId: string;
-  description?: string;
+  description: string | null;
+  numberOfRunningExecutions: number;
+  completedConfig: WorkflowCompletedConfig;
+  errorConfig: WorkflowErrorConfig;
 };
+
+export type WorkflowCompletedConfig = {
+  imageUrl: string;
+  environmentSecrets?: Array<string>;
+  environment?: Record<string, string>;
+  secretId?: string;
+}
+
+export type WorkflowErrorConfig = {
+  manualRetry?: boolean;
+  email?: string;
+}
 
 export type ListWorkflowOptions = PaginationOptions;
 
@@ -145,13 +160,16 @@ export type ListWorkflowExecutionsOptions = PaginationOptions & {
 };
 
 export type CreateWorkflowOptions = {
-  description?: string;
-  errorConfig?: { email: string };
+  description?: string | null;
+  errorConfig?: WorkflowErrorConfig;
+  completedConfig?: WorkflowCompletedConfig;
 };
 
 export interface UpdateWorkflowOptions {
-  name?: string;
-  description?: string;
+  name?: string | null;
+  description?: string | null;
+  errorConfig?: WorkflowErrorConfig;
+  completedConfig?: WorkflowCompletedConfig;
 }
 
 export interface UpdateWorkflowExecutionOptions {
