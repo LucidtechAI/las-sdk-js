@@ -147,8 +147,8 @@ export type WorkflowCompletedConfig = {
 }
 
 export type WorkflowErrorConfig = {
-  manualRetry: boolean;
-  email: string;
+  manualRetry?: boolean;
+  email?: string;
 }
 
 export type ListWorkflowOptions = PaginationOptions;
