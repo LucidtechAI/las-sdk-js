@@ -1,9 +1,10 @@
 # Changelog 
 
-## Version 4.3.0 - 2021-06-08
+## Version 4.3.0 - 2021-06-10
 
 - Added getOrganization
 - Added updateOrganization
+- Updated Workflow, CreateWorkflowOptions, and UpdateWorkflowOptions types
 
 ## Version 4.2.0 - 2021-05-26
 
