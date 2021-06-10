@@ -34,6 +34,81 @@ beforeEach(() => {
   client = getTestClient();
 });
 
+describe('Organizations', () => {
+  describe('getOrganization', () => {
+    test('valid request', async () => {
+      const organizationId = uuidv4();
+      const getOrganizationPromise = client.getOrganization(organizationId);
+      await expect(getOrganizationPromise).resolves.toHaveProperty('description');
+      await expect(getOrganizationPromise).resolves.toHaveProperty('monthlyNumberOfDocumentsAllowed');
+      await expect(getOrganizationPromise).resolves.toHaveProperty('monthlyNumberOfDocumentsCreated');
+      await expect(getOrganizationPromise).resolves.toHaveProperty('monthlyNumberOfPredictionsAllowed');
+      await expect(getOrganizationPromise).resolves.toHaveProperty('monthlyNumberOfPredictionsCreated');
+      await expect(getOrganizationPromise).resolves.toHaveProperty('monthlyNumberOfTransitionExecutionsAllowed');
+      await expect(getOrganizationPromise).resolves.toHaveProperty('monthlyNumberOfTransitionExecutionsCreated');
+      await expect(getOrganizationPromise).resolves.toHaveProperty('monthlyNumberOfWorkflowExecutionsAllowed');
+      await expect(getOrganizationPromise).resolves.toHaveProperty('monthlyNumberOfWorkflowExecutionsCreated');
+      await expect(getOrganizationPromise).resolves.toHaveProperty('monthlyUsageSummary');
+      await expect(getOrganizationPromise).resolves.toHaveProperty('name');
+      await expect(getOrganizationPromise).resolves.toHaveProperty('numberOfAppClientsAllowed');
+      await expect(getOrganizationPromise).resolves.toHaveProperty('numberOfAppClientsCreated');
+      await expect(getOrganizationPromise).resolves.toHaveProperty('numberOfAssetsAllowed');
+      await expect(getOrganizationPromise).resolves.toHaveProperty('numberOfAssetsCreated');
+      await expect(getOrganizationPromise).resolves.toHaveProperty('numberOfBatchesAllowed');
+      await expect(getOrganizationPromise).resolves.toHaveProperty('numberOfBatchesCreated');
+      await expect(getOrganizationPromise).resolves.toHaveProperty('numberOfModelsAllowed');
+      await expect(getOrganizationPromise).resolves.toHaveProperty('numberOfModelsCreated');
+      await expect(getOrganizationPromise).resolves.toHaveProperty('numberOfSecretsAllowed');
+      await expect(getOrganizationPromise).resolves.toHaveProperty('numberOfSecretsCreated');
+      await expect(getOrganizationPromise).resolves.toHaveProperty('numberOfTransitionsAllowed');
+      await expect(getOrganizationPromise).resolves.toHaveProperty('numberOfTransitionsCreated');
+      await expect(getOrganizationPromise).resolves.toHaveProperty('numberOfUsersAllowed');
+      await expect(getOrganizationPromise).resolves.toHaveProperty('numberOfUsersCreated');
+      await expect(getOrganizationPromise).resolves.toHaveProperty('numberOfWorkflowsAllowed');
+      await expect(getOrganizationPromise).resolves.toHaveProperty('numberOfWorkflowsCreated');
+      await expect(getOrganizationPromise).resolves.toHaveProperty('organizationId');
+    });
+  });
+
+  describe('updateOrganization', () => {
+    test('valid request', async () => {
+      const organizationId = uuidv4();
+      const name = 'My Company Name';
+      const description = 'My Company Description';
+      const options = { name, description };
+      const updateOrganizationPromise = client.updateOrganization(organizationId, options);
+      await expect(updateOrganizationPromise).resolves.toHaveProperty('description');
+      await expect(updateOrganizationPromise).resolves.toHaveProperty('monthlyNumberOfDocumentsAllowed');
+      await expect(updateOrganizationPromise).resolves.toHaveProperty('monthlyNumberOfDocumentsCreated');
+      await expect(updateOrganizationPromise).resolves.toHaveProperty('monthlyNumberOfPredictionsAllowed');
+      await expect(updateOrganizationPromise).resolves.toHaveProperty('monthlyNumberOfPredictionsCreated');
+      await expect(updateOrganizationPromise).resolves.toHaveProperty('monthlyNumberOfTransitionExecutionsAllowed');
+      await expect(updateOrganizationPromise).resolves.toHaveProperty('monthlyNumberOfTransitionExecutionsCreated');
+      await expect(updateOrganizationPromise).resolves.toHaveProperty('monthlyNumberOfWorkflowExecutionsAllowed');
+      await expect(updateOrganizationPromise).resolves.toHaveProperty('monthlyNumberOfWorkflowExecutionsCreated');
+      await expect(updateOrganizationPromise).resolves.toHaveProperty('monthlyUsageSummary');
+      await expect(updateOrganizationPromise).resolves.toHaveProperty('name');
+      await expect(updateOrganizationPromise).resolves.toHaveProperty('numberOfAppClientsAllowed');
+      await expect(updateOrganizationPromise).resolves.toHaveProperty('numberOfAppClientsCreated');
+      await expect(updateOrganizationPromise).resolves.toHaveProperty('numberOfAssetsAllowed');
+      await expect(updateOrganizationPromise).resolves.toHaveProperty('numberOfAssetsCreated');
+      await expect(updateOrganizationPromise).resolves.toHaveProperty('numberOfBatchesAllowed');
+      await expect(updateOrganizationPromise).resolves.toHaveProperty('numberOfBatchesCreated');
+      await expect(updateOrganizationPromise).resolves.toHaveProperty('numberOfModelsAllowed');
+      await expect(updateOrganizationPromise).resolves.toHaveProperty('numberOfModelsCreated');
+      await expect(updateOrganizationPromise).resolves.toHaveProperty('numberOfSecretsAllowed');
+      await expect(updateOrganizationPromise).resolves.toHaveProperty('numberOfSecretsCreated');
+      await expect(updateOrganizationPromise).resolves.toHaveProperty('numberOfTransitionsAllowed');
+      await expect(updateOrganizationPromise).resolves.toHaveProperty('numberOfTransitionsCreated');
+      await expect(updateOrganizationPromise).resolves.toHaveProperty('numberOfUsersAllowed');
+      await expect(updateOrganizationPromise).resolves.toHaveProperty('numberOfUsersCreated');
+      await expect(updateOrganizationPromise).resolves.toHaveProperty('numberOfWorkflowsAllowed');
+      await expect(updateOrganizationPromise).resolves.toHaveProperty('numberOfWorkflowsCreated');
+      await expect(updateOrganizationPromise).resolves.toHaveProperty('organizationId');
+    });
+  });
+});
+
 describe('Documents', () => {
   describe('createDocument', () => {
     test('valid request body', async () => {

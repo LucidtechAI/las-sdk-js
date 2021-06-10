@@ -39,6 +39,7 @@ import {
   Log,
   Model,
   ModelList,
+  Organization,
   PostPredictions,
   PredictionList,
   PredictionResponse,
@@ -55,6 +56,7 @@ import {
   UpdateBatchOptions,
   UpdateDocumentOptions,
   UpdateModelOptions,
+  UpdateOrganizationOptions,
   UpdateSecretOptions,
   UpdateTransitionExecution,
   UpdateTransitionOptions,
@@ -79,6 +81,28 @@ export class Client {
 
   constructor(credentials: Credentials) {
     this.credentials = credentials;
+  }
+
+  /**
+   * Updates an organization, calls the PATCH /organizations/{organizationId} endpoint.
+   *
+   * @param organizationId Id of the organization
+   * @param options.description Description of organization
+   * @param options.name Name of organization
+   * @returns Organization response from REST API with content
+   */
+  async updateOrganization(organizationId: string, options: UpdateOrganizationOptions): Promise<Organization> {
+    return this.makePatchRequest(`/organizations/${organizationId}`, options);
+  }
+
+  /**
+   * Get organization from the REST API, calls the GET /organizations/{organizationId} endpoint.
+   *
+   * @param organizationId Id of the organization
+   * @returns Organization response from REST API
+   */
+  async getOrganization(organizationId: string): Promise<Organization> {
+    return this.makeGetRequest<Organization>(`/organizations/${organizationId}`);
   }
 
   /**

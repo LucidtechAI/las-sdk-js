@@ -300,6 +300,42 @@ export type LasDocument = {
   content: string;
 };
 
+export type UpdateOrganizationOptions = {
+  description?: string;
+  name?: string;
+}
+
+export type Organization = {
+  description: string | null;
+  monthlyNumberOfDocumentsAllowed: number;
+  monthlyNumberOfDocumentsCreated: number;
+  monthlyNumberOfPredictionsAllowed: number;
+  monthlyNumberOfPredictionsCreated: number;
+  monthlyNumberOfTransitionExecutionsAllowed: number;
+  monthlyNumberOfTransitionExecutionsCreated: number;
+  monthlyNumberOfWorkflowExecutionsAllowed: number;
+  monthlyNumberOfWorkflowExecutionsCreated: number;
+  monthlyUsageSummary: Record<string, any>;
+  name: string | null;
+  numberOfAppClientsAllowed: number;
+  numberOfAppClientsCreated: number;
+  numberOfAssetsAllowed: number;
+  numberOfAssetsCreated: number;
+  numberOfBatchesAllowed: number;
+  numberOfBatchesCreated: number;
+  numberOfModelsAllowed: number;
+  numberOfModelsCreated: number;
+  numberOfSecretsAllowed: number;
+  numberOfSecretsCreated: number;
+  numberOfTransitionsAllowed: number;
+  numberOfTransitionsCreated: number;
+  numberOfUsersAllowed: number;
+  numberOfUsersCreated: number;
+  numberOfWorkflowsAllowed: number;
+  numberOfWorkflowsCreated: number;
+  organizationId: string;
+};
+
 export type CreateAppClientOptions = {
   callbackUrls?: Array<string>;
   description?: string;
