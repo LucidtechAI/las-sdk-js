@@ -25,6 +25,7 @@ import {
   FieldConfig,
   LasDocument,
   LasDocumentList,
+  LasDocumentWithoutContent,
   ListAppClientsOptions,
   ListAssetsOptions,
   ListBatchesOptions,
@@ -166,7 +167,7 @@ export class Client {
     content: string | Buffer,
     contentType: ContentType,
     options?: CreateDocumentOptions,
-  ): Promise<LasDocument> {
+  ): Promise<LasDocumentWithoutContent> {
     const encodedContent = typeof content === 'string' ? content : Buffer.from(content).toString('base64');
     let body = {
       content: encodedContent,
@@ -177,7 +178,7 @@ export class Client {
       body = { ...body, ...options };
     }
 
-    return this.makePostRequest<LasDocument>('/documents', body);
+    return this.makePostRequest<LasDocumentWithoutContent>('/documents', body);
   }
 
   /**
