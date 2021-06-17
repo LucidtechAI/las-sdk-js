@@ -1,5 +1,9 @@
 # Changelog 
 
+## Version 4.3.1 - 2021-06-17
+
+- Fixed return type of createDocument
+
 ## Version 4.3.0 - 2021-06-10
 
 - Added getOrganization
