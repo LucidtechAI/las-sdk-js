@@ -2,6 +2,7 @@
 
 ## Version 4.4.0 - 2021-06-24
 
+- Added deleteDocument
 - Added createDataset
 - Added updateDataset
 - Added deleteDataset

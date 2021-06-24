@@ -234,6 +234,16 @@ export class Client {
   }
 
   /**
+   * Delete an document, calls the DELETE /documents/{documentId} endpoint.
+   *
+   * @param documentId of the app client
+   * @returns Document response from REST API
+   */
+  async deleteDocument(documentId: string): Promise<LasDocument> {
+    return this.makeDeleteRequest(`/documents/${documentId}`);
+  }
+
+  /**
    * Creates a transition handle, calls the POST /transitions endpoint.
    *
    * @param name Name of transition

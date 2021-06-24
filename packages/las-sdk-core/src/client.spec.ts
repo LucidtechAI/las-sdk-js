@@ -184,6 +184,15 @@ describe('Documents', () => {
     });
   });
 
+  describe('deleteDocument', () => {
+    test('valid request', async () => {
+      const documentId = uuidv4();
+      const deleteDocumentPromise = client.deleteDocument(documentId);
+      await expect(deleteDocumentPromise).resolves.toHaveProperty('contentType');
+      await expect(deleteDocumentPromise).resolves.toHaveProperty('documentId');
+    });
+  });
+
   describe('deleteDocuments', () => {
     test('with batchId', async () => {
       const batchId = uuidv4();
