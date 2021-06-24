@@ -3,6 +3,8 @@
 ## Version 4.4.0 - 2021-06-24
 
 - Added defaultLoginUrl and loginUrls to updateAppClient options
+- Added monthlyNumberOfDataBundlesAllowed, monthlyNumberOfDataBundlesCreated, numberOfDatasetsAllowed and
+numberOfDatasetsCreated to Organization
 - Added deleteDocument
 - Added createDataset
 - Added updateDataset
