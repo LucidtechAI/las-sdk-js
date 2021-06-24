@@ -1012,9 +1012,11 @@ describe('AppClients', () => {
   describe('updateAppClient', () => {
     test('valid request', async () => {
       const appClientId = uuidv4();
+      const defaultLoginUrl = 'http://localhost:3030/login';
       const description = 'My app client description';
+      const loginUrls = [ 'http://localhost:3030/login' ];
       const name = 'My app client name';
-      const options = { description, name };
+      const options = { description, name, defaultLoginUrl, loginUrls };
       const updateAppClientPromise = client.updateAppClient(appClientId, options);
       await expect(updateAppClientPromise).resolves.toHaveProperty('apiKey');
       await expect(updateAppClientPromise).resolves.toHaveProperty('appClientId');

@@ -411,7 +411,9 @@ export type CreateAppClientOptions = {
 }
 
 export type UpdateAppClientOptions = {
+  defaultLoginUrl?: string;
   description?: string;
+  loginUrls?: Array<string>;
   name?: string;
 }
 
