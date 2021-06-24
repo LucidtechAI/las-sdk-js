@@ -20,8 +20,9 @@ export type ListTransitionOptions = PaginationOptions & {
 }
 
 export interface CreateDocumentOptions {
-  consentId?: string;
   batchId?: string;
+  consentId?: string;
+  datasetId?: string;
   groundTruth?: Array<GroundTruth>;
 }
 
@@ -32,6 +33,7 @@ export interface UpdateDocumentOptions {
 export type ListDocumentsOptions = PaginationOptions & {
   batchId?: string | Array<string>;
   consentId?: string | Array<string>;
+  datasetId?: string | Array<string>;
 }
 
 export type TransitionExecutionList = {
@@ -210,6 +212,7 @@ export type GroundTruth = {
 export type DeleteDocumentOptions = PaginationOptions & {
   batchId?: string | Array<string>;
   consentId?: string | Array<string>;
+  datasetId?: string | Array<string>;
 }
 
 export type PostPredictions = CreatePredictionsOptions & {
@@ -249,12 +252,54 @@ export type Batch = {
   storageLocation: 'EU';
 };
 
+export type CreateBatchOptions = {
+  name?: string;
+  description?: string;
+  containsPersonallyIdentifiableInformation?: boolean;
+}
+
+export type UpdateBatchOptions = {
+  description?: string;
+  name?: string;
+}
+
 export type BatchList = {
   batches: Array<Batch>;
   nextToken: string | null;
 };
 
 export type ListBatchesOptions = PaginationOptions;
+
+export type Dataset = {
+  containsPersonallyIdentifiableInformation: boolean;
+  createdTime: string;
+  datasetId: string;
+  description: string;
+  name: string;
+  numDocuments: number;
+  retentionInDays: number;
+  storageLocation: 'EU';
+  updatedTime: string;
+  version: number;
+};
+
+export type CreateDatasetOptions = {
+  name?: string;
+  description?: string;
+  containsPersonallyIdentifiableInformation?: boolean;
+}
+
+export type UpdateDatasetOptions = {
+  description?: string;
+  name?: string;
+}
+
+export type DatasetList = {
+  datasets: Array<Dataset>;
+  nextToken: string | null;
+};
+
+export type ListDatasetsOptions = PaginationOptions;
 
 export type User = {
   userId: string;
@@ -306,16 +351,13 @@ export interface UpdateSecretOptions {
 export type LasDocumentWithoutContent = Omit<LasDocument, 'content'>;
 
 export type LasDocument = {
+  batchId?: string;
+  consentId?: string;
+  content: string;
   contentType: ContentType;
-  /** pattern: ^las:document:[a-f0-9]{32}$ */
+  datasetId?: string;
   documentId: string;
   groundTruth?: Array<GroundTruth>;
-  /** pattern: ^las:consent:[a-f0-9]{32}$ */
-  consentId?: string;
-  /** pattern: ^las:batch:[a-f0-9]{32}$ */
-  batchId?: string;
-  /** minimum: 1 */
-  content: string;
 };
 
 export type UpdateOrganizationOptions = {
@@ -325,6 +367,8 @@ export type UpdateOrganizationOptions = {
 
 export type Organization = {
   description: string | null;
+  monthlyNumberOfDataBundlesAllowed: number;
+  monthlyNumberOfDataBundlesCreated: number;
   monthlyNumberOfDocumentsAllowed: number;
   monthlyNumberOfDocumentsCreated: number;
   monthlyNumberOfPredictionsAllowed: number;
@@ -341,6 +385,8 @@ export type Organization = {
   numberOfAssetsCreated: number;
   numberOfBatchesAllowed: number;
   numberOfBatchesCreated: number;
+  numberOfDatasetsAllowed: number;
+  numberOfDatasetsCreated: number;
   numberOfModelsAllowed: number;
   numberOfModelsCreated: number;
   numberOfSecretsAllowed: number;
@@ -451,17 +497,6 @@ export type ListModelsOptions = PaginationOptions;
 export type ModelList = {
   models: Array<Model>;
   nextToken: string | null;
-}
-
-export type CreateBatchOptions = {
-  name?: string;
-  description?: string;
-  containsPersonallyIdentifiableInformation?: boolean;
-}
-
-export type UpdateBatchOptions = {
-  description?: string;
-  name?: string;
 }
 
 export interface UpdateAssetOptions {

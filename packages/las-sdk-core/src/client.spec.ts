@@ -10,7 +10,7 @@ import {
   CreateModelOptions,
   CreateTransitionOptions,
   CreateWorkflowOptions,
-  FieldConfig,
+  FieldConfig, ListDocumentsOptions,
   TransitionType,
   UpdateModelOptions,
   UpdateSecretOptions,
@@ -21,14 +21,15 @@ import {
 let client = getTestClient();
 
 const uuidWithoutDashes = () => uuidv4().replace(/-/g, '');
-const transitionId = () => `las:transition:${uuidWithoutDashes()}`;
-const transitionExecutionId = () => `las:transition-execution:${uuidWithoutDashes()}`;
-const workflowExecutionId = () => `las:workflow-execution:${uuidWithoutDashes()}`;
-const consentId = () => `las:consent:${uuidWithoutDashes()}`;
 const batchId = () => `las:batch:${uuidWithoutDashes()}`;
+const consentId = () => `las:consent:${uuidWithoutDashes()}`;
+const datasetId = () => `las:dataset:${uuidWithoutDashes()}`;
 const documentId = () => `las:document:${uuidWithoutDashes()}`;
-const workflowId = () => `las:workflow:${uuidWithoutDashes()}`;
 const modelId = () => `las:model:${uuidWithoutDashes()}`;
+const transitionExecutionId = () => `las:transition-execution:${uuidWithoutDashes()}`;
+const transitionId = () => `las:transition:${uuidWithoutDashes()}`;
+const workflowExecutionId = () => `las:workflow-execution:${uuidWithoutDashes()}`;
+const workflowId = () => `las:workflow:${uuidWithoutDashes()}`;
 
 beforeEach(() => {
   client = getTestClient();
@@ -116,12 +117,16 @@ describe('Documents', () => {
       const testContentType = 'image/jpeg';
       const testConsentId = consentId();
       const testBatchId = batchId();
+      const testDatasetId = datasetId();
       const createDocumentPromise = client.createDocument(testContent, testContentType, {
-        consentId: testConsentId,
         batchId: testBatchId,
+        consentId: testConsentId,
+        datasetId: testDatasetId,
       });
+      await expect(createDocumentPromise).resolves.toHaveProperty('batchId');
       await expect(createDocumentPromise).resolves.toHaveProperty('consentId');
       await expect(createDocumentPromise).resolves.toHaveProperty('contentType');
+      await expect(createDocumentPromise).resolves.toHaveProperty('datasetId');
       await expect(createDocumentPromise).resolves.toHaveProperty('documentId');
     });
 
@@ -206,10 +211,14 @@ describe('Documents', () => {
 
   describe('listDocuments', () => {
     test('valid request', async () => {
-      const testBatchId = uuidv4();
-      const listDocumentsPromise = client.listDocuments({ batchId: testBatchId });
-      await expect(listDocumentsPromise).resolves.toBeDefined();
-    });
+      test.each<[ListDocumentsOptions]>([
+        [{ batchId: batchId() }],
+        [{ consentId: consentId() }],
+        [{ datasetId: datasetId() }],
+      ])('parameters: %s', async options => {
+        const listDocumentsPromise = client.listDocuments(options);
+        await expect(listDocumentsPromise).resolves.toBeDefined();
+      });
 
     test('accepts pagination params', async () => {
       const maxResults = 1;
@@ -661,6 +670,90 @@ describe('Assets', () => {
       const content = uuidv4();
       const updateAssetPromise = client.updateAsset(assetId, { content });
       await expect(updateAssetPromise).resolves.toHaveProperty('assetId');
+    });
+  });
+});
+
+describe('Datasets', () => {
+  describe('createDataset', () => {
+    test('valid request', async () => {
+      const description = 'I am going to create a new dataset, give me a dataset ID!';
+      const name = 'my dataset name';
+      const containsPersonallyIdentifiableInformation = false;
+      const options = { description, name, containsPersonallyIdentifiableInformation };
+      const createDatasetPromise = client.createDataset(options);
+      await expect(createDatasetPromise).resolves.toHaveProperty('containsPersonallyIdentifiableInformation');
+      await expect(createDatasetPromise).resolves.toHaveProperty('createdTime');
+      await expect(createDatasetPromise).resolves.toHaveProperty('datasetId');
+      await expect(createDatasetPromise).resolves.toHaveProperty('description');
+      await expect(createDatasetPromise).resolves.toHaveProperty('numDocuments');
+      await expect(createDatasetPromise).resolves.toHaveProperty('retentionInDays');
+      await expect(createDatasetPromise).resolves.toHaveProperty('storageLocation');
+      await expect(createDatasetPromise).resolves.toHaveProperty('updatedTime');
+      await expect(createDatasetPromise).resolves.toHaveProperty('version');
+    });
+  });
+
+  describe('updateDataset', () => {
+    test('valid request', async () => {
+      const datasetId = uuidv4();
+      const description = 'I am going to create a new dataset, give me a dataset ID!';
+      const name = 'my dataset name';
+      const options = { description, name };
+      const updateDatasetPromise = client.updateDataset(datasetId, options);
+      await expect(updateDatasetPromise).resolves.toHaveProperty('containsPersonallyIdentifiableInformation');
+      await expect(updateDatasetPromise).resolves.toHaveProperty('createdTime');
+      await expect(updateDatasetPromise).resolves.toHaveProperty('datasetId');
+      await expect(updateDatasetPromise).resolves.toHaveProperty('description');
+      await expect(updateDatasetPromise).resolves.toHaveProperty('numDocuments');
+      await expect(updateDatasetPromise).resolves.toHaveProperty('retentionInDays');
+      await expect(updateDatasetPromise).resolves.toHaveProperty('storageLocation');
+      await expect(updateDatasetPromise).resolves.toHaveProperty('updatedTime');
+      await expect(updateDatasetPromise).resolves.toHaveProperty('version');
+    });
+  });
+
+  describe('deleteDataset', () => {
+    test('valid request', async () => {
+      const datasetId = uuidv4();
+      const deleteDatasetPromise = client.deleteDataset(datasetId);
+      await expect(deleteDatasetPromise).resolves.toHaveProperty('containsPersonallyIdentifiableInformation');
+      await expect(deleteDatasetPromise).resolves.toHaveProperty('createdTime');
+      await expect(deleteDatasetPromise).resolves.toHaveProperty('datasetId');
+      await expect(deleteDatasetPromise).resolves.toHaveProperty('description');
+      await expect(deleteDatasetPromise).resolves.toHaveProperty('numDocuments');
+      await expect(deleteDatasetPromise).resolves.toHaveProperty('retentionInDays');
+      await expect(deleteDatasetPromise).resolves.toHaveProperty('storageLocation');
+      await expect(deleteDatasetPromise).resolves.toHaveProperty('updatedTime');
+      await expect(deleteDatasetPromise).resolves.toHaveProperty('version');
+    });
+
+    test('with documents', async () => {
+      const datasetId = uuidv4();
+      const deleteDatasetPromise = client.deleteDataset(datasetId, true);
+      await expect(deleteDatasetPromise).resolves.toHaveProperty('containsPersonallyIdentifiableInformation');
+      await expect(deleteDatasetPromise).resolves.toHaveProperty('createdTime');
+      await expect(deleteDatasetPromise).resolves.toHaveProperty('datasetId');
+      await expect(deleteDatasetPromise).resolves.toHaveProperty('description');
+      await expect(deleteDatasetPromise).resolves.toHaveProperty('numDocuments');
+      await expect(deleteDatasetPromise).resolves.toHaveProperty('retentionInDays');
+      await expect(deleteDatasetPromise).resolves.toHaveProperty('storageLocation');
+      await expect(deleteDatasetPromise).resolves.toHaveProperty('updatedTime');
+      await expect(deleteDatasetPromise).resolves.toHaveProperty('version');
+    });
+  });
+
+  describe('listDatasets', () => {
+    test('valid request', async () => {
+      const listDatasetsPromise = client.listDatasets();
+      await expect(listDatasetsPromise).resolves.toHaveProperty('datasets');
+    });
+
+    test('accepts pagination params', async () => {
+      const maxResults = 1;
+      const nextToken = uuidv4();
+      const listDatasetsPromise = client.listDatasets({ maxResults, nextToken });
+      await expect(listDatasetsPromise).resolves.toHaveProperty('nextToken');
     });
   });
 });

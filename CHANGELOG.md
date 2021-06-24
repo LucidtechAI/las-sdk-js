@@ -1,5 +1,16 @@
 # Changelog 
 
+## Version 4.4.0 - 2021-06-24
+
+- Added createDataset
+- Added updateDataset
+- Added deleteDataset
+- Added listDatasets
+- Deprecated createBatch
+- Deprecated updateBatch
+- Deprecated deleteBatch
+- Deprecated listBatches
+
 ## Version 4.3.1 - 2021-06-17
 
 - Fixed return type of createDocument

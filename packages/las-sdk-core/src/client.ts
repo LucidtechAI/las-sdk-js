@@ -14,6 +14,7 @@ import {
   ContentType,
   CreateAppClientOptions,
   CreateBatchOptions,
+  CreateDatasetOptions,
   CreateDocumentOptions,
   CreateModelOptions,
   CreatePredictionsOptions,
@@ -21,6 +22,8 @@ import {
   CreateTransitionOptions,
   CreateUserOptions,
   CreateWorkflowOptions,
+  Dataset,
+  DatasetList,
   DeleteDocumentOptions,
   FieldConfig,
   LasDocument,
@@ -29,6 +32,7 @@ import {
   ListAppClientsOptions,
   ListAssetsOptions,
   ListBatchesOptions,
+  ListDatasetsOptions,
   ListDocumentsOptions,
   ListModelsOptions,
   ListPredictionsOptions,
@@ -55,6 +59,7 @@ import {
   UpdateAppClientOptions,
   UpdateAssetOptions,
   UpdateBatchOptions,
+  UpdateDatasetOptions,
   UpdateDocumentOptions,
   UpdateModelOptions,
   UpdateOrganizationOptions,
@@ -603,6 +608,60 @@ export class Client {
   }
 
   /**
+   * Creates a dataset, calls the POST /datasets endpoint.
+   *
+   * @param options.name Name of the dataset
+   * @param options.description Description of the dataset
+   * @returns Dataset response from REST API
+   */
+  async createDataset(options: CreateDatasetOptions): Promise<Dataset> {
+    return this.makePostRequest<Dataset>('/datasets', options);
+  }
+
+  /**
+   * Updates an dataset, calls the PATCH /datasets/{datasetId} endpoint.
+   *
+   * @param datasetId Id of the dataset
+   * @param options.description Description of dataset
+   * @param options.name Name of dataset
+   * @returns Dataset response from REST API with content
+   */
+  async updateDataset(datasetId: string, options: UpdateDatasetOptions): Promise<Dataset> {
+    return this.makePatchRequest(`/datasets/${datasetId}`, options);
+  }
+
+  /**
+   * List datasets, calls the GET /datasets endpoint.
+   *
+   * @param options.maxResults Maximum number of results to be returned
+   * @param options.nextToken A unique token for each page, use the returned token to retrieve the next page.
+   * @returns DatasetList response from REST API
+   */
+  async listDatasets(options?: ListDatasetsOptions): Promise<DatasetList> {
+    return this.makeGetRequest<DatasetList>('/datasets', options);
+  }
+
+  /**
+   * Deletes a dataset, calls the DELETE /datasets/{datasetId} endpoint.
+   *
+   * @param datasetId Id of the dataset
+   * @param deleteDocuments Set to true to delete documents in dataset before deleting dataset
+   * @returns Dataset response from REST API
+   */
+  async deleteDataset(datasetId: string, deleteDocuments = false): Promise<Dataset> {
+    if (deleteDocuments) {
+      let response = await this.deleteDocuments({ datasetId });
+      while (response.nextToken) {
+        // eslint-disable-next-line no-await-in-loop
+        response = await this.deleteDocuments({ datasetId, nextToken: response.nextToken });
+      }
+    }
+
+    return this.makeDeleteRequest<Dataset>(`/datasets/${datasetId}`);
+  }
+
+  /**
+   * @deprecated Use the new {@link Client.createDataset} method instead.
    * Creates a batch, calls the POST /batches endpoint.
    *
    * @param options.name Name of the batch
@@ -616,6 +675,7 @@ export class Client {
   /**
    * Updates an batch, calls the PATCH /batches/{batchId} endpoint.
    *
+   * @deprecated Use the new {@link Client.updateDataset} method instead.
    * @param batchId Id of the batch
    * @param options.description Description of batch
    * @param options.name Name of batch
@@ -628,6 +688,7 @@ export class Client {
   /**
    * List batches, calls the GET /batches endpoint.
    *
+   * @deprecated Use the new {@link Client.listDatasets} method instead.
    * @param options.maxResults Maximum number of results to be returned
    * @param options.nextToken A unique token for each page, use the returned token to retrieve the next page.
    * @returns BatchList response from REST API
@@ -639,6 +700,7 @@ export class Client {
   /**
    * Deletes a batch, calls the DELETE /batches/{batchId} endpoint.
    *
+   * @deprecated Use the new {@link Client.deleteDataset} method instead.
    * @param batchId Id of the batch
    * @param deleteDocuments Set to true to delete documents in batch before deleting batch
    * @returns Batch response from REST API
