@@ -689,7 +689,7 @@ export class Client {
     datasetIds: Array<string>,
     options: CreateDataBundleOptions
   ): Promise<DataBundle> {
-    let body = { modelId, datasetIds };
+    let body = { datasetIds };
 
     if (options) {
       body = { ...body, ...options };
