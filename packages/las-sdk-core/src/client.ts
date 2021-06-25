@@ -14,6 +14,8 @@ import {
   ContentType,
   CreateAppClientOptions,
   CreateBatchOptions,
+  CreateDataBundleOptions,
+  CreateDatasetOptions,
   CreateDocumentOptions,
   CreateModelOptions,
   CreatePredictionsOptions,
@@ -21,6 +23,10 @@ import {
   CreateTransitionOptions,
   CreateUserOptions,
   CreateWorkflowOptions,
+  DataBundle,
+  DataBundleList,
+  Dataset,
+  DatasetList,
   DeleteDocumentOptions,
   FieldConfig,
   LasDocument,
@@ -29,6 +35,8 @@ import {
   ListAppClientsOptions,
   ListAssetsOptions,
   ListBatchesOptions,
+  ListDataBundleOptions,
+  ListDatasetsOptions,
   ListDocumentsOptions,
   ListModelsOptions,
   ListPredictionsOptions,
@@ -55,6 +63,8 @@ import {
   UpdateAppClientOptions,
   UpdateAssetOptions,
   UpdateBatchOptions,
+  UpdateDataBundleOptions,
+  UpdateDatasetOptions,
   UpdateDocumentOptions,
   UpdateModelOptions,
   UpdateOrganizationOptions,
@@ -154,11 +164,11 @@ export class Client {
   }
 
   /**
-   * Creates a document handle, calls the POST /documents endpoint.
+   * Creates a document, calls the POST /documents endpoint.
    *
    * @param content Content to POST (base64 string | Buffer)
-   * @param contentType MIME type for the document handle
-   * @param options.consentId Id of the consent that marks the owner of the document handle
+   * @param contentType MIME type for the document
+   * @param options.consentId Id of the consent that marks the owner of the document
    * @param options.batchId Id of the associated batch
    * @param options.groundTruth List of GroundTruth items representing the ground truth values for the document
    * @returns Document response from REST API
@@ -195,7 +205,7 @@ export class Client {
    * List documents available for inference, calls the GET /documents endpoint.
    *
    * @param options.batchId Ids of the batches that contains the documents of interest
-   * @param options.consentId Ids of the consents that marks the owner of the document handle
+   * @param options.consentId Ids of the consents that marks the owner of the document
    * @param options.maxResults Maximum number of results to be returned
    * @param options.nextToken A unique token for each page, use the returned token to retrieve the next page.
    * @returns Documents response from REST API
@@ -221,7 +231,7 @@ export class Client {
    * Delete documents with the provided consentId, calls the DELETE /documents endpoint.
    * Will delete all documents when no consentId is provided.
    *
-   * @param options.consentId Ids of the consents that marks the owner of the document handle
+   * @param options.consentId Ids of the consents that marks the owner of the document
    * @returns Documents response from REST API
    */
   async deleteDocuments(options?: DeleteDocumentOptions): Promise<LasDocumentList> {
@@ -229,7 +239,17 @@ export class Client {
   }
 
   /**
-   * Creates a transition handle, calls the POST /transitions endpoint.
+   * Delete an document, calls the DELETE /documents/{documentId} endpoint.
+   *
+   * @param documentId of the document
+   * @returns Document response from REST API
+   */
+  async deleteDocument(documentId: string): Promise<LasDocument> {
+    return this.makeDeleteRequest(`/documents/${documentId}`);
+  }
+
+  /**
+   * Creates a transition, calls the POST /transitions endpoint.
    *
    * @param name Name of transition
    * @param transitionType Type of transition "docker"|"manual"
@@ -541,7 +561,7 @@ export class Client {
   }
 
   /**
-   * Creates an asset handle, calls the POST /assets endpoint.
+   * Creates an asset, calls the POST /assets endpoint.
    *
    * @param content Content to POST (base64-encoded string | Buffer)
    * @returns Asset response from REST API
@@ -603,6 +623,119 @@ export class Client {
   }
 
   /**
+   * Creates a dataset, calls the POST /datasets endpoint.
+   *
+   * @param options.name Name of the dataset
+   * @param options.description Description of the dataset
+   * @returns Dataset response from REST API
+   */
+  async createDataset(options: CreateDatasetOptions): Promise<Dataset> {
+    return this.makePostRequest<Dataset>('/datasets', options);
+  }
+
+  /**
+   * Updates a dataset, calls the PATCH /datasets/{datasetId} endpoint.
+   *
+   * @param datasetId Id of the dataset
+   * @param options.description Description of dataset
+   * @param options.name Name of dataset
+   * @returns Dataset response from REST API with content
+   */
+  async updateDataset(datasetId: string, options: UpdateDatasetOptions): Promise<Dataset> {
+    return this.makePatchRequest(`/datasets/${datasetId}`, options);
+  }
+
+  /**
+   * List datasets, calls the GET /datasets endpoint.
+   *
+   * @param options.maxResults Maximum number of results to be returned
+   * @param options.nextToken A unique token for each page, use the returned token to retrieve the next page.
+   * @returns DatasetList response from REST API
+   */
+  async listDatasets(options?: ListDatasetsOptions): Promise<DatasetList> {
+    return this.makeGetRequest<DatasetList>('/datasets', options);
+  }
+
+  /**
+   * Deletes a dataset, calls the DELETE /datasets/{datasetId} endpoint.
+   *
+   * @param datasetId Id of the dataset
+   * @param deleteDocuments Set to true to delete documents in dataset before deleting dataset
+   * @returns Dataset response from REST API
+   */
+  async deleteDataset(datasetId: string, deleteDocuments = false): Promise<Dataset> {
+    if (deleteDocuments) {
+      let response = await this.deleteDocuments({ datasetId });
+      while (response.nextToken) {
+        // eslint-disable-next-line no-await-in-loop
+        response = await this.deleteDocuments({ datasetId, nextToken: response.nextToken });
+      }
+    }
+
+    return this.makeDeleteRequest<Dataset>(`/datasets/${datasetId}`);
+  }
+
+  /**
+   * Creates a dataBundle, calls the POST /models/{modelId}/dataBundles endpoint.
+   *
+   * @param modelId Id of the model to create dataBundle for
+   * @param datasetIds Ids of the datasets to create dataBundle with
+   * @param options.description Description of dataBundle
+   * @param options.name Name of dataBundle
+   * @returns DataBundle response from REST API
+   */
+  async createDataBundle(
+    modelId: string,
+    datasetIds: Array<string>,
+    options: CreateDataBundleOptions
+  ): Promise<DataBundle> {
+    let body = { datasetIds };
+
+    if (options) {
+      body = { ...body, ...options };
+    }
+
+    return this.makePostRequest<DataBundle>(`/models/${modelId}/dataBundles`, body);
+  }
+
+  /**
+   * Delete a dataBundle, calls the DELETE /dataBundles/{dataBundleId} endpoint.
+   *
+   * @param modelId of the model
+   * @param dataBundleId of the dataBundle
+   * @returns DataBundle response from REST API
+   */
+  async deleteDataBundle(modelId: string, dataBundleId: string): Promise<DataBundle> {
+    return this.makeDeleteRequest(`/models/${modelId}/dataBundles/${dataBundleId}`);
+  }
+
+  /**
+   * List dataBundles available, calls the GET /dataBundles endpoint.
+   *
+   * @param modelId of the model
+   * @param options.maxResults Maximum number of results to be returned
+   * @param options.nextToken A unique token for each page, use the returned token to retrieve the next page.
+   * @returns DataBundles response from REST API
+   */
+  async listDataBundles(modelId: string, options?: ListDataBundleOptions): Promise<DataBundleList> {
+    return this.makeGetRequest<DataBundleList>(`/models/${modelId}/dataBundles`, options);
+  }
+
+  /**
+   * Updates a dataBundle, calls the PATCH /dataBundles/{dataBundleId} endpoint.
+   *
+   * @param modelId of the model
+   * @param dataBundleId Id of the dataBundle
+   * @param options.description Description of dataBundle
+   * @param options.name Name of dataBundle
+   * @returns DataBundle response from REST API
+   */
+  async updateDataBundle(modelId: string, dataBundleId: string, options: UpdateDataBundleOptions): Promise<DataBundle> {
+    return this.makePatchRequest(`/models/${modelId}/dataBundles/${dataBundleId}`, options);
+  }
+
+  /**
+   * @deprecated Use the new {@link Client.createDataset} method instead.
    * Creates a batch, calls the POST /batches endpoint.
    *
    * @param options.name Name of the batch
@@ -616,6 +749,7 @@ export class Client {
   /**
    * Updates an batch, calls the PATCH /batches/{batchId} endpoint.
    *
+   * @deprecated Use the new {@link Client.updateDataset} method instead.
    * @param batchId Id of the batch
    * @param options.description Description of batch
    * @param options.name Name of batch
@@ -628,6 +762,7 @@ export class Client {
   /**
    * List batches, calls the GET /batches endpoint.
    *
+   * @deprecated Use the new {@link Client.listDatasets} method instead.
    * @param options.maxResults Maximum number of results to be returned
    * @param options.nextToken A unique token for each page, use the returned token to retrieve the next page.
    * @returns BatchList response from REST API
@@ -639,6 +774,7 @@ export class Client {
   /**
    * Deletes a batch, calls the DELETE /batches/{batchId} endpoint.
    *
+   * @deprecated Use the new {@link Client.deleteDataset} method instead.
    * @param batchId Id of the batch
    * @param deleteDocuments Set to true to delete documents in batch before deleting batch
    * @returns Batch response from REST API
@@ -715,7 +851,7 @@ export class Client {
   }
 
   /**
-   * Creates an secret handle, calls the POST /secrets endpoint.
+   * Creates a secret, calls the POST /secrets endpoint.
    *
    * @param data Object containing the data you want to keep secret
    * @param options.description Description of the secret
