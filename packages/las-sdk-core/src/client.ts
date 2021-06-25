@@ -236,7 +236,7 @@ export class Client {
   /**
    * Delete an document, calls the DELETE /documents/{documentId} endpoint.
    *
-   * @param documentId of the app client
+   * @param documentId of the document
    * @returns Document response from REST API
    */
   async deleteDocument(documentId: string): Promise<LasDocument> {
