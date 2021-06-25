@@ -22,15 +22,20 @@ import {
 let client = getTestClient();
 
 const uuidWithoutDashes = () => uuidv4().replace(/-/g, '');
-const batchId = () => `las:batch:${uuidWithoutDashes()}`;
-const consentId = () => `las:consent:${uuidWithoutDashes()}`;
-const datasetId = () => `las:dataset:${uuidWithoutDashes()}`;
-const documentId = () => `las:document:${uuidWithoutDashes()}`;
-const modelId = () => `las:model:${uuidWithoutDashes()}`;
-const transitionExecutionId = () => `las:transition-execution:${uuidWithoutDashes()}`;
-const transitionId = () => `las:transition:${uuidWithoutDashes()}`;
-const workflowExecutionId = () => `las:workflow-execution:${uuidWithoutDashes()}`;
-const workflowId = () => `las:workflow:${uuidWithoutDashes()}`;
+const createAssetId = () => `las:asset:${uuidWithoutDashes()}`;
+const createAppClientId = () => `las:app-client:${uuidWithoutDashes()}`;
+const createBatchId = () => `las:batch:${uuidWithoutDashes()}`;
+const createConsentId = () => `las:consent:${uuidWithoutDashes()}`;
+const createDatasetId = () => `las:dataset:${uuidWithoutDashes()}`;
+const createDocumentId = () => `las:document:${uuidWithoutDashes()}`;
+const createOrganizationId = () => `las:organization:${uuidWithoutDashes()}`;
+const createDataBundleId = () => `las:model-data-bundle:${uuidWithoutDashes()}`;
+const createModelId = () => `las:model:${uuidWithoutDashes()}`;
+const createTransitionExecutionId = () => `las:transition-execution:${uuidWithoutDashes()}`;
+const createTransitionId = () => `las:transition:${uuidWithoutDashes()}`;
+const createWorkflowExecutionId = () => `las:workflow-execution:${uuidWithoutDashes()}`;
+const createWorkflowId = () => `las:workflow:${uuidWithoutDashes()}`;
+const createUserId = () => `las:user:${uuidWithoutDashes()}`;
 
 beforeEach(() => {
   client = getTestClient();
@@ -39,7 +44,7 @@ beforeEach(() => {
 describe('Organizations', () => {
   describe('getOrganization', () => {
     test('valid request', async () => {
-      const organizationId = uuidv4();
+      const organizationId = createOrganizationId();
       const getOrganizationPromise = client.getOrganization(organizationId);
       await expect(getOrganizationPromise).resolves.toHaveProperty('description');
       await expect(getOrganizationPromise).resolves.toHaveProperty('monthlyNumberOfDocumentsAllowed');
@@ -74,7 +79,7 @@ describe('Organizations', () => {
 
   describe('updateOrganization', () => {
     test('valid request', async () => {
-      const organizationId = uuidv4();
+      const organizationId = createOrganizationId();
       const name = 'My Company Name';
       const description = 'My Company Description';
       const options = { name, description };
@@ -114,15 +119,15 @@ describe('Organizations', () => {
 describe('Documents', () => {
   describe('createDocument', () => {
     test('valid request body', async () => {
-      const testContent = uuidv4();
-      const testContentType = 'image/jpeg';
-      const testConsentId = consentId();
-      const testBatchId = batchId();
-      const testDatasetId = datasetId();
-      const createDocumentPromise = client.createDocument(testContent, testContentType, {
-        batchId: testBatchId,
-        consentId: testConsentId,
-        datasetId: testDatasetId,
+      const content = uuidv4();
+      const contentType = 'image/jpeg';
+      const consentId = createConsentId();
+      const batchId = createBatchId();
+      const datasetId = createDatasetId();
+      const createDocumentPromise = client.createDocument(content, contentType, {
+        batchId,
+        consentId,
+        datasetId,
       });
       await expect(createDocumentPromise).resolves.toHaveProperty('batchId');
       await expect(createDocumentPromise).resolves.toHaveProperty('consentId');
@@ -132,40 +137,40 @@ describe('Documents', () => {
     });
 
     test.each<ContentType>(['image/jpeg', 'application/pdf', 'image/png', 'image/tiff'])('allows content type: %s', async (contentType) => {
-      const testContent = uuidv4();
-      const createDocumentPromise = client.createDocument(testContent, contentType);
+      const content = uuidv4();
+      const createDocumentPromise = client.createDocument(content, contentType);
       await expect(createDocumentPromise).resolves.toHaveProperty('contentType');
       await expect(createDocumentPromise).resolves.toHaveProperty('documentId');
     });
 
     test('invalid Content-Type', async () => {
-      const testContent = uuidv4();
-      const testContentType = ('erroneousContentType' as unknown) as ContentType;
-      const testConsentId = uuidv4();
-      const createDocumentPromise = client.createDocument(testContent, testContentType, { consentId: testConsentId });
+      const content = uuidv4();
+      const contentType = ('erroneousContentType' as unknown) as ContentType;
+      const consentId = createConsentId();
+      const createDocumentPromise = client.createDocument(content, contentType, { consentId });
       await expect(createDocumentPromise).rejects.toBeDefined();
     });
 
     test('invalid consentId pattern', async () => {
-      const testContent = uuidv4();
-      const testContentType = 'image/jpeg';
-      const testConsentId = uuidv4();
-      const createDocumentPromise = client.createDocument(testContent, testContentType, { consentId: testConsentId });
+      const content = uuidv4();
+      const contentType = 'image/jpeg';
+      const consentId = uuidv4();
+      const createDocumentPromise = client.createDocument(content, contentType, { consentId });
       await expect(createDocumentPromise).rejects.toBeDefined();
     });
 
-    test('invalid batchId pattern', async () => {
-      const testContent = uuidv4();
-      const testContentType = 'image/jpeg';
-      const testConsentId = uuidv4();
-      const createDocumentPromise = client.createDocument(testContent, testContentType, { consentId: testConsentId });
+    test('invalid datasetId pattern', async () => {
+      const content = uuidv4();
+      const contentType = 'image/jpeg';
+      const datasetId = uuidv4();
+      const createDocumentPromise = client.createDocument(content, contentType, { datasetId });
       await expect(createDocumentPromise).rejects.toBeDefined();
     });
   });
 
   describe('getDocument', () => {
     test('valid request', async () => {
-      const documentId = uuidv4();
+      const documentId = createDocumentId();
       const getDocumentPromise = client.getDocument(documentId);
       await expect(getDocumentPromise).resolves.toHaveProperty('consentId');
       await expect(getDocumentPromise).resolves.toHaveProperty('documentId');
@@ -175,7 +180,7 @@ describe('Documents', () => {
 
   describe('updateDocument', () => {
     test('valid request', async () => {
-      const documentId = uuidv4();
+      const documentId = createDocumentId();
       const groundTruth = [{ label: 'test', value: 'test' }];
       const updateDocumentPromise = client.updateDocument(documentId, { groundTruth });
       await expect(updateDocumentPromise).resolves.toHaveProperty('consentId');
@@ -186,7 +191,7 @@ describe('Documents', () => {
 
   describe('deleteDocument', () => {
     test('valid request', async () => {
-      const documentId = uuidv4();
+      const documentId = createDocumentId();
       const deleteDocumentPromise = client.deleteDocument(documentId);
       await expect(deleteDocumentPromise).resolves.toHaveProperty('contentType');
       await expect(deleteDocumentPromise).resolves.toHaveProperty('documentId');
@@ -195,13 +200,13 @@ describe('Documents', () => {
 
   describe('deleteDocuments', () => {
     test('with batchId', async () => {
-      const batchId = uuidv4();
+      const batchId = createBatchId();
       const deleteDocumentsPromise = client.deleteDocuments({ batchId });
       await expect(deleteDocumentsPromise).resolves.toHaveProperty('documents');
     });
 
     test('with consentId', async () => {
-      const consentId = uuidv4();
+      const consentId = createConsentId();
       const deleteDocumentsPromise = client.deleteDocuments({ consentId });
       await expect(deleteDocumentsPromise).resolves.toHaveProperty('documents');
     });
@@ -222,12 +227,12 @@ describe('Documents', () => {
   describe('listDocuments', () => {
     test('valid request', async () => {
       test.each<[ListDocumentsOptions]>([
-        [{ batchId: batchId() }],
-        [{ consentId: consentId() }],
-        [{ datasetId: datasetId() }],
+        [{ batchId: createBatchId() }],
+        [{ consentId: createConsentId() }],
+        [{ datasetId: createDatasetId() }],
       ])('parameters: %s', async options => {
         const listDocumentsPromise = client.listDocuments(options);
-        await expect(listDocumentsPromise).resolves.toBeDefined();
+        await expect(listDocumentsPromise).resolves;
       });
 
     test('accepts pagination params', async () => {
@@ -246,7 +251,7 @@ describe('Transitions', () => {
       ['docker', {}],
       ['docker', { parameters: { imageUrl: 'test' } }],
       ['docker', { parameters: { imageUrl: 'test', cpu: 256, memory: 1024 } }],
-      ['docker', { parameters: { assets: { jsRemoteComponent: `las:asset:${uuidv4().replace(/-/g, '')}` } } }],
+      ['docker', { parameters: { assets: { jsRemoteComponent: createAssetId() }}}],
     ])('parameters: %s', async (transitionType, options) => {
       const createTransitionPromise = client.createTransition(transitionType, options);
       await expect(createTransitionPromise).resolves.toHaveProperty('transitionId');
@@ -255,8 +260,8 @@ describe('Transitions', () => {
 
   describe('getTransition', () => {
     test('valid request', async () => {
-      const id = transitionId();
-      const getTransitionPromise = client.getTransition(id);
+      const transitionId = createTransitionId();
+      const getTransitionPromise = client.getTransition(transitionId);
       await expect(getTransitionPromise).resolves.toHaveProperty('transitionId');
     });
   });
@@ -277,7 +282,7 @@ describe('Transitions', () => {
 
   describe('updateTransition', () => {
     test('valid request', async () => {
-      const transitionId = uuidv4();
+      const transitionId = createTransitionId();
       const updateTransitionPromise = client.updateTransition(transitionId, { name: 'new name' });
       await expect(updateTransitionPromise).resolves.toHaveProperty('name');
       await expect(updateTransitionPromise).resolves.toHaveProperty('transitionId');
@@ -286,15 +291,15 @@ describe('Transitions', () => {
 
   describe('deleteTransition', () => {
     test('valid request', async () => {
-      const id = transitionId();
-      const deleteTransitionPromise = client.deleteTransition(id);
+      const transitionId = createTransitionId();
+      const deleteTransitionPromise = client.deleteTransition(transitionId);
       await expect(deleteTransitionPromise).resolves.toHaveProperty('transitionId');
     });
   });
 
   describe('executeTransition', () => {
     test('valid request', async () => {
-      const transitionId = uuidv4();
+      const transitionId = createTransitionId();
       const executeTransitionPromise = client.executeTransition(transitionId);
       await expect(executeTransitionPromise).resolves.toHaveProperty('executionId');
       await expect(executeTransitionPromise).resolves.toHaveProperty('status');
@@ -304,9 +309,9 @@ describe('Transitions', () => {
 
   describe('getTransitionExecution', () => {
     test('valid request', async () => {
-      const testTransitionId = transitionId();
-      const testTransitionExecutionId = transitionExecutionId();
-      const getTransitionExecutionPromise = client.getTransitionExecution(testTransitionId, testTransitionExecutionId);
+      const transitionId = createTransitionId();
+      const transitionExecutionId = createTransitionExecutionId();
+      const getTransitionExecutionPromise = client.getTransitionExecution(transitionId, transitionExecutionId);
       await expect(getTransitionExecutionPromise).resolves.toHaveProperty('executionId');
       await expect(getTransitionExecutionPromise).resolves.toHaveProperty('status');
       await expect(getTransitionExecutionPromise).resolves.toHaveProperty('transitionId');
@@ -325,9 +330,9 @@ describe('Transitions', () => {
       { status: 'failed', error: { message: 'test' } },
       { status: 'succeeded', output: { something: 'test' }, startTime: '2020-01-01 09:31:00.002431Z' },
     ])('input: %o', async (input) => {
-      const testTransitionId = transitionId();
-      const testExecutionId = transitionExecutionId();
-      const updateTransitionExecutionPromise = client.updateTransitionExecution(testTransitionId, testExecutionId, input);
+      const transitionId = createTransitionId();
+      const transitionExecutionId = createTransitionExecutionId();
+      const updateTransitionExecutionPromise = client.updateTransitionExecution(transitionId, transitionExecutionId, input);
       await expect(updateTransitionExecutionPromise).resolves.toHaveProperty('executionId');
       await expect(updateTransitionExecutionPromise).resolves.toHaveProperty('status');
       await expect(updateTransitionExecutionPromise).resolves.toHaveProperty('transitionId');
@@ -344,9 +349,9 @@ describe('Transitions', () => {
   describe('sendHeartbeat', () => {
     // Seems like a Prism issue where this will just never resolve or reject, making Jest time out
     test.skip('valid request', async () => {
-      const testTransitionId = transitionId();
-      const testExecutionId = transitionExecutionId();
-      const sendHeartbeatPromise = await client.sendHeartbeat(testTransitionId, testExecutionId);
+      const transitionId = createTransitionId();
+      const transitionExecutionId = createTransitionExecutionId();
+      const sendHeartbeatPromise = await client.sendHeartbeat(transitionId, transitionExecutionId);
       await expect(sendHeartbeatPromise).resolves.toBe('')
     })
   })
@@ -389,8 +394,8 @@ describe('Workflows', () => {
 
   describe('getWorkflow', () => {
     test('valid request', async () => {
-      const id = workflowId();
-      const getWorkflowPromise = client.getWorkflow(id);
+      const workflowId = createWorkflowId();
+      const getWorkflowPromise = client.getWorkflow(workflowId);
       await expect(getWorkflowPromise).resolves.toHaveProperty('workflowId');
     });
   });
@@ -411,7 +416,7 @@ describe('Workflows', () => {
 
   describe('updateWorkflow', () => {
     test('valid request', async () => {
-      const workflowId = uuidv4();
+      const workflowId = createWorkflowId();
       const updateWorkflowPromise = client.updateWorkflow(workflowId, { name: 'New name' });
       await expect(updateWorkflowPromise).resolves.toHaveProperty('name');
       await expect(updateWorkflowPromise).resolves.toHaveProperty('workflowId');
@@ -420,7 +425,7 @@ describe('Workflows', () => {
 
   describe('deleteWorkflow', () => {
     test('valid request', async () => {
-      const workflowId = uuidv4();
+      const workflowId = createWorkflowId();
       const deleteWorkflowPromise = client.deleteWorkflow(workflowId);
       await expect(deleteWorkflowPromise).resolves.toHaveProperty('name');
       await expect(deleteWorkflowPromise).resolves.toHaveProperty('workflowId');
@@ -429,7 +434,7 @@ describe('Workflows', () => {
 
   describe('executeWorkflow', () => {
     test('valid request', async () => {
-      const workflowId = uuidv4();
+      const workflowId = createWorkflowId();
       const executeWorkflowPromise = client.executeWorkflow(workflowId, { some: 'input' });
       await expect(executeWorkflowPromise).resolves.toHaveProperty('executionId');
       await expect(executeWorkflowPromise).resolves.toHaveProperty('status');
@@ -439,9 +444,9 @@ describe('Workflows', () => {
 
   describe('getWorkflowExecution', () => {
     test('valid request', async () => {
-      const testWorkflowId = workflowId();
-      const testWorkflowExecutionId = workflowExecutionId();
-      const getWorkflowExecutionPromise = client.getWorkflowExecution(testWorkflowId, testWorkflowExecutionId);
+      const workflowId = createWorkflowId();
+      const workflowExecutionId = createWorkflowExecutionId();
+      const getWorkflowExecutionPromise = client.getWorkflowExecution(workflowId, workflowExecutionId);
       await expect(getWorkflowExecutionPromise).resolves.toHaveProperty('executionId');
       await expect(getWorkflowExecutionPromise).resolves.toHaveProperty('completedBy');
       await expect(getWorkflowExecutionPromise).resolves.toHaveProperty('endTime');
@@ -456,11 +461,11 @@ describe('Workflows', () => {
 
   describe('updateWorkflowExecution', () => {
     test('valid request', async () => {
-      const testWorkflowId = workflowId();
-      const testWorkflowExecutionId = workflowExecutionId();
-      const nextTransitionId = transitionId();
-      const data = { nextTransitionId };
-      const getWorkflowExecutionPromise = client.updateWorkflowExecution(testWorkflowId, testWorkflowExecutionId, data);
+      const workflowId = createWorkflowId();
+      const workflowExecutionId = createWorkflowExecutionId();
+      const nextTransitionId = createTransitionId();
+      const options = { nextTransitionId };
+      const getWorkflowExecutionPromise = client.updateWorkflowExecution(workflowId, workflowExecutionId, options);
       await expect(getWorkflowExecutionPromise).resolves.toHaveProperty('executionId');
       await expect(getWorkflowExecutionPromise).resolves.toHaveProperty('completedBy');
       await expect(getWorkflowExecutionPromise).resolves.toHaveProperty('endTime');
@@ -475,14 +480,14 @@ describe('Workflows', () => {
 
   describe('listWorkflowExecutions', () => {
     test.each([undefined, 'test'])('status: %s', async (status) => {
-      const workflowId = uuidv4();
+      const workflowId = createWorkflowId();
       const listWorkflowExecutionsPromise = client.listWorkflowExecutions(workflowId, { status });
       await expect(listWorkflowExecutionsPromise).resolves.toHaveProperty('executions');
       await expect(listWorkflowExecutionsPromise).resolves.toHaveProperty('workflowId');
     });
 
     test('accepts pagination params', async () => {
-      const workflowId = uuidv4();
+      const workflowId = createWorkflowId();
       const maxResults = 1;
       const nextToken = uuidv4();
       const listWorkflowsPromise = client.listWorkflowExecutions(workflowId, { maxResults, nextToken });
@@ -492,9 +497,9 @@ describe('Workflows', () => {
 
   describe('deleteWorkflowExecution', () => {
     test('valid request', async () => {
-      const workflowId = uuidv4();
-      const executionId = uuidv4();
-      const deleteWorkflowExecutionPromise = client.deleteWorkflowExecution(workflowId, executionId);
+      const workflowId = createWorkflowId();
+      const workflowExecutionId = createWorkflowExecutionId();
+      const deleteWorkflowExecutionPromise = client.deleteWorkflowExecution(workflowId, workflowExecutionId);
       await expect(deleteWorkflowExecutionPromise).resolves.toHaveProperty('workflowId');
     });
   });
@@ -516,8 +521,7 @@ describe('Users', () => {
 
   describe('getUser', () => {
     test('valid request', async () => {
-      const userId = uuidv4();
-
+      const userId = createUserId();
       const getUserPromise = client.getUser(userId);
       await expect(getUserPromise).resolves.toHaveProperty('email');
       await expect(getUserPromise).resolves.toHaveProperty('userId');
@@ -526,7 +530,7 @@ describe('Users', () => {
 
   describe('updateUser', () => {
     test('valid request', async () => {
-      const userId = uuidv4();
+      const userId = createUserId();
       const updateUserPromise = client.updateUser(userId, { name: 'I want a new name' });
       await expect(updateUserPromise).resolves.toHaveProperty('email');
       await expect(updateUserPromise).resolves.toHaveProperty('name');
@@ -535,8 +539,7 @@ describe('Users', () => {
 
   describe('deleteUser', () => {
     test('valid request', async () => {
-      const userId = uuidv4();
-
+      const userId = createUserId();
       const deleteUserPromise = client.deleteUser(userId);
       await expect(deleteUserPromise).resolves.toHaveProperty('email');
       await expect(deleteUserPromise).resolves.toHaveProperty('userId');
@@ -598,17 +601,17 @@ describe('Secrets', () => {
 describe('Predictions', () => {
   describe('createPredictions', () => {
     test('valid request', async () => {
-      const testDocumentId = documentId();
-      const testModelId = modelId();
-      const createPredictionPromise = client.createPrediction(testDocumentId, testModelId);
+      const documentId = createDocumentId();
+      const modelId = createModelId();
+      const createPredictionPromise = client.createPrediction(documentId, modelId);
       await expect(createPredictionPromise).resolves.toHaveProperty('documentId');
       await expect(createPredictionPromise).resolves.toHaveProperty('predictions');
     });
 
     test('with options', async () => {
-      const testDocumentId = documentId();
-      const testModelId = modelId();
-      const createPredictionPromise = client.createPrediction(testDocumentId, testModelId, {
+      const documentId = createDocumentId();
+      const modelId = createModelId();
+      const createPredictionPromise = client.createPrediction(documentId, modelId, {
         autoRotate: true,
         imageQuality: 'HIGH',
         maxPages: 2,
@@ -618,9 +621,9 @@ describe('Predictions', () => {
     });
 
     test('invalid model name', async () => {
-      const testDocumentId = documentId();
-      const testModelId = 'erroneousModelId';
-      const createPredictionPromise = client.createPrediction(testDocumentId, testModelId);
+      const documentId = createDocumentId();
+      const modelId = 'erroneousModelId';
+      const createPredictionPromise = client.createPrediction(documentId, modelId);
       await expect(createPredictionPromise).rejects.toBeDefined();
     });
   });
@@ -644,7 +647,7 @@ describe('Assets', () => {
 
   describe('deleteAsset', () => {
     test('valid request', async () => {
-      const assetId = uuidv4();
+      const assetId = createAssetId();
       const deleteAssetPromise = client.deleteAsset(assetId);
       await expect(deleteAssetPromise).resolves.toHaveProperty('assetId');
       await expect(deleteAssetPromise).resolves.toHaveProperty('content');
@@ -667,7 +670,7 @@ describe('Assets', () => {
 
   describe('getAsset', () => {
     test('valid request', async () => {
-      const assetId = uuidv4();
+      const assetId = createAssetId();
       const getAssetPromise = client.getAsset(assetId);
       await expect(getAssetPromise).resolves.toHaveProperty('assetId');
       await expect(getAssetPromise).resolves.toHaveProperty('content');
@@ -676,7 +679,7 @@ describe('Assets', () => {
 
   describe('updateAsset', () => {
     test('valid request', async () => {
-      const assetId = uuidv4();
+      const assetId = createAssetId();
       const content = uuidv4();
       const updateAssetPromise = client.updateAsset(assetId, { content });
       await expect(updateAssetPromise).resolves.toHaveProperty('assetId');
@@ -706,7 +709,7 @@ describe('Datasets', () => {
 
   describe('updateDataset', () => {
     test('valid request', async () => {
-      const datasetId = uuidv4();
+      const datasetId = createDatasetId();
       const description = 'I am going to create a new dataset, give me a dataset ID!';
       const name = 'my dataset name';
       const options = { description, name };
@@ -725,7 +728,7 @@ describe('Datasets', () => {
 
   describe('deleteDataset', () => {
     test('valid request', async () => {
-      const datasetId = uuidv4();
+      const datasetId = createDatasetId();
       const deleteDatasetPromise = client.deleteDataset(datasetId);
       await expect(deleteDatasetPromise).resolves.toHaveProperty('containsPersonallyIdentifiableInformation');
       await expect(deleteDatasetPromise).resolves.toHaveProperty('createdTime');
@@ -739,7 +742,7 @@ describe('Datasets', () => {
     });
 
     test('with documents', async () => {
-      const datasetId = uuidv4();
+      const datasetId = createDatasetId();
       const deleteDatasetPromise = client.deleteDataset(datasetId, true);
       await expect(deleteDatasetPromise).resolves.toHaveProperty('containsPersonallyIdentifiableInformation');
       await expect(deleteDatasetPromise).resolves.toHaveProperty('createdTime');
@@ -788,7 +791,7 @@ describe('Batches', () => {
 
   describe('updateBatch', () => {
     test('valid request', async () => {
-      const batchId = uuidv4();
+      const batchId = createBatchId();
       const description = 'I am going to create a new batch, give me a batch ID!';
       const name = 'my batch name';
       const options = { description, name };
@@ -805,7 +808,7 @@ describe('Batches', () => {
 
   describe('deleteBatch', () => {
     test('valid request', async () => {
-      const batchId = uuidv4();
+      const batchId = createBatchId();
       const deleteBatchPromise = client.deleteBatch(batchId);
       await expect(deleteBatchPromise).resolves.toHaveProperty('batchId');
       await expect(deleteBatchPromise).resolves.toHaveProperty('containsPersonallyIdentifiableInformation');
@@ -817,7 +820,7 @@ describe('Batches', () => {
     });
 
     test('with documents', async () => {
-      const batchId = uuidv4();
+      const batchId = createBatchId();
       const deleteBatchPromise = client.deleteBatch(batchId, true);
       await expect(deleteBatchPromise).resolves.toHaveProperty('batchId');
       await expect(deleteBatchPromise).resolves.toHaveProperty('containsPersonallyIdentifiableInformation');
@@ -888,7 +891,7 @@ describe('Models', () => {
 
   describe('getModel', () => {
     test('valid request', async () => {
-      const modelId = uuidv4();
+      const modelId = createModelId();
       const getModelPromise = client.getModel(modelId);
       await expect(getModelPromise).resolves.toHaveProperty('createdTime');
       await expect(getModelPromise).resolves.toHaveProperty('description');
@@ -906,7 +909,7 @@ describe('Models', () => {
   describe('updateModel', () => {
     test.each<[string, UpdateModelOptions]>([
       [
-        uuidv4(),
+        createModelId(),
         {
           fieldConfig: {
             total_amount: { type: 'amount', maxLength: 20, description: 'Total Amount' },
@@ -938,7 +941,7 @@ describe('Models', () => {
 
   describe('deleteModel', () => {
     test('valid request', async () => {
-      const modelId = uuidv4();
+      const modelId = createModelId();
       const deleteModelPromise = client.deleteModel(modelId);
       await expect(deleteModelPromise).resolves.toHaveProperty('createdTime');
       await expect(deleteModelPromise).resolves.toHaveProperty('description');
@@ -1011,7 +1014,7 @@ describe('AppClients', () => {
 
   describe('updateAppClient', () => {
     test('valid request', async () => {
-      const appClientId = uuidv4();
+      const appClientId = createAppClientId();
       const defaultLoginUrl = 'http://localhost:3030/login';
       const description = 'My app client description';
       const loginUrls = [ 'http://localhost:3030/login' ];
@@ -1035,7 +1038,7 @@ describe('AppClients', () => {
 
   describe('deleteAppClient', () => {
     test('valid request', async () => {
-      const appClientId = uuidv4();
+      const appClientId = createAppClientId();
       const deleteAppClientPromise = client.deleteAppClient(appClientId);
       await expect(deleteAppClientPromise).resolves.toHaveProperty('apiKey');
       await expect(deleteAppClientPromise).resolves.toHaveProperty('appClientId');
