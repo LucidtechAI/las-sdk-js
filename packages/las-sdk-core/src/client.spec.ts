@@ -236,11 +236,12 @@ describe('Documents', () => {
         await expect(listDocumentsPromise).resolves;
       });
 
-    test('accepts pagination params', async () => {
-      const maxResults = 1;
-      const nextToken = uuidv4();
-      const listDocumentsPromise = client.listDocuments({ maxResults, nextToken });
-      await expect(listDocumentsPromise).resolves.toHaveProperty('nextToken');
+      test('accepts pagination params', async () => {
+        const maxResults = 1;
+        const nextToken = uuidv4();
+        const listDocumentsPromise = client.listDocuments({ maxResults, nextToken });
+        await expect(listDocumentsPromise).resolves.toHaveProperty('nextToken');
+      });
     });
   });
 });
