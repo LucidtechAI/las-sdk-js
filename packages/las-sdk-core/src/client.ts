@@ -629,7 +629,7 @@ export class Client {
   }
 
   /**
-   * Updates an dataset, calls the PATCH /datasets/{datasetId} endpoint.
+   * Updates a dataset, calls the PATCH /datasets/{datasetId} endpoint.
    *
    * @param datasetId Id of the dataset
    * @param options.description Description of dataset
