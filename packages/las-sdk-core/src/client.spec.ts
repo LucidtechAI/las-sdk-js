@@ -22,20 +22,20 @@ import {
 let client = getTestClient();
 
 const uuidWithoutDashes = () => uuidv4().replace(/-/g, '');
-const createAssetId = () => `las:asset:${uuidWithoutDashes()}`;
 const createAppClientId = () => `las:app-client:${uuidWithoutDashes()}`;
+const createAssetId = () => `las:asset:${uuidWithoutDashes()}`;
 const createBatchId = () => `las:batch:${uuidWithoutDashes()}`;
 const createConsentId = () => `las:consent:${uuidWithoutDashes()}`;
+const createDataBundleId = () => `las:model-data-bundle:${uuidWithoutDashes()}`;
 const createDatasetId = () => `las:dataset:${uuidWithoutDashes()}`;
 const createDocumentId = () => `las:document:${uuidWithoutDashes()}`;
-const createOrganizationId = () => `las:organization:${uuidWithoutDashes()}`;
-const createDataBundleId = () => `las:model-data-bundle:${uuidWithoutDashes()}`;
 const createModelId = () => `las:model:${uuidWithoutDashes()}`;
+const createOrganizationId = () => `las:organization:${uuidWithoutDashes()}`;
 const createTransitionExecutionId = () => `las:transition-execution:${uuidWithoutDashes()}`;
 const createTransitionId = () => `las:transition:${uuidWithoutDashes()}`;
+const createUserId = () => `las:user:${uuidWithoutDashes()}`;
 const createWorkflowExecutionId = () => `las:workflow-execution:${uuidWithoutDashes()}`;
 const createWorkflowId = () => `las:workflow:${uuidWithoutDashes()}`;
-const createUserId = () => `las:user:${uuidWithoutDashes()}`;
 
 beforeEach(() => {
   client = getTestClient();
