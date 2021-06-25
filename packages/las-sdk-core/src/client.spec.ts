@@ -7,6 +7,7 @@ import { getTestClient } from './helpers';
 import {
   ContentType,
   CreateAppClientOptions,
+  CreateDataBundleOptions,
   CreateModelOptions,
   CreateTransitionOptions,
   CreateWorkflowOptions,
@@ -1065,6 +1066,92 @@ describe('AppClients', () => {
       const nextToken = uuidv4();
       const listAppClientsPromise = client.listAppClients({ maxResults, nextToken });
       await expect(listAppClientsPromise).resolves.toHaveProperty('nextToken');
+    });
+  });
+});
+
+describe('DataBundles', () => {
+  describe('createDataBundle', () => {
+    test.each<[Array<string>, CreateDataBundleOptions]>([
+      [
+        [ createDatasetId() ],
+        {
+          name: 'Data bundle name',
+          description: 'Data bundle description',
+        },
+      ],
+      [
+        [ createDatasetId(), createDatasetId(), createDatasetId() ],
+        {
+          name: 'Data bundle name',
+          description: 'Data bundle description',
+        },
+      ],
+    ])('input: %o', async (datasetIds, options) => {
+      const modelId = createModelId();
+      const createDataBundlePromise = client.createDataBundle(modelId, datasetIds, options);
+      await expect(createDataBundlePromise).resolves.toHaveProperty('createdTime');
+      await expect(createDataBundlePromise).resolves.toHaveProperty('dataBundleId');
+      await expect(createDataBundlePromise).resolves.toHaveProperty('datasets');
+      await expect(createDataBundlePromise).resolves.toHaveProperty('description');
+      await expect(createDataBundlePromise).resolves.toHaveProperty('modelId');
+      await expect(createDataBundlePromise).resolves.toHaveProperty('name');
+      await expect(createDataBundlePromise).resolves.toHaveProperty('status');
+      await expect(createDataBundlePromise).resolves.toHaveProperty('summary');
+      await expect(createDataBundlePromise).resolves.toHaveProperty('updatedTime');
+    });
+  });
+
+  describe('updateDataBundle', () => {
+    test('valid request', async () => {
+      const modelId = createModelId();
+      const dataBundleId = createDataBundleId();
+      const description = 'My data bundle description';
+      const name = 'My data bundle name';
+      const options = { description, name };
+      const updateDataBundlePromise = client.updateDataBundle(modelId, dataBundleId, options);
+      await expect(updateDataBundlePromise).resolves.toHaveProperty('createdTime');
+      await expect(updateDataBundlePromise).resolves.toHaveProperty('dataBundleId');
+      await expect(updateDataBundlePromise).resolves.toHaveProperty('datasets');
+      await expect(updateDataBundlePromise).resolves.toHaveProperty('description');
+      await expect(updateDataBundlePromise).resolves.toHaveProperty('modelId');
+      await expect(updateDataBundlePromise).resolves.toHaveProperty('name');
+      await expect(updateDataBundlePromise).resolves.toHaveProperty('status');
+      await expect(updateDataBundlePromise).resolves.toHaveProperty('summary');
+      await expect(updateDataBundlePromise).resolves.toHaveProperty('updatedTime');
+    });
+  });
+
+  describe('deleteDataBundle', () => {
+    test('valid request', async () => {
+      const modelId = createModelId();
+      const dataBundleId = createDataBundleId();
+      const deleteDataBundlePromise = client.deleteDataBundle(modelId, dataBundleId);
+      await expect(deleteDataBundlePromise).resolves.toHaveProperty('createdTime');
+      await expect(deleteDataBundlePromise).resolves.toHaveProperty('dataBundleId');
+      await expect(deleteDataBundlePromise).resolves.toHaveProperty('datasets');
+      await expect(deleteDataBundlePromise).resolves.toHaveProperty('description');
+      await expect(deleteDataBundlePromise).resolves.toHaveProperty('modelId');
+      await expect(deleteDataBundlePromise).resolves.toHaveProperty('name');
+      await expect(deleteDataBundlePromise).resolves.toHaveProperty('status');
+      await expect(deleteDataBundlePromise).resolves.toHaveProperty('summary');
+      await expect(deleteDataBundlePromise).resolves.toHaveProperty('updatedTime');
+    });
+  });
+
+  describe('listDataBundles', () => {
+    test('valid request', async () => {
+      const modelId = createModelId();
+      const listDataBundlesPromise = client.listDataBundles(modelId);
+      await expect(listDataBundlesPromise).resolves.toHaveProperty('dataBundles');
+    });
+
+    test('accepts pagination params', async () => {
+      const modelId = createModelId();
+      const maxResults = 1;
+      const nextToken = uuidv4();
+      const listDataBundlesPromise = client.listDataBundles(modelId, { maxResults, nextToken });
+      await expect(listDataBundlesPromise).resolves.toHaveProperty('nextToken');
     });
   });
 });

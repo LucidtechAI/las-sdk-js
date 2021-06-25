@@ -301,6 +301,35 @@ export type DatasetList = {
 
 export type ListDatasetsOptions = PaginationOptions;
 
+export type DataBundle = {
+  createdTime: string;
+  dataBundleId: string;
+  datasets: Array<Dataset>;
+  description: string;
+  modelId: string;
+  name: string;
+  status: 'ready' | 'processing' | 'failed';
+  summary: Record<string, any>;
+  updatedTime: string;
+};
+
+export type CreateDataBundleOptions = {
+  name?: string;
+  description?: string;
+}
+
+export type UpdateDataBundleOptions = {
+  description?: string;
+  name?: string;
+}
+
+export type DataBundleList = {
+  dataBundles: Array<DataBundle>;
+  nextToken: string | null;
+};
+
+export type ListDataBundleOptions = PaginationOptions;
+
 export type User = {
   userId: string;
   email: string;

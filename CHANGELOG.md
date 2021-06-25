@@ -1,7 +1,11 @@
 # Changelog 
 
-## Version 4.4.0 - 2021-06-24
+## Version 4.4.0 - 2021-06-25
 
+- Added createDataBundle
+- Added updateDataBundle
+- Added deleteDataBundle
+- Added listDataBundles
 - Added defaultLoginUrl and loginUrls to updateAppClient options
 - Added monthlyNumberOfDataBundlesAllowed, monthlyNumberOfDataBundlesCreated, numberOfDatasetsAllowed and
 numberOfDatasetsCreated to Organization
