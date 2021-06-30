@@ -276,7 +276,7 @@ export type Dataset = {
   datasetId: string;
   description: string;
   name: string;
-  numDocuments: number;
+  numberOfDocuments: number;
   retentionInDays: number;
   storageLocation: 'EU';
   updatedTime: string;
