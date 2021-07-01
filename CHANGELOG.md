@@ -1,6 +1,10 @@
 # Changelog 
 
-## Version 4.4.0 - 2021-06-25
+## Version 4.4.1 - 2021-06-30
+
+- Fixed Dataset type properties
+
+## Version 4.4.0 - 2021-06-30
 
 - Added createDataBundle
 - Added updateDataBundle
