@@ -82,7 +82,7 @@ import {
   WorkflowList,
   WorkflowSpecification,
 } from './types';
-import { buildURL } from './utils';
+import { buildURL, wait } from './utils';
 
 /**
  * A high-level http client for communicating with the Lucidtech REST API
@@ -667,8 +667,36 @@ export class Client {
     if (deleteDocuments) {
       let response = await this.deleteDocuments({ datasetId });
       while (response.nextToken) {
-        // eslint-disable-next-line no-await-in-loop
         response = await this.deleteDocuments({ datasetId, nextToken: response.nextToken });
+      }
+
+      let WAIT_MS = 2500;
+      let TOTAL_WAIT = WAIT_MS;
+      const MAX_WAIT_MS = 15000;
+
+      await wait(WAIT_MS);
+      let datasetsResponse = (await this.listDatasets())?.datasets.find(
+        (dataset): boolean => dataset.datasetId === datasetId
+      );
+
+      // wait until we get the updated numberOfDocuments, OR we time out
+      while (
+        datasetsResponse?.numberOfDocuments !== undefined
+        && datasetsResponse?.numberOfDocuments > 0
+        && TOTAL_WAIT < MAX_WAIT_MS
+      ) {
+        // exponentially back off
+        WAIT_MS *= 1.15;
+        TOTAL_WAIT += WAIT_MS;
+        await wait(WAIT_MS);
+        datasetsResponse = (await this.listDatasets())?.datasets.find(
+          (dataset): boolean => dataset.datasetId === datasetId
+        );
+      }
+
+      // if the numberOfDocuments has not yet been updated, throw an error
+      if (datasetsResponse?.numberOfDocuments !== undefined && datasetsResponse?.numberOfDocuments > 0) {
+        throw Error('Dataset numberOfDocuments not updated in time');
       }
     }
 
@@ -687,7 +715,7 @@ export class Client {
   async createDataBundle(
     modelId: string,
     datasetIds: Array<string>,
-    options: CreateDataBundleOptions
+    options: CreateDataBundleOptions,
   ): Promise<DataBundle> {
     let body = { datasetIds };
 

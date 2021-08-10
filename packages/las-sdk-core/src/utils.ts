@@ -31,3 +31,7 @@ export function buildURL(url: string, params?: BuildURLParams): string {
 
   return `${url}?${searchParams}`;
 }
+
+export function wait(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}

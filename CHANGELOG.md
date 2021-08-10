@@ -1,5 +1,9 @@
 # Changelog 
 
+## Version 4.4.2 - 2021-08-10
+
+- deleteDataset: Wait for numberOfDocuments to be asynchronously updated before attempting to delete dataset
+
 ## Version 4.4.1 - 2021-06-30
 
 - Fixed Dataset type properties
