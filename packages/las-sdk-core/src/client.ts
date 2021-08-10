@@ -623,6 +623,16 @@ export class Client {
   }
 
   /**
+   * Get dataset from the REST API, calls the GET /datasets/{datasetId} endpoint.
+   *
+   * @param datasetId Id of the dataset
+   * @returns Dataset response from REST API
+   */
+  async getDataset(datasetId: string): Promise<Dataset> {
+    return this.makeGetRequest(`/datasets/${datasetId}`);
+  }
+
+  /**
    * Creates a dataset, calls the POST /datasets endpoint.
    *
    * @param options.name Name of the dataset
@@ -675,27 +685,19 @@ export class Client {
       const MAX_WAIT_MS = 15000;
 
       await wait(WAIT_MS);
-      let datasetsResponse = (await this.listDatasets())?.datasets.find(
-        (dataset): boolean => dataset.datasetId === datasetId
-      );
+      let datasetResponse = await this.getDataset(datasetId);
 
       // wait until we get the updated numberOfDocuments, OR we time out
-      while (
-        datasetsResponse?.numberOfDocuments !== undefined
-        && datasetsResponse?.numberOfDocuments > 0
-        && TOTAL_WAIT < MAX_WAIT_MS
-      ) {
+      while (datasetResponse?.numberOfDocuments > 0 && TOTAL_WAIT < MAX_WAIT_MS) {
         // exponentially back off
         WAIT_MS *= 1.15;
         TOTAL_WAIT += WAIT_MS;
         await wait(WAIT_MS);
-        datasetsResponse = (await this.listDatasets())?.datasets.find(
-          (dataset): boolean => dataset.datasetId === datasetId
-        );
+        datasetResponse = await this.getDataset(datasetId);
       }
 
       // if the numberOfDocuments has not yet been updated, throw an error
-      if (datasetsResponse?.numberOfDocuments !== undefined && datasetsResponse?.numberOfDocuments > 0) {
+      if (datasetResponse.numberOfDocuments > 0) {
         throw Error('Dataset numberOfDocuments not updated in time');
       }
     }

@@ -36,6 +36,5 @@
         "max-classes-per-file": "off",
         "import/prefer-default-export": "off",
         "no-await-in-loop": "off",
-        "no-restricted-globals": "off"
     }
 }

@@ -1,7 +1,8 @@
 # Changelog 
 
-## Version 4.4.2 - 2021-08-10
+## Version 4.5.0 - 2021-08-10
 
+- Added getDataset
 - deleteDataset: Wait for numberOfDocuments to be asynchronously updated before attempting to delete dataset
 
 ## Version 4.4.1 - 2021-06-30
