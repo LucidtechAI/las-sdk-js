@@ -680,17 +680,17 @@ export class Client {
         response = await this.deleteDocuments({ datasetId, nextToken: response.nextToken });
       }
 
-      let WAIT_MS = 2500;
+      let WAIT_MS = 1000;
       let TOTAL_WAIT = WAIT_MS;
-      const MAX_WAIT_MS = 15000;
+      const MAX_WAIT_MS = 10000;
 
       await wait(WAIT_MS);
       let datasetResponse = await this.getDataset(datasetId);
 
       // wait until we get the updated numberOfDocuments, OR we time out
-      while (datasetResponse?.numberOfDocuments > 0 && TOTAL_WAIT < MAX_WAIT_MS) {
+      while (datasetResponse.numberOfDocuments > 0 && TOTAL_WAIT < MAX_WAIT_MS) {
         // exponentially back off
-        WAIT_MS *= 1.15;
+        WAIT_MS *= 1.25;
         TOTAL_WAIT += WAIT_MS;
         await wait(WAIT_MS);
         datasetResponse = await this.getDataset(datasetId);
