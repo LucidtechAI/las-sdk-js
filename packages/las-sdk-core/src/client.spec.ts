@@ -757,7 +757,9 @@ describe('Datasets', () => {
       await expect(deleteDatasetPromise).resolves.toHaveProperty('version');
     });
 
-    test('with documents', async () => {
+    // This test doesn't work because of prism returning random numberOfDocuments for datasets
+    // The behavior of this method is that it will wait until numberOfDocuments has been updated to be 0
+    test.skip('with documents', async () => {
       const datasetId = createDatasetId();
       const deleteDatasetPromise = client.deleteDataset(datasetId, true);
       await expect(deleteDatasetPromise).resolves.toHaveProperty('containsPersonallyIdentifiableInformation');
