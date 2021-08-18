@@ -82,7 +82,7 @@ import {
   WorkflowList,
   WorkflowSpecification,
 } from './types';
-import { buildURL } from './utils';
+import { buildURL, wait } from './utils';
 
 /**
  * A high-level http client for communicating with the Lucidtech REST API
@@ -623,6 +623,16 @@ export class Client {
   }
 
   /**
+   * Get dataset from the REST API, calls the GET /datasets/{datasetId} endpoint.
+   *
+   * @param datasetId Id of the dataset
+   * @returns Dataset response from REST API
+   */
+  async getDataset(datasetId: string): Promise<Dataset> {
+    return this.makeGetRequest(`/datasets/${datasetId}`);
+  }
+
+  /**
    * Creates a dataset, calls the POST /datasets endpoint.
    *
    * @param options.name Name of the dataset
@@ -667,8 +677,28 @@ export class Client {
     if (deleteDocuments) {
       let response = await this.deleteDocuments({ datasetId });
       while (response.nextToken) {
-        // eslint-disable-next-line no-await-in-loop
         response = await this.deleteDocuments({ datasetId, nextToken: response.nextToken });
+      }
+
+      let WAIT_MS = 1000;
+      let TOTAL_WAIT = WAIT_MS;
+      const MAX_WAIT_MS = 10000;
+
+      await wait(WAIT_MS);
+      let datasetResponse = await this.getDataset(datasetId);
+
+      // wait until we get the updated numberOfDocuments, OR we time out
+      while (datasetResponse.numberOfDocuments > 0 && TOTAL_WAIT < MAX_WAIT_MS) {
+        // exponentially back off
+        WAIT_MS *= 1.25;
+        TOTAL_WAIT += WAIT_MS;
+        await wait(WAIT_MS);
+        datasetResponse = await this.getDataset(datasetId);
+      }
+
+      // if the numberOfDocuments has not yet been updated, throw an error
+      if (datasetResponse.numberOfDocuments > 0) {
+        throw Error('Dataset numberOfDocuments not updated in time');
       }
     }
 
@@ -687,7 +717,7 @@ export class Client {
   async createDataBundle(
     modelId: string,
     datasetIds: Array<string>,
-    options: CreateDataBundleOptions
+    options: CreateDataBundleOptions,
   ): Promise<DataBundle> {
     let body = { datasetIds };
 

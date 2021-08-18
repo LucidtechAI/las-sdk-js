@@ -688,6 +688,22 @@ describe('Assets', () => {
 });
 
 describe('Datasets', () => {
+  describe('getDataset', () => {
+    test('valid request', async () => {
+      const datasetId = createDatasetId();
+      const getDatasetPromise = client.getDataset(datasetId);
+      await expect(getDatasetPromise).resolves.toHaveProperty('containsPersonallyIdentifiableInformation');
+      await expect(getDatasetPromise).resolves.toHaveProperty('createdTime');
+      await expect(getDatasetPromise).resolves.toHaveProperty('datasetId');
+      await expect(getDatasetPromise).resolves.toHaveProperty('description');
+      await expect(getDatasetPromise).resolves.toHaveProperty('numberOfDocuments');
+      await expect(getDatasetPromise).resolves.toHaveProperty('retentionInDays');
+      await expect(getDatasetPromise).resolves.toHaveProperty('storageLocation');
+      await expect(getDatasetPromise).resolves.toHaveProperty('updatedTime');
+      await expect(getDatasetPromise).resolves.toHaveProperty('version');
+    });
+  });
+
   describe('createDataset', () => {
     test('valid request', async () => {
       const description = 'I am going to create a new dataset, give me a dataset ID!';
@@ -741,7 +757,9 @@ describe('Datasets', () => {
       await expect(deleteDatasetPromise).resolves.toHaveProperty('version');
     });
 
-    test('with documents', async () => {
+    // This test doesn't work because of prism returning random numberOfDocuments for datasets
+    // The behavior of this method is that it will wait until numberOfDocuments has been updated to be 0
+    test.skip('with documents', async () => {
       const datasetId = createDatasetId();
       const deleteDatasetPromise = client.deleteDataset(datasetId, true);
       await expect(deleteDatasetPromise).resolves.toHaveProperty('containsPersonallyIdentifiableInformation');
