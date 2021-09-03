@@ -36,6 +36,19 @@ export type ListDocumentsOptions = PaginationOptions & {
   datasetId?: string | Array<string>;
 }
 
+export type TransitionExecutionStatus = 'succeeded' | 'failed' | 'retry' | 'running' | 'rejected';
+
+export type TransitionExecution = {
+  executionId: string;
+  transitionId: string;
+  input: Record<any, any>;
+  status: TransitionExecutionStatus;
+  completedBy: string | null;
+  startTime: string | null;
+  endTime: string | null;
+  logId: string | null;
+};
+
 export type TransitionExecutionList = {
   transitionId: string;
   executions: Array<TransitionExecution>;
@@ -43,14 +56,14 @@ export type TransitionExecutionList = {
 };
 
 export type TransitionExecutionListOptions = PaginationOptions & {
-  status?: 'succeeded' | 'failed' | 'retry' | 'running' | 'rejected';
+  status?: TransitionExecutionStatus | Array<TransitionExecutionStatus>;
   executionId?: string | Array<string>;
   sortBy?: 'startTime' | 'endTime';
   order?: 'ascending' | 'descending';
 }
 
 export interface UpdateTransitionExecution {
-  status: 'succeeded' | 'failed' | 'retry' | 'rejected';
+  status: Exclude<TransitionExecutionStatus, 'running'>;
   output?: Record<any, any>;
   error?: { message: string };
   startTime?: string;
@@ -113,17 +126,6 @@ export type Transition = {
 export type TransitionList = {
   transitions: Array<Transition>;
   nextToken: string | null;
-};
-
-export type TransitionExecution = {
-  executionId: string;
-  transitionId: string;
-  input: Record<any, any>;
-  status: 'succeeded' | 'failed' | 'retry' | 'running' | 'rejected';
-  completedBy: string | null;
-  startTime: string | null;
-  endTime: string | null;
-  logId: string | null;
 };
 
 export type WorkflowSpecification = {
