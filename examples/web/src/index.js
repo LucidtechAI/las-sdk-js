@@ -48,7 +48,6 @@ function getCodeFromUrl() {
 
 function createCredentials() {
   const apiEndpoint = '<apiEndpoint>';
-  const apiKey = '<apiKey>';
   const clientId = '<clientId>';
   const authEndpoint = '<authEndpoint>';
   const redirectUri = '<redirectUri>';
@@ -56,7 +55,7 @@ function createCredentials() {
 
   const code = getCodeFromUrl();
   const pkce = PKCEDerived.createFromCode(code);
-  return new AuthorizationCodeCredentials(apiEndpoint, apiKey, clientId, authEndpoint, redirectUri, launchUri, pkce);
+  return new AuthorizationCodeCredentials(apiEndpoint, clientId, authEndpoint, redirectUri, launchUri, pkce);
 }
 
 

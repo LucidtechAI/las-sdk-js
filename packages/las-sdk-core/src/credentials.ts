@@ -6,9 +6,7 @@ import { TokenStorage } from './storage';
  */
 export class Token {
   readonly accessToken: string;
-
   readonly expiration: number;
-
   readonly refreshToken?: string;
 
   /**
@@ -36,15 +34,11 @@ export class Token {
 export abstract class Credentials {
   readonly apiEndpoint: string;
 
-  readonly apiKey: string;
-
   protected token?: Token;
-
   protected storage?: TokenStorage<Token>;
 
-  protected constructor(apiEndpoint: string, apiKey: string, storage?: TokenStorage<Token>) {
+  protected constructor(apiEndpoint: string, storage?: TokenStorage<Token>) {
     this.apiEndpoint = apiEndpoint;
-    this.apiKey = apiKey;
     this.storage = storage;
   }
 

@@ -12,12 +12,11 @@ export class TestCredentials extends Credentials {
 
   constructor(
     testEndpoint: string,
-    testApiKey: string,
     testAccessToken: string,
     testExpiresInSeconds: number,
     testRefreshToken: string,
   ) {
-    super(testEndpoint, testApiKey);
+    super(testEndpoint);
 
     this.testAccessToken = testAccessToken;
     this.testExpiration = Date.now() + 1000 * testExpiresInSeconds;
@@ -37,10 +36,9 @@ export function sleep(seconds: number) {
 }
 
 export function getTestClient() {
-  const testApiKey = 'testApiKey';
   const testAccessToken = 'testAccessToken';
   const testExpiresInSeconds = 3600;
   const testRefreshToken = 'testRefreshToken';
-  const credentials = new TestCredentials(endpoint, testApiKey, testAccessToken, testExpiresInSeconds, testRefreshToken);
+  const credentials = new TestCredentials(endpoint, testAccessToken, testExpiresInSeconds, testRefreshToken);
   return new Client(credentials);
 }

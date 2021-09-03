@@ -1015,7 +1015,6 @@ describe('AppClients', () => {
       ],
     ])('input: %o', async (options) => {
       const createAppClientPromise = client.createAppClient(options);
-      await expect(createAppClientPromise).resolves.toHaveProperty('apiKey');
       await expect(createAppClientPromise).resolves.toHaveProperty('appClientId');
       await expect(createAppClientPromise).resolves.toHaveProperty('callbackUrls');
       await expect(createAppClientPromise).resolves.toHaveProperty('clientId');
@@ -1039,7 +1038,6 @@ describe('AppClients', () => {
       const name = 'My app client name';
       const options = { description, name, defaultLoginUrl, loginUrls };
       const updateAppClientPromise = client.updateAppClient(appClientId, options);
-      await expect(updateAppClientPromise).resolves.toHaveProperty('apiKey');
       await expect(updateAppClientPromise).resolves.toHaveProperty('appClientId');
       await expect(updateAppClientPromise).resolves.toHaveProperty('callbackUrls');
       await expect(updateAppClientPromise).resolves.toHaveProperty('clientId');
@@ -1058,7 +1056,6 @@ describe('AppClients', () => {
     test('valid request', async () => {
       const appClientId = createAppClientId();
       const deleteAppClientPromise = client.deleteAppClient(appClientId);
-      await expect(deleteAppClientPromise).resolves.toHaveProperty('apiKey');
       await expect(deleteAppClientPromise).resolves.toHaveProperty('appClientId');
       await expect(deleteAppClientPromise).resolves.toHaveProperty('callbackUrls');
       await expect(deleteAppClientPromise).resolves.toHaveProperty('clientId');
