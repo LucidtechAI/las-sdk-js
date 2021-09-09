@@ -459,6 +459,7 @@ export type AppClient = {
   loginUrls: Array<string> | null;
   defaultLoginUrl: string | null;
   name: string | null;
+  updatedTime: string | null;
 };
 
 export type AppClientList = {
