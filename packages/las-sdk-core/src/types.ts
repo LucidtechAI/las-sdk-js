@@ -340,8 +340,9 @@ export type User = {
 };
 
 export type CreateUserOptions = {
-  name?: string | null;
-  avatar?: string | null;
+  name?: string;
+  avatar?: string;
+  appClientId?: string;
 }
 
 export type UpdateUserOptions = {
