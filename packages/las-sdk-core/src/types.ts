@@ -342,6 +342,7 @@ export type User = {
 export type CreateUserOptions = {
   name?: string | null;
   avatar?: string | null;
+  appClientId?: string;
 }
 
 export type UpdateUserOptions = {
