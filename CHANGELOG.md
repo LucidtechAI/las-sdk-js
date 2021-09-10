@@ -3,6 +3,7 @@
 ## Version 5.0.2 - 2021-09-10
 
 - Add optional appClientId parameter to CreateUserOptions for createUser
+
 ## Version 5.0.1 - 2021-09-10
 
 - Fix broken build
