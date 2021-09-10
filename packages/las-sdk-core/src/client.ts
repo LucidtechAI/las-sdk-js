@@ -1036,7 +1036,6 @@ export class Client {
   private async getAuthorizationHeaders(): Promise<AuthorizationHeaders> {
     const accessToken = await this.credentials.getAccessToken();
     return {
-      'X-Api-Key': this.credentials.apiKey,
       Authorization: `Bearer ${accessToken}`,
     };
   }

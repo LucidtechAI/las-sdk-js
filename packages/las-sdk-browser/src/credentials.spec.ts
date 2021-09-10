@@ -3,12 +3,11 @@ import functions, { AuthorizationCodeCredentials, PKCE, PKCEDerived } from './cr
 
 function getCredentials(testLaunchUri: (arg0: string) => void, pkce?: PKCEDerived) {
   const testApiEndpoint = 'http://localhost:4010';
-  const testApiKey = 'testApiKey';
   const testClientId = 'testClientId';
   const testAuthEndpoint = 'http://localhost:4010';
   const testRedirectUri = 'testRedirectUri';
 
-  return new AuthorizationCodeCredentials(testApiEndpoint, testApiKey, testClientId, testAuthEndpoint, testRedirectUri, testLaunchUri, pkce);
+  return new AuthorizationCodeCredentials(testApiEndpoint, testClientId, testAuthEndpoint, testRedirectUri, testLaunchUri, pkce);
 }
 
 test('Testing randomString', () => {

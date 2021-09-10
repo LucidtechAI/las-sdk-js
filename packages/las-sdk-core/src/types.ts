@@ -449,7 +449,6 @@ export type UpdateAppClientOptions = {
 }
 
 export type AppClient = {
-  apiKey: string;
   appClientId: string;
   callbackUrls: Array<string> | null;
   clientId: string;
@@ -546,7 +545,6 @@ export type Log = {
 }
 
 export type AuthorizationHeaders = {
-  'X-Api-Key': string;
   Authorization: string;
 };
 

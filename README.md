@@ -19,16 +19,15 @@ $ npm install @lucidtech/las-sdk-node
 ```javascript
 import { Client } from '@lucidtech/las-sdk-core';
 import { ClientCredentials } from '@lucidtech/las-sdk-node';
+import { readFile } from 'fs/promises'
 
-const credentials = new ClientCredentials('<apiEndpoint>', '<apiKey>', '<clientId>',  '<clientSecret>', '<authEndpoint>');
+
+const fileBuffer = await readFile('...path/file.jpg')
+
+const credentials = new ClientCredentials('<apiEndpoint>', '<clientId>',  '<clientSecret>', '<authEndpoint>');
 const client = new Client(credentials);
 
-const content = '<read image content>'
-client.createDocument(content, 'image/jpeg').then(documentResponse => {
-    console.log(documentResponse);
-}).catch(error => {
-    console.log(error);
-})
+const documentResponse = await client.createDocument(fileBuffer, 'image/jpeg');
 ```
 
 ## Contributing

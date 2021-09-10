@@ -18,15 +18,11 @@ export default utils;
 
 export class PKCE {
     static readonly CODE_CHALLENGE_ALPHABET: string = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789._~-';
-
     static readonly CODE_CHALLENGE_LENGTH: number = 64;
-
     static readonly VERIFIER_KEY: string = 'pkceVerifier';
-
     static readonly CHALLENGE_KEY: string = 'pkceChallenge';
 
     readonly verifier: string;
-
     readonly challenge: string;
 
     constructor(verifier?: string, challenge?: string) {
@@ -72,24 +68,17 @@ export class PKCEDerived extends PKCE {
 
 export class AuthorizationCodeCredentials extends Credentials {
     private readonly clientId: string;
-
     private readonly authEndpoint: string;
-
     private readonly redirectUri: string;
-
     private readonly logoutRedirectUri?: string;
-
     private readonly launchUriFn: (uri: string) => void;
-
     private readonly pkce?: PKCEDerived;
 
     protected readonly storage?: TokenStorage<Token>;
-
     protected token?: Token;
 
     constructor(
       apiEndpoint: string,
-      apiKey: string,
       clientId: string,
       authEndpoint: string,
       redirectUri: string,
@@ -98,7 +87,7 @@ export class AuthorizationCodeCredentials extends Credentials {
       storage?: TokenStorage<Token>,
       logoutRedirectUri?: string,
     ) {
-      super(apiEndpoint, apiKey, storage);
+      super(apiEndpoint, storage);
 
       this.clientId = clientId;
       this.authEndpoint = authEndpoint;

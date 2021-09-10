@@ -4,15 +4,13 @@ import { Credentials, Token, TokenStorage } from '@lucidtech/las-sdk-core';
 
 export class ClientCredentials extends Credentials {
     private readonly clientId: string;
-
     private readonly clientSecret: string;
-
     private readonly authEndpoint: string;
 
     protected readonly storage?: TokenStorage<Token>;
 
-    constructor(apiEndpoint: string, apiKey: string, clientId: string, clientSecret: string, authEndpoint: string, storage?: TokenStorage<Token>) {
-      super(apiEndpoint, apiKey, storage);
+    constructor(apiEndpoint: string, clientId: string, clientSecret: string, authEndpoint: string, storage?: TokenStorage<Token>) {
+      super(apiEndpoint, storage);
 
       this.clientId = clientId;
       this.clientSecret = clientSecret;
