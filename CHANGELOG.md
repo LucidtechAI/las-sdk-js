@@ -1,5 +1,15 @@
 # Changelog 
 
+## Version 5.0.1 - 2021-09-10
+
+- Fix broken build
+
+## Version 5.0.0 - 2021-09-10
+
+- BREAKING: Removed the need for apiKey
+- Updated listTransitionExecution to accept array as status input
+- Added updatedTime to AppClient type
+
 ## Version 4.5.0 - 2021-08-10
 
 - Added getDataset
