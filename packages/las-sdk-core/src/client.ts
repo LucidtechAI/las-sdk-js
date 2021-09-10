@@ -827,6 +827,8 @@ export class Client {
    * @param email Email to the new user
    * @param data.name Name of the user
    * @param data.avatar base64 encoded JPEG avatar of the user
+   * @param data.appClientId Id of appClient issuing the invite. Defaults to the current
+   * appClientId of the user or appClient issuing the invite
    * @returns User response from REST API
    */
   async createUser(email: string, data?: CreateUserOptions): Promise<User> {
