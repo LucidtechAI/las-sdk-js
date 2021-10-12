@@ -27,6 +27,7 @@ export type LasDocument = {
 };
 
 export type LasDocumentWithoutContent = Omit<LasDocument, 'content'>;
+
 export interface CreateDocumentOptions {
   batchId?: string;
   consentId?: string;
