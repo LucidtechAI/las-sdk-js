@@ -492,7 +492,7 @@ export type PreprocessConfig = {
 export type Field = {
   description: string;
   maxLength: number;
-  type: 'all' | 'alphanum' | 'alphanumext' | 'amount' | 'date' | 'letter' | 'number' | 'phone';
+  type: 'all' | 'alphanum' | 'alphanumext' | 'amount' | 'date' | 'letter' | 'number' | 'phone' | 'string' | 'digits';
 }
 
 export type FieldConfig = Record<string, Field>;
