@@ -6,6 +6,7 @@
 - Add optional retentionInDays parameter to UpdateDocumentOptions for updateDocument
 - Add retentionInDays, createdBy, updatedBy, createdTime, updatedTime to LasDocument type
 - Add groundTruthSummary to Dataset type
+- Add 'string' and 'digits' to Field type 
 
 ## Version 5.0.2 - 2021-09-10
 
