@@ -1,6 +1,6 @@
 # Changelog 
 
-## Version 5.1.2 - 2021-10-12
+## Version 5.1.0 - 2021-10-12
 
 - Add optional retentionInDays parameter to CreateDocumentOptions for createDocument
 - Add optional retentionInDays parameter to UpdateDocumentOptions for updateDocument
