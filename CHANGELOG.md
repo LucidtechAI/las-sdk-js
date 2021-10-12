@@ -1,5 +1,12 @@
 # Changelog 
 
+## Version 5.1.2 - 2021-10-12
+
+- Add optional retentionInDays parameter to CreateDocumentOptions for createDocument
+- Add optional retentionInDays parameter to UpdateDocumentOptions for updateDocument
+- Add retentionInDays, createdBy, updatedBy, createdTime, updatedTime to LasDocument type
+- Add groundTruthSummary to Dataset type
+
 ## Version 5.0.2 - 2021-09-10
 
 - Add optional appClientId parameter to CreateUserOptions for createUser
