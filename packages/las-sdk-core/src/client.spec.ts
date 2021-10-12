@@ -176,6 +176,11 @@ describe('Documents', () => {
       await expect(getDocumentPromise).resolves.toHaveProperty('consentId');
       await expect(getDocumentPromise).resolves.toHaveProperty('documentId');
       await expect(getDocumentPromise).resolves.toHaveProperty('contentType');
+      await expect(getDocumentPromise).resolves.toHaveProperty('createdTime');
+      await expect(getDocumentPromise).resolves.toHaveProperty('updatedTime');
+      await expect(getDocumentPromise).resolves.toHaveProperty('createdBy');
+      await expect(getDocumentPromise).resolves.toHaveProperty('updatedBy');
+      await expect(getDocumentPromise).resolves.toHaveProperty('retentionInDays');
     });
   });
 
@@ -183,7 +188,7 @@ describe('Documents', () => {
     test('valid request', async () => {
       const documentId = createDocumentId();
       const groundTruth = [{ label: 'test', value: 'test' }];
-      const updateDocumentPromise = client.updateDocument(documentId, { groundTruth });
+      const updateDocumentPromise = client.updateDocument(documentId, { groundTruth, retentionInDays: 500 });
       await expect(updateDocumentPromise).resolves.toHaveProperty('consentId');
       await expect(updateDocumentPromise).resolves.toHaveProperty('documentId');
       await expect(updateDocumentPromise).resolves.toHaveProperty('contentType');
@@ -701,6 +706,7 @@ describe('Datasets', () => {
       await expect(getDatasetPromise).resolves.toHaveProperty('storageLocation');
       await expect(getDatasetPromise).resolves.toHaveProperty('updatedTime');
       await expect(getDatasetPromise).resolves.toHaveProperty('version');
+      await expect(getDatasetPromise).resolves.toHaveProperty('groundTruthSummary');
     });
   });
 

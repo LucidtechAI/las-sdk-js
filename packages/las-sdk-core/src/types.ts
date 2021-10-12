@@ -4,6 +4,61 @@ import { AxiosRequestConfig, AxiosResponse } from 'axios';
 
 export type ContentType = 'application/pdf' | 'image/jpeg' | 'image/png' | 'image/tiff';
 
+export type GroundTruth = {
+  /** maxLength: 36, minLength: 1, pattern: ^[0-9A-Za-z_]+$ */
+  label: string;
+  /** maxLength: 64, minLength: 1 */
+  value: string | boolean | null;
+};
+
+export type LasDocument = {
+  batchId?: string;
+  consentId?: string;
+  content: string;
+  contentType: ContentType;
+  datasetId?: string;
+  documentId: string;
+  groundTruth?: Array<GroundTruth>;
+  retentionInDays: number;
+  createdTime: string | null;
+  updatedTime: string | null;
+  createdBy: string | null;
+  updatedBy: string | null;
+};
+
+export type LasDocumentWithoutContent = Omit<LasDocument, 'content'>;
+
+export interface CreateDocumentOptions {
+  batchId?: string;
+  consentId?: string;
+  datasetId?: string;
+  groundTruth?: Array<GroundTruth>;
+  retentionInDays?: number;
+}
+
+export interface UpdateDocumentOptions {
+  groundTruth?: Array<GroundTruth>;
+  retentionInDays?: number;
+}
+
+export type DeleteDocumentOptions = PaginationOptions & {
+  batchId?: string | Array<string>;
+  consentId?: string | Array<string>;
+  datasetId?: string | Array<string>;
+}
+
+export type ListDocumentsOptions = PaginationOptions & {
+  batchId?: string | Array<string>;
+  consentId?: string | Array<string>;
+  datasetId?: string | Array<string>;
+}
+
+export type LasDocumentList = {
+  documents: Array<LasDocumentWithoutContent>;
+  batchId?: string;
+  nextToken: string | null;
+};
+
 export interface CreatePredictionsOptions {
   maxPages?: number;
   autoRotate?: boolean;
@@ -17,23 +72,6 @@ export interface PaginationOptions {
 
 export type ListTransitionOptions = PaginationOptions & {
   transitionType?: string | Array<string>;
-}
-
-export interface CreateDocumentOptions {
-  batchId?: string;
-  consentId?: string;
-  datasetId?: string;
-  groundTruth?: Array<GroundTruth>;
-}
-
-export interface UpdateDocumentOptions {
-  groundTruth?: Array<GroundTruth>;
-}
-
-export type ListDocumentsOptions = PaginationOptions & {
-  batchId?: string | Array<string>;
-  consentId?: string | Array<string>;
-  datasetId?: string | Array<string>;
 }
 
 export type TransitionExecutionStatus = 'succeeded' | 'failed' | 'retry' | 'running' | 'rejected';
@@ -76,12 +114,6 @@ export interface CreateTransitionOptions {
   description?: string | null;
   parameters?: CreateTransitionParams;
 }
-
-export type LasDocumentList = {
-  documents: Array<LasDocumentWithoutContent>;
-  batchId?: string;
-  nextToken: string | null;
-};
 
 export type CreateTransitionDockerParams = {
   environment?: object;
@@ -204,19 +236,6 @@ export type WorkflowExecutionList = {
   nextToken: string | null;
 };
 
-export type GroundTruth = {
-  /** maxLength: 36, minLength: 1, pattern: ^[0-9A-Za-z_]+$ */
-  label: string;
-  /** maxLength: 64, minLength: 1 */
-  value: string | boolean | null;
-};
-
-export type DeleteDocumentOptions = PaginationOptions & {
-  batchId?: string | Array<string>;
-  consentId?: string | Array<string>;
-  datasetId?: string | Array<string>;
-}
-
 export type PostPredictions = CreatePredictionsOptions & {
   documentId: string;
   modelId: string;
@@ -277,6 +296,7 @@ export type Dataset = {
   createdTime: string;
   datasetId: string;
   description: string;
+  groundTruthSummary: Record<string, number>;
   name: string;
   numberOfDocuments: number;
   retentionInDays: number;
@@ -380,18 +400,6 @@ export interface UpdateSecretOptions {
   name?: string | null;
 }
 
-export type LasDocumentWithoutContent = Omit<LasDocument, 'content'>;
-
-export type LasDocument = {
-  batchId?: string;
-  consentId?: string;
-  content: string;
-  contentType: ContentType;
-  datasetId?: string;
-  documentId: string;
-  groundTruth?: Array<GroundTruth>;
-};
-
 export type UpdateOrganizationOptions = {
   description?: string;
   name?: string;
@@ -492,7 +500,7 @@ export type PreprocessConfig = {
 export type Field = {
   description: string;
   maxLength: number;
-  type: 'all' | 'alphanum' | 'alphanumext' | 'amount' | 'date' | 'letter' | 'number' | 'phone';
+  type: 'all' | 'alphanum' | 'alphanumext' | 'amount' | 'date' | 'letter' | 'number' | 'phone' | 'string' | 'digits';
 }
 
 export type FieldConfig = Record<string, Field>;
