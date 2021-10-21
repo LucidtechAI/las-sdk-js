@@ -1,5 +1,9 @@
 # Changelog 
 
+## Version 5.1.1 - 2021-10-21
+
+- Add missing type fields for AppClient, DataBundle, Dataset, Model, and User
+
 ## Version 5.1.0 - 2021-10-12
 
 - Add optional retentionInDays parameter to CreateDocumentOptions for createDocument
