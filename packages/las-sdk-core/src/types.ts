@@ -293,6 +293,7 @@ export type ListBatchesOptions = PaginationOptions;
 
 export type Dataset = {
   containsPersonallyIdentifiableInformation: boolean;
+  createdBy: string | null;
   createdTime: string;
   datasetId: string;
   description: string;
@@ -301,6 +302,7 @@ export type Dataset = {
   numberOfDocuments: number;
   retentionInDays: number;
   storageLocation: 'EU';
+  updatedBy: string | null;
   updatedTime: string;
   version: number;
 };
@@ -324,14 +326,16 @@ export type DatasetList = {
 export type ListDatasetsOptions = PaginationOptions;
 
 export type DataBundle = {
+  createdBy: string | null;
   createdTime: string;
   dataBundleId: string;
   datasets: Array<Dataset>;
-  description: string;
+  description: string | null;
   modelId: string;
-  name: string;
+  name: string | null;
   status: 'ready' | 'processing' | 'failed';
   summary: Record<string, any>;
+  updatedBy: string | null;
   updatedTime: string;
 };
 
@@ -353,10 +357,14 @@ export type DataBundleList = {
 export type ListDataBundleOptions = PaginationOptions;
 
 export type User = {
-  userId: string;
-  email: string;
   avatar: string | null;
+  createdBy: string | null;
+  createdTime: string | null;
+  email: string;
   name: string | null;
+  updatedBy: string | null;
+  updatedTime: string | null;
+  userId: string;
 };
 
 export type CreateUserOptions = {
@@ -462,13 +470,15 @@ export type AppClient = {
   callbackUrls: Array<string> | null;
   clientId: string;
   clientSecret?: string;
+  createdBy: string | null;
   createdTime: string | null;
+  defaultLoginUrl: string | null;
   description: string | null;
   hasSecret: boolean;
-  logoutUrls: Array<string> | null;
   loginUrls: Array<string> | null;
-  defaultLoginUrl: string | null;
+  logoutUrls: Array<string> | null;
   name: string | null;
+  updatedBy: string | null;
   updatedTime: string | null;
 };
 
@@ -522,6 +532,7 @@ export type UpdateModelOptions = {
 }
 
 export type Model = {
+  createdBy: string | null;
   createdTime: string | null;
   description: string | null;
   fieldConfig: FieldConfig | null;
@@ -530,6 +541,7 @@ export type Model = {
   name: string | null;
   preprocessConfig: PreprocessConfig;
   status: 'active' | 'inactive' | 'training';
+  updatedBy: string | null;
   updatedTime: string | null;
   width: number;
 }
