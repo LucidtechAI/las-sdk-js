@@ -1,5 +1,9 @@
 # Changelog 
 
+## Version 5.1.2 - 2021-10-25
+
+- Add documentRetentionInDays field to Organization type
+
 ## Version 5.1.1 - 2021-10-21
 
 - Add missing type fields for AppClient, DataBundle, Dataset, Model, and User
