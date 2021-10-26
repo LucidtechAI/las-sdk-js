@@ -3,5 +3,7 @@
   "exclude": ["**/*+(spec|test|helpers|utils).ts"],
   "excludePrivate": true,
   "excludeProtected": true,
+  "hideBreadcrumbs": true,
+  "hideInPageTOC": true,
   "out": "temp-docs"
 }
