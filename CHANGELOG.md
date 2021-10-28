@@ -1,6 +1,6 @@
 # Changelog 
 
-## Version 5.1.2 - 2021-10-25
+## Version 5.1.2 - 2021-10-28
 
 - Add documentRetentionInDays field to Organization type
 
