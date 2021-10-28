@@ -415,6 +415,7 @@ export type UpdateOrganizationOptions = {
 
 export type Organization = {
   description: string | null;
+  documentRetentionInDays: number;
   monthlyNumberOfDataBundlesAllowed: number;
   monthlyNumberOfDataBundlesCreated: number;
   monthlyNumberOfDocumentsAllowed: number;
