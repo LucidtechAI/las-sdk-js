@@ -311,6 +311,7 @@ export type CreateDatasetOptions = {
   name?: string;
   description?: string;
   containsPersonallyIdentifiableInformation?: boolean;
+  retentionInDays?: number;
 }
 
 export type UpdateDatasetOptions = {

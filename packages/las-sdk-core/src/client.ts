@@ -637,6 +637,7 @@ export class Client {
    *
    * @param options.name Name of the dataset
    * @param options.description Description of the dataset
+   * @param options.retentionInDays Maximum retention for documents in the dataset
    * @returns Dataset response from REST API
    */
   async createDataset(options: CreateDatasetOptions): Promise<Dataset> {
