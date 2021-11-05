@@ -59,10 +59,25 @@ export type LasDocumentList = {
   nextToken: string | null;
 };
 
+export type BestFirst = {
+  strategy: 'BEST_FIRST';
+}
+
+export type BestNPages = {
+  strategy: 'BEST_N_PAGES';
+  parameters: {
+    n: 1 | 2 | 3;
+    collapse?: boolean;
+  }
+}
+
+export type PostprocessConfig = BestFirst | BestNPages;
+
 export interface CreatePredictionsOptions {
   maxPages?: number;
   autoRotate?: boolean;
   imageQuality?: 'LOW' | 'HIGH';
+  postprocessConfig?: PostprocessConfig;
 }
 
 export interface PaginationOptions {

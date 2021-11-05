@@ -1,5 +1,9 @@
 # Changelog 
 
+## Version 5.1.4 - 2021-11-05
+
+- Add postprocessConfig field to CreatePredictionsOptions type
+
 ## Version 5.1.3 - 2021-11-04
 
 - Add retentionInDays field to CreateDatasetOptions type

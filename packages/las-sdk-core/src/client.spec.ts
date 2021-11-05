@@ -620,6 +620,12 @@ describe('Predictions', () => {
         autoRotate: true,
         imageQuality: 'HIGH',
         maxPages: 2,
+        postprocessConfig: {
+          strategy: 'BEST_N_PAGES',
+          parameters: {
+            n: 2
+          }
+        }
       });
       await expect(createPredictionPromise).resolves.toHaveProperty('documentId');
       await expect(createPredictionPromise).resolves.toHaveProperty('predictions');
