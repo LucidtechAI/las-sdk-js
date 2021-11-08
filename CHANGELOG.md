@@ -1,5 +1,10 @@
 # Changelog 
 
+## Version 6.0.0 - 2021-11-08
+
+- Add postprocessConfig field to CreatePredictionsOptions type
+- Remove deprecated methods createBatch, updateBatch, listBatches, deleteBatch
+
 ## Version 5.1.3 - 2021-11-04
 
 - Add retentionInDays field to CreateDatasetOptions type
