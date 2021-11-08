@@ -12,7 +12,6 @@ export type GroundTruth = {
 };
 
 export type LasDocument = {
-  batchId?: string;
   consentId?: string;
   content: string;
   contentType: ContentType;
@@ -29,7 +28,6 @@ export type LasDocument = {
 export type LasDocumentWithoutContent = Omit<LasDocument, 'content'>;
 
 export interface CreateDocumentOptions {
-  batchId?: string;
   consentId?: string;
   datasetId?: string;
   groundTruth?: Array<GroundTruth>;
@@ -42,20 +40,17 @@ export interface UpdateDocumentOptions {
 }
 
 export type DeleteDocumentOptions = PaginationOptions & {
-  batchId?: string | Array<string>;
   consentId?: string | Array<string>;
   datasetId?: string | Array<string>;
 }
 
 export type ListDocumentsOptions = PaginationOptions & {
-  batchId?: string | Array<string>;
   consentId?: string | Array<string>;
   datasetId?: string | Array<string>;
 }
 
 export type LasDocumentList = {
   documents: Array<LasDocumentWithoutContent>;
-  batchId?: string;
   nextToken: string | null;
 };
 
@@ -277,35 +272,6 @@ export type PredictionList = {
   nextToken: string | null;
 }
 
-export type Batch = {
-  batchId: string;
-  containsPersonallyIdentifiableInformation: boolean;
-  createdTime: string;
-  description: string;
-  name: string;
-  numDocuments: number;
-  retentionInDays: number;
-  storageLocation: 'EU';
-};
-
-export type CreateBatchOptions = {
-  name?: string;
-  description?: string;
-  containsPersonallyIdentifiableInformation?: boolean;
-}
-
-export type UpdateBatchOptions = {
-  description?: string;
-  name?: string;
-}
-
-export type BatchList = {
-  batches: Array<Batch>;
-  nextToken: string | null;
-};
-
-export type ListBatchesOptions = PaginationOptions;
-
 export type Dataset = {
   containsPersonallyIdentifiableInformation: boolean;
   createdBy: string | null;
@@ -448,8 +414,6 @@ export type Organization = {
   numberOfAppClientsCreated: number;
   numberOfAssetsAllowed: number;
   numberOfAssetsCreated: number;
-  numberOfBatchesAllowed: number;
-  numberOfBatchesCreated: number;
   numberOfDatasetsAllowed: number;
   numberOfDatasetsCreated: number;
   numberOfModelsAllowed: number;

@@ -9,11 +9,8 @@ import {
   AssetList,
   AuthorizationHeaders,
   AxiosFn,
-  Batch,
-  BatchList,
   ContentType,
   CreateAppClientOptions,
-  CreateBatchOptions,
   CreateDataBundleOptions,
   CreateDatasetOptions,
   CreateDocumentOptions,
@@ -34,7 +31,6 @@ import {
   LasDocumentWithoutContent,
   ListAppClientsOptions,
   ListAssetsOptions,
-  ListBatchesOptions,
   ListDataBundleOptions,
   ListDatasetsOptions,
   ListDocumentsOptions,
@@ -62,7 +58,6 @@ import {
   TransitionType,
   UpdateAppClientOptions,
   UpdateAssetOptions,
-  UpdateBatchOptions,
   UpdateDataBundleOptions,
   UpdateDatasetOptions,
   UpdateDocumentOptions,
@@ -169,7 +164,6 @@ export class Client {
    * @param content Content to POST (base64 string | Buffer)
    * @param contentType MIME type for the document
    * @param options.consentId Id of the consent that marks the owner of the document
-   * @param options.batchId Id of the associated batch
    * @param options.groundTruth List of GroundTruth items representing the ground truth values for the document
    * @returns Document response from REST API
    */
@@ -204,7 +198,6 @@ export class Client {
   /**
    * List documents available for inference, calls the GET /documents endpoint.
    *
-   * @param options.batchId Ids of the batches that contains the documents of interest
    * @param options.consentId Ids of the consents that marks the owner of the document
    * @param options.maxResults Maximum number of results to be returned
    * @param options.nextToken A unique token for each page, use the returned token to retrieve the next page.

@@ -25,7 +25,6 @@ let client = getTestClient();
 const uuidWithoutDashes = () => uuidv4().replace(/-/g, '');
 const createAppClientId = () => `las:app-client:${uuidWithoutDashes()}`;
 const createAssetId = () => `las:asset:${uuidWithoutDashes()}`;
-const createBatchId = () => `las:batch:${uuidWithoutDashes()}`;
 const createConsentId = () => `las:consent:${uuidWithoutDashes()}`;
 const createDataBundleId = () => `las:model-data-bundle:${uuidWithoutDashes()}`;
 const createDatasetId = () => `las:dataset:${uuidWithoutDashes()}`;
@@ -62,8 +61,6 @@ describe('Organizations', () => {
       await expect(getOrganizationPromise).resolves.toHaveProperty('numberOfAppClientsCreated');
       await expect(getOrganizationPromise).resolves.toHaveProperty('numberOfAssetsAllowed');
       await expect(getOrganizationPromise).resolves.toHaveProperty('numberOfAssetsCreated');
-      await expect(getOrganizationPromise).resolves.toHaveProperty('numberOfBatchesAllowed');
-      await expect(getOrganizationPromise).resolves.toHaveProperty('numberOfBatchesCreated');
       await expect(getOrganizationPromise).resolves.toHaveProperty('numberOfModelsAllowed');
       await expect(getOrganizationPromise).resolves.toHaveProperty('numberOfModelsCreated');
       await expect(getOrganizationPromise).resolves.toHaveProperty('numberOfSecretsAllowed');
@@ -100,8 +97,6 @@ describe('Organizations', () => {
       await expect(updateOrganizationPromise).resolves.toHaveProperty('numberOfAppClientsCreated');
       await expect(updateOrganizationPromise).resolves.toHaveProperty('numberOfAssetsAllowed');
       await expect(updateOrganizationPromise).resolves.toHaveProperty('numberOfAssetsCreated');
-      await expect(updateOrganizationPromise).resolves.toHaveProperty('numberOfBatchesAllowed');
-      await expect(updateOrganizationPromise).resolves.toHaveProperty('numberOfBatchesCreated');
       await expect(updateOrganizationPromise).resolves.toHaveProperty('numberOfModelsAllowed');
       await expect(updateOrganizationPromise).resolves.toHaveProperty('numberOfModelsCreated');
       await expect(updateOrganizationPromise).resolves.toHaveProperty('numberOfSecretsAllowed');
@@ -123,14 +118,11 @@ describe('Documents', () => {
       const content = uuidv4();
       const contentType = 'image/jpeg';
       const consentId = createConsentId();
-      const batchId = createBatchId();
       const datasetId = createDatasetId();
       const createDocumentPromise = client.createDocument(content, contentType, {
-        batchId,
         consentId,
         datasetId,
       });
-      await expect(createDocumentPromise).resolves.toHaveProperty('batchId');
       await expect(createDocumentPromise).resolves.toHaveProperty('consentId');
       await expect(createDocumentPromise).resolves.toHaveProperty('contentType');
       await expect(createDocumentPromise).resolves.toHaveProperty('datasetId');
@@ -205,12 +197,6 @@ describe('Documents', () => {
   });
 
   describe('deleteDocuments', () => {
-    test('with batchId', async () => {
-      const batchId = createBatchId();
-      const deleteDocumentsPromise = client.deleteDocuments({ batchId });
-      await expect(deleteDocumentsPromise).resolves.toHaveProperty('documents');
-    });
-
     test('with consentId', async () => {
       const consentId = createConsentId();
       const deleteDocumentsPromise = client.deleteDocuments({ consentId });
@@ -232,7 +218,6 @@ describe('Documents', () => {
 
   describe('listDocuments', () => {
     test.each<[ListDocumentsOptions]>([
-      [{ batchId: createBatchId() }],
       [{ consentId: createConsentId() }],
       [{ datasetId: createDatasetId() }],
     ])('parameters: %s', async (options) => {
@@ -797,82 +782,6 @@ describe('Datasets', () => {
       const nextToken = uuidv4();
       const listDatasetsPromise = client.listDatasets({ maxResults, nextToken });
       await expect(listDatasetsPromise).resolves.toHaveProperty('nextToken');
-    });
-  });
-});
-
-describe('Batches', () => {
-  describe('createBatch', () => {
-    test('valid request', async () => {
-      const description = 'I am going to create a new batch, give me a batch ID!';
-      const name = 'my batch name';
-      const containsPersonallyIdentifiableInformation = false;
-      const options = { description, name, containsPersonallyIdentifiableInformation };
-      const createBatchPromise = client.createBatch(options);
-      await expect(createBatchPromise).resolves.toHaveProperty('batchId');
-      await expect(createBatchPromise).resolves.toHaveProperty('containsPersonallyIdentifiableInformation');
-      await expect(createBatchPromise).resolves.toHaveProperty('createdTime');
-      await expect(createBatchPromise).resolves.toHaveProperty('description');
-      await expect(createBatchPromise).resolves.toHaveProperty('numDocuments');
-      await expect(createBatchPromise).resolves.toHaveProperty('retentionInDays');
-      await expect(createBatchPromise).resolves.toHaveProperty('storageLocation');
-    });
-  });
-
-  describe('updateBatch', () => {
-    test('valid request', async () => {
-      const batchId = createBatchId();
-      const description = 'I am going to create a new batch, give me a batch ID!';
-      const name = 'my batch name';
-      const options = { description, name };
-      const updateBatchPromise = client.updateBatch(batchId, options);
-      await expect(updateBatchPromise).resolves.toHaveProperty('batchId');
-      await expect(updateBatchPromise).resolves.toHaveProperty('containsPersonallyIdentifiableInformation');
-      await expect(updateBatchPromise).resolves.toHaveProperty('createdTime');
-      await expect(updateBatchPromise).resolves.toHaveProperty('description');
-      await expect(updateBatchPromise).resolves.toHaveProperty('numDocuments');
-      await expect(updateBatchPromise).resolves.toHaveProperty('retentionInDays');
-      await expect(updateBatchPromise).resolves.toHaveProperty('storageLocation');
-    });
-  });
-
-  describe('deleteBatch', () => {
-    test('valid request', async () => {
-      const batchId = createBatchId();
-      const deleteBatchPromise = client.deleteBatch(batchId);
-      await expect(deleteBatchPromise).resolves.toHaveProperty('batchId');
-      await expect(deleteBatchPromise).resolves.toHaveProperty('containsPersonallyIdentifiableInformation');
-      await expect(deleteBatchPromise).resolves.toHaveProperty('createdTime');
-      await expect(deleteBatchPromise).resolves.toHaveProperty('description');
-      await expect(deleteBatchPromise).resolves.toHaveProperty('numDocuments');
-      await expect(deleteBatchPromise).resolves.toHaveProperty('retentionInDays');
-      await expect(deleteBatchPromise).resolves.toHaveProperty('storageLocation');
-    });
-
-    test('with documents', async () => {
-      const batchId = createBatchId();
-      const deleteBatchPromise = client.deleteBatch(batchId, true);
-      await expect(deleteBatchPromise).resolves.toHaveProperty('batchId');
-      await expect(deleteBatchPromise).resolves.toHaveProperty('containsPersonallyIdentifiableInformation');
-      await expect(deleteBatchPromise).resolves.toHaveProperty('createdTime');
-      await expect(deleteBatchPromise).resolves.toHaveProperty('description');
-      await expect(deleteBatchPromise).resolves.toHaveProperty('numDocuments');
-      await expect(deleteBatchPromise).resolves.toHaveProperty('retentionInDays');
-      await expect(deleteBatchPromise).resolves.toHaveProperty('storageLocation');
-    });
-  });
-
-  describe('listBatches', () => {
-    test('valid request', async () => {
-      const listBatchesPromise = client.listBatches();
-      await expect(listBatchesPromise).resolves.toHaveProperty('batches');
-    });
-
-    test('accepts pagination params', async () => {
-      const maxResults = 1;
-      const nextToken = uuidv4();
-      const listBatchesPromise = client.listBatches({ maxResults, nextToken });
-      await expect(listBatchesPromise).resolves.toHaveProperty('nextToken');
     });
   });
 });
