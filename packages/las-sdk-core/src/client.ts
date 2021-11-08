@@ -766,63 +766,6 @@ export class Client {
   }
 
   /**
-   * @deprecated Use the new {@link Client.createDataset} method instead.
-   * Creates a batch, calls the POST /batches endpoint.
-   *
-   * @param options.name Name of the batch
-   * @param options.description Description of the batch
-   * @returns Batch response from REST API
-   */
-  async createBatch(options: CreateBatchOptions): Promise<Batch> {
-    return this.makePostRequest<Batch>('/batches', options);
-  }
-
-  /**
-   * Updates an batch, calls the PATCH /batches/{batchId} endpoint.
-   *
-   * @deprecated Use the new {@link Client.updateDataset} method instead.
-   * @param batchId Id of the batch
-   * @param options.description Description of batch
-   * @param options.name Name of batch
-   * @returns Batch response from REST API with content
-   */
-  async updateBatch(batchId: string, options: UpdateBatchOptions): Promise<Batch> {
-    return this.makePatchRequest(`/batches/${batchId}`, options);
-  }
-
-  /**
-   * List batches, calls the GET /batches endpoint.
-   *
-   * @deprecated Use the new {@link Client.listDatasets} method instead.
-   * @param options.maxResults Maximum number of results to be returned
-   * @param options.nextToken A unique token for each page, use the returned token to retrieve the next page.
-   * @returns BatchList response from REST API
-   */
-  async listBatches(options?: ListBatchesOptions): Promise<BatchList> {
-    return this.makeGetRequest<BatchList>('/batches', options);
-  }
-
-  /**
-   * Deletes a batch, calls the DELETE /batches/{batchId} endpoint.
-   *
-   * @deprecated Use the new {@link Client.deleteDataset} method instead.
-   * @param batchId Id of the batch
-   * @param deleteDocuments Set to true to delete documents in batch before deleting batch
-   * @returns Batch response from REST API
-   */
-  async deleteBatch(batchId: string, deleteDocuments = false): Promise<Batch> {
-    if (deleteDocuments) {
-      let response = await this.deleteDocuments({ batchId });
-      while (response.nextToken) {
-        // eslint-disable-next-line no-await-in-loop
-        response = await this.deleteDocuments({ batchId, nextToken: response.nextToken });
-      }
-    }
-
-    return this.makeDeleteRequest<Batch>(`/batches/${batchId}`);
-  }
-
-  /**
    * Creates a new user, calls the POST /users endpoint.
    *
    * @param email Email to the new user
