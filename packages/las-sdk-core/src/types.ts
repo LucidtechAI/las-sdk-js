@@ -520,6 +520,7 @@ export type Model = {
   height: number;
   modelId: string;
   name: string | null;
+  numberOfDataBundles: number;
   preprocessConfig: PreprocessConfig;
   status: 'active' | 'inactive' | 'training';
   updatedBy: string | null;
