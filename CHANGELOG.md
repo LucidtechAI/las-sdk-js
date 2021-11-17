@@ -1,5 +1,9 @@
 # Changelog 
 
+## Version 6.0.1 - 2021-11-17
+
+- Add numberOfDataBundles to Model type
+
 ## Version 6.0.0 - 2021-11-08
 
 - Add postprocessConfig field to CreatePredictionsOptions type
