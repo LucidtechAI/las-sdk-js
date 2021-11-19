@@ -7,7 +7,7 @@
     "esModuleInterop": true,
     "experimentalDecorators": true
   },
-  "include": ["packages"],
+  "include": ["las-sdk-core", "las-sdk-browser", "las-sdk-node"],
   "exclude": [
     "node_modules",
     "**/*.spec.ts"
