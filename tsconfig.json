@@ -4,7 +4,7 @@
     "baseUrl": ".",
     "noEmit": true,
     "paths": {
-      "las-sdk-*": ["las-sdk-*/src"]
+      "las-sdk-*": ["./packages/las-sdk-*/src"]
     }
   },
   "exclude": ["**/lib"]
