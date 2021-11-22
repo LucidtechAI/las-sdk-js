@@ -1,0 +1,33 @@
+{
+  "name": "@lucidtech/las-sdk-core",
+  "version": "6.0.1",
+  "author": "Lucidtech AS <hello@lucidtech.ai>",
+  "maintainers": [
+    "August André Kvernmo <august@lucidtech.ai>",
+    "Roger Andersen <roger@lucidtech.ai>"
+  ],
+  "homepage": "https://lucidtech.ai",
+  "license": "Apache-2.0",
+  "publishConfig": {
+    "access": "public"
+  },
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "compile": "tsc",
+    "upgrade": "npm update",
+    "lint": "eslint ./src/**/*",
+    "test": "jest src"
+  },
+  "dependencies": {
+    "axios": "^0.21.1"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node"
+  },
+  "devDependencies": {
+    "@types/uuid": "^8.3.0",
+    "uuid": "^8.3.1"
+  }
+}
