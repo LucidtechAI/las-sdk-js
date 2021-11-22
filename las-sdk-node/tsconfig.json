@@ -1,9 +1,17 @@
 {
-  "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "outDir": "./lib"
+    "outDir": "./lib",
+    "module": "commonjs",
+    "declaration": true,
+    "target": "ES6",
+    "strict": true,
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
   },
   "include": [
     "./src"
+  ],
+  "exclude": [
+    "./**/*.spec.ts"
   ]
 }

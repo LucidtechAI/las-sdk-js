@@ -1,15 +1,14 @@
 {
-  "compilerOptions": {
-    "module": "commonjs",
-    "declaration": true,
-    "target": "ES5",
-    "strict": true,
-    "esModuleInterop": true,
-    "experimentalDecorators": true
-  },
-  "include": ["las-sdk-core", "las-sdk-browser", "las-sdk-node"],
-  "exclude": [
-    "node_modules",
-    "**/*.spec.ts"
-  ]
+  "files": [],
+  "references": [
+    {
+      "path": "./las-sdk-node/tsconfig.ref.json"
+    },
+    {
+      "path": "./las-sdk-core/tsconfig.ref.json"
+    },
+    {
+      "path": "./las-sdk-browser/tsconfig.ref.json"
+    },
+  ],
 }
