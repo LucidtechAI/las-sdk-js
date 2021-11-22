@@ -1,14 +1,11 @@
 {
-  "files": [],
-  "references": [
-    {
-      "path": "./las-sdk-node/tsconfig.ref.json"
-    },
-    {
-      "path": "./las-sdk-core/tsconfig.ref.json"
-    },
-    {
-      "path": "./las-sdk-browser/tsconfig.ref.json"
-    },
-  ],
+  "extends": "./tsconfig.build.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "noEmit": true,
+    "paths": {
+      "las-sdk-*": ["las-sdk-*/src"]
+    }
+  },
+  "exclude": ["**/lib"]
 }

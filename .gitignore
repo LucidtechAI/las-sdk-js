@@ -114,4 +114,5 @@ fabric.properties
 dist/
 lib/
 docs.md
+*.tsbuildinfo
 

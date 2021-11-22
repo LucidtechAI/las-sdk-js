@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "declaration": true,
+    "module": "commonjs",
+    "resolveJsonModule": true,
+    "target": "esnext"
+  },
+  "exclude": ["**/*.spec.ts", "**/lib"]
+}

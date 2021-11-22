@@ -14,7 +14,8 @@
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
-    "compile": "tsc",
+    "prepack": "npm run build",
+    "build": "tsc --project tsconfig.build.json",
     "upgrade": "npm update",
     "lint": "eslint ./src/**/*",
     "test": "jest ./src"

@@ -74,9 +74,6 @@ export class AuthorizationCodeCredentials extends Credentials {
     private readonly launchUriFn: (uri: string) => void;
     private readonly pkce?: PKCEDerived;
 
-    protected readonly storage?: TokenStorage<Token>;
-    protected token?: Token;
-
     constructor(
       apiEndpoint: string,
       clientId: string,
