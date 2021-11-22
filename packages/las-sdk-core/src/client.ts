@@ -2,7 +2,7 @@ import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 import { Buffer } from 'buffer';
 
 import { Credentials } from './credentials';
-import {
+import type {
   AppClient,
   AppClientList,
   Asset,
@@ -24,10 +24,8 @@ import {
   DataBundleList,
   Dataset,
   DatasetList,
-  DeleteAppClientOptions,
   DeleteDocumentOptions,
   FieldConfig,
-  GetDocumentOptions,
   GetOrganizationOptions,
   LasDocument,
   LasDocumentList,
@@ -51,6 +49,7 @@ import {
   PostPredictions,
   PredictionList,
   PredictionResponse,
+  RequestConfig,
   Secret,
   SecretList,
   Transition,
@@ -148,7 +147,7 @@ export class Client {
    * @returns AppClientList response from REST API
    */
   async listAppClients(options?: ListAppClientsOptions): Promise<AppClientList> {
-    return this.makeGetRequest<AppClientList>('/appClients', options);
+    return this.makeGetRequest<AppClientList>('/appClients', undefined, options);
   }
 
   /**
@@ -158,7 +157,7 @@ export class Client {
    * @returns AppClient response from REST API
    */
   async deleteAppClient(appClientId: string, options?: DeleteAppClientOptions): Promise<AppClient> {
-    return this.makeDeleteRequest(`/appClients/${appClientId}`, options);
+    return this.makeDeleteRequest(`/appClients/${appClientId}`, undefined, options);
   }
 
   /**
@@ -947,28 +946,31 @@ export class Client {
   }
 
   /* eslint-disable @typescript-eslint/no-explicit-any */
-  async makeGetRequest<T>(path: string, query?: any, options?: any): Promise<T> {
-    return this.makeAuthorizedRequest<T>(axios.get, buildURL(path, query), options);
+  async makeGetRequest<T>(path: string, options?: any): Promise<T> {
+    const { requestConfig, ...query } = options;
+    return this.makeAuthorizedRequest<T>(axios.get, buildURL(path, query), requestConfig);
   }
 
-  async makeDeleteRequest<T>(path: string, query?: any, options?: any): Promise<T> {
-    return this.makeAuthorizedRequest(axios.delete, buildURL(path, query), options);
+  async makeDeleteRequest<T>(path: string, options?: any): Promise<T> {
+    const { requestConfig, ...query } = options;
+    return this.makeAuthorizedRequest(axios.delete, buildURL(path, query), requestConfig);
   }
 
-  async makePostRequest<T>(path: string, body: any, options?: any): Promise<T> {
-    return this.makeAuthorizedRequest(axios.post, path, {body, ...options});
+  async makePostRequest<T>(path: string, options: any): Promise<T> {
+    return this.makeAuthorizedRequest(axios.post, path, options);
   }
 
-  async makePatchRequest<T>(path: string, body: any, options?: any): Promise<T> {
-    return this.makeAuthorizedRequest(axios.patch, path, {body, ...options});
+  async makePatchRequest<T>(path: string, options: any): Promise<T> {
+    return this.makeAuthorizedRequest(axios.patch, path, options);
   }
 
   private async makeAuthorizedRequest<T>(axiosFn: AxiosFn, path: string, options?: any): Promise<T> {
     const endpoint = `${this.credentials.apiEndpoint}${path}`;
     const headers = await this.getAuthorizationHeaders();
-    const config: AxiosRequestConfig = { headers, signal: options?.signal };
-    const handle = options?.body
-      ? (): Promise<AxiosResponse<T>> => axiosFn<T>(endpoint, options.body, config)
+    const { requestConfig, ...body } = options;
+    const config: AxiosRequestConfig = { headers, ...requestConfig };
+    const handle = body
+      ? (): Promise<AxiosResponse<T>> => axiosFn<T>(endpoint, body, config)
       : (): Promise<AxiosResponse<T>> => axiosFn<T>(endpoint, undefined, config);
 
     return (await handle()).data;

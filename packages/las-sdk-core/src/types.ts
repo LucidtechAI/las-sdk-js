@@ -2,7 +2,7 @@
 
 import { AxiosRequestConfig, AxiosResponse } from 'axios';
 
-export type BaseOptions = Pick<AxiosRequestConfig, 'signal'>;
+export type RequestConfig = { requestConfig?: Pick<AxiosRequestConfig, 'signal'> };
 
 export type ContentType = 'application/pdf' | 'image/jpeg' | 'image/png' | 'image/tiff';
 
@@ -29,8 +29,7 @@ export type LasDocument = {
 
 export type LasDocumentWithoutContent = Omit<LasDocument, 'content'>;
 
-export type GetDocumentOptions = BaseOptions;
-export type CreateDocumentOptions = BaseOptions & {
+export type CreateDocumentOptions = {
   consentId?: string;
   datasetId?: string;
   groundTruth?: Array<GroundTruth>;
@@ -393,9 +392,9 @@ export interface UpdateSecretOptions {
   name?: string | null;
 }
 
-export type GetOrganizationOptions = BaseOptions
+export type GetOrganizationOptions = RequestConfig;
 
-export type UpdateOrganizationOptions = BaseOptions & {
+export type UpdateOrganizationOptions = RequestConfig & {
   description?: string;
   name?: string;
 }
@@ -434,7 +433,7 @@ export type Organization = {
   organizationId: string;
 };
 
-export type CreateAppClientOptions = BaseOptions & {
+export type CreateAppClientOptions = RequestConfig & {
   callbackUrls?: Array<string>;
   description?: string;
   generateSecret?: boolean;
@@ -444,7 +443,7 @@ export type CreateAppClientOptions = BaseOptions & {
   name?: string;
 }
 
-export type UpdateAppClientOptions = BaseOptions & {
+export type UpdateAppClientOptions = RequestConfig & {
   defaultLoginUrl?: string;
   description?: string;
   loginUrls?: Array<string>;
@@ -473,8 +472,7 @@ export type AppClientList = {
   nextToken: string | null;
 };
 
-export type ListAppClientsOptions = BaseOptions & PaginationOptions;
-export type DeleteAppClientOptions = BaseOptions
+export type ListAppClientsOptions = RequestConfig & PaginationOptions;
 
 export type Asset = {
   assetId: string;
