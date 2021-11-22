@@ -4,7 +4,7 @@
     "baseUrl": ".",
     "noEmit": true,
     "paths": {
-      "las-sdk-*": ["./packages/las-sdk-*/src"]
+      "@lucidtech/*": ["./packages/*"]
     }
   },
   "exclude": ["**/lib"]

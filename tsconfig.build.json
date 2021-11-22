@@ -5,5 +5,5 @@
     "resolveJsonModule": true,
     "target": "esnext"
   },
-  "exclude": ["**/*.spec.ts", "**/lib"]
+  "exclude": ["**/*.spec.ts", "**/lib", "node_modules"]
 }

@@ -1,4 +1,4 @@
-import { default as uuidv4 } from 'uuid/v4';
+import { v4 as uuidv4 } from 'uuid';
 import functions, { AuthorizationCodeCredentials, PKCE, PKCEDerived } from './credentials';
 
 function getCredentials(testLaunchUri: (arg0: string) => void, pkce?: PKCEDerived) {

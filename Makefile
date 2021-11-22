@@ -1,9 +1,5 @@
 CID := $(shell cat /tmp/prism.cid)
 
-.PHONY: test
-test:
-	npm run test
-
 .PHONY: prism-start
 prism-start:
 	@echo "Starting mock API..."
@@ -22,8 +18,3 @@ ifeq ("$(wildcard /tmp/prism.cid)","")
 else
 	docker stop $(CID)
 endif
-
-.PHONY: docs
-docs:
-	npx typedoc --options "typedoc.json" packages/las-sdk-core && npx concat-md --decrease-title-levels temp-docs > docs.md && npx rimraf temp-docs
-

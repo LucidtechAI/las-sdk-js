@@ -14,18 +14,12 @@
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
-    "prepack": "npm run build",
     "build": "tsc --project tsconfig.build.json",
-    "upgrade": "npm update",
     "lint": "eslint ./src/**/*",
     "test": "jest --passWithNoTests ./src"
   },
   "dependencies": {
     "@lucidtech/las-sdk-core": "^6.0.1",
     "axios": "^0.21.2"
-  },
-  "jest": {
-    "preset": "ts-jest",
-    "testEnvironment": "node"
   }
 }
