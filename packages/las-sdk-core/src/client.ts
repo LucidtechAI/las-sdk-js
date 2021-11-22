@@ -24,8 +24,11 @@ import {
   DataBundleList,
   Dataset,
   DatasetList,
+  DeleteAppClientOptions,
   DeleteDocumentOptions,
   FieldConfig,
+  GetDocumentOptions,
+  GetOrganizationOptions,
   LasDocument,
   LasDocumentList,
   LasDocumentWithoutContent,
@@ -107,8 +110,8 @@ export class Client {
    * @param organizationId Id of the organization
    * @returns Organization response from REST API
    */
-  async getOrganization(organizationId: string): Promise<Organization> {
-    return this.makeGetRequest<Organization>(`/organizations/${organizationId}`);
+  async getOrganization(organizationId: string, options?: GetOrganizationOptions): Promise<Organization> {
+    return this.makeGetRequest<Organization>(`/organizations/${organizationId}`, options);
   }
 
   /**
@@ -154,8 +157,8 @@ export class Client {
    * @param appClientId of the app client
    * @returns AppClient response from REST API
    */
-  async deleteAppClient(appClientId: string): Promise<AppClient> {
-    return this.makeDeleteRequest(`/appClients/${appClientId}`);
+  async deleteAppClient(appClientId: string, options?: DeleteAppClientOptions): Promise<AppClient> {
+    return this.makeDeleteRequest(`/appClients/${appClientId}`, options);
   }
 
   /**
@@ -191,8 +194,8 @@ export class Client {
    * @param documentId Id of the document
    * @returns Document response from REST API
    */
-  async getDocument(documentId: string): Promise<LasDocument> {
-    return this.makeGetRequest<LasDocument>(`/documents/${documentId}`);
+  async getDocument(documentId: string, options?: GetDocumentOptions): Promise<LasDocument> {
+    return this.makeGetRequest<LasDocument>(`/documents/${documentId}`, options);
   }
 
   /**
@@ -944,29 +947,29 @@ export class Client {
   }
 
   /* eslint-disable @typescript-eslint/no-explicit-any */
-  async makeGetRequest<T>(path: string, query?: any): Promise<T> {
-    return this.makeAuthorizedRequest<T>(axios.get, buildURL(path, query));
+  async makeGetRequest<T>(path: string, query?: any, options?: any): Promise<T> {
+    return this.makeAuthorizedRequest<T>(axios.get, buildURL(path, query), options);
   }
 
-  async makeDeleteRequest<T>(path: string, query?: any): Promise<T> {
-    return this.makeAuthorizedRequest(axios.delete, buildURL(path, query));
+  async makeDeleteRequest<T>(path: string, query?: any, options?: any): Promise<T> {
+    return this.makeAuthorizedRequest(axios.delete, buildURL(path, query), options);
   }
 
-  async makePostRequest<T>(path: string, body: any): Promise<T> {
-    return this.makeAuthorizedRequest(axios.post, path, body);
+  async makePostRequest<T>(path: string, body: any, options?: any): Promise<T> {
+    return this.makeAuthorizedRequest(axios.post, path, {body, ...options});
   }
 
-  async makePatchRequest<T>(path: string, body: any): Promise<T> {
-    return this.makeAuthorizedRequest(axios.patch, path, body);
+  async makePatchRequest<T>(path: string, body: any, options?: any): Promise<T> {
+    return this.makeAuthorizedRequest(axios.patch, path, {body, ...options});
   }
 
-  private async makeAuthorizedRequest<T>(axiosFn: AxiosFn, path: string, body?: any): Promise<T> {
+  private async makeAuthorizedRequest<T>(axiosFn: AxiosFn, path: string, options?: any): Promise<T> {
     const endpoint = `${this.credentials.apiEndpoint}${path}`;
     const headers = await this.getAuthorizationHeaders();
-    const config: AxiosRequestConfig = { headers };
-    const handle = body
-      ? (): Promise<AxiosResponse<T>> => axiosFn<T>(endpoint, body, config)
-      : (): Promise<AxiosResponse<T>> => axiosFn<T>(endpoint, config);
+    const config: AxiosRequestConfig = { headers, signal: options?.signal };
+    const handle = options?.body
+      ? (): Promise<AxiosResponse<T>> => axiosFn<T>(endpoint, options.body, config)
+      : (): Promise<AxiosResponse<T>> => axiosFn<T>(endpoint, undefined, config);
 
     return (await handle()).data;
   }
