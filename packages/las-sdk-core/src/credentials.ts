@@ -1,6 +1,5 @@
 import { TokenStorage } from './storage';
 
-
 /**
  * Wrapper class for an AWS Cognito token
  */
@@ -63,19 +62,21 @@ export abstract class Credentials {
         return resolve(token.accessToken);
       }
 
-      this.getToken().then((newToken) => {
-        this.token = newToken;
+      this.getToken()
+        .then((newToken) => {
+          this.token = newToken;
 
-        if (storage) {
-          storage.setPersistentToken(newToken);
-        }
+          if (storage) {
+            storage.setPersistentToken(newToken);
+          }
 
-        resolve(newToken.accessToken);
-      }).catch((error) => {
-        reject(error);
-      });
+          resolve(newToken.accessToken);
+        })
+        .catch((error) => {
+          reject(error);
+        });
     });
   }
 
-  protected abstract getToken(): Promise<Token>
+  protected abstract getToken(): Promise<Token>;
 }

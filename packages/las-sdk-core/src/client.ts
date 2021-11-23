@@ -11,6 +11,7 @@ import type {
   AxiosFn,
   ContentType,
   CreateAppClientOptions,
+  CreateAssetOptions,
   CreateDataBundleOptions,
   CreateDatasetOptions,
   CreateDocumentOptions,
@@ -25,17 +26,28 @@ import type {
   Dataset,
   DatasetList,
   DeleteAppClientOptions,
+  DeleteAssetOptions,
+  DeleteDataBundleOptions,
+  DeleteDatasetOptions,
   DeleteDocumentOptions,
   DeleteDocumentsOptions,
+  DeleteModelOptions,
   DeleteTransitionOptions,
+  DeleteUserOptions,
+  DeleteWorkflowExecution,
   DeleteWorkflowOptions,
   ExecuteTransitionOptions,
   ExecuteWorkflowOptions,
   FieldConfig,
+  GetAssetOptions,
+  GetDatasetOptions,
   GetDocumentOptions,
+  GetLogOptions,
+  GetModelOptions,
   GetOrganizationOptions,
   GetTransitionExecutionOptions,
   GetTransitionOptions,
+  GetUserOptions,
   GetWorkflowExecutionOptions,
   GetWorkflowOptions,
   LasDocument,
@@ -546,8 +558,12 @@ export class Client {
    * @param executionId Id of the execution
    * @returns WorkflowExecution response from REST API
    */
-  async deleteWorkflowExecution(workflowId: string, executionId: string): Promise<WorkflowExecution> {
-    return this.makeDeleteRequest(`/workflows/${workflowId}/executions/${executionId}`);
+  async deleteWorkflowExecution(
+    workflowId: string,
+    executionId: string,
+    options?: DeleteWorkflowExecution,
+  ): Promise<WorkflowExecution> {
+    return this.makeDeleteRequest(`/workflows/${workflowId}/executions/${executionId}`, options);
   }
 
   /**
@@ -589,9 +605,9 @@ export class Client {
    * @param content Content to POST (base64-encoded string | Buffer)
    * @returns Asset response from REST API
    */
-  async createAsset(content: string): Promise<Asset> {
+  async createAsset(content: string, options?: CreateAssetOptions): Promise<Asset> {
     const encodedContent = typeof content === 'string' ? content : Buffer.from(content).toString('base64');
-    return this.makePostRequest<Asset>('/assets', { content: encodedContent });
+    return this.makePostRequest<Asset>('/assets', { content: encodedContent, ...options });
   }
 
   /**
@@ -600,8 +616,8 @@ export class Client {
    * @param assetId of the app client
    * @returns Asset response from REST API
    */
-  async deleteAsset(assetId: string): Promise<Asset> {
-    return this.makeDeleteRequest(`/assets/${assetId}`);
+  async deleteAsset(assetId: string, options?: DeleteAssetOptions): Promise<Asset> {
+    return this.makeDeleteRequest(`/assets/${assetId}`, options);
   }
 
   /**
@@ -621,8 +637,8 @@ export class Client {
    * @param assetId Id of the asset
    * @returns Asset response from REST API
    */
-  async getAsset(assetId: string): Promise<Asset> {
-    return this.makeGetRequest(`/assets/${assetId}`);
+  async getAsset(assetId: string, options?: GetAssetOptions): Promise<Asset> {
+    return this.makeGetRequest(`/assets/${assetId}`, options);
   }
 
   /**
@@ -652,8 +668,8 @@ export class Client {
    * @param datasetId Id of the dataset
    * @returns Dataset response from REST API
    */
-  async getDataset(datasetId: string): Promise<Dataset> {
-    return this.makeGetRequest(`/datasets/${datasetId}`);
+  async getDataset(datasetId: string, options?: GetDatasetOptions): Promise<Dataset> {
+    return this.makeGetRequest(`/datasets/${datasetId}`, options);
   }
 
   /**
@@ -698,7 +714,7 @@ export class Client {
    * @param deleteDocuments Set to true to delete documents in dataset before deleting dataset
    * @returns Dataset response from REST API
    */
-  async deleteDataset(datasetId: string, deleteDocuments = false): Promise<Dataset> {
+  async deleteDataset(datasetId: string, deleteDocuments = false, options?: DeleteDatasetOptions): Promise<Dataset> {
     if (deleteDocuments) {
       let response = await this.deleteDocuments({ datasetId });
       while (response.nextToken) {
@@ -727,7 +743,7 @@ export class Client {
       }
     }
 
-    return this.makeDeleteRequest<Dataset>(`/datasets/${datasetId}`);
+    return this.makeDeleteRequest<Dataset>(`/datasets/${datasetId}`, options);
   }
 
   /**
@@ -760,8 +776,12 @@ export class Client {
    * @param dataBundleId of the dataBundle
    * @returns DataBundle response from REST API
    */
-  async deleteDataBundle(modelId: string, dataBundleId: string): Promise<DataBundle> {
-    return this.makeDeleteRequest(`/models/${modelId}/dataBundles/${dataBundleId}`);
+  async deleteDataBundle(
+    modelId: string,
+    dataBundleId: string,
+    options?: DeleteDataBundleOptions,
+  ): Promise<DataBundle> {
+    return this.makeDeleteRequest(`/models/${modelId}/dataBundles/${dataBundleId}`, options);
   }
 
   /**
@@ -824,8 +844,8 @@ export class Client {
    * @param userId Id of the user
    * @returns User response from REST API
    */
-  async getUser(userId: string): Promise<User> {
-    return this.makeGetRequest<User>(`/users/${userId}`);
+  async getUser(userId: string, options?: GetUserOptions): Promise<User> {
+    return this.makeGetRequest<User>(`/users/${userId}`, options);
   }
 
   /**
@@ -846,8 +866,8 @@ export class Client {
    * @param userId Id of the user
    * @returns User response from REST API
    */
-  async deleteUser(userId: string): Promise<User> {
-    return this.makeDeleteRequest(`/users/${userId}`);
+  async deleteUser(userId: string, options?: DeleteUserOptions): Promise<User> {
+    return this.makeDeleteRequest(`/users/${userId}`, options);
   }
 
   /**
@@ -910,8 +930,8 @@ export class Client {
    * @param modelId Id of the model
    * @returns Model response from REST API
    */
-  async getModel(modelId: string): Promise<Model> {
-    return this.makeGetRequest(`/models/${modelId}`);
+  async getModel(modelId: string, options?: GetModelOptions): Promise<Model> {
+    return this.makeGetRequest(`/models/${modelId}`, options);
   }
 
   /**
@@ -937,8 +957,8 @@ export class Client {
    * @param modelId of the app client
    * @returns Model response from REST API
    */
-  async deleteModel(modelId: string): Promise<Model> {
-    return this.makeDeleteRequest(`/models/${modelId}`);
+  async deleteModel(modelId: string, options?: DeleteModelOptions): Promise<Model> {
+    return this.makeDeleteRequest(`/models/${modelId}`, options);
   }
 
   /**
@@ -958,8 +978,8 @@ export class Client {
    * @param logId Id of the log
    * @returns Log response from REST API
    */
-  async getLog(logId: string): Promise<Log> {
-    return this.makeGetRequest<Log>(`/logs/${logId}`);
+  async getLog(logId: string, options?: GetLogOptions): Promise<Log> {
+    return this.makeGetRequest<Log>(`/logs/${logId}`, options);
   }
 
   /**

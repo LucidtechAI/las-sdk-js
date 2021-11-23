@@ -7,7 +7,14 @@ function getCredentials(testLaunchUri: (arg0: string) => void, pkce?: PKCEDerive
   const testAuthEndpoint = 'http://localhost:4010';
   const testRedirectUri = 'testRedirectUri';
 
-  return new AuthorizationCodeCredentials(testApiEndpoint, testClientId, testAuthEndpoint, testRedirectUri, testLaunchUri, pkce);
+  return new AuthorizationCodeCredentials(
+    testApiEndpoint,
+    testClientId,
+    testAuthEndpoint,
+    testRedirectUri,
+    testLaunchUri,
+    pkce,
+  );
 }
 
 test('Testing randomString', () => {
@@ -19,7 +26,9 @@ test('Testing randomString', () => {
 
   Object.defineProperty(window, 'crypto', {
     value: {
-      getRandomValues() {},
+      getRandomValues() {
+        return;
+      },
     },
   });
 

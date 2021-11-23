@@ -2,13 +2,10 @@ import { Token } from '@lucidtech/las-sdk-core';
 import { SessionStorage } from './storage';
 import { MockStorage } from './helpers';
 
-
 it('Tests getting and setting token in session storage', () => {
   const mockStorage = new MockStorage();
   Storage.prototype.getItem = jest.fn((key: string) => mockStorage.getItem(key));
-  Storage.prototype.setItem = jest.fn(
-    (key: string, value: string) => mockStorage.setItem(key, value),
-  );
+  Storage.prototype.setItem = jest.fn((key: string, value: string) => mockStorage.setItem(key, value));
 
   const token = new Token('testAccessToken', 1, 'testRefreshToken');
   const storage = new SessionStorage();

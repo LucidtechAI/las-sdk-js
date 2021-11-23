@@ -76,12 +76,12 @@ export type BestNPages = {
 
 export type PostprocessConfig = BestFirst | BestNPages;
 
-export interface CreatePredictionsOptions {
+export type CreatePredictionsOptions = RequestConfig & {
   maxPages?: number;
   autoRotate?: boolean;
   imageQuality?: 'LOW' | 'HIGH';
   postprocessConfig?: PostprocessConfig;
-}
+};
 
 export interface PaginationOptions {
   maxResults?: number;
@@ -255,6 +255,8 @@ export type WorkflowList = {
   workflows: Array<Workflow>;
 };
 
+export type DeleteWorkflowExecution = RequestConfig;
+
 export type WorkflowExecution = {
   executionId: string;
   workflowId: string;
@@ -294,12 +296,16 @@ export type PredictionResponse = {
   predictions: Array<Prediction>;
 };
 
-export type ListPredictionsOptions = PaginationOptions;
+export type ListPredictionsOptions = RequestConfig & PaginationOptions;
 
 export type PredictionList = {
   predictions: Array<PredictionResponse>;
   nextToken: string | null;
 };
+
+export type CreateAssetOptions = RequestConfig;
+
+export type DeleteAssetOptions = RequestConfig;
 
 export type Dataset = {
   containsPersonallyIdentifiableInformation: boolean;
@@ -317,14 +323,14 @@ export type Dataset = {
   version: number;
 };
 
-export type CreateDatasetOptions = {
+export type CreateDatasetOptions = RequestConfig & {
   name?: string;
   description?: string;
   containsPersonallyIdentifiableInformation?: boolean;
   retentionInDays?: number;
 };
 
-export type UpdateDatasetOptions = {
+export type UpdateDatasetOptions = RequestConfig & {
   description?: string;
   name?: string;
 };
@@ -334,7 +340,11 @@ export type DatasetList = {
   nextToken: string | null;
 };
 
-export type ListDatasetsOptions = PaginationOptions;
+export type GetDatasetOptions = RequestConfig;
+
+export type ListDatasetsOptions = RequestConfig & PaginationOptions;
+
+export type DeleteDatasetOptions = RequestConfig;
 
 export type DataBundle = {
   createdBy: string | null;
@@ -350,12 +360,14 @@ export type DataBundle = {
   updatedTime: string;
 };
 
-export type CreateDataBundleOptions = {
+export type CreateDataBundleOptions = RequestConfig & {
   name?: string;
   description?: string;
 };
 
-export type UpdateDataBundleOptions = {
+export type DeleteDataBundleOptions = RequestConfig;
+
+export type UpdateDataBundleOptions = RequestConfig & {
   description?: string;
   name?: string;
 };
@@ -365,7 +377,7 @@ export type DataBundleList = {
   nextToken: string | null;
 };
 
-export type ListDataBundleOptions = PaginationOptions;
+export type ListDataBundleOptions = RequestConfig & PaginationOptions;
 
 export type User = {
   avatar: string | null;
@@ -378,18 +390,22 @@ export type User = {
   userId: string;
 };
 
-export type CreateUserOptions = {
+export type CreateUserOptions = RequestConfig & {
   name?: string;
   avatar?: string;
   appClientId?: string;
 };
 
-export type UpdateUserOptions = {
+export type UpdateUserOptions = RequestConfig & {
   name?: string | null;
   avatar?: string | null;
 };
 
-export type ListUsersOptions = PaginationOptions;
+export type ListUsersOptions = RequestConfig & PaginationOptions;
+
+export type GetUserOptions = RequestConfig;
+
+export type DeleteUserOptions = RequestConfig;
 
 export type UserList = {
   users: Array<User>;
@@ -402,22 +418,22 @@ export type Secret = {
   name: string | null;
 };
 
-export type ListSecretsOptions = PaginationOptions;
+export type ListSecretsOptions = RequestConfig & PaginationOptions;
 
 export type SecretList = {
   secrets: Array<Secret>;
   nextToken: string | null;
 };
 
-export interface CreateSecretOptions {
+export type CreateSecretOptions = RequestConfig & {
   description?: string;
-}
+};
 
-export interface UpdateSecretOptions {
+export type UpdateSecretOptions = RequestConfig & {
   data?: Record<any, any>;
   description?: string | null;
   name?: string | null;
-}
+};
 
 export type GetOrganizationOptions = RequestConfig;
 
@@ -529,13 +545,15 @@ export type Field = {
 
 export type FieldConfig = Record<string, Field>;
 
-export type CreateModelOptions = {
+export type CreateModelOptions = RequestConfig & {
   description?: string;
   name?: string;
   preprocessConfig?: PreprocessConfig;
 };
 
-export type UpdateModelOptions = {
+export type GetModelOptions = RequestConfig;
+
+export type UpdateModelOptions = RequestConfig & {
   description?: string;
   fieldConfig?: FieldConfig;
   height?: number;
@@ -544,6 +562,8 @@ export type UpdateModelOptions = {
   status?: 'training';
   width?: number;
 };
+
+export type DeleteModelOptions = RequestConfig;
 
 export type Model = {
   createdBy: string | null;
@@ -561,24 +581,28 @@ export type Model = {
   width: number;
 };
 
-export type ListModelsOptions = PaginationOptions;
+export type ListModelsOptions = RequestConfig & PaginationOptions;
 
 export type ModelList = {
   models: Array<Model>;
   nextToken: string | null;
 };
 
-export interface UpdateAssetOptions {
+export type UpdateAssetOptions = RequestConfig & {
   content?: string | Buffer;
-}
+};
 
-export type ListAssetsOptions = PaginationOptions;
+export type ListAssetsOptions = RequestConfig & PaginationOptions;
+
+export type GetAssetOptions = RequestConfig;
 
 export type Log = {
   logId: string;
   events: Array<Record<any, any>>;
   transitionId?: string | null;
 };
+
+export type GetLogOptions = RequestConfig;
 
 export type AuthorizationHeaders = {
   Authorization: string;
