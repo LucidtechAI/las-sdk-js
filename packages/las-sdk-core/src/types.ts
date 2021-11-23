@@ -29,27 +29,31 @@ export type LasDocument = {
 
 export type LasDocumentWithoutContent = Omit<LasDocument, 'content'>;
 
-export type CreateDocumentOptions = {
+export type CreateDocumentOptions = RequestConfig & {
   consentId?: string;
   datasetId?: string;
   groundTruth?: Array<GroundTruth>;
   retentionInDays?: number;
 }
 
-export interface UpdateDocumentOptions {
+export type UpdateDocumentOptions = RequestConfig & {
   groundTruth?: Array<GroundTruth>;
   retentionInDays?: number;
 }
 
-export type DeleteDocumentOptions = PaginationOptions & {
+export type GetDocumentOptions = RequestConfig
+
+export type DeleteDocumentsOptions = RequestConfig & PaginationOptions & {
   consentId?: string | Array<string>;
   datasetId?: string | Array<string>;
 }
 
-export type ListDocumentsOptions = PaginationOptions & {
+export type ListDocumentsOptions = RequestConfig & PaginationOptions & {
   consentId?: string | Array<string>;
   datasetId?: string | Array<string>;
 }
+
+export type DeleteDocumentOptions = RequestConfig
 
 export type LasDocumentList = {
   documents: Array<LasDocumentWithoutContent>;
@@ -82,7 +86,7 @@ export interface PaginationOptions {
   nextToken?: string;
 }
 
-export type ListTransitionOptions = PaginationOptions & {
+export type ListTransitionOptions = RequestConfig & PaginationOptions & {
   transitionType?: string | Array<string>;
 }
 
@@ -119,7 +123,7 @@ export interface UpdateTransitionExecution {
   startTime?: string;
 }
 
-export interface CreateTransitionOptions {
+export type CreateTransitionOptions = RequestConfig & {
   name?: string | null;
   inputJsonSchema?: Record<any, any>;
   outputJsonSchema?: Record<any, any>;
@@ -149,7 +153,9 @@ export type CreateTransitionParams = CreateTransitionDockerParams | CreateTransi
 
 export type TransitionType = 'docker' | 'manual';
 
-export type UpdateTransitionOptions = {
+export type GetTransitionOptions = RequestConfig;
+
+export type UpdateTransitionOptions = RequestConfig & {
   name?: string;
   description?: string;
   inputJsonSchema?: Record<any, any>;
@@ -167,10 +173,16 @@ export type Transition = {
   parameters: Record<string, any>;
 };
 
+export type DeleteTransitionOptions = RequestConfig
+
 export type TransitionList = {
   transitions: Array<Transition>;
   nextToken: string | null;
 };
+
+export type ExecuteTransitionOptions = RequestConfig
+
+export type GetTransitionExecutionOptions = RequestConfig
 
 export type WorkflowSpecification = {
   definition: object;
@@ -473,6 +485,8 @@ export type AppClientList = {
 };
 
 export type ListAppClientsOptions = RequestConfig & PaginationOptions;
+
+export type DeleteAppClientOptions = RequestConfig;
 
 export type Asset = {
   assetId: string;

@@ -24,9 +24,16 @@ import type {
   DataBundleList,
   Dataset,
   DatasetList,
+  DeleteAppClientOptions,
   DeleteDocumentOptions,
+  DeleteDocumentsOptions,
+  DeleteTransitionOptions,
+  ExecuteTransitionOptions,
   FieldConfig,
+  GetDocumentOptions,
   GetOrganizationOptions,
+  GetTransitionExecutionOptions,
+  GetTransitionOptions,
   LasDocument,
   LasDocumentList,
   LasDocumentWithoutContent,
@@ -147,7 +154,7 @@ export class Client {
    * @returns AppClientList response from REST API
    */
   async listAppClients(options?: ListAppClientsOptions): Promise<AppClientList> {
-    return this.makeGetRequest<AppClientList>('/appClients', undefined, options);
+    return this.makeGetRequest<AppClientList>('/appClients', options);
   }
 
   /**
@@ -157,7 +164,7 @@ export class Client {
    * @returns AppClient response from REST API
    */
   async deleteAppClient(appClientId: string, options?: DeleteAppClientOptions): Promise<AppClient> {
-    return this.makeDeleteRequest(`/appClients/${appClientId}`, undefined, options);
+    return this.makeDeleteRequest(`/appClients/${appClientId}`, options);
   }
 
   /**
@@ -229,7 +236,7 @@ export class Client {
    * @param options.consentId Ids of the consents that marks the owner of the document
    * @returns Documents response from REST API
    */
-  async deleteDocuments(options?: DeleteDocumentOptions): Promise<LasDocumentList> {
+  async deleteDocuments(options?: DeleteDocumentsOptions): Promise<LasDocumentList> {
     return this.makeDeleteRequest<LasDocumentList>('/documents', options);
   }
 
@@ -239,8 +246,8 @@ export class Client {
    * @param documentId of the document
    * @returns Document response from REST API
    */
-  async deleteDocument(documentId: string): Promise<LasDocument> {
-    return this.makeDeleteRequest(`/documents/${documentId}`);
+  async deleteDocument(documentId: string, options?: DeleteDocumentOptions): Promise<LasDocument> {
+    return this.makeDeleteRequest(`/documents/${documentId}`, options);
   }
 
   /**
@@ -272,8 +279,8 @@ export class Client {
    * @param transitionId Id of the transition
    * @returns Transition response from REST API
    */
-  async getTransition(transitionId: string): Promise<Transition> {
-    return this.makeGetRequest(`/transitions/${transitionId}`);
+  async getTransition(transitionId: string, options?: GetTransitionOptions): Promise<Transition> {
+    return this.makeGetRequest(`/transitions/${transitionId}`, options);
   }
 
   /**
@@ -306,8 +313,8 @@ export class Client {
    * @param transitionId Id of the transition
    * @returns Transition response from REST API
    */
-  async deleteTransition(transitionId: string): Promise<Transition> {
-    return this.makeDeleteRequest(`/transitions/${transitionId}`);
+  async deleteTransition(transitionId: string, options?: DeleteTransitionOptions): Promise<Transition> {
+    return this.makeDeleteRequest(`/transitions/${transitionId}`, options);
   }
 
   /**
@@ -316,8 +323,8 @@ export class Client {
    * @param transitionId Id of the transition
    * @returns Transition execution response from REST API
    */
-  async executeTransition(transitionId: string): Promise<TransitionExecution> {
-    return this.makePostRequest<TransitionExecution>(`/transitions/${transitionId}/executions`, {});
+  async executeTransition(transitionId: string, options?: ExecuteTransitionOptions): Promise<TransitionExecution> {
+    return this.makePostRequest<TransitionExecution>(`/transitions/${transitionId}/executions`, options);
   }
 
   /**
@@ -327,8 +334,8 @@ export class Client {
    * @param transitionExecutionId Id of the execution
    * @returns Transition execution responses from REST API
    */
-  async getTransitionExecution(transitionId: string, transitionExecutionId: string): Promise<TransitionExecution> {
-    return this.makeGetRequest(`/transitions/${transitionId}/executions/${transitionExecutionId}`);
+  async getTransitionExecution(transitionId: string, transitionExecutionId: string, options?: GetTransitionExecutionOptions): Promise<TransitionExecution> {
+    return this.makeGetRequest(`/transitions/${transitionId}/executions/${transitionExecutionId}`, options);
   }
 
   /**
@@ -946,12 +953,12 @@ export class Client {
   }
 
   /* eslint-disable @typescript-eslint/no-explicit-any */
-  async makeGetRequest<T>(path: string, options?: any): Promise<T> {
+  async makeGetRequest<T>(path: string, options: any = {}): Promise<T> {
     const { requestConfig, ...query } = options;
     return this.makeAuthorizedRequest<T>(axios.get, buildURL(path, query), requestConfig);
   }
 
-  async makeDeleteRequest<T>(path: string, options?: any): Promise<T> {
+  async makeDeleteRequest<T>(path: string, options: any = {}): Promise<T> {
     const { requestConfig, ...query } = options;
     return this.makeAuthorizedRequest(axios.delete, buildURL(path, query), requestConfig);
   }
@@ -964,11 +971,14 @@ export class Client {
     return this.makeAuthorizedRequest(axios.patch, path, options);
   }
 
-  private async makeAuthorizedRequest<T>(axiosFn: AxiosFn, path: string, options?: any): Promise<T> {
+  private async makeAuthorizedRequest<T>(axiosFn: AxiosFn, path: string, options: any = {}): Promise<T> {
     const endpoint = `${this.credentials.apiEndpoint}${path}`;
     const headers = await this.getAuthorizationHeaders();
     const { requestConfig, ...body } = options;
-    const config: AxiosRequestConfig = { headers, ...requestConfig };
+    let config: AxiosRequestConfig = { headers };
+    if (requestConfig) {
+      config = {...config, ...requestConfig} 
+    }
     const handle = body
       ? (): Promise<AxiosResponse<T>> => axiosFn<T>(endpoint, body, config)
       : (): Promise<AxiosResponse<T>> => axiosFn<T>(endpoint, undefined, config);

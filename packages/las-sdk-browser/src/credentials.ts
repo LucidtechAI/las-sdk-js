@@ -176,16 +176,20 @@ export class AuthorizationCodeCredentials extends Credentials {
       });
     }
 
-    initiateOAuthFlow(): void {
+    initiateOAuthFlow(csrfToken?: string): void {
       const pkce = new PKCE();
 
-      const params = {
+      const params: any = {
         response_type: 'code',
         client_id: this.clientId,
         redirect_uri: this.redirectUri,
         code_challenge_method: 'S256',
         code_challenge: pkce.challenge,
       };
+
+      if (csrfToken) {
+        params.state = csrfToken
+      }
 
       const endpoint = `https://${this.authEndpoint}/oauth2/authorize`;
       const config = { url: endpoint, params };
