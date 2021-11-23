@@ -9,11 +9,12 @@
     "build": "npm run build -workspaces",
     "test": "jest",
     "prepublish": "npm run build",
-    "publish": "multi-semantic-release --dry-run"
+    "publish": "multi-semantic-release --dry-run --no-ci"
   },
   "private": "true",
   "devDependencies": {
     "@qiwi/multi-semantic-release": "^3.17.0",
+    "@semantic-release/git": "^10.0.1",
     "@types/jest": "^27.0.3",
     "@types/node": "^16.11.9",
     "@types/uuid": "^8.3.3",
