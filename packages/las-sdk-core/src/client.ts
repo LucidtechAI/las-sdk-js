@@ -1,4 +1,4 @@
-import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
+import axios, { AxiosRequestConfig } from 'axios';
 import { Buffer } from 'buffer';
 
 import { Credentials } from './credentials';
@@ -28,12 +28,16 @@ import type {
   DeleteDocumentOptions,
   DeleteDocumentsOptions,
   DeleteTransitionOptions,
+  DeleteWorkflowOptions,
   ExecuteTransitionOptions,
+  ExecuteWorkflowOptions,
   FieldConfig,
   GetDocumentOptions,
   GetOrganizationOptions,
   GetTransitionExecutionOptions,
   GetTransitionOptions,
+  GetWorkflowExecutionOptions,
+  GetWorkflowOptions,
   LasDocument,
   LasDocumentList,
   LasDocumentWithoutContent,
@@ -53,10 +57,10 @@ import type {
   Model,
   ModelList,
   Organization,
+  PostHeartbeatOptions,
   PostPredictions,
   PredictionList,
   PredictionResponse,
-  RequestConfig,
   Secret,
   SecretList,
   Transition,
@@ -334,7 +338,11 @@ export class Client {
    * @param transitionExecutionId Id of the execution
    * @returns Transition execution responses from REST API
    */
-  async getTransitionExecution(transitionId: string, transitionExecutionId: string, options?: GetTransitionExecutionOptions): Promise<TransitionExecution> {
+  async getTransitionExecution(
+    transitionId: string,
+    transitionExecutionId: string,
+    options?: GetTransitionExecutionOptions,
+  ): Promise<TransitionExecution> {
     return this.makeGetRequest(`/transitions/${transitionId}/executions/${transitionExecutionId}`, options);
   }
 
@@ -384,8 +392,12 @@ export class Client {
    * @param transitionExecutionId Id of the transition execution
    * @returns Empty response
    */
-  async sendHeartbeat(transitionId: string, transitionExecutionId: string): Promise<unknown> {
-    return this.makePostRequest(`/transitions/${transitionId}/executions/${transitionExecutionId}/heartbeats`, {});
+  async sendHeartbeat(
+    transitionId: string,
+    transitionExecutionId: string,
+    options?: PostHeartbeatOptions,
+  ): Promise<unknown> {
+    return this.makePostRequest(`/transitions/${transitionId}/executions/${transitionExecutionId}/heartbeats`, options);
   }
 
   /**
@@ -420,8 +432,8 @@ export class Client {
    * @param workflowId Id of the workflow
    * @returns Workflow response from REST API
    */
-  async getWorkflow(workflowId: string): Promise<Workflow> {
-    return this.makeGetRequest(`/workflows/${workflowId}`);
+  async getWorkflow(workflowId: string, options?: GetWorkflowOptions): Promise<Workflow> {
+    return this.makeGetRequest(`/workflows/${workflowId}`, options);
   }
 
   /**
@@ -441,8 +453,8 @@ export class Client {
    * @param workflowId Id of the workflow
    * @returns Workflow response from REST API
    */
-  async deleteWorkflow(workflowId: string): Promise<Workflow> {
-    return this.makeDeleteRequest<Workflow>(`/workflows/${workflowId}`);
+  async deleteWorkflow(workflowId: string, options?: DeleteWorkflowOptions): Promise<Workflow> {
+    return this.makeDeleteRequest<Workflow>(`/workflows/${workflowId}`, options);
   }
 
   /**
@@ -462,9 +474,14 @@ export class Client {
    * @param input Input to the first step of the workflow
    * @returns Workflow execution response from REST API
    */
-  async executeWorkflow(workflowId: string, input: object): Promise<WorkflowExecution> {
+  async executeWorkflow(
+    workflowId: string,
+    input: object,
+    options?: ExecuteWorkflowOptions,
+  ): Promise<WorkflowExecution> {
     const body = {
       input,
+      ...options,
     };
 
     return this.makePostRequest<WorkflowExecution>(`/workflows/${workflowId}/executions`, body);
@@ -495,8 +512,12 @@ export class Client {
    * @param executionId Id of the execution to get
    * @returns Workflow execution response from REST API
    */
-  async getWorkflowExecution(workflowId: string, executionId: string): Promise<WorkflowExecution> {
-    return this.makeGetRequest(`/workflows/${workflowId}/executions/${executionId}`);
+  async getWorkflowExecution(
+    workflowId: string,
+    executionId: string,
+    options?: GetWorkflowExecutionOptions,
+  ): Promise<WorkflowExecution> {
+    return this.makeGetRequest(`/workflows/${workflowId}/executions/${executionId}`, options);
   }
 
   /**
@@ -616,7 +637,8 @@ export class Client {
     if (data) {
       body = { ...data };
       if (data.content) {
-        const encodedContent = typeof data.content === 'string' ? data.content : Buffer.from(data.content).toString('base64');
+        const encodedContent =
+          typeof data.content === 'string' ? data.content : Buffer.from(data.content).toString('base64');
         body = { ...body, content: encodedContent };
       }
     }
@@ -964,26 +986,38 @@ export class Client {
   }
 
   async makePostRequest<T>(path: string, options: any): Promise<T> {
-    return this.makeAuthorizedRequest(axios.post, path, options);
+    return this.makeAuthorizedBodyRequest(axios.post, path, options);
   }
 
   async makePatchRequest<T>(path: string, options: any): Promise<T> {
-    return this.makeAuthorizedRequest(axios.patch, path, options);
+    return this.makeAuthorizedBodyRequest(axios.patch, path, options);
   }
 
-  private async makeAuthorizedRequest<T>(axiosFn: AxiosFn, path: string, options: any = {}): Promise<T> {
+  private async makeAuthorizedRequest<T>(axiosFn: AxiosFn, path: string, requestConfig: any = {}): Promise<T> {
+    const endpoint = `${this.credentials.apiEndpoint}${path}`;
+    const headers = await this.getAuthorizationHeaders();
+    let config: AxiosRequestConfig = { headers };
+    if (requestConfig) {
+      config = { ...config, ...requestConfig };
+    }
+
+    const result = await axiosFn<T>(endpoint, config);
+
+    return result.data;
+  }
+
+  private async makeAuthorizedBodyRequest<T>(axiosFn: AxiosFn, path: string, options: any = {}): Promise<T> {
     const endpoint = `${this.credentials.apiEndpoint}${path}`;
     const headers = await this.getAuthorizationHeaders();
     const { requestConfig, ...body } = options;
     let config: AxiosRequestConfig = { headers };
     if (requestConfig) {
-      config = {...config, ...requestConfig} 
+      config = { ...config, ...requestConfig };
     }
-    const handle = body
-      ? (): Promise<AxiosResponse<T>> => axiosFn<T>(endpoint, body, config)
-      : (): Promise<AxiosResponse<T>> => axiosFn<T>(endpoint, undefined, config);
 
-    return (await handle()).data;
+    const result = await axiosFn<T>(endpoint, body, config);
+
+    return result.data;
   }
   /* eslint-enable */
 

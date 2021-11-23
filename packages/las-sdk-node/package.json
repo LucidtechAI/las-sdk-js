@@ -19,7 +19,7 @@
     "test": "jest --passWithNoTests ./src"
   },
   "dependencies": {
-    "@lucidtech/las-sdk-core": "^6.0.1",
+    "@lucidtech/las-sdk-core": "file:packages/las-sdk-core",
     "axios": "^0.24.0"
   }
 }

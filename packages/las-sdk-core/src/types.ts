@@ -34,26 +34,28 @@ export type CreateDocumentOptions = RequestConfig & {
   datasetId?: string;
   groundTruth?: Array<GroundTruth>;
   retentionInDays?: number;
-}
+};
 
 export type UpdateDocumentOptions = RequestConfig & {
   groundTruth?: Array<GroundTruth>;
   retentionInDays?: number;
-}
+};
 
-export type GetDocumentOptions = RequestConfig
+export type GetDocumentOptions = RequestConfig;
 
-export type DeleteDocumentsOptions = RequestConfig & PaginationOptions & {
-  consentId?: string | Array<string>;
-  datasetId?: string | Array<string>;
-}
+export type DeleteDocumentsOptions = RequestConfig &
+  PaginationOptions & {
+    consentId?: string | Array<string>;
+    datasetId?: string | Array<string>;
+  };
 
-export type ListDocumentsOptions = RequestConfig & PaginationOptions & {
-  consentId?: string | Array<string>;
-  datasetId?: string | Array<string>;
-}
+export type ListDocumentsOptions = RequestConfig &
+  PaginationOptions & {
+    consentId?: string | Array<string>;
+    datasetId?: string | Array<string>;
+  };
 
-export type DeleteDocumentOptions = RequestConfig
+export type DeleteDocumentOptions = RequestConfig;
 
 export type LasDocumentList = {
   documents: Array<LasDocumentWithoutContent>;
@@ -62,15 +64,15 @@ export type LasDocumentList = {
 
 export type BestFirst = {
   strategy: 'BEST_FIRST';
-}
+};
 
 export type BestNPages = {
   strategy: 'BEST_N_PAGES';
   parameters: {
     n: 1 | 2 | 3;
     collapse?: boolean;
-  }
-}
+  };
+};
 
 export type PostprocessConfig = BestFirst | BestNPages;
 
@@ -86,9 +88,10 @@ export interface PaginationOptions {
   nextToken?: string;
 }
 
-export type ListTransitionOptions = RequestConfig & PaginationOptions & {
-  transitionType?: string | Array<string>;
-}
+export type ListTransitionOptions = RequestConfig &
+  PaginationOptions & {
+    transitionType?: string | Array<string>;
+  };
 
 export type TransitionExecutionStatus = 'succeeded' | 'failed' | 'retry' | 'running' | 'rejected';
 
@@ -109,19 +112,20 @@ export type TransitionExecutionList = {
   nextToken: string | null;
 };
 
-export type TransitionExecutionListOptions = PaginationOptions & {
-  status?: TransitionExecutionStatus | Array<TransitionExecutionStatus>;
-  executionId?: string | Array<string>;
-  sortBy?: 'startTime' | 'endTime';
-  order?: 'ascending' | 'descending';
-}
+export type TransitionExecutionListOptions = RequestConfig &
+  PaginationOptions & {
+    status?: TransitionExecutionStatus | Array<TransitionExecutionStatus>;
+    executionId?: string | Array<string>;
+    sortBy?: 'startTime' | 'endTime';
+    order?: 'ascending' | 'descending';
+  };
 
-export interface UpdateTransitionExecution {
+export type UpdateTransitionExecution = RequestConfig & {
   status: Exclude<TransitionExecutionStatus, 'running'>;
   output?: Record<any, any>;
   error?: { message: string };
   startTime?: string;
-}
+};
 
 export type CreateTransitionOptions = RequestConfig & {
   name?: string | null;
@@ -129,7 +133,7 @@ export type CreateTransitionOptions = RequestConfig & {
   outputJsonSchema?: Record<any, any>;
   description?: string | null;
   parameters?: CreateTransitionParams;
-}
+};
 
 export type CreateTransitionDockerParams = {
   environment?: object;
@@ -173,16 +177,18 @@ export type Transition = {
   parameters: Record<string, any>;
 };
 
-export type DeleteTransitionOptions = RequestConfig
+export type DeleteTransitionOptions = RequestConfig;
 
 export type TransitionList = {
   transitions: Array<Transition>;
   nextToken: string | null;
 };
 
-export type ExecuteTransitionOptions = RequestConfig
+export type ExecuteTransitionOptions = RequestConfig;
 
-export type GetTransitionExecutionOptions = RequestConfig
+export type GetTransitionExecutionOptions = RequestConfig;
+
+export type PostHeartbeatOptions = RequestConfig;
 
 export type WorkflowSpecification = {
   definition: object;
@@ -204,37 +210,46 @@ export type WorkflowCompletedConfig = {
   environmentSecrets?: Array<string>;
   environment?: Record<string, string>;
   secretId?: string;
-}
+};
 
 export type WorkflowErrorConfig = {
   manualRetry?: boolean;
   email?: string;
-}
-
-export type ListWorkflowOptions = PaginationOptions;
-
-export type ListWorkflowExecutionsOptions = PaginationOptions & {
-  status?: string | Array<string>;
-  sortBy?: 'startTime' | 'endTime';
-  order?: 'ascending' | 'descending';
 };
 
-export type CreateWorkflowOptions = {
+export type ListWorkflowOptions = RequestConfig & PaginationOptions;
+
+export type ListWorkflowExecutionsOptions = RequestConfig &
+  PaginationOptions & {
+    status?: string | Array<string>;
+    sortBy?: 'startTime' | 'endTime';
+    order?: 'ascending' | 'descending';
+  };
+
+export type CreateWorkflowOptions = RequestConfig & {
   description?: string | null;
   errorConfig?: WorkflowErrorConfig;
   completedConfig?: WorkflowCompletedConfig;
 };
 
-export interface UpdateWorkflowOptions {
+export type UpdateWorkflowOptions = RequestConfig & {
   name?: string | null;
   description?: string | null;
   errorConfig?: WorkflowErrorConfig;
   completedConfig?: WorkflowCompletedConfig;
-}
+};
 
-export interface UpdateWorkflowExecutionOptions {
+export type GetWorkflowOptions = RequestConfig;
+
+export type DeleteWorkflowOptions = RequestConfig;
+
+export type ExecuteWorkflowOptions = RequestConfig;
+
+export type GetWorkflowExecutionOptions = RequestConfig;
+
+export type UpdateWorkflowExecutionOptions = RequestConfig & {
   nextTransitionId: string;
-}
+};
 
 export type WorkflowList = {
   workflows: Array<Workflow>;
@@ -284,7 +299,7 @@ export type ListPredictionsOptions = PaginationOptions;
 export type PredictionList = {
   predictions: Array<PredictionResponse>;
   nextToken: string | null;
-}
+};
 
 export type Dataset = {
   containsPersonallyIdentifiableInformation: boolean;
@@ -307,12 +322,12 @@ export type CreateDatasetOptions = {
   description?: string;
   containsPersonallyIdentifiableInformation?: boolean;
   retentionInDays?: number;
-}
+};
 
 export type UpdateDatasetOptions = {
   description?: string;
   name?: string;
-}
+};
 
 export type DatasetList = {
   datasets: Array<Dataset>;
@@ -338,12 +353,12 @@ export type DataBundle = {
 export type CreateDataBundleOptions = {
   name?: string;
   description?: string;
-}
+};
 
 export type UpdateDataBundleOptions = {
   description?: string;
   name?: string;
-}
+};
 
 export type DataBundleList = {
   dataBundles: Array<DataBundle>;
@@ -367,12 +382,12 @@ export type CreateUserOptions = {
   name?: string;
   avatar?: string;
   appClientId?: string;
-}
+};
 
 export type UpdateUserOptions = {
   name?: string | null;
   avatar?: string | null;
-}
+};
 
 export type ListUsersOptions = PaginationOptions;
 
@@ -409,7 +424,7 @@ export type GetOrganizationOptions = RequestConfig;
 export type UpdateOrganizationOptions = RequestConfig & {
   description?: string;
   name?: string;
-}
+};
 
 export type Organization = {
   description: string | null;
@@ -453,14 +468,14 @@ export type CreateAppClientOptions = RequestConfig & {
   loginUrls?: Array<string>;
   defaultLoginUrl?: string;
   name?: string;
-}
+};
 
 export type UpdateAppClientOptions = RequestConfig & {
   defaultLoginUrl?: string;
   description?: string;
   loginUrls?: Array<string>;
   name?: string;
-}
+};
 
 export type AppClient = {
   appClientId: string;
@@ -504,13 +519,13 @@ export type PreprocessConfig = {
   autoRotate: boolean;
   imageQuality: 'LOW' | 'HIGH';
   maxPages: number;
-}
+};
 
 export type Field = {
   description: string;
   maxLength: number;
   type: 'all' | 'alphanum' | 'alphanumext' | 'amount' | 'date' | 'letter' | 'number' | 'phone' | 'string' | 'digits';
-}
+};
 
 export type FieldConfig = Record<string, Field>;
 
@@ -518,7 +533,7 @@ export type CreateModelOptions = {
   description?: string;
   name?: string;
   preprocessConfig?: PreprocessConfig;
-}
+};
 
 export type UpdateModelOptions = {
   description?: string;
@@ -528,7 +543,7 @@ export type UpdateModelOptions = {
   preprocessConfig?: PreprocessConfig;
   status?: 'training';
   width?: number;
-}
+};
 
 export type Model = {
   createdBy: string | null;
@@ -544,14 +559,14 @@ export type Model = {
   updatedBy: string | null;
   updatedTime: string | null;
   width: number;
-}
+};
 
 export type ListModelsOptions = PaginationOptions;
 
 export type ModelList = {
   models: Array<Model>;
   nextToken: string | null;
-}
+};
 
 export interface UpdateAssetOptions {
   content?: string | Buffer;
@@ -563,7 +578,7 @@ export type Log = {
   logId: string;
   events: Array<Record<any, any>>;
   transitionId?: string | null;
-}
+};
 
 export type AuthorizationHeaders = {
   Authorization: string;
@@ -572,5 +587,5 @@ export type AuthorizationHeaders = {
 export type AxiosFn = <T = any, R = AxiosResponse<T>>(
   url: string,
   body?: any,
-  config?: AxiosRequestConfig
+  config?: AxiosRequestConfig,
 ) => Promise<R>;
