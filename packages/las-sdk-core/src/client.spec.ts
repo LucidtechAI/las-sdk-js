@@ -129,6 +129,23 @@ describe('Documents', () => {
       await expect(createDocumentPromise).resolves.toHaveProperty('documentId');
     });
 
+    test('with AbortController', async () => {
+      const content = uuidv4();
+      const contentType = 'image/jpeg';
+      const consentId = createConsentId();
+      const datasetId = createDatasetId();
+      const control = new AbortController();
+      control.abort();
+
+      const createDocumentPromise = client.createDocument(content, contentType, {
+        consentId,
+        datasetId,
+        requestConfig: { signal: control.signal },
+      });
+
+      await expect(createDocumentPromise).rejects.toBeDefined();
+    });
+
     test.each<ContentType>(['image/jpeg', 'application/pdf', 'image/png', 'image/tiff'])(
       'allows content type: %s',
       async (contentType) => {
@@ -196,6 +213,14 @@ describe('Documents', () => {
       const deleteDocumentPromise = client.deleteDocument(documentId);
       await expect(deleteDocumentPromise).resolves.toHaveProperty('contentType');
       await expect(deleteDocumentPromise).resolves.toHaveProperty('documentId');
+    });
+
+    test('with AbortController', async () => {
+      const documentId = createDocumentId();
+      const control = new AbortController();
+      control.abort();
+      const deleteDocumentPromise = client.deleteDocument(documentId, { requestConfig: { signal: control.signal } });
+      await expect(deleteDocumentPromise).rejects.toBeDefined();
     });
   });
 
