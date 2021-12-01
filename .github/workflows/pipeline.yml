@@ -9,7 +9,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [14.x, 12.x]
+        node-version: [16.x]
 
     steps:
     - uses: actions/checkout@v2
@@ -19,8 +19,6 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - run: make prism-start
     - run: npm install
-    - run: npm run upgrade-lucidtech
-    - run: ls ./node_modules|grep lucidtech
     - run: npm test
       env:
         CI: true
