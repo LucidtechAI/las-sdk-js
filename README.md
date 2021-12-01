@@ -48,3 +48,20 @@ Run tests
 ```
 $ npm run test
 ```
+
+## Development
+
+This repo uses NPM workspaces (npm 7+).
+
+### To locally link packages during development
+
+In repo workspace root:
+
+```
+npm link -ws
+```
+
+In target project directory, where you want to use locally linked packages:
+```
+npm link @lucidtech/las-sdk-core @lucidtech/las-sdk-browser @lucidtech/las-sdk-node
+```

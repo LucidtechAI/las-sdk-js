@@ -3,7 +3,7 @@
     "declaration": true,
     "module": "commonjs",
     "resolveJsonModule": true,
-    "target": "esnext"
+    "target": "es6"
   },
   "exclude": ["**/*.spec.ts", "**/lib", "node_modules"]
 }
