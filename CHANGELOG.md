@@ -1,5 +1,9 @@
 # Changelog 
 
+## Version 6.0.2-rc.0 - 2021-12-01
+
+- Refactor packages to use npm workspaces
+
 ## Version 6.0.1 - 2021-11-17
 
 - Add numberOfDataBundles to Model type
