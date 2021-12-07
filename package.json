@@ -1,5 +1,9 @@
 {
   "name": "@lucidtech/las-sdk-js",
+  "engines": {
+    "node": ">=14",
+    "pnpm": ">=4"
+},
   "workspaces": [
     "./packages/las-sdk-core",
     "./packages/las-sdk-browser",
