@@ -1,6 +1,6 @@
 # Changelog 
 
-## Version 6.0.2-rc.0 - 2021-12-01
+## Version 6.0.2-beta.0 - 2021-12-08
 
 - Refactor packages to use npm workspaces
 

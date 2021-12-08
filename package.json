@@ -11,6 +11,10 @@
   ],
   "scripts": {
     "build": "pnpm run -r build",
+    "publish": "pnpm -r publish",
+    "bump-patch": "pnpm -r version --patch",
+    "bump-minor": "pnpm -r version --minor",
+    "bump-major": "pnpm -r version --major",
     "test": "jest"
   },
   "private": "true",
