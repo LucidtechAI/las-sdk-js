@@ -1,8 +1,11 @@
 # Changelog 
 
-## Version 6.0.2-beta.0 - 2021-12-08
+## Version 7.0.0 - 2021-12-08
 
-- Refactor packages to use npm workspaces
+- Removed 'training' from Model.status
+- Renamed 'ready' to 'succeeded' in DataBundle.status
+- Renamed 'processing' to 'running' in DataBundle.status
+- Removed status from UpdateModelOptions
 
 ## Version 6.0.1 - 2021-11-17
 

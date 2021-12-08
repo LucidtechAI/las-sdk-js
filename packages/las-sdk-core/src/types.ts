@@ -354,7 +354,7 @@ export type DataBundle = {
   description: string | null;
   modelId: string;
   name: string | null;
-  status: 'ready' | 'processing' | 'failed';
+  status: 'succeeded' | 'running' | 'failed';
   summary: Record<string, any>;
   updatedBy: string | null;
   updatedTime: string;
@@ -559,7 +559,6 @@ export type UpdateModelOptions = RequestConfig & {
   height?: number;
   name?: string;
   preprocessConfig?: PreprocessConfig;
-  status?: 'training';
   width?: number;
 };
 
@@ -575,7 +574,7 @@ export type Model = {
   name: string | null;
   numberOfDataBundles: number;
   preprocessConfig: PreprocessConfig;
-  status: 'active' | 'inactive' | 'training';
+  status: 'active' | 'inactive';
   updatedBy: string | null;
   updatedTime: string | null;
   width: number;

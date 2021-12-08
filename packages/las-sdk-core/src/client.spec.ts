@@ -876,7 +876,6 @@ describe('Models', () => {
           description: 'My model description',
           width: 100,
           height: 100,
-          status: 'training',
         },
       ],
     ])('input: %o', async (modelId, options) => {
