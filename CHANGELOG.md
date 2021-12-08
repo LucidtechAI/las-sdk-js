@@ -1,5 +1,12 @@
 # Changelog 
 
+## Version 7.0.0 - 2021-12-08
+
+- Removed 'training' from Model.status
+- Renamed 'ready' to 'succeeded' in DataBundle.status
+- Renamed 'processing' to 'running' in DataBundle.status
+- Removed status from UpdateModelOptions
+
 ## Version 6.0.1 - 2021-11-17
 
 - Add numberOfDataBundles to Model type
