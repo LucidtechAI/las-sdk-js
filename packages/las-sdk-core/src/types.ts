@@ -451,6 +451,8 @@ export type Organization = {
   monthlyNumberOfDocumentsCreated: number;
   monthlyNumberOfPredictionsAllowed: number;
   monthlyNumberOfPredictionsCreated: number;
+  monthlyNumberOfTrainingsAllowed: number;
+  monthlyNumberOfTrainingsCreated: number;
   monthlyNumberOfTransitionExecutionsAllowed: number;
   monthlyNumberOfTransitionExecutionsCreated: number;
   monthlyNumberOfWorkflowExecutionsAllowed: number;
@@ -474,6 +476,7 @@ export type Organization = {
   numberOfWorkflowsAllowed: number;
   numberOfWorkflowsCreated: number;
   organizationId: string;
+  planId: string | null;
 };
 
 export type CreateAppClientOptions = RequestConfig & {
@@ -573,12 +576,77 @@ export type Model = {
   modelId: string;
   name: string | null;
   numberOfDataBundles: number;
+  numberOfRunningTrainings: number;
   preprocessConfig: PreprocessConfig;
   status: 'active' | 'inactive';
   updatedBy: string | null;
   updatedTime: string | null;
   width: number;
 };
+
+export type TrainingInstanceType = 'small-gpu' | 'medium-gpu' | 'large-gpu';
+
+export type TrainingStatus = 'waiting-for-approval' | 'pending' | 'running' | 'succeeded' | 'failed' | 'cancelled';
+
+export type Training = {
+  createdBy: string | null;
+  createdTime: string | null;
+  dataBundleIds: Array<string>;
+  description: string | null;
+  instanceType: TrainingInstanceType;
+  modelId: string;
+  name: string | null;
+  status: TrainingStatus;
+  trainingId: string;
+  updatedBy: string | null;
+  updatedTime: string | null;
+};
+
+export type TrainingList = {
+  trainings: Array<Training>;
+  nextToken: string | null;
+  status: Array<TrainingStatus>;
+};
+
+export type ListTrainingsOptions = RequestConfig &
+  PaginationOptions & { status?: TrainingStatus | Array<TrainingStatus> };
+
+export type CreateTrainingOption = {
+  dataBundleIds: [string, ...string[]];
+  instanceType?: TrainingInstanceType;
+  name?: string | null;
+  description?: string | null;
+};
+
+export type UpdateTrainingOptions = {
+  name?: string | null;
+  description?: string | null;
+  status?: 'cancelled';
+};
+
+export type PlanCurrency = 'NOK' | 'USD' | 'EUR';
+
+export type Plan = {
+  billingCycle: number;
+  currency: PlanCurrency;
+  latest: number;
+  name: string | null;
+  organizationId: string | null;
+  planId: string;
+  license?: Record<any, any>;
+  gpuHours?: Record<any, any>;
+  activeModels?: Record<any, any>;
+  description?: string | null;
+  predictions?: Record<any, any>;
+};
+
+export type PlanList = {
+  plans: Array<Plan>;
+  nextToken: string | null;
+  owner: Array<string>;
+};
+
+export type ListPlansOptions = RequestConfig & PaginationOptions & { owner?: string | Array<string> };
 
 export type ListModelsOptions = RequestConfig & PaginationOptions;
 

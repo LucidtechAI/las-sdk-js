@@ -1,5 +1,6 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import { Buffer } from 'buffer';
+import { TrainingList } from '.';
 
 import { Credentials } from './credentials';
 import type {
@@ -18,6 +19,7 @@ import type {
   CreateModelOptions,
   CreatePredictionsOptions,
   CreateSecretOptions,
+  CreateTrainingOption,
   CreateTransitionOptions,
   CreateUserOptions,
   CreateWorkflowOptions,
@@ -59,8 +61,10 @@ import type {
   ListDatasetsOptions,
   ListDocumentsOptions,
   ListModelsOptions,
+  ListPlansOptions,
   ListPredictionsOptions,
   ListSecretsOptions,
+  ListTrainingsOptions,
   ListTransitionOptions,
   ListUsersOptions,
   ListWorkflowExecutionsOptions,
@@ -69,12 +73,15 @@ import type {
   Model,
   ModelList,
   Organization,
+  Plan,
+  PlanList,
   PostHeartbeatOptions,
   PostPredictions,
   PredictionList,
   PredictionResponse,
   Secret,
   SecretList,
+  Training,
   Transition,
   TransitionExecution,
   TransitionExecutionList,
@@ -89,6 +96,7 @@ import type {
   UpdateModelOptions,
   UpdateOrganizationOptions,
   UpdateSecretOptions,
+  UpdateTrainingOptions,
   UpdateTransitionExecution,
   UpdateTransitionOptions,
   UpdateUserOptions,
@@ -954,7 +962,7 @@ export class Client {
   /**
    * Delete an model, calls the DELETE /models/{modelId} endpoint.
    *
-   * @param modelId of the app client
+   * @param modelId Id of the model
    * @returns Model response from REST API
    */
   async deleteModel(modelId: string, options?: DeleteModelOptions): Promise<Model> {
@@ -970,6 +978,69 @@ export class Client {
    */
   async listModels(options?: ListModelsOptions): Promise<ModelList> {
     return this.makeGetRequest<ModelList>('/models', options);
+  }
+
+  /**
+   * List trainings available, calls the GET /models/{modelId}/trainings endpoint.
+   *
+   * @param modelId Id of the model
+   * @param options.maxResults Maximum number of results to be returned
+   * @param options.nextToken A unique token for each page, use the returned token to retrieve the next page.
+   * @param options.status List Trainings with the specified TrainingStatus, or array of TrainingStatus
+   * @returns Trainings response from the REST API
+   */
+  async listTrainings(modelId: string, options?: ListTrainingsOptions): Promise<TrainingList> {
+    return this.makeGetRequest<TrainingList>(`/models/${modelId}/trainings`, options);
+  }
+
+  /**
+   * Requests a training, calls the POST /models/{modelId}/trainings endpoint.
+   *
+   * @param modelId Id of the model
+   * @param options.dataBundleIds DataBundle ids that will be used for training
+   * @param options.instanceType The type of instance that will be used for training
+   * @param options.name Name of the training
+   * @param options.description Description of the training
+   * @returns Training response from the REST API
+   */
+  async createTraining(modelId: string, options: CreateTrainingOption): Promise<Training> {
+    return this.makePostRequest<Training>(`/models/${modelId}/trainings`, options);
+  }
+
+  /**
+   * Update a training, calls the PATCH /models/{modelId}/trainings/{trainingId} endpoint.
+   *
+   * @param modelId Id of the model
+   * @param trainingId Id of the training
+   * @param options.name New name of the training
+   * @param options.description New description of the training
+   * @param options.status Cancel the training with status = 'cancelled'
+   * @returns
+   */
+  async updateTraining(modelId: string, trainingId: string, options: UpdateTrainingOptions): Promise<Training> {
+    return this.makePatchRequest<Training>(`/models/${modelId}/trainings/${trainingId}`, options);
+  }
+
+  /**
+   * List plans available, calls the GET /plans endpoint.
+   *
+   * @param options.owner Organizations to retrieve plans from
+   * @param options.maxResults Maximum number of results to be returned
+   * @param options.nextToken A unique token for each page, use the returned token to retrieve the next page.
+   * @returns Plans response from the REST API
+   */
+  async listPlans(options?: ListPlansOptions): Promise<PlanList> {
+    return this.makeGetRequest('/plans', options);
+  }
+
+  /**
+   * Get information about a specific plan, calls the GET /plans/{plan_id} endpoint.
+   *
+   * @param planId Id of the plan
+   * @returns Plan response from the REST API
+   */
+  async getPlan(planId: string): Promise<Plan> {
+    return this.makeGetRequest(`/plans/${planId}`);
   }
 
   /**
