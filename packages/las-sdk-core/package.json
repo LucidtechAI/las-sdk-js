@@ -20,7 +20,8 @@
   },
   "dependencies": {
     "axios": "^0.24.0",
-    "buffer": "^6.0.3"
+    "buffer": "^6.0.3",
+    "node-abort-controller": "^3.0.1"
   },
   "devDependencies": {
     "@types/node": "^16.11.9",

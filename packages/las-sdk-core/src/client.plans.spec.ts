@@ -2,6 +2,7 @@
  * @jest-environment node
  */
 
+import { AbortController } from 'node-abort-controller';
 import { getTestClient, uuidWithoutDashes } from './helpers';
 
 let client = getTestClient();
