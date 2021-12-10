@@ -32,36 +32,25 @@ const documentResponse = await client.createDocument(fileBuffer, 'image/jpeg');
 
 ## Contributing
 
-Requirements: npm version >=7 (workspaces support)
+This repo uses PNpm workspaces.
+Requirements: PNpm
+
+To install PNpm:
+```
+npm -g install pnpm
+``` 
 
 Install dependencies
 ```
-$ npm install
+pnpm install
 ```
 
 Build
 ```
-$ npm run build
+pnpm run build
 ```
 
 Run tests
 ```
-$ npm run test
-```
-
-## Development
-
-This repo uses NPM workspaces (npm 7+).
-
-### To locally link packages during development
-
-In repo workspace root:
-
-```
-npm link -ws
-```
-
-In target project directory, where you want to use locally linked packages:
-```
-npm link @lucidtech/las-sdk-core @lucidtech/las-sdk-browser @lucidtech/las-sdk-node
+pnpm run test
 ```
