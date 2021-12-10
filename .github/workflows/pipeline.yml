@@ -31,6 +31,7 @@ jobs:
 
     - run: make prism-start
     - run: pnpm install
+    - run: pnpm build
     - run: pnpm test
       env:
         CI: true
