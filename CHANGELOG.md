@@ -1,5 +1,13 @@
 # Changelog 
 
+## Version 7.1.0 - 2021-12-10
+
+- Add getPlan, and listPlans method to Client
+- Add listTrainings, creatingTraining, and updateTraining methods to Client
+- Add numberOfRunningTrainings to Model
+- Add monthlyNumberOfTrainingsAllowed, monthlyNumberOfTrainingsCreated, and planId to Organization
+- Add support for AbortController signal for all requests through requestConfig.signal
+
 ## Version 7.0.0 - 2021-12-08
 
 - Removed 'training' from Model.status
