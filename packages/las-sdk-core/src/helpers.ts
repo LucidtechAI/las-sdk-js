@@ -1,3 +1,5 @@
+import { v4 as uuidv4 } from 'uuid';
+
 import { Credentials, Token } from './credentials';
 import { Client } from './client';
 
@@ -24,6 +26,8 @@ export class TestCredentials extends Credentials {
     });
   }
 }
+
+export const uuidWithoutDashes = () => uuidv4().replace(/-/g, '');
 
 export function sleep(seconds: number) {
   return new Promise((resolve) => setTimeout(resolve, 1000 * seconds));
