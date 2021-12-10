@@ -1,6 +1,6 @@
 {
   "name": "@lucidtech/las-sdk-node",
-  "version": "7.0.0",
+  "version": "7.1.0",
   "author": "Lucidtech AS <hello@lucidtech.ai>",
   "maintainers": [
     "August André Kvernmo <august@lucidtech.ai>",
@@ -16,7 +16,10 @@
   "scripts": {
     "build": "tsc --project tsconfig.build.json",
     "lint": "eslint ./src/**/*",
-    "test": "jest --passWithNoTests ./src"
+    "test": "jest --passWithNoTests ./src",
+    "bump-patch": "pnpm version patch",
+    "bump-minor": "pnpm version minor",
+    "bump-major": "pnpm version major"
   },
   "dependencies": {
     "@lucidtech/las-sdk-core": "workspace:^",

@@ -12,9 +12,9 @@
   "scripts": {
     "build": "pnpm run -r build",
     "publish": "pnpm -r publish",
-    "bump-patch": "pnpm -r version --patch",
-    "bump-minor": "pnpm -r version --minor",
-    "bump-major": "pnpm -r version --major",
+    "bump-patch": "pnpm run -r bump-patch",
+    "bump-minor": "pnpm run -r bump-minor",
+    "bump-major": "pnpm run -r bump-major",
     "test": "jest",
     "coverage": "jest --coverage"
   },
