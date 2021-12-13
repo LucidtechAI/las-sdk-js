@@ -1,4 +1,4 @@
-import { default as uuidv4 } from 'uuid/v4';
+import { v4 as uuidv4 } from 'uuid';
 import functions, { AuthorizationCodeCredentials, PKCE, PKCEDerived } from './credentials';
 
 function getCredentials(testLaunchUri: (arg0: string) => void, pkce?: PKCEDerived) {
@@ -7,7 +7,14 @@ function getCredentials(testLaunchUri: (arg0: string) => void, pkce?: PKCEDerive
   const testAuthEndpoint = 'http://localhost:4010';
   const testRedirectUri = 'testRedirectUri';
 
-  return new AuthorizationCodeCredentials(testApiEndpoint, testClientId, testAuthEndpoint, testRedirectUri, testLaunchUri, pkce);
+  return new AuthorizationCodeCredentials(
+    testApiEndpoint,
+    testClientId,
+    testAuthEndpoint,
+    testRedirectUri,
+    testLaunchUri,
+    pkce,
+  );
 }
 
 test('Testing randomString', () => {
@@ -19,7 +26,9 @@ test('Testing randomString', () => {
 
   Object.defineProperty(window, 'crypto', {
     value: {
-      getRandomValues() {},
+      getRandomValues() {
+        return;
+      },
     },
   });
 

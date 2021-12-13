@@ -1,6 +1,5 @@
 import { TokenStorage, Token } from '@lucidtech/las-sdk-core';
 
-
 export class SessionStorage implements TokenStorage<Token> {
   private keyName: string;
 

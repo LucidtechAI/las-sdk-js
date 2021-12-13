@@ -1,4 +1,4 @@
-export type BuildURLParams = Record<string, undefined|string|Array<string>|number>
+export type BuildURLParams = Record<string, undefined | string | Array<string> | number>;
 
 export function buildURL(url: string, params?: BuildURLParams): string {
   if (!params) {

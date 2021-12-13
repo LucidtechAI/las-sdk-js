@@ -2,6 +2,7 @@
  * @jest-environment node
  */
 
+import { AbortController } from 'node-abort-controller';
 import { v4 as uuidv4 } from 'uuid';
 import { getTestClient } from './helpers';
 import {
@@ -129,16 +130,36 @@ describe('Documents', () => {
       await expect(createDocumentPromise).resolves.toHaveProperty('documentId');
     });
 
-    test.each<ContentType>(['image/jpeg', 'application/pdf', 'image/png', 'image/tiff'])('allows content type: %s', async (contentType) => {
+    test('with AbortController', async () => {
       const content = uuidv4();
-      const createDocumentPromise = client.createDocument(content, contentType);
-      await expect(createDocumentPromise).resolves.toHaveProperty('contentType');
-      await expect(createDocumentPromise).resolves.toHaveProperty('documentId');
+      const contentType = 'image/jpeg';
+      const consentId = createConsentId();
+      const datasetId = createDatasetId();
+      const control = new AbortController();
+      control.abort();
+
+      const createDocumentPromise = client.createDocument(content, contentType, {
+        consentId,
+        datasetId,
+        requestConfig: { signal: control.signal },
+      });
+
+      await expect(createDocumentPromise).rejects.toBeDefined();
     });
+
+    test.each<ContentType>(['image/jpeg', 'application/pdf', 'image/png', 'image/tiff'])(
+      'allows content type: %s',
+      async (contentType) => {
+        const content = uuidv4();
+        const createDocumentPromise = client.createDocument(content, contentType);
+        await expect(createDocumentPromise).resolves.toHaveProperty('contentType');
+        await expect(createDocumentPromise).resolves.toHaveProperty('documentId');
+      },
+    );
 
     test('invalid Content-Type', async () => {
       const content = uuidv4();
-      const contentType = ('erroneousContentType' as unknown) as ContentType;
+      const contentType = 'erroneousContentType' as unknown as ContentType;
       const consentId = createConsentId();
       const createDocumentPromise = client.createDocument(content, contentType, { consentId });
       await expect(createDocumentPromise).rejects.toBeDefined();
@@ -194,6 +215,14 @@ describe('Documents', () => {
       await expect(deleteDocumentPromise).resolves.toHaveProperty('contentType');
       await expect(deleteDocumentPromise).resolves.toHaveProperty('documentId');
     });
+
+    test('with AbortController', async () => {
+      const documentId = createDocumentId();
+      const control = new AbortController();
+      control.abort();
+      const deleteDocumentPromise = client.deleteDocument(documentId, { requestConfig: { signal: control.signal } });
+      await expect(deleteDocumentPromise).rejects.toBeDefined();
+    });
   });
 
   describe('deleteDocuments', () => {
@@ -205,25 +234,25 @@ describe('Documents', () => {
 
     test('with nextToken', async () => {
       const nextToken = uuidv4();
-      let deleteDocumentsPromise = client.deleteDocuments({ nextToken });
+      const deleteDocumentsPromise = client.deleteDocuments({ nextToken });
       await expect(deleteDocumentsPromise).resolves.toHaveProperty('documents');
     });
 
     test('with maxResults', async () => {
       const maxResults = 100;
-      let deleteDocumentsPromise = client.deleteDocuments({ maxResults });
+      const deleteDocumentsPromise = client.deleteDocuments({ maxResults });
       await expect(deleteDocumentsPromise).resolves.toHaveProperty('documents');
     });
   });
 
   describe('listDocuments', () => {
-    test.each<[ListDocumentsOptions]>([
-      [{ consentId: createConsentId() }],
-      [{ datasetId: createDatasetId() }],
-    ])('parameters: %s', async (options) => {
-      const listDocumentsPromise = client.listDocuments(options);
-      await expect(listDocumentsPromise).resolves;
-    });
+    test.each<[ListDocumentsOptions]>([[{ consentId: createConsentId() }], [{ datasetId: createDatasetId() }]])(
+      'parameters: %s',
+      async (options) => {
+        const listDocumentsPromise = client.listDocuments(options);
+        await expect(listDocumentsPromise).resolves;
+      },
+    );
 
     test('accepts pagination params', async () => {
       const maxResults = 1;
@@ -241,7 +270,7 @@ describe('Transitions', () => {
       ['docker', {}],
       ['docker', { parameters: { imageUrl: 'test' } }],
       ['docker', { parameters: { imageUrl: 'test', cpu: 256, memory: 1024 } }],
-      ['docker', { parameters: { assets: { jsRemoteComponent: createAssetId() }}}],
+      ['docker', { parameters: { assets: { jsRemoteComponent: createAssetId() } } }],
     ])('parameters: %s', async (transitionType, options) => {
       const createTransitionPromise = client.createTransition(transitionType, options);
       await expect(createTransitionPromise).resolves.toHaveProperty('transitionId');
@@ -322,7 +351,11 @@ describe('Transitions', () => {
     ])('input: %o', async (input) => {
       const transitionId = createTransitionId();
       const transitionExecutionId = createTransitionExecutionId();
-      const updateTransitionExecutionPromise = client.updateTransitionExecution(transitionId, transitionExecutionId, input);
+      const updateTransitionExecutionPromise = client.updateTransitionExecution(
+        transitionId,
+        transitionExecutionId,
+        input,
+      );
       await expect(updateTransitionExecutionPromise).resolves.toHaveProperty('executionId');
       await expect(updateTransitionExecutionPromise).resolves.toHaveProperty('status');
       await expect(updateTransitionExecutionPromise).resolves.toHaveProperty('transitionId');
@@ -342,39 +375,23 @@ describe('Transitions', () => {
       const transitionId = createTransitionId();
       const transitionExecutionId = createTransitionExecutionId();
       const sendHeartbeatPromise = await client.sendHeartbeat(transitionId, transitionExecutionId);
-      await expect(sendHeartbeatPromise).resolves.toBe('')
-    })
-  })
+      await expect(sendHeartbeatPromise).resolves.toBe('');
+    });
+  });
 });
 
 describe('Workflows', () => {
   describe('createWorkflow', () => {
     test.each<[string, WorkflowSpecification, CreateWorkflowOptions | undefined]>([
-      [
-        'test',
-        { definition: {} },
-        { description: 'test', errorConfig: { email: 'test@test.com' } },
-      ],
-      [
-        'test',
-        { definition: {} },
-        undefined,
-      ],
-      [
-        'test',
-        { definition: {} },
-        { errorConfig: { email: 'test@test.com' } },
-      ],
+      ['test', { definition: {} }, { description: 'test', errorConfig: { email: 'test@test.com' } }],
+      ['test', { definition: {} }, undefined],
+      ['test', { definition: {} }, { errorConfig: { email: 'test@test.com' } }],
       [
         'test',
         { definition: {}, language: 'ASL', version: '1.0.0' },
         { description: 'test', errorConfig: { email: 'test@test.com' } },
       ],
-      [
-        'test',
-        { definition: {} },
-        { description: 'test', errorConfig: { email: 'test@test.com' } },
-      ],
+      ['test', { definition: {} }, { description: 'test', errorConfig: { email: 'test@test.com' } }],
     ])('input: %o', async (name, specification, options) => {
       const createWorkflowPromise = client.createWorkflow(name, specification, options);
       await expect(createWorkflowPromise).resolves.toHaveProperty('name');
@@ -583,7 +600,7 @@ describe('Secrets', () => {
       async (options) => {
         const updateSecretPromise = client.updateSecret('foo', options);
         await expect(updateSecretPromise).resolves.toHaveProperty('secretId');
-      }
+      },
     );
   });
 });
@@ -608,9 +625,9 @@ describe('Predictions', () => {
         postprocessConfig: {
           strategy: 'BEST_N_PAGES',
           parameters: {
-            n: 2
-          }
-        }
+            n: 2,
+          },
+        },
       });
       await expect(createPredictionPromise).resolves.toHaveProperty('documentId');
       await expect(createPredictionPromise).resolves.toHaveProperty('predictions');
@@ -811,7 +828,7 @@ describe('Models', () => {
         },
         100,
         100,
-        undefined
+        undefined,
       ],
     ])('input: %o', async (fieldConfig, width, height, options) => {
       const createModelPromise = client.createModel(fieldConfig, width, height, options);
@@ -927,9 +944,9 @@ describe('AppClients', () => {
           generateSecret: false,
           name: 'App client name',
           description: 'App client description',
-          callbackUrls: [ 'http://localhost:3030/authCallback' ],
-          logoutUrls: [ 'http://localhost:3030/logout' ],
-          loginUrls: [ 'http://localhost:3030/login' ],
+          callbackUrls: ['http://localhost:3030/authCallback'],
+          logoutUrls: ['http://localhost:3030/logout'],
+          loginUrls: ['http://localhost:3030/login'],
           defaultLoginUrl: 'http://localhost:3030/login',
         },
       ],
@@ -954,7 +971,7 @@ describe('AppClients', () => {
       const appClientId = createAppClientId();
       const defaultLoginUrl = 'http://localhost:3030/login';
       const description = 'My app client description';
-      const loginUrls = [ 'http://localhost:3030/login' ];
+      const loginUrls = ['http://localhost:3030/login'];
       const name = 'My app client name';
       const options = { description, name, defaultLoginUrl, loginUrls };
       const updateAppClientPromise = client.updateAppClient(appClientId, options);
@@ -1008,14 +1025,14 @@ describe('DataBundles', () => {
   describe('createDataBundle', () => {
     test.each<[Array<string>, CreateDataBundleOptions]>([
       [
-        [ createDatasetId() ],
+        [createDatasetId()],
         {
           name: 'Data bundle name',
           description: 'Data bundle description',
         },
       ],
       [
-        [ createDatasetId(), createDatasetId(), createDatasetId() ],
+        [createDatasetId(), createDatasetId(), createDatasetId()],
         {
           name: 'Data bundle name',
           description: 'Data bundle description',

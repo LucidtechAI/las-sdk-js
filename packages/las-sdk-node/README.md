@@ -32,25 +32,19 @@ const documentResponse = await client.createDocument(fileBuffer, 'image/jpeg');
 
 ## Contributing
 
-This repo uses PNpm workspaces.
-Requirements: PNpm
-
-To install PNpm:
-```
-npm -g install pnpm
-``` 
+Requirements: npm version >=7 (workspaces support)
 
 Install dependencies
 ```
-pnpm install
+$ npm install
 ```
 
 Build
 ```
-pnpm run build
+$ npm run build
 ```
 
 Run tests
 ```
-pnpm run test
+$ npm run test
 ```

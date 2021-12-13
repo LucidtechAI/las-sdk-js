@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "declaration": true,
+    "module": "commonjs",
+    "resolveJsonModule": true,
+    "target": "es6"
+  },
+  "exclude": ["**/*.spec.ts", "**/lib", "node_modules"]
+}

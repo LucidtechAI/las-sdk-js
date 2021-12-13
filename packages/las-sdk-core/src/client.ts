@@ -1,8 +1,9 @@
-import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
+import axios, { AxiosRequestConfig } from 'axios';
 import { Buffer } from 'buffer';
+import { TrainingList } from '.';
 
 import { Credentials } from './credentials';
-import {
+import type {
   AppClient,
   AppClientList,
   Asset,
@@ -11,12 +12,14 @@ import {
   AxiosFn,
   ContentType,
   CreateAppClientOptions,
+  CreateAssetOptions,
   CreateDataBundleOptions,
   CreateDatasetOptions,
   CreateDocumentOptions,
   CreateModelOptions,
   CreatePredictionsOptions,
   CreateSecretOptions,
+  CreateTrainingOption,
   CreateTransitionOptions,
   CreateUserOptions,
   CreateWorkflowOptions,
@@ -24,8 +27,31 @@ import {
   DataBundleList,
   Dataset,
   DatasetList,
+  DeleteAppClientOptions,
+  DeleteAssetOptions,
+  DeleteDataBundleOptions,
+  DeleteDatasetOptions,
   DeleteDocumentOptions,
+  DeleteDocumentsOptions,
+  DeleteModelOptions,
+  DeleteTransitionOptions,
+  DeleteUserOptions,
+  DeleteWorkflowExecution,
+  DeleteWorkflowOptions,
+  ExecuteTransitionOptions,
+  ExecuteWorkflowOptions,
   FieldConfig,
+  GetAssetOptions,
+  GetDatasetOptions,
+  GetDocumentOptions,
+  GetLogOptions,
+  GetModelOptions,
+  GetOrganizationOptions,
+  GetTransitionExecutionOptions,
+  GetTransitionOptions,
+  GetUserOptions,
+  GetWorkflowExecutionOptions,
+  GetWorkflowOptions,
   LasDocument,
   LasDocumentList,
   LasDocumentWithoutContent,
@@ -35,8 +61,10 @@ import {
   ListDatasetsOptions,
   ListDocumentsOptions,
   ListModelsOptions,
+  ListPlansOptions,
   ListPredictionsOptions,
   ListSecretsOptions,
+  ListTrainingsOptions,
   ListTransitionOptions,
   ListUsersOptions,
   ListWorkflowExecutionsOptions,
@@ -45,11 +73,15 @@ import {
   Model,
   ModelList,
   Organization,
+  Plan,
+  PlanList,
+  PostHeartbeatOptions,
   PostPredictions,
   PredictionList,
   PredictionResponse,
   Secret,
   SecretList,
+  Training,
   Transition,
   TransitionExecution,
   TransitionExecutionList,
@@ -64,6 +96,7 @@ import {
   UpdateModelOptions,
   UpdateOrganizationOptions,
   UpdateSecretOptions,
+  UpdateTrainingOptions,
   UpdateTransitionExecution,
   UpdateTransitionOptions,
   UpdateUserOptions,
@@ -107,8 +140,8 @@ export class Client {
    * @param organizationId Id of the organization
    * @returns Organization response from REST API
    */
-  async getOrganization(organizationId: string): Promise<Organization> {
-    return this.makeGetRequest<Organization>(`/organizations/${organizationId}`);
+  async getOrganization(organizationId: string, options?: GetOrganizationOptions): Promise<Organization> {
+    return this.makeGetRequest<Organization>(`/organizations/${organizationId}`, options);
   }
 
   /**
@@ -154,8 +187,8 @@ export class Client {
    * @param appClientId of the app client
    * @returns AppClient response from REST API
    */
-  async deleteAppClient(appClientId: string): Promise<AppClient> {
-    return this.makeDeleteRequest(`/appClients/${appClientId}`);
+  async deleteAppClient(appClientId: string, options?: DeleteAppClientOptions): Promise<AppClient> {
+    return this.makeDeleteRequest(`/appClients/${appClientId}`, options);
   }
 
   /**
@@ -191,8 +224,8 @@ export class Client {
    * @param documentId Id of the document
    * @returns Document response from REST API
    */
-  async getDocument(documentId: string): Promise<LasDocument> {
-    return this.makeGetRequest<LasDocument>(`/documents/${documentId}`);
+  async getDocument(documentId: string, options?: GetDocumentOptions): Promise<LasDocument> {
+    return this.makeGetRequest<LasDocument>(`/documents/${documentId}`, options);
   }
 
   /**
@@ -227,7 +260,7 @@ export class Client {
    * @param options.consentId Ids of the consents that marks the owner of the document
    * @returns Documents response from REST API
    */
-  async deleteDocuments(options?: DeleteDocumentOptions): Promise<LasDocumentList> {
+  async deleteDocuments(options?: DeleteDocumentsOptions): Promise<LasDocumentList> {
     return this.makeDeleteRequest<LasDocumentList>('/documents', options);
   }
 
@@ -237,8 +270,8 @@ export class Client {
    * @param documentId of the document
    * @returns Document response from REST API
    */
-  async deleteDocument(documentId: string): Promise<LasDocument> {
-    return this.makeDeleteRequest(`/documents/${documentId}`);
+  async deleteDocument(documentId: string, options?: DeleteDocumentOptions): Promise<LasDocument> {
+    return this.makeDeleteRequest(`/documents/${documentId}`, options);
   }
 
   /**
@@ -270,8 +303,8 @@ export class Client {
    * @param transitionId Id of the transition
    * @returns Transition response from REST API
    */
-  async getTransition(transitionId: string): Promise<Transition> {
-    return this.makeGetRequest(`/transitions/${transitionId}`);
+  async getTransition(transitionId: string, options?: GetTransitionOptions): Promise<Transition> {
+    return this.makeGetRequest(`/transitions/${transitionId}`, options);
   }
 
   /**
@@ -304,8 +337,8 @@ export class Client {
    * @param transitionId Id of the transition
    * @returns Transition response from REST API
    */
-  async deleteTransition(transitionId: string): Promise<Transition> {
-    return this.makeDeleteRequest(`/transitions/${transitionId}`);
+  async deleteTransition(transitionId: string, options?: DeleteTransitionOptions): Promise<Transition> {
+    return this.makeDeleteRequest(`/transitions/${transitionId}`, options);
   }
 
   /**
@@ -314,8 +347,8 @@ export class Client {
    * @param transitionId Id of the transition
    * @returns Transition execution response from REST API
    */
-  async executeTransition(transitionId: string): Promise<TransitionExecution> {
-    return this.makePostRequest<TransitionExecution>(`/transitions/${transitionId}/executions`, {});
+  async executeTransition(transitionId: string, options?: ExecuteTransitionOptions): Promise<TransitionExecution> {
+    return this.makePostRequest<TransitionExecution>(`/transitions/${transitionId}/executions`, options);
   }
 
   /**
@@ -325,8 +358,12 @@ export class Client {
    * @param transitionExecutionId Id of the execution
    * @returns Transition execution responses from REST API
    */
-  async getTransitionExecution(transitionId: string, transitionExecutionId: string): Promise<TransitionExecution> {
-    return this.makeGetRequest(`/transitions/${transitionId}/executions/${transitionExecutionId}`);
+  async getTransitionExecution(
+    transitionId: string,
+    transitionExecutionId: string,
+    options?: GetTransitionExecutionOptions,
+  ): Promise<TransitionExecution> {
+    return this.makeGetRequest(`/transitions/${transitionId}/executions/${transitionExecutionId}`, options);
   }
 
   /**
@@ -375,8 +412,12 @@ export class Client {
    * @param transitionExecutionId Id of the transition execution
    * @returns Empty response
    */
-  async sendHeartbeat(transitionId: string, transitionExecutionId: string): Promise<unknown> {
-    return this.makePostRequest(`/transitions/${transitionId}/executions/${transitionExecutionId}/heartbeats`, {});
+  async sendHeartbeat(
+    transitionId: string,
+    transitionExecutionId: string,
+    options?: PostHeartbeatOptions,
+  ): Promise<unknown> {
+    return this.makePostRequest(`/transitions/${transitionId}/executions/${transitionExecutionId}/heartbeats`, options);
   }
 
   /**
@@ -411,8 +452,8 @@ export class Client {
    * @param workflowId Id of the workflow
    * @returns Workflow response from REST API
    */
-  async getWorkflow(workflowId: string): Promise<Workflow> {
-    return this.makeGetRequest(`/workflows/${workflowId}`);
+  async getWorkflow(workflowId: string, options?: GetWorkflowOptions): Promise<Workflow> {
+    return this.makeGetRequest(`/workflows/${workflowId}`, options);
   }
 
   /**
@@ -432,8 +473,8 @@ export class Client {
    * @param workflowId Id of the workflow
    * @returns Workflow response from REST API
    */
-  async deleteWorkflow(workflowId: string): Promise<Workflow> {
-    return this.makeDeleteRequest<Workflow>(`/workflows/${workflowId}`);
+  async deleteWorkflow(workflowId: string, options?: DeleteWorkflowOptions): Promise<Workflow> {
+    return this.makeDeleteRequest<Workflow>(`/workflows/${workflowId}`, options);
   }
 
   /**
@@ -453,9 +494,14 @@ export class Client {
    * @param input Input to the first step of the workflow
    * @returns Workflow execution response from REST API
    */
-  async executeWorkflow(workflowId: string, input: object): Promise<WorkflowExecution> {
+  async executeWorkflow(
+    workflowId: string,
+    input: object,
+    options?: ExecuteWorkflowOptions,
+  ): Promise<WorkflowExecution> {
     const body = {
       input,
+      ...options,
     };
 
     return this.makePostRequest<WorkflowExecution>(`/workflows/${workflowId}/executions`, body);
@@ -486,8 +532,12 @@ export class Client {
    * @param executionId Id of the execution to get
    * @returns Workflow execution response from REST API
    */
-  async getWorkflowExecution(workflowId: string, executionId: string): Promise<WorkflowExecution> {
-    return this.makeGetRequest(`/workflows/${workflowId}/executions/${executionId}`);
+  async getWorkflowExecution(
+    workflowId: string,
+    executionId: string,
+    options?: GetWorkflowExecutionOptions,
+  ): Promise<WorkflowExecution> {
+    return this.makeGetRequest(`/workflows/${workflowId}/executions/${executionId}`, options);
   }
 
   /**
@@ -516,8 +566,12 @@ export class Client {
    * @param executionId Id of the execution
    * @returns WorkflowExecution response from REST API
    */
-  async deleteWorkflowExecution(workflowId: string, executionId: string): Promise<WorkflowExecution> {
-    return this.makeDeleteRequest(`/workflows/${workflowId}/executions/${executionId}`);
+  async deleteWorkflowExecution(
+    workflowId: string,
+    executionId: string,
+    options?: DeleteWorkflowExecution,
+  ): Promise<WorkflowExecution> {
+    return this.makeDeleteRequest(`/workflows/${workflowId}/executions/${executionId}`, options);
   }
 
   /**
@@ -559,9 +613,9 @@ export class Client {
    * @param content Content to POST (base64-encoded string | Buffer)
    * @returns Asset response from REST API
    */
-  async createAsset(content: string): Promise<Asset> {
+  async createAsset(content: string, options?: CreateAssetOptions): Promise<Asset> {
     const encodedContent = typeof content === 'string' ? content : Buffer.from(content).toString('base64');
-    return this.makePostRequest<Asset>('/assets', { content: encodedContent });
+    return this.makePostRequest<Asset>('/assets', { content: encodedContent, ...options });
   }
 
   /**
@@ -570,8 +624,8 @@ export class Client {
    * @param assetId of the app client
    * @returns Asset response from REST API
    */
-  async deleteAsset(assetId: string): Promise<Asset> {
-    return this.makeDeleteRequest(`/assets/${assetId}`);
+  async deleteAsset(assetId: string, options?: DeleteAssetOptions): Promise<Asset> {
+    return this.makeDeleteRequest(`/assets/${assetId}`, options);
   }
 
   /**
@@ -591,8 +645,8 @@ export class Client {
    * @param assetId Id of the asset
    * @returns Asset response from REST API
    */
-  async getAsset(assetId: string): Promise<Asset> {
-    return this.makeGetRequest(`/assets/${assetId}`);
+  async getAsset(assetId: string, options?: GetAssetOptions): Promise<Asset> {
+    return this.makeGetRequest(`/assets/${assetId}`, options);
   }
 
   /**
@@ -607,7 +661,8 @@ export class Client {
     if (data) {
       body = { ...data };
       if (data.content) {
-        const encodedContent = typeof data.content === 'string' ? data.content : Buffer.from(data.content).toString('base64');
+        const encodedContent =
+          typeof data.content === 'string' ? data.content : Buffer.from(data.content).toString('base64');
         body = { ...body, content: encodedContent };
       }
     }
@@ -621,8 +676,8 @@ export class Client {
    * @param datasetId Id of the dataset
    * @returns Dataset response from REST API
    */
-  async getDataset(datasetId: string): Promise<Dataset> {
-    return this.makeGetRequest(`/datasets/${datasetId}`);
+  async getDataset(datasetId: string, options?: GetDatasetOptions): Promise<Dataset> {
+    return this.makeGetRequest(`/datasets/${datasetId}`, options);
   }
 
   /**
@@ -667,7 +722,7 @@ export class Client {
    * @param deleteDocuments Set to true to delete documents in dataset before deleting dataset
    * @returns Dataset response from REST API
    */
-  async deleteDataset(datasetId: string, deleteDocuments = false): Promise<Dataset> {
+  async deleteDataset(datasetId: string, deleteDocuments = false, options?: DeleteDatasetOptions): Promise<Dataset> {
     if (deleteDocuments) {
       let response = await this.deleteDocuments({ datasetId });
       while (response.nextToken) {
@@ -696,7 +751,7 @@ export class Client {
       }
     }
 
-    return this.makeDeleteRequest<Dataset>(`/datasets/${datasetId}`);
+    return this.makeDeleteRequest<Dataset>(`/datasets/${datasetId}`, options);
   }
 
   /**
@@ -729,8 +784,12 @@ export class Client {
    * @param dataBundleId of the dataBundle
    * @returns DataBundle response from REST API
    */
-  async deleteDataBundle(modelId: string, dataBundleId: string): Promise<DataBundle> {
-    return this.makeDeleteRequest(`/models/${modelId}/dataBundles/${dataBundleId}`);
+  async deleteDataBundle(
+    modelId: string,
+    dataBundleId: string,
+    options?: DeleteDataBundleOptions,
+  ): Promise<DataBundle> {
+    return this.makeDeleteRequest(`/models/${modelId}/dataBundles/${dataBundleId}`, options);
   }
 
   /**
@@ -793,8 +852,8 @@ export class Client {
    * @param userId Id of the user
    * @returns User response from REST API
    */
-  async getUser(userId: string): Promise<User> {
-    return this.makeGetRequest<User>(`/users/${userId}`);
+  async getUser(userId: string, options?: GetUserOptions): Promise<User> {
+    return this.makeGetRequest<User>(`/users/${userId}`, options);
   }
 
   /**
@@ -815,8 +874,8 @@ export class Client {
    * @param userId Id of the user
    * @returns User response from REST API
    */
-  async deleteUser(userId: string): Promise<User> {
-    return this.makeDeleteRequest(`/users/${userId}`);
+  async deleteUser(userId: string, options?: DeleteUserOptions): Promise<User> {
+    return this.makeDeleteRequest(`/users/${userId}`, options);
   }
 
   /**
@@ -879,8 +938,8 @@ export class Client {
    * @param modelId Id of the model
    * @returns Model response from REST API
    */
-  async getModel(modelId: string): Promise<Model> {
-    return this.makeGetRequest(`/models/${modelId}`);
+  async getModel(modelId: string, options?: GetModelOptions): Promise<Model> {
+    return this.makeGetRequest(`/models/${modelId}`, options);
   }
 
   /**
@@ -903,11 +962,11 @@ export class Client {
   /**
    * Delete an model, calls the DELETE /models/{modelId} endpoint.
    *
-   * @param modelId of the app client
+   * @param modelId Id of the model
    * @returns Model response from REST API
    */
-  async deleteModel(modelId: string): Promise<Model> {
-    return this.makeDeleteRequest(`/models/${modelId}`);
+  async deleteModel(modelId: string, options?: DeleteModelOptions): Promise<Model> {
+    return this.makeDeleteRequest(`/models/${modelId}`, options);
   }
 
   /**
@@ -922,13 +981,76 @@ export class Client {
   }
 
   /**
+   * List trainings available, calls the GET /models/{modelId}/trainings endpoint.
+   *
+   * @param modelId Id of the model
+   * @param options.maxResults Maximum number of results to be returned
+   * @param options.nextToken A unique token for each page, use the returned token to retrieve the next page.
+   * @param options.status List Trainings with the specified TrainingStatus, or array of TrainingStatus
+   * @returns Trainings response from the REST API
+   */
+  async listTrainings(modelId: string, options?: ListTrainingsOptions): Promise<TrainingList> {
+    return this.makeGetRequest<TrainingList>(`/models/${modelId}/trainings`, options);
+  }
+
+  /**
+   * Requests a training, calls the POST /models/{modelId}/trainings endpoint.
+   *
+   * @param modelId Id of the model
+   * @param options.dataBundleIds DataBundle ids that will be used for training
+   * @param options.instanceType The type of instance that will be used for training
+   * @param options.name Name of the training
+   * @param options.description Description of the training
+   * @returns Training response from the REST API
+   */
+  async createTraining(modelId: string, options: CreateTrainingOption): Promise<Training> {
+    return this.makePostRequest<Training>(`/models/${modelId}/trainings`, options);
+  }
+
+  /**
+   * Update a training, calls the PATCH /models/{modelId}/trainings/{trainingId} endpoint.
+   *
+   * @param modelId Id of the model
+   * @param trainingId Id of the training
+   * @param options.name New name of the training
+   * @param options.description New description of the training
+   * @param options.status Cancel the training with status = 'cancelled'
+   * @returns
+   */
+  async updateTraining(modelId: string, trainingId: string, options: UpdateTrainingOptions): Promise<Training> {
+    return this.makePatchRequest<Training>(`/models/${modelId}/trainings/${trainingId}`, options);
+  }
+
+  /**
+   * List plans available, calls the GET /plans endpoint.
+   *
+   * @param options.owner Organizations to retrieve plans from
+   * @param options.maxResults Maximum number of results to be returned
+   * @param options.nextToken A unique token for each page, use the returned token to retrieve the next page.
+   * @returns Plans response from the REST API
+   */
+  async listPlans(options?: ListPlansOptions): Promise<PlanList> {
+    return this.makeGetRequest('/plans', options);
+  }
+
+  /**
+   * Get information about a specific plan, calls the GET /plans/{plan_id} endpoint.
+   *
+   * @param planId Id of the plan
+   * @returns Plan response from the REST API
+   */
+  async getPlan(planId: string): Promise<Plan> {
+    return this.makeGetRequest(`/plans/${planId}`);
+  }
+
+  /**
    * Get log, calls the GET /logs/{logId} endpoint.
    *
    * @param logId Id of the log
    * @returns Log response from REST API
    */
-  async getLog(logId: string): Promise<Log> {
-    return this.makeGetRequest<Log>(`/logs/${logId}`);
+  async getLog(logId: string, options?: GetLogOptions): Promise<Log> {
+    return this.makeGetRequest<Log>(`/logs/${logId}`, options);
   }
 
   /**
@@ -944,31 +1066,49 @@ export class Client {
   }
 
   /* eslint-disable @typescript-eslint/no-explicit-any */
-  async makeGetRequest<T>(path: string, query?: any): Promise<T> {
-    return this.makeAuthorizedRequest<T>(axios.get, buildURL(path, query));
+  async makeGetRequest<T>(path: string, options: any = {}): Promise<T> {
+    const { requestConfig, ...query } = options;
+    return this.makeAuthorizedRequest<T>(axios.get, buildURL(path, query), requestConfig);
   }
 
-  async makeDeleteRequest<T>(path: string, query?: any): Promise<T> {
-    return this.makeAuthorizedRequest(axios.delete, buildURL(path, query));
+  async makeDeleteRequest<T>(path: string, options: any = {}): Promise<T> {
+    const { requestConfig, ...query } = options;
+    return this.makeAuthorizedRequest(axios.delete, buildURL(path, query), requestConfig);
   }
 
-  async makePostRequest<T>(path: string, body: any): Promise<T> {
-    return this.makeAuthorizedRequest(axios.post, path, body);
+  async makePostRequest<T>(path: string, options: any): Promise<T> {
+    return this.makeAuthorizedBodyRequest(axios.post, path, options);
   }
 
-  async makePatchRequest<T>(path: string, body: any): Promise<T> {
-    return this.makeAuthorizedRequest(axios.patch, path, body);
+  async makePatchRequest<T>(path: string, options: any): Promise<T> {
+    return this.makeAuthorizedBodyRequest(axios.patch, path, options);
   }
 
-  private async makeAuthorizedRequest<T>(axiosFn: AxiosFn, path: string, body?: any): Promise<T> {
+  private async makeAuthorizedRequest<T>(axiosFn: AxiosFn, path: string, requestConfig: any = {}): Promise<T> {
     const endpoint = `${this.credentials.apiEndpoint}${path}`;
     const headers = await this.getAuthorizationHeaders();
-    const config: AxiosRequestConfig = { headers };
-    const handle = body
-      ? (): Promise<AxiosResponse<T>> => axiosFn<T>(endpoint, body, config)
-      : (): Promise<AxiosResponse<T>> => axiosFn<T>(endpoint, config);
+    let config: AxiosRequestConfig = { headers };
+    if (requestConfig) {
+      config = { ...config, ...requestConfig };
+    }
 
-    return (await handle()).data;
+    const result = await axiosFn<T>(endpoint, config);
+
+    return result.data;
+  }
+
+  private async makeAuthorizedBodyRequest<T>(axiosFn: AxiosFn, path: string, options: any = {}): Promise<T> {
+    const endpoint = `${this.credentials.apiEndpoint}${path}`;
+    const headers = await this.getAuthorizationHeaders();
+    const { requestConfig, ...body } = options;
+    let config: AxiosRequestConfig = { headers };
+    if (requestConfig) {
+      config = { ...config, ...requestConfig };
+    }
+
+    const result = await axiosFn<T>(endpoint, body, config);
+
+    return result.data;
   }
   /* eslint-enable */
 

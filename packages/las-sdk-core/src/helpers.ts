@@ -1,3 +1,5 @@
+import { v4 as uuidv4 } from 'uuid';
+
 import { Credentials, Token } from './credentials';
 import { Client } from './client';
 
@@ -10,12 +12,7 @@ export class TestCredentials extends Credentials {
 
   testRefreshToken: string;
 
-  constructor(
-    testEndpoint: string,
-    testAccessToken: string,
-    testExpiresInSeconds: number,
-    testRefreshToken: string,
-  ) {
+  constructor(testEndpoint: string, testAccessToken: string, testExpiresInSeconds: number, testRefreshToken: string) {
     super(testEndpoint);
 
     this.testAccessToken = testAccessToken;
@@ -24,12 +21,13 @@ export class TestCredentials extends Credentials {
   }
 
   getToken(): Promise<Token> {
-    return new Promise<Token>((resolve, reject) => {
+    return new Promise<Token>((resolve, _reject) => {
       resolve(new Token(this.testAccessToken, this.testExpiration, this.testRefreshToken));
     });
   }
 }
 
+export const uuidWithoutDashes = () => uuidv4().replace(/-/g, '');
 
 export function sleep(seconds: number) {
   return new Promise((resolve) => setTimeout(resolve, 1000 * seconds));
