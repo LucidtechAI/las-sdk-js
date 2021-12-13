@@ -1,4 +1,5 @@
 {
+  "name": "@lucidtech/las-sdk-js",
   "engines": {
     "node": ">=14",
     "pnpm": ">=4"
