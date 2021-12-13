@@ -1,5 +1,4 @@
 {
-  "name": "@lucidtech/las-sdk-js",
   "engines": {
     "node": ">=14",
     "pnpm": ">=4"
@@ -10,11 +9,11 @@
     "./packages/las-sdk-node"
   ],
   "scripts": {
-    "build": "pnpm run -r build",
-    "publish": "pnpm -r publish",
-    "bump-patch": "pnpm run -r bump-patch",
-    "bump-minor": "pnpm run -r bump-minor",
-    "bump-major": "pnpm run -r bump-major",
+    "build": "pnpm run -r build --filter ./packages",
+    "publish-packages": "pnpm -r publish --filter ./packages",
+    "bump-patch": "pnpm run -r bump-patch --filter ./packages",
+    "bump-minor": "pnpm run -r bump-minor --filter ./packages",
+    "bump-major": "pnpm run -r bump-major --filter ./packages",
     "test": "jest",
     "coverage": "jest --coverage"
   },
