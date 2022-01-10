@@ -198,6 +198,8 @@ export class Client {
    * @param contentType MIME type for the document
    * @param options.consentId Id of the consent that marks the owner of the document
    * @param options.groundTruth List of GroundTruth items representing the ground truth values for the document
+   * @param data.description Description of document
+   * @param data.name Name of document
    * @returns Document response from REST API
    */
   async createDocument(
@@ -247,6 +249,8 @@ export class Client {
    *
    * @param documentId Id of the document
    * @param data.groundTruth List of GroundTruth items representing the ground truth values for the document
+   * @param data.description Description of document
+   * @param data.name Name of document
    * @returns Document response from REST API
    */
   async updateDocument(documentId: string, data: UpdateDocumentOptions): Promise<LasDocument> {
@@ -686,6 +690,7 @@ export class Client {
    * @param options.name Name of the dataset
    * @param options.description Description of the dataset
    * @param options.retentionInDays Maximum retention for documents in the dataset
+   * @param options.containsPersonallyIdentifiableInformation If dataset contains personally identifiable information
    * @returns Dataset response from REST API
    */
   async createDataset(options: CreateDatasetOptions): Promise<Dataset> {
@@ -698,6 +703,8 @@ export class Client {
    * @param datasetId Id of the dataset
    * @param options.description Description of dataset
    * @param options.name Name of dataset
+   * @param options.retentionInDays Maximum retention for documents in the dataset
+   * @param options.containsPersonallyIdentifiableInformation If dataset contains personally identifiable information
    * @returns Dataset response from REST API with content
    */
   async updateDataset(datasetId: string, options: UpdateDatasetOptions): Promise<Dataset> {
