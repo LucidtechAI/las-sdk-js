@@ -18,6 +18,8 @@ export type LasDocument = {
   content: string;
   contentType: ContentType;
   datasetId?: string;
+  name: string | null;
+  description: string | null;
   documentId: string;
   groundTruth?: Array<GroundTruth>;
   retentionInDays: number;
@@ -32,6 +34,8 @@ export type LasDocumentWithoutContent = Omit<LasDocument, 'content'>;
 export type CreateDocumentOptions = RequestConfig & {
   consentId?: string;
   datasetId?: string;
+  name?: string | null;
+  description?: string | null;
   groundTruth?: Array<GroundTruth>;
   retentionInDays?: number;
 };
@@ -39,6 +43,8 @@ export type CreateDocumentOptions = RequestConfig & {
 export type UpdateDocumentOptions = RequestConfig & {
   groundTruth?: Array<GroundTruth>;
   retentionInDays?: number;
+  name?: string | null;
+  description?: string | null;
 };
 
 export type GetDocumentOptions = RequestConfig;
@@ -333,6 +339,8 @@ export type CreateDatasetOptions = RequestConfig & {
 export type UpdateDatasetOptions = RequestConfig & {
   description?: string;
   name?: string;
+  retentionInDays?: number;
+  containsPersonallyIdentifiableInformation?: boolean;
 };
 
 export type DatasetList = {

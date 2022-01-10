@@ -1,5 +1,10 @@
 # Changelog 
 
+## Version 7.1.1 - 2022-01-10
+
+- Add name, and description to LasDocument type, createDocument, and updateDocument methods
+- Add retentionInDays, containsPersonallyIdentifiableInformation to updateDataset method
+
 ## Version 7.1.0 - 2021-12-10
 
 - Add getPlan, and listPlans method to Client
