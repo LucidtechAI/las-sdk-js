@@ -1,5 +1,9 @@
 # Changelog 
 
+## Version 7.1.2 - 2022-02-09
+
+- Fixed a bug causing refresh token to be overwritten
+
 ## Version 7.1.1 - 2022-01-10
 
 - Add name, and description to LasDocument type, createDocument, and updateDocument methods

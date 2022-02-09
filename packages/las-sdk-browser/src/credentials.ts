@@ -128,8 +128,12 @@ export class AuthorizationCodeCredentials extends Credentials {
       };
 
       this.postToTokenEndpoint(params)
-        .then((token) => {
-          resolve(token);
+        .then((newToken) => {
+          resolve(new Token(
+            newToken.accessToken,
+            newToken.expiration,
+            newToken.refreshToken || token.refreshToken,
+          ));
         })
         .catch((error) => {
           reject(error);
