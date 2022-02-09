@@ -35,7 +35,6 @@ describe('Plans', () => {
       const planId = createPlanId();
       const listPlansPromise = client.getPlan(planId);
 
-      await expect(listPlansPromise).resolves.toHaveProperty('billingCycle');
       await expect(listPlansPromise).resolves.toHaveProperty('currency');
       await expect(listPlansPromise).resolves.toHaveProperty('latest');
       await expect(listPlansPromise).resolves.toHaveProperty('name');
