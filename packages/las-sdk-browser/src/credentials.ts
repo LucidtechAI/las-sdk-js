@@ -132,7 +132,7 @@ export class AuthorizationCodeCredentials extends Credentials {
           resolve(new Token(
             newToken.accessToken,
             newToken.expiration,
-            token.refreshToken,
+            newToken.refreshToken || token.refreshToken,
           ));
         })
         .catch((error) => {
