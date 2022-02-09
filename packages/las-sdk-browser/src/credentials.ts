@@ -128,8 +128,12 @@ export class AuthorizationCodeCredentials extends Credentials {
       };
 
       this.postToTokenEndpoint(params)
-        .then((token) => {
-          resolve(token);
+        .then((newToken) => {
+          resolve(new Token(
+            newToken.accessToken,
+            newToken.expiration,
+            token.refreshToken,
+          ));
         })
         .catch((error) => {
           reject(error);
@@ -173,7 +177,7 @@ export class AuthorizationCodeCredentials extends Credentials {
           const token = new Token(
             response.data.access_token,
             Date.now() + 1000 * response.data.expires_in,
-            response.data.refresh_token || this.token.refreshToken,
+            response.data.refresh_token,
           );
           resolve(token);
         })
