@@ -173,7 +173,7 @@ export class AuthorizationCodeCredentials extends Credentials {
           const token = new Token(
             response.data.access_token,
             Date.now() + 1000 * response.data.expires_in,
-            response.data.refresh_token,
+            response.data.refresh_token || this.token.refreshToken,
           );
           resolve(token);
         })
