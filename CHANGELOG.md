@@ -1,5 +1,9 @@
 # Changelog 
 
+## Version 7.1.3 - 2022-02-11
+
+- Added debug messages to AuthorizationCodeCredentials
+
 ## Version 7.1.2 - 2022-02-09
 
 - Fixed a bug causing refresh token to be overwritten
