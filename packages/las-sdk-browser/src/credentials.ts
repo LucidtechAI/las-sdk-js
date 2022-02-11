@@ -121,6 +121,7 @@ export class AuthorizationCodeCredentials extends Credentials {
         return reject({ message: 'No refresh token available' });
       }
 
+      console.debug('Getting accessToken using refreshToken');
       const params = {
         grant_type: 'refresh_token',
         client_id: this.clientId,
@@ -136,6 +137,7 @@ export class AuthorizationCodeCredentials extends Credentials {
           ));
         })
         .catch((error) => {
+          console.debug(`Error getting accessToken using refreshToken: ${error.message}`);
           reject(error);
         });
     });
@@ -143,6 +145,8 @@ export class AuthorizationCodeCredentials extends Credentials {
 
   private getTokenFromCode(): Promise<Token> {
     return new Promise<Token>((resolve, reject) => {
+      console.debug('Getting accessToken using PKCE code');
+
       if (this.pkce) {
         const params = {
           grant_type: 'authorization_code',
@@ -157,6 +161,7 @@ export class AuthorizationCodeCredentials extends Credentials {
             resolve(token);
           })
           .catch((error) => {
+            console.debug(`Error getting accessToken using PKCE code ${error.message}`);
             reject(error);
           });
       } else {
