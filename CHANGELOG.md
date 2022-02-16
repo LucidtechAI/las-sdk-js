@@ -1,5 +1,9 @@
 # Changelog 
 
+## Version 7.1.4 - 2022-02-16
+
+- Add metadata to LasDocument, Model, Dataset, and Training types
+
 ## Version 7.1.3 - 2022-02-11
 
 - Added debug messages to AuthorizationCodeCredentials

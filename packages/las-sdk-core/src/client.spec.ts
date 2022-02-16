@@ -128,6 +128,7 @@ describe('Documents', () => {
       await expect(createDocumentPromise).resolves.toHaveProperty('contentType');
       await expect(createDocumentPromise).resolves.toHaveProperty('datasetId');
       await expect(createDocumentPromise).resolves.toHaveProperty('documentId');
+      await expect(createDocumentPromise).resolves.toHaveProperty('metadata');
     });
 
     test('with AbortController', async () => {
@@ -188,6 +189,7 @@ describe('Documents', () => {
       const getDocumentPromise = client.getDocument(documentId);
       await expect(getDocumentPromise).resolves.toHaveProperty('consentId');
       await expect(getDocumentPromise).resolves.toHaveProperty('documentId');
+      await expect(getDocumentPromise).resolves.toHaveProperty('metadata');
       await expect(getDocumentPromise).resolves.toHaveProperty('contentType');
       await expect(getDocumentPromise).resolves.toHaveProperty('createdTime');
       await expect(getDocumentPromise).resolves.toHaveProperty('updatedTime');
@@ -204,6 +206,7 @@ describe('Documents', () => {
       const updateDocumentPromise = client.updateDocument(documentId, { groundTruth, retentionInDays: 500 });
       await expect(updateDocumentPromise).resolves.toHaveProperty('consentId');
       await expect(updateDocumentPromise).resolves.toHaveProperty('documentId');
+      await expect(updateDocumentPromise).resolves.toHaveProperty('metadata');
       await expect(updateDocumentPromise).resolves.toHaveProperty('contentType');
     });
   });
@@ -709,6 +712,7 @@ describe('Datasets', () => {
       await expect(getDatasetPromise).resolves.toHaveProperty('createdTime');
       await expect(getDatasetPromise).resolves.toHaveProperty('datasetId');
       await expect(getDatasetPromise).resolves.toHaveProperty('description');
+      await expect(getDatasetPromise).resolves.toHaveProperty('metadata');
       await expect(getDatasetPromise).resolves.toHaveProperty('numberOfDocuments');
       await expect(getDatasetPromise).resolves.toHaveProperty('retentionInDays');
       await expect(getDatasetPromise).resolves.toHaveProperty('storageLocation');
@@ -729,6 +733,7 @@ describe('Datasets', () => {
       await expect(createDatasetPromise).resolves.toHaveProperty('createdTime');
       await expect(createDatasetPromise).resolves.toHaveProperty('datasetId');
       await expect(createDatasetPromise).resolves.toHaveProperty('description');
+      await expect(createDatasetPromise).resolves.toHaveProperty('metadata');
       await expect(createDatasetPromise).resolves.toHaveProperty('numberOfDocuments');
       await expect(createDatasetPromise).resolves.toHaveProperty('retentionInDays');
       await expect(createDatasetPromise).resolves.toHaveProperty('storageLocation');
@@ -748,6 +753,7 @@ describe('Datasets', () => {
       await expect(updateDatasetPromise).resolves.toHaveProperty('createdTime');
       await expect(updateDatasetPromise).resolves.toHaveProperty('datasetId');
       await expect(updateDatasetPromise).resolves.toHaveProperty('description');
+      await expect(updateDatasetPromise).resolves.toHaveProperty('metadata');
       await expect(updateDatasetPromise).resolves.toHaveProperty('numberOfDocuments');
       await expect(updateDatasetPromise).resolves.toHaveProperty('retentionInDays');
       await expect(updateDatasetPromise).resolves.toHaveProperty('storageLocation');
@@ -764,6 +770,7 @@ describe('Datasets', () => {
       await expect(deleteDatasetPromise).resolves.toHaveProperty('createdTime');
       await expect(deleteDatasetPromise).resolves.toHaveProperty('datasetId');
       await expect(deleteDatasetPromise).resolves.toHaveProperty('description');
+      await expect(deleteDatasetPromise).resolves.toHaveProperty('metadata');
       await expect(deleteDatasetPromise).resolves.toHaveProperty('numberOfDocuments');
       await expect(deleteDatasetPromise).resolves.toHaveProperty('retentionInDays');
       await expect(deleteDatasetPromise).resolves.toHaveProperty('storageLocation');
@@ -780,6 +787,7 @@ describe('Datasets', () => {
       await expect(deleteDatasetPromise).resolves.toHaveProperty('createdTime');
       await expect(deleteDatasetPromise).resolves.toHaveProperty('datasetId');
       await expect(deleteDatasetPromise).resolves.toHaveProperty('description');
+      await expect(deleteDatasetPromise).resolves.toHaveProperty('metadata');
       await expect(deleteDatasetPromise).resolves.toHaveProperty('numberOfDocuments');
       await expect(deleteDatasetPromise).resolves.toHaveProperty('retentionInDays');
       await expect(deleteDatasetPromise).resolves.toHaveProperty('storageLocation');
@@ -836,6 +844,7 @@ describe('Models', () => {
       await expect(createModelPromise).resolves.toHaveProperty('description');
       await expect(createModelPromise).resolves.toHaveProperty('fieldConfig');
       await expect(createModelPromise).resolves.toHaveProperty('height');
+      await expect(createModelPromise).resolves.toHaveProperty('metadata');
       await expect(createModelPromise).resolves.toHaveProperty('modelId');
       await expect(createModelPromise).resolves.toHaveProperty('name');
       await expect(createModelPromise).resolves.toHaveProperty('preprocessConfig');
@@ -853,6 +862,7 @@ describe('Models', () => {
       await expect(getModelPromise).resolves.toHaveProperty('description');
       await expect(getModelPromise).resolves.toHaveProperty('fieldConfig');
       await expect(getModelPromise).resolves.toHaveProperty('height');
+      await expect(getModelPromise).resolves.toHaveProperty('metadata');
       await expect(getModelPromise).resolves.toHaveProperty('modelId');
       await expect(getModelPromise).resolves.toHaveProperty('name');
       await expect(getModelPromise).resolves.toHaveProperty('preprocessConfig');
@@ -885,6 +895,7 @@ describe('Models', () => {
       await expect(updateModelPromise).resolves.toHaveProperty('description');
       await expect(updateModelPromise).resolves.toHaveProperty('fieldConfig');
       await expect(updateModelPromise).resolves.toHaveProperty('height');
+      await expect(updateModelPromise).resolves.toHaveProperty('metadata');
       await expect(updateModelPromise).resolves.toHaveProperty('modelId');
       await expect(updateModelPromise).resolves.toHaveProperty('name');
       await expect(updateModelPromise).resolves.toHaveProperty('preprocessConfig');
@@ -902,6 +913,7 @@ describe('Models', () => {
       await expect(deleteModelPromise).resolves.toHaveProperty('description');
       await expect(deleteModelPromise).resolves.toHaveProperty('fieldConfig');
       await expect(deleteModelPromise).resolves.toHaveProperty('height');
+      await expect(deleteModelPromise).resolves.toHaveProperty('metadata');
       await expect(deleteModelPromise).resolves.toHaveProperty('modelId');
       await expect(deleteModelPromise).resolves.toHaveProperty('name');
       await expect(deleteModelPromise).resolves.toHaveProperty('preprocessConfig');

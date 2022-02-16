@@ -46,6 +46,7 @@ describe('Trainings', () => {
       await expect(createTrainingPromise).resolves.toHaveProperty('dataBundleIds');
       await expect(createTrainingPromise).resolves.toHaveProperty('description');
       await expect(createTrainingPromise).resolves.toHaveProperty('instanceType');
+      await expect(createTrainingPromise).resolves.toHaveProperty('metadata');
       await expect(createTrainingPromise).resolves.toHaveProperty('modelId');
       await expect(createTrainingPromise).resolves.toHaveProperty('name');
       await expect(createTrainingPromise).resolves.toHaveProperty('status');
@@ -66,6 +67,7 @@ describe('Trainings', () => {
       await expect(updateTrainingPromise).resolves.toHaveProperty('dataBundleIds');
       await expect(updateTrainingPromise).resolves.toHaveProperty('description');
       await expect(updateTrainingPromise).resolves.toHaveProperty('instanceType');
+      await expect(updateTrainingPromise).resolves.toHaveProperty('metadata');
       await expect(updateTrainingPromise).resolves.toHaveProperty('modelId');
       await expect(updateTrainingPromise).resolves.toHaveProperty('name');
       await expect(updateTrainingPromise).resolves.toHaveProperty('status');

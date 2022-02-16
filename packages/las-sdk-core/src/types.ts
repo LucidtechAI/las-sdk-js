@@ -4,6 +4,8 @@ import { AxiosRequestConfig, AxiosResponse } from 'axios';
 
 export type RequestConfig = { requestConfig?: Pick<AxiosRequestConfig, 'signal'> };
 
+export type JSONValue = string | number | boolean | { [x: string]: JSONValue } | Array<JSONValue>;
+
 export type ContentType = 'application/pdf' | 'image/jpeg' | 'image/png' | 'image/tiff';
 
 export type GroundTruth = {
@@ -27,6 +29,7 @@ export type LasDocument = {
   updatedTime: string | null;
   createdBy: string | null;
   updatedBy: string | null;
+  metadata: Record<string, JSONValue> | null;
 };
 
 export type LasDocumentWithoutContent = Omit<LasDocument, 'content'>;
@@ -38,6 +41,7 @@ export type CreateDocumentOptions = RequestConfig & {
   description?: string | null;
   groundTruth?: Array<GroundTruth>;
   retentionInDays?: number;
+  metadata?: Record<string, JSONValue> | null;
 };
 
 export type UpdateDocumentOptions = RequestConfig & {
@@ -45,6 +49,7 @@ export type UpdateDocumentOptions = RequestConfig & {
   retentionInDays?: number;
   name?: string | null;
   description?: string | null;
+  metadata?: Record<string, JSONValue> | null;
 };
 
 export type GetDocumentOptions = RequestConfig;
@@ -327,6 +332,7 @@ export type Dataset = {
   updatedBy: string | null;
   updatedTime: string;
   version: number;
+  metadata: Record<string, JSONValue> | null;
 };
 
 export type CreateDatasetOptions = RequestConfig & {
@@ -334,6 +340,7 @@ export type CreateDatasetOptions = RequestConfig & {
   description?: string;
   containsPersonallyIdentifiableInformation?: boolean;
   retentionInDays?: number;
+  metadata?: Record<string, JSONValue> | null;
 };
 
 export type UpdateDatasetOptions = RequestConfig & {
@@ -341,6 +348,7 @@ export type UpdateDatasetOptions = RequestConfig & {
   name?: string;
   retentionInDays?: number;
   containsPersonallyIdentifiableInformation?: boolean;
+  metadata?: Record<string, JSONValue> | null;
 };
 
 export type DatasetList = {
@@ -560,6 +568,7 @@ export type CreateModelOptions = RequestConfig & {
   description?: string;
   name?: string;
   preprocessConfig?: PreprocessConfig;
+  metadata?: Record<string, JSONValue> | null;
 };
 
 export type GetModelOptions = RequestConfig;
@@ -571,6 +580,7 @@ export type UpdateModelOptions = RequestConfig & {
   name?: string;
   preprocessConfig?: PreprocessConfig;
   width?: number;
+  metadata?: Record<string, JSONValue> | null;
 };
 
 export type DeleteModelOptions = RequestConfig;
@@ -590,6 +600,7 @@ export type Model = {
   updatedBy: string | null;
   updatedTime: string | null;
   width: number;
+  metadata: Record<string, JSONValue> | null;
 };
 
 export type TrainingInstanceType = 'small-gpu' | 'medium-gpu' | 'large-gpu';
@@ -608,6 +619,7 @@ export type Training = {
   trainingId: string;
   updatedBy: string | null;
   updatedTime: string | null;
+  metadata: Record<string, JSONValue> | null;
 };
 
 export type TrainingList = {
@@ -624,12 +636,14 @@ export type CreateTrainingOption = {
   instanceType?: TrainingInstanceType;
   name?: string | null;
   description?: string | null;
+  metadata?: Record<string, JSONValue> | null;
 };
 
 export type UpdateTrainingOptions = {
   name?: string | null;
   description?: string | null;
   status?: 'cancelled';
+  metadata?: Record<string, JSONValue> | null;
 };
 
 export type PlanCurrency = 'NOK' | 'USD' | 'EUR';
