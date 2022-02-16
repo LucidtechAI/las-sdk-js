@@ -1,5 +1,9 @@
 # Changelog 
 
+## Version 7.1.5 - 2022-02-16
+
+- Fix build error in version 7.1.4
+
 ## Version 7.1.4 - 2022-02-16
 
 - Add metadata to LasDocument, Model, Dataset, and Training types

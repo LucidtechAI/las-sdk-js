@@ -11,7 +11,7 @@
   ],
   "scripts": {
     "build": "pnpm run -r build --filter ./packages",
-    "publish-packages": "pnpm -r publish --filter ./packages",
+    "publish-packages": "npm run build && pnpm -r publish --filter ./packages",
     "bump-patch": "pnpm run -r bump-patch --filter ./packages",
     "bump-minor": "pnpm run -r bump-minor --filter ./packages",
     "bump-major": "pnpm run -r bump-major --filter ./packages",
