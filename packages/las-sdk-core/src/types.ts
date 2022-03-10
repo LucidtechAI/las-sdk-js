@@ -92,6 +92,7 @@ export type CreatePredictionsOptions = RequestConfig & {
   autoRotate?: boolean;
   imageQuality?: 'LOW' | 'HIGH';
   postprocessConfig?: PostprocessConfig;
+  trainingId?: string;
 };
 
 export interface PaginationOptions {
@@ -581,6 +582,7 @@ export type UpdateModelOptions = RequestConfig & {
   preprocessConfig?: PreprocessConfig;
   width?: number;
   metadata?: Record<string, JSONValue> | null;
+  trainingId?: string;
 };
 
 export type DeleteModelOptions = RequestConfig;
@@ -597,6 +599,7 @@ export type Model = {
   numberOfRunningTrainings: number;
   preprocessConfig: PreprocessConfig;
   status: 'active' | 'inactive';
+  trainingId: string | null;
   updatedBy: string | null;
   updatedTime: string | null;
   width: number;

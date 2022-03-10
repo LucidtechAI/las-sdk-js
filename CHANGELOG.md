@@ -1,5 +1,11 @@
 # Changelog 
 
+## Version 7.1.6 - 2022-03-10
+
+- Add optional trainingId to CreatePredictionOptions type. You can now make predictions with a trainingId to test out new trainings.
+- Add trainingId to Model type. The trainingId for a model specifies which training is the one that's currently being used when making predictions.
+- Add optional trainingId to UpdateModelOptions type.
+
 ## Version 7.1.5 - 2022-02-16
 
 - Fix build error in version 7.1.4
