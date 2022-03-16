@@ -917,20 +917,15 @@ export class Client {
    * Creates a model, calls the POST /models endpoint.
    *
    * @param fieldConfig Specification of the fields that the model is going to predict
-   * @param width The number of pixels to be used for the input image width of your model
-   * @param height The number of pixels to be used for the input image height of your model
+   * @param options.width The number of pixels to be used for the input image width of your model
+   * @param options.height The number of pixels to be used for the input image height of your model
    * @param options.description Description of the model
    * @param options.name Name of the model
    * @param options.preprocessConfig Specification of the processing steps prior to the prediction of an image
    * @returns Model response from REST API
    */
-  async createModel(
-    fieldConfig: FieldConfig,
-    width: number,
-    height: number,
-    options?: CreateModelOptions,
-  ): Promise<Model> {
-    let body = { fieldConfig, width, height };
+  async createModel(fieldConfig: FieldConfig, options?: CreateModelOptions): Promise<Model> {
+    let body = { fieldConfig };
 
     if (options) {
       body = { ...body, ...options };

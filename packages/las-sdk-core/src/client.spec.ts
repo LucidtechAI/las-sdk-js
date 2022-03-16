@@ -813,15 +813,13 @@ describe('Datasets', () => {
 
 describe('Models', () => {
   describe('createModel', () => {
-    test.each<[FieldConfig, number, number, CreateModelOptions | undefined]>([
+    test.each<[FieldConfig, CreateModelOptions | undefined]>([
       [
         {
           total_amount: { type: 'amount', maxLength: 20, description: 'Total Amount' },
           purchase_date: { type: 'date', maxLength: 10, description: 'Purchase Date' },
-          supplier_id: { type: 'alphanum', maxLength: 25, description: 'Supplier ID' },
+          department: { type: 'enum', enum: ['finance', 'warehouse'] },
         },
-        100,
-        100,
         {
           preprocessConfig: { autoRotate: true, imageQuality: 'HIGH', maxPages: 3 },
           name: 'My model name',
@@ -834,12 +832,10 @@ describe('Models', () => {
           purchase_date: { type: 'date', maxLength: 10, description: 'Purchase Date' },
           supplier_id: { type: 'alphanum', maxLength: 25, description: 'Supplier ID' },
         },
-        100,
-        100,
         undefined,
       ],
-    ])('input: %o', async (fieldConfig, width, height, options) => {
-      const createModelPromise = client.createModel(fieldConfig, width, height, options);
+    ])('input: %o', async (fieldConfig, options) => {
+      const createModelPromise = client.createModel(fieldConfig, options);
       await expect(createModelPromise).resolves.toHaveProperty('createdTime');
       await expect(createModelPromise).resolves.toHaveProperty('description');
       await expect(createModelPromise).resolves.toHaveProperty('fieldConfig');
