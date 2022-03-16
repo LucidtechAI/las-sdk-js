@@ -462,10 +462,13 @@ export type UpdateOrganizationOptions = RequestConfig & {
 export type Organization = {
   description: string | null;
   documentRetentionInDays: number;
+  monthlyNumberOfActiveModelsUsed: number;
   monthlyNumberOfDataBundlesAllowed: number;
   monthlyNumberOfDataBundlesCreated: number;
   monthlyNumberOfDocumentsAllowed: number;
   monthlyNumberOfDocumentsCreated: number;
+  monthlyNumberOfFieldPredictionsUsed: number;
+  monthlyNumberOfGpuHoursUsed: number;
   monthlyNumberOfPredictionsAllowed: number;
   monthlyNumberOfPredictionsCreated: number;
   monthlyNumberOfTrainingsAllowed: number;
@@ -558,9 +561,21 @@ export type PreprocessConfig = {
 };
 
 export type Field = {
-  description: string;
-  maxLength: number;
-  type: 'all' | 'alphanum' | 'alphanumext' | 'amount' | 'date' | 'letter' | 'number' | 'phone' | 'string' | 'digits';
+  description?: string;
+  maxLength?: number;
+  enum?: Array<string>;
+  type:
+    | 'all'
+    | 'alphanum'
+    | 'alphanumext'
+    | 'amount'
+    | 'date'
+    | 'digits'
+    | 'enum'
+    | 'letter'
+    | 'number'
+    | 'phone'
+    | 'string';
 };
 
 export type FieldConfig = Record<string, Field>;
@@ -568,6 +583,8 @@ export type FieldConfig = Record<string, Field>;
 export type CreateModelOptions = RequestConfig & {
   description?: string;
   name?: string;
+  width?: number;
+  height?: number;
   preprocessConfig?: PreprocessConfig;
   metadata?: Record<string, JSONValue> | null;
 };
@@ -660,9 +677,9 @@ export type Plan = {
   planId: string;
   license?: Record<any, any>;
   gpuHours?: Record<any, any>;
+  fieldPredictions?: Record<any, any>;
   activeModels?: Record<any, any>;
   description?: string | null;
-  predictions?: Record<any, any>;
 };
 
 export type PlanList = {

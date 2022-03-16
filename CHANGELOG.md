@@ -1,5 +1,14 @@
 # Changelog 
 
+## Version 8.0.0 - 2022-03-16
+
+- Remove width and height from createModel method parameters
+- Add width and height as optional parameters for CreateModelOptions type
+- Add new enum Field type in FieldConfig
+- Make maxLength and description optional for Field type in FieldConfig 
+- Add monthlyNumberOfActiveModelsUsed, monthlyNumberOfFieldPredictionsUsed, and monthlyNumberOfGpuHoursUsed to Organization type
+- Add fieldPredictions to Plan type
+
 ## Version 7.1.6 - 2022-03-10
 
 - Add optional trainingId to CreatePredictionOptions type. You can now make predictions with a trainingId to test out new trainings.
