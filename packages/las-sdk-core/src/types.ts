@@ -570,12 +570,12 @@ export type Field = {
     | 'alphanumext'
     | 'amount'
     | 'date'
+    | 'digits'
+    | 'enum'
     | 'letter'
     | 'number'
     | 'phone'
-    | 'string'
-    | 'digits'
-    | 'enum';
+    | 'string';
 };
 
 export type FieldConfig = Record<string, Field>;
