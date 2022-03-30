@@ -1,5 +1,10 @@
 # Changelog 
 
+## Version 8.0.1 - 2022-03-30
+
+- Add trainingId to PredictionResponse type
+- Add metadata to User type
+
 ## Version 8.0.0 - 2022-03-16
 
 - Remove width and height from createModel method parameters
