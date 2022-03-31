@@ -300,12 +300,13 @@ export type Prediction = GroundTruth & {
 };
 
 export type PredictionResponse = {
-  predictionId: string;
-  modelId: string;
   documentId: string;
   inferenceTime: number;
-  timestamp: number;
+  modelId: string;
+  predictionId: string;
   predictions: Array<Prediction>;
+  timestamp: number;
+  trainingId: string | null;
 };
 
 export type ListPredictionsOptions = RequestConfig & PaginationOptions;
@@ -401,6 +402,7 @@ export type User = {
   createdBy: string | null;
   createdTime: string | null;
   email: string;
+  metadata: Record<string, JSONValue> | null;
   name: string | null;
   updatedBy: string | null;
   updatedTime: string | null;
@@ -408,14 +410,16 @@ export type User = {
 };
 
 export type CreateUserOptions = RequestConfig & {
-  name?: string;
-  avatar?: string;
   appClientId?: string;
+  avatar?: string;
+  metadata?: Record<string, JSONValue> | null;
+  name?: string;
 };
 
 export type UpdateUserOptions = RequestConfig & {
-  name?: string | null;
   avatar?: string | null;
+  metadata?: Record<string, JSONValue> | null;
+  name?: string | null;
 };
 
 export type ListUsersOptions = RequestConfig & PaginationOptions;
