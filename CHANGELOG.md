@@ -1,5 +1,12 @@
 # Changelog 
 
+## Version 9.0.0 - 2022-04-05
+
+Add support for line items.
+
+- Add optional `fields` to FieldConfig type, allowing nesting FieldConfig for line items
+- BREAKING: Add `number` and `Array<Array<GroundTruth>>` as allowed `value` in GroundTruth
+
 ## Version 8.0.1 - 2022-03-30
 
 - Add trainingId to PredictionResponse type
