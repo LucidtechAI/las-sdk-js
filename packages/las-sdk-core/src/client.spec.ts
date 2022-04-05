@@ -135,7 +135,7 @@ describe('Documents', () => {
     test('with ground truth', async () => {
       const content = uuidv4();
       const contentType = 'image/jpeg';
-      const groundTruth: Array<GroundTruth> = [
+      const groundTruth: GroundTruth = [
         { label: 'total_amount', value: '200.00' },
         { label: 'due_date', value: null },
         { label: 'is_invoice', value: true },

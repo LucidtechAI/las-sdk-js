@@ -5,7 +5,8 @@
 Add support for line items.
 
 - Add optional `fields` to FieldConfig type, allowing nesting FieldConfig for line items
-- BREAKING: Add `number` and `Array<Array<GroundTruth>>` as allowed `value` in GroundTruth
+- BREAKING: `GroundTruth` type has been renamed to `GroundTruthItem`
+- BREAKING: Every occurence of `Array<GroundTruth>` has been made into a new `GroundTruth` type, which is equal to `Array<GroundTruthItem>`
 
 ## Version 8.0.1 - 2022-03-30
 
