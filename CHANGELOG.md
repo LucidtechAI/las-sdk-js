@@ -1,5 +1,8 @@
 # Changelog 
 
+## Version 9.0.1 - 2022-04-05
+- Fix Prediction type
+
 ## Version 9.0.0 - 2022-04-05
 
 Add support for line items.

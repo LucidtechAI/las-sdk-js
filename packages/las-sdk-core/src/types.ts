@@ -295,7 +295,7 @@ export type PostPredictions = CreatePredictionsOptions & {
   modelId: string;
 };
 
-export type Prediction = GroundTruth & {
+export type Prediction = GroundTruthItem & {
   /** minimum: 0, maximum: 1 */
   confidence: number;
 };
