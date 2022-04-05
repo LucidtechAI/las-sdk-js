@@ -8,11 +8,12 @@ export type JSONValue = string | number | boolean | { [x: string]: JSONValue } |
 
 export type ContentType = 'application/pdf' | 'image/jpeg' | 'image/png' | 'image/tiff';
 
-export type GroundTruth = {
+export type GroundTruth = Array<GroundTruthItem>;
+export type GroundTruthItem = {
   /** maxLength: 36, minLength: 1, pattern: ^[0-9A-Za-z_]+$ */
   label: string;
-  /** maxLength: 64, minLength: 1 */
-  value: string | boolean | null;
+  /** maxLength: 512 */
+  value: boolean | number | null | string | Array<Array<GroundTruthItem>>;
 };
 
 export type LasDocument = {
@@ -23,7 +24,7 @@ export type LasDocument = {
   name: string | null;
   description: string | null;
   documentId: string;
-  groundTruth?: Array<GroundTruth>;
+  groundTruth?: GroundTruth;
   retentionInDays: number;
   createdTime: string | null;
   updatedTime: string | null;
@@ -39,13 +40,13 @@ export type CreateDocumentOptions = RequestConfig & {
   datasetId?: string;
   name?: string | null;
   description?: string | null;
-  groundTruth?: Array<GroundTruth>;
+  groundTruth?: GroundTruth;
   retentionInDays?: number;
   metadata?: Record<string, JSONValue> | null;
 };
 
 export type UpdateDocumentOptions = RequestConfig & {
-  groundTruth?: Array<GroundTruth>;
+  groundTruth?: GroundTruth;
   retentionInDays?: number;
   name?: string | null;
   description?: string | null;
@@ -566,8 +567,9 @@ export type PreprocessConfig = {
 
 export type Field = {
   description?: string;
-  maxLength?: number;
+  fields?: FieldConfig;
   enum?: Array<string>;
+  maxLength?: number;
   type:
     | 'all'
     | 'alphanum'
@@ -577,6 +579,7 @@ export type Field = {
     | 'digits'
     | 'enum'
     | 'letter'
+    | 'lines'
     | 'number'
     | 'phone'
     | 'string';

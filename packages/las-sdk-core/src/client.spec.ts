@@ -13,6 +13,7 @@ import {
   CreateTransitionOptions,
   CreateWorkflowOptions,
   FieldConfig,
+  GroundTruth,
   ListDocumentsOptions,
   TransitionType,
   UpdateModelOptions,
@@ -129,6 +130,42 @@ describe('Documents', () => {
       await expect(createDocumentPromise).resolves.toHaveProperty('datasetId');
       await expect(createDocumentPromise).resolves.toHaveProperty('documentId');
       await expect(createDocumentPromise).resolves.toHaveProperty('metadata');
+    });
+
+    test('with ground truth', async () => {
+      const content = uuidv4();
+      const contentType = 'image/jpeg';
+      const groundTruth: GroundTruth = [
+        { label: 'total_amount', value: '200.00' },
+        { label: 'due_date', value: null },
+        { label: 'is_invoice', value: true },
+        { label: 'invoice_date', value: '' },
+        { label: 'vat_amount', value: 3044.0 },
+        {
+          label: 'lines',
+          value: [
+            [
+              { label: 'qty', value: 1 },
+              { label: 'description', value: 'Some goods' },
+              { label: 'amount', value: 1400.3 },
+            ],
+            [
+              { label: 'qty', value: 3 },
+              { label: 'description', value: 'Some other goods' },
+              { label: 'amount', value: 300.7 },
+            ],
+          ],
+        },
+      ];
+      const createDocumentPromise = client.createDocument(content, contentType, {
+        groundTruth,
+      });
+      await expect(createDocumentPromise).resolves.toHaveProperty('consentId');
+      await expect(createDocumentPromise).resolves.toHaveProperty('contentType');
+      await expect(createDocumentPromise).resolves.toHaveProperty('datasetId');
+      await expect(createDocumentPromise).resolves.toHaveProperty('documentId');
+      await expect(createDocumentPromise).resolves.toHaveProperty('metadata');
+      await expect(createDocumentPromise).resolves.toHaveProperty('groundTruth');
     });
 
     test('with AbortController', async () => {
@@ -877,6 +914,28 @@ describe('Models', () => {
             total_amount: { type: 'amount', maxLength: 20, description: 'Total Amount' },
             purchase_date: { type: 'date', maxLength: 10, description: 'Purchase Date' },
             supplier_id: { type: 'alphanum', maxLength: 25, description: 'Supplier ID' },
+            due_date: {
+              description: 'Due date of invoice.',
+              maxLength: 10,
+              type: 'date',
+            },
+            lines: {
+              description: 'line',
+              maxLength: 4,
+              type: 'lines',
+              fields: {
+                name: {
+                  description: 'name',
+                  maxLength: 10,
+                  type: 'string',
+                },
+                price: {
+                  description: 'price',
+                  maxLength: 10,
+                  type: 'string',
+                },
+              },
+            },
           },
           preprocessConfig: { autoRotate: true, imageQuality: 'HIGH', maxPages: 3 },
           name: 'My model name',
