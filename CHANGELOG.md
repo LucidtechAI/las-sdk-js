@@ -3,6 +3,7 @@
 ## Version 9.0.2 - 2022-04-12
 - Allow null value as groundTruth in UpdateDocumentOptions
 - Add sortBy ('createdTime') and order ('ascending' | 'descending') to ListDocumentOptions and ListPredictionsOptions
+- Add createdTime to PredictionResponse
 
 ## Version 9.0.1 - 2022-04-05
 - Fix Prediction type

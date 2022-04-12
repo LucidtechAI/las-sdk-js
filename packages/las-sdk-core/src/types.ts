@@ -310,6 +310,7 @@ export type PredictionResponse = {
   predictions: Array<Prediction>;
   timestamp: number;
   trainingId: string | null;
+  createdTime: string | null;
 };
 
 export type ListPredictionsOptions = RequestConfig &
