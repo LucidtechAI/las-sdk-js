@@ -65,6 +65,8 @@ export type ListDocumentsOptions = RequestConfig &
   PaginationOptions & {
     consentId?: string | Array<string>;
     datasetId?: string | Array<string>;
+    sortBy?: 'createdTime';
+    order?: 'ascending' | 'descending';
   };
 
 export type DeleteDocumentOptions = RequestConfig;
@@ -310,7 +312,11 @@ export type PredictionResponse = {
   trainingId: string | null;
 };
 
-export type ListPredictionsOptions = RequestConfig & PaginationOptions;
+export type ListPredictionsOptions = RequestConfig &
+  PaginationOptions & {
+    sortBy?: 'createdTime';
+    order?: 'ascending' | 'descending';
+  };
 
 export type PredictionList = {
   predictions: Array<PredictionResponse>;
