@@ -46,7 +46,7 @@ export type CreateDocumentOptions = RequestConfig & {
 };
 
 export type UpdateDocumentOptions = RequestConfig & {
-  groundTruth?: GroundTruth;
+  groundTruth?: GroundTruth | null;
   retentionInDays?: number;
   name?: string | null;
   description?: string | null;
@@ -65,6 +65,8 @@ export type ListDocumentsOptions = RequestConfig &
   PaginationOptions & {
     consentId?: string | Array<string>;
     datasetId?: string | Array<string>;
+    order?: 'ascending' | 'descending';
+    sortBy?: 'createdTime';
   };
 
 export type DeleteDocumentOptions = RequestConfig;
@@ -301,6 +303,8 @@ export type Prediction = GroundTruthItem & {
 };
 
 export type PredictionResponse = {
+  createdBy: string | null;
+  createdTime: string | null;
   documentId: string;
   inferenceTime: number;
   modelId: string;
@@ -310,7 +314,11 @@ export type PredictionResponse = {
   trainingId: string | null;
 };
 
-export type ListPredictionsOptions = RequestConfig & PaginationOptions;
+export type ListPredictionsOptions = RequestConfig &
+  PaginationOptions & {
+    order?: 'ascending' | 'descending';
+    sortBy?: 'createdTime';
+  };
 
 export type PredictionList = {
   predictions: Array<PredictionResponse>;

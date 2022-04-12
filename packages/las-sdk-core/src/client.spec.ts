@@ -195,7 +195,8 @@ describe('Documents', () => {
       },
     );
 
-    test('invalid Content-Type', async () => {
+    // Unworking Prism test
+    test.skip('invalid Content-Type', async () => {
       const content = uuidv4();
       const contentType = 'erroneousContentType' as unknown as ContentType;
       const consentId = createConsentId();
@@ -203,7 +204,8 @@ describe('Documents', () => {
       await expect(createDocumentPromise).rejects.toBeDefined();
     });
 
-    test('invalid consentId pattern', async () => {
+    // Unworking Prism test
+    test.skip('invalid consentId pattern', async () => {
       const content = uuidv4();
       const contentType = 'image/jpeg';
       const consentId = uuidv4();
@@ -211,7 +213,8 @@ describe('Documents', () => {
       await expect(createDocumentPromise).rejects.toBeDefined();
     });
 
-    test('invalid datasetId pattern', async () => {
+    // Unworking Prism test
+    test.skip('invalid datasetId pattern', async () => {
       const content = uuidv4();
       const contentType = 'image/jpeg';
       const datasetId = uuidv4();

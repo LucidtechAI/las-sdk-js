@@ -54,3 +54,13 @@ Run tests
 ```
 pnpm run test
 ```
+
+
+## Release process
+
+1. Make changes.
+2. Run `npm run bump-patch` (bump-minor, or bump-major) to change version according to semantic versioning.
+3. Create an entry for changes in CHANGELOG.md under a new version heading.
+4. Create pull request
+5. Merge pull request into master, then `git pull` from master branch to update local branch.
+6. Run `npm run publish-packages`. This will first build then release all packages to NPM, assuming you are logged into npm with required privileges.
