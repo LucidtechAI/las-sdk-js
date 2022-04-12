@@ -303,6 +303,7 @@ export type Prediction = GroundTruthItem & {
 };
 
 export type PredictionResponse = {
+  createdBy: string | null;
   createdTime: string | null;
   documentId: string;
   inferenceTime: number;
