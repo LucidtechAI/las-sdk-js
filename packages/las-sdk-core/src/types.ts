@@ -46,7 +46,7 @@ export type CreateDocumentOptions = RequestConfig & {
 };
 
 export type UpdateDocumentOptions = RequestConfig & {
-  groundTruth?: GroundTruth;
+  groundTruth?: GroundTruth | null;
   retentionInDays?: number;
   name?: string | null;
   description?: string | null;
