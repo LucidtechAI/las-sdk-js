@@ -17,6 +17,7 @@ import type {
   CreateDatasetOptions,
   CreateDocumentOptions,
   CreateModelOptions,
+  CreatePaymentMethodOptions,
   CreatePredictionsOptions,
   CreateSecretOptions,
   CreateTrainingOption,
@@ -61,6 +62,7 @@ import type {
   ListDatasetsOptions,
   ListDocumentsOptions,
   ListModelsOptions,
+  ListPaymentMethodsOptions,
   ListPlansOptions,
   ListPredictionsOptions,
   ListSecretsOptions,
@@ -73,6 +75,8 @@ import type {
   Model,
   ModelList,
   Organization,
+  PaymentMethod,
+  PaymentMethodList,
   Plan,
   PlanList,
   PostHeartbeatOptions,
@@ -95,6 +99,7 @@ import type {
   UpdateDocumentOptions,
   UpdateModelOptions,
   UpdateOrganizationOptions,
+  UpdatePaymentMethodOptions,
   UpdateSecretOptions,
   UpdateTrainingOptions,
   UpdateTransitionExecution,
@@ -1021,6 +1026,61 @@ export class Client {
    */
   async updateTraining(modelId: string, trainingId: string, options: UpdateTrainingOptions): Promise<Training> {
     return this.makePatchRequest<Training>(`/models/${modelId}/trainings/${trainingId}`, options);
+  }
+
+  /**
+   * List payment methods available, calls the GET /paymentMethods endpoint.
+   *
+   * @param options.maxResults Maximum number of results to be returned
+   * @param options.nextToken A unique token for each page, use the returned token to retrieve the next page.
+   * @returns PaymentMethods response from the REST API
+   */
+  async listPaymentMethods(options?: ListPaymentMethodsOptions): Promise<PaymentMethodList> {
+    return this.makeGetRequest('/paymentMethods', options);
+  }
+
+  /**
+   * Creates a payment method, calls the POST /paymentMethods endpoint.
+   *
+   * @param options.description Optional description of payment method
+   * @param options.name Optional name of payment method
+   * @returns PaymentMethod response from REST API
+   */
+  async createPaymentMethod(options?: CreatePaymentMethodOptions): Promise<PaymentMethod> {
+    return this.makePostRequest('/paymentMethods', options);
+  }
+
+  /**
+   * Get payment method from the REST API, calls the GET /paymentMethods/{paymentMethodId} endpoint.
+   *
+   * @param paymentMethodId Id of the payment method
+   * @returns PaymentMethod response from REST API
+   */
+  async getPaymentMethod(paymentMethodId: string): Promise<PaymentMethod> {
+    return this.makeGetRequest(`/paymentMethods/${paymentMethodId}`);
+  }
+
+  /**
+   * Updates a payment method, calls the PATCH /paymentMethods/{paymentMethodId} endpoint.
+   *
+   * @param paymentMethodId Id of the payment method
+   * @param options.description Optional description of payment method
+   * @param options.name Optional name of payment method
+   * @param options.stripeSetupIntentSecret Optional input to confirm a payment method has been successfully set up through Stripe
+   * @returns PaymentMethod response from REST API
+   */
+  async updatePaymentMethod(paymentMethodId: string, options: UpdatePaymentMethodOptions): Promise<PaymentMethod> {
+    return this.makePatchRequest(`/paymentMethods/${paymentMethodId}`, options);
+  }
+
+  /**
+   * Deletes a payment method, calls the DELETE /paymentMethods/{paymentMethodId} endpoint.
+   *
+   * @param paymentMethodId Id of the payment method to delete
+   * @returns PaymentMethod response from REST API
+   */
+  async deletePaymentMethod(paymentMethodId: string): Promise<PaymentMethod> {
+    return this.makeDeleteRequest(`/paymentMethods/${paymentMethodId}`);
   }
 
   /**
