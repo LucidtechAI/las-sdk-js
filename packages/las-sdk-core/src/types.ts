@@ -470,6 +470,8 @@ export type GetOrganizationOptions = RequestConfig;
 export type UpdateOrganizationOptions = RequestConfig & {
   description?: string;
   name?: string;
+  paymentMethodId?: string;
+  planId?: string;
 };
 
 export type Organization = {
@@ -509,6 +511,7 @@ export type Organization = {
   numberOfWorkflowsAllowed: number;
   numberOfWorkflowsCreated: number;
   organizationId: string;
+  paymentMethodId: string | null;
   planId: string | null;
 };
 
@@ -679,6 +682,37 @@ export type UpdateTrainingOptions = {
   description?: string | null;
   status?: 'cancelled';
   metadata?: Record<string, JSONValue> | null;
+};
+
+export type ListPaymentMethodsOptions = RequestConfig & PaginationOptions;
+
+export type PaymentMethodList = {
+  nextToken: string | null;
+  paymentMethods: Array<PaymentMethod>;
+};
+
+export type PaymentMethod = {
+  createdBy: string | null;
+  createdTime: string | null;
+  description: string | null;
+  details: Record<string, any> | null;
+  name: string | null;
+  paymentMethodId: string;
+  stripePublishableKey?: string | null;
+  stripeSetupIntentSecret?: string | null;
+  updatedBy: string | null;
+  updatedTime: string | null;
+};
+
+export type CreatePaymentMethodOptions = {
+  description?: string;
+  name?: string;
+};
+
+export type UpdatePaymentMethodOptions = {
+  description?: string | null;
+  name?: string | null;
+  stripeSetupIntentSecret?: string;
 };
 
 export type PlanCurrency = 'NOK' | 'USD' | 'EUR';
