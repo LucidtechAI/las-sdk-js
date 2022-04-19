@@ -1,5 +1,10 @@
 # Changelog 
 
+## Version 9.1.0 - 2022-04-19
+- Add methods and types for handling payment methods: `createPaymentMethod`, `updatePaymentMethod`, `listPaymentMethods`, `getPaymentMethod`, and `deletePaymentMethod`.
+- Add `paymentMethodId` to `Organization` type.
+- Add `paymentMethodId` and `planId` to `UpdateOrganizationOptions`.
+
 ## Version 9.0.2 - 2022-04-12
 - Allow null value as groundTruth in UpdateDocumentOptions
 - Add `sortBy` ('createdTime') and `order` ('ascending' | 'descending') to `ListDocumentOptions` and `ListPredictionsOptions`
