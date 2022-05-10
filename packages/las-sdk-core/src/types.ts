@@ -617,7 +617,7 @@ export type UpdateModelOptions = RequestConfig & {
   preprocessConfig?: PreprocessConfig;
   width?: number;
   metadata?: Record<string, JSONValue> | null;
-  trainingId?: string;
+  trainingId?: string | null;
 };
 
 export type DeleteModelOptions = RequestConfig;
