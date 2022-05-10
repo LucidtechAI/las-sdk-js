@@ -1,5 +1,9 @@
 # Changelog 
 
+## Version 9.1.1 - 2022-05-10
+
+- Allow `trainingId` to be `null` in `UpdateModelOptions`.
+
 ## Version 9.1.0 - 2022-04-19
 - Add methods and types for handling payment methods: `createPaymentMethod`, `updatePaymentMethod`, `listPaymentMethods`, `getPaymentMethod`, and `deletePaymentMethod`.
 - Add `paymentMethodId` to `Organization` type.
