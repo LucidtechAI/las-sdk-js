@@ -603,6 +603,7 @@ export type CreateModelOptions = RequestConfig & {
   name?: string;
   width?: number;
   height?: number;
+  postprocessConfig?: PostprocessConfig;
   preprocessConfig?: PreprocessConfig;
   metadata?: Record<string, JSONValue> | null;
 };
@@ -614,6 +615,7 @@ export type UpdateModelOptions = RequestConfig & {
   fieldConfig?: FieldConfig;
   height?: number;
   name?: string;
+  postprocessConfig?: PostprocessConfig;
   preprocessConfig?: PreprocessConfig;
   width?: number;
   metadata?: Record<string, JSONValue> | null;
@@ -632,6 +634,7 @@ export type Model = {
   name: string | null;
   numberOfDataBundles: number;
   numberOfRunningTrainings: number;
+  postprocessConfig: PostprocessConfig;
   preprocessConfig: PreprocessConfig;
   status: 'active' | 'inactive';
   trainingId: string | null;
@@ -650,6 +653,7 @@ export type Training = {
   createdTime: string | null;
   dataBundleIds: Array<string>;
   description: string | null;
+  gpuHours: number | null;
   instanceType: TrainingInstanceType;
   modelId: string;
   name: string | null;

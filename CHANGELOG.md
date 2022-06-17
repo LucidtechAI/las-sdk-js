@@ -1,5 +1,11 @@
 # Changelog 
 
+## Version 9.1.2 - 2022-06-17
+
+- Add `postProcessConfig` to `Model` type.
+- Add missing `gpuHours` to `Training` type
+- Reexport types from `las-sdk-core` in both `las-sdk-node` and `las-sdk-browser`
+
 ## Version 9.1.1 - 2022-05-10
 
 - Allow `trainingId` to be `null` in `UpdateModelOptions`.
