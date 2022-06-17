@@ -1,4 +1,5 @@
 export { ClientCredentials } from './credentials';
+export { Client, Credentials, Token, TokenStorage } from '@lucidtech/las-sdk-core';
 
 export type {
   AppClient,
@@ -10,7 +11,6 @@ export type {
   AxiosFn,
   BestFirst,
   BestNPages,
-  Client,
   ContentType,
   CreateAppClientOptions,
   CreateAssetOptions,
@@ -28,7 +28,6 @@ export type {
   CreateTransitionParams,
   CreateUserOptions,
   CreateWorkflowOptions,
-  Credentials,
   DataBundle,
   DataBundleList,
   Dataset,
@@ -100,8 +99,6 @@ export type {
   RequestConfig,
   Secret,
   SecretList,
-  Token,
-  TokenStorage,
   Training,
   TrainingInstanceType,
   TrainingList,
