@@ -1,5 +1,9 @@
 # Changelog 
 
+## Version 9.1.5 - 2022-06-27
+
+- Fix typo in Training type declaration; `evalution` -> `evaluation`.
+
 ## Version 9.1.4 - 2022-06-27
 
 - Add `evaluation` to Training type.
