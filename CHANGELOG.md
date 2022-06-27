@@ -1,5 +1,9 @@
 # Changelog 
 
+## Version 9.1.4 - 2022-06-27
+
+- Add `evaluation` to Training type.
+
 ## Version 9.1.3 - 2022-06-17
 
 - Fix issue with reexport of Client, Credentials, Token, and TokenStorage classes
