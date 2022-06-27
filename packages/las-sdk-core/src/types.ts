@@ -653,7 +653,7 @@ export type Training = {
   createdTime: string | null;
   dataBundleIds: Array<string>;
   description: string | null;
-  evalution: Record<string, any>;
+  evaluation: Record<string, any>;
   gpuHours: number | null;
   instanceType: TrainingInstanceType;
   modelId: string;
