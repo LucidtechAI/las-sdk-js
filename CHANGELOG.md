@@ -1,5 +1,15 @@
 # Changelog 
 
+## Version 10.0.0 - 2022-09-13
+
+- Fix GET and DELETE requests getting `?` appended to URLs, even without any search parameters present.
+- Remove deprecated `Field` types
+- Add new `Field` type `numeric`
+- Add `contentMD5` to `LasDocument`
+- Add `dataScientistAssistance` to `Training`
+- Add `retentionInDays` to `DataBundle`
+- Add `contentMD5`, `createdBy`, `createdTime`, `description`, `name`, `updatedBy`, `updatedTime` to `Asset`
+
 ## Version 9.1.5 - 2022-06-27
 
 - Fix typo in Training type declaration; `evalution` -> `evaluation`.
