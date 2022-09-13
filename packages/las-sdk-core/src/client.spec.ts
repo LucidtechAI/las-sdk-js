@@ -856,8 +856,8 @@ describe('Models', () => {
     test.each<[FieldConfig, CreateModelOptions | undefined]>([
       [
         {
-          total_amount: { type: 'amount', maxLength: 20, description: 'Total Amount' },
-          purchase_date: { type: 'date', maxLength: 10, description: 'Purchase Date' },
+          total_amount: { type: 'amount', description: 'Total Amount' },
+          purchase_date: { type: 'date', description: 'Purchase Date' },
           department: { type: 'enum', enum: ['finance', 'warehouse'] },
         },
         {
@@ -868,9 +868,9 @@ describe('Models', () => {
       ],
       [
         {
-          total_amount: { type: 'amount', maxLength: 20, description: 'Total Amount' },
-          purchase_date: { type: 'date', maxLength: 10, description: 'Purchase Date' },
-          supplier_id: { type: 'alphanum', maxLength: 25, description: 'Supplier ID' },
+          total_amount: { type: 'amount', description: 'Total Amount' },
+          purchase_date: { type: 'date', description: 'Purchase Date' },
+          supplier_id: { type: 'string', description: 'Supplier ID' },
         },
         undefined,
       ],
@@ -914,27 +914,23 @@ describe('Models', () => {
         createModelId(),
         {
           fieldConfig: {
-            total_amount: { type: 'amount', maxLength: 20, description: 'Total Amount' },
-            purchase_date: { type: 'date', maxLength: 10, description: 'Purchase Date' },
-            supplier_id: { type: 'alphanum', maxLength: 25, description: 'Supplier ID' },
+            total_amount: { type: 'amount', description: 'Total Amount' },
+            purchase_date: { type: 'date', description: 'Purchase Date' },
+            supplier_id: { type: 'string', description: 'Supplier ID' },
             due_date: {
               description: 'Due date of invoice.',
-              maxLength: 10,
               type: 'date',
             },
             lines: {
               description: 'line',
-              maxLength: 4,
               type: 'lines',
               fields: {
                 name: {
                   description: 'name',
-                  maxLength: 10,
                   type: 'string',
                 },
                 price: {
                   description: 'price',
-                  maxLength: 10,
                   type: 'string',
                 },
               },

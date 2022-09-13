@@ -19,6 +19,7 @@ export type GroundTruthItem = {
 export type LasDocument = {
   consentId?: string;
   content: string;
+  contentMD5: string | null;
   contentType: ContentType;
   datasetId?: string;
   name: string | null;
@@ -332,18 +333,18 @@ export type DeleteAssetOptions = RequestConfig;
 export type Dataset = {
   containsPersonallyIdentifiableInformation: boolean;
   createdBy: string | null;
-  createdTime: string;
+  createdTime: string | null;
   datasetId: string;
-  description: string;
+  description: string | null;
   groundTruthSummary: Record<string, number>;
-  name: string;
+  metadata: Record<string, JSONValue> | null;
+  name: string | null;
   numberOfDocuments: number;
   retentionInDays: number;
   storageLocation: 'EU';
   updatedBy: string | null;
-  updatedTime: string;
+  updatedTime: string | null;
   version: number;
-  metadata: Record<string, JSONValue> | null;
 };
 
 export type CreateDatasetOptions = RequestConfig & {
@@ -381,6 +382,7 @@ export type DataBundle = {
   description: string | null;
   modelId: string;
   name: string | null;
+  retentionInDays: number;
   status: 'succeeded' | 'running' | 'failed';
   summary: Record<string, any>;
   updatedBy: string | null;
@@ -561,6 +563,13 @@ export type DeleteAppClientOptions = RequestConfig;
 export type Asset = {
   assetId: string;
   content: string;
+  contentMD5: string | null;
+  createdBy: string | null;
+  createdTime: string | null;
+  description: string | null;
+  name: string | null;
+  updatedBy: string | null;
+  updatedTime: string | null;
 };
 
 export type AssetWithoutContent = Omit<Asset, 'content'>;
@@ -581,19 +590,7 @@ export type Field = {
   fields?: FieldConfig;
   enum?: Array<string>;
   maxLength?: number;
-  type:
-    | 'all'
-    | 'alphanum'
-    | 'alphanumext'
-    | 'amount'
-    | 'date'
-    | 'digits'
-    | 'enum'
-    | 'letter'
-    | 'lines'
-    | 'number'
-    | 'phone'
-    | 'string';
+  type: 'amount' | 'date' | 'digits' | 'enum' | 'lines' | 'numeric' | 'string';
 };
 
 export type FieldConfig = Record<string, Field>;
@@ -652,17 +649,18 @@ export type Training = {
   createdBy: string | null;
   createdTime: string | null;
   dataBundleIds: Array<string>;
+  dataScientistAssistance: boolean;
   description: string | null;
   evaluation: Record<string, any>;
   gpuHours: number | null;
   instanceType: TrainingInstanceType;
+  metadata: Record<string, JSONValue> | null;
   modelId: string;
   name: string | null;
   status: TrainingStatus;
   trainingId: string;
   updatedBy: string | null;
   updatedTime: string | null;
-  metadata: Record<string, JSONValue> | null;
 };
 
 export type TrainingList = {
