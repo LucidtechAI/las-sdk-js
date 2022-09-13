@@ -1,7 +1,7 @@
 export type BuildURLParams = Record<string, undefined | string | Array<string> | number>;
 
 export function buildURL(url: string, params?: BuildURLParams): string {
-  if (!params) {
+  if (!params || Object.keys(params).length === 0) {
     return url;
   }
 
@@ -28,6 +28,11 @@ export function buildURL(url: string, params?: BuildURLParams): string {
       });
     }
   });
+
+  // Input contained keys, but all were undefined
+  if (searchParams.entries().next().done) {
+    return url;
+  }
 
   return `${url}?${searchParams}`;
 }
