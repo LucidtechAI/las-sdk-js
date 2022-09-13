@@ -3,6 +3,7 @@
 ## Version 10.0.0 - 2022-09-13
 
 - Fix GET and DELETE requests getting `?` appended to URLs, even without any search parameters present.
+- Fix `createdTime`, `description`, `name`, and `updatedTime` in `Dataset` to be nullable.
 - Remove deprecated `Field` types
 - Add new `Field` type `numeric`
 - Add `contentMD5` to `LasDocument`

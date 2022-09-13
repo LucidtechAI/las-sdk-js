@@ -333,18 +333,18 @@ export type DeleteAssetOptions = RequestConfig;
 export type Dataset = {
   containsPersonallyIdentifiableInformation: boolean;
   createdBy: string | null;
-  createdTime: string;
+  createdTime: string | null;
   datasetId: string;
-  description: string;
+  description: string | null;
   groundTruthSummary: Record<string, number>;
-  name: string;
+  metadata: Record<string, JSONValue> | null;
+  name: string | null;
   numberOfDocuments: number;
   retentionInDays: number;
   storageLocation: 'EU';
   updatedBy: string | null;
-  updatedTime: string;
+  updatedTime: string | null;
   version: number;
-  metadata: Record<string, JSONValue> | null;
 };
 
 export type CreateDatasetOptions = RequestConfig & {
