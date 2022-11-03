@@ -237,9 +237,11 @@ export type ListWorkflowOptions = RequestConfig & PaginationOptions;
 
 export type ListWorkflowExecutionsOptions = RequestConfig &
   PaginationOptions & {
+    fromStartTime?: string;
+    order?: 'ascending' | 'descending';
     status?: string | Array<string>;
     sortBy?: 'startTime' | 'endTime';
-    order?: 'ascending' | 'descending';
+    toStartTime?: string;
   };
 
 export type CreateWorkflowOptions = RequestConfig & {
@@ -274,16 +276,18 @@ export type WorkflowList = {
 export type DeleteWorkflowExecution = RequestConfig;
 
 export type WorkflowExecution = {
+  completedBy: Array<string>;
+  completedTaskLogId: string | null;
+  endTime: string | null;
+  events: Array<Record<any, any>>;
   executionId: string;
-  workflowId: string;
   input: Record<any, any>;
+  logId: string | null;
   output: Record<any, any>;
   status: 'succeeded' | 'failed' | 'running' | 'rejected' | 'retry' | 'error';
   startTime: string | null;
-  endTime: string | null;
-  logId: string | null;
   transitionExecutions: Record<string, Array<string>> | null;
-  completedBy: Array<string>;
+  workflowId: string;
 };
 
 export type WorkflowExecutionList = {
@@ -311,7 +315,6 @@ export type PredictionResponse = {
   modelId: string;
   predictionId: string;
   predictions: Array<Prediction>;
-  timestamp: number;
   trainingId: string | null;
 };
 

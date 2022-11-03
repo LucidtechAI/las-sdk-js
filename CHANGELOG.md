@@ -1,5 +1,11 @@
 # Changelog 
 
+## Version 11.0.0 - 2022-09-13
+
+- Add `events`, and `completedTaskLogId` to `WorkflowExecution`
+- Add `fromStartTime`, and `toStartTime` to `ListWorkflowExecutionsOptions`
+- Remove deprecated `timestamp` on `Prediction`
+
 ## Version 10.0.0 - 2022-09-13
 
 - Fix GET and DELETE requests getting `?` appended to URLs, even without any search parameters present.
