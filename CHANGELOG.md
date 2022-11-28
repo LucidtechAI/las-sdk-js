@@ -1,5 +1,11 @@
 # Changelog 
 
+## Version 11.1.0 - 2022-11-28
+
+- Add `getDeploymentEnvironment`, and `listDeploymentEnvironments` methods
+- Add types for deployment environment: `DeploymentEnvironment`, `ListDeploymentEnvironmentsOptions`, `DeploymentEnvironmentStatus`, `DeploymentEnvironmentList`, `GetDeploymentEnvironmentOptions`.
+- Add `dataScientistAssistance` to `UpdateTrainingOptions`
+
 ## Version 11.0.0 - 2022-09-13
 
 - Add `events`, and `completedTaskLogId` to `WorkflowExecution`
