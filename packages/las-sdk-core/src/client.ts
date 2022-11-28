@@ -39,11 +39,14 @@ import type {
   DeleteUserOptions,
   DeleteWorkflowExecution,
   DeleteWorkflowOptions,
+  DeploymentEnvironment,
+  DeploymentEnvironmentList,
   ExecuteTransitionOptions,
   ExecuteWorkflowOptions,
   FieldConfig,
   GetAssetOptions,
   GetDatasetOptions,
+  GetDeploymentEnvironmentOptions,
   GetDocumentOptions,
   GetLogOptions,
   GetModelOptions,
@@ -60,6 +63,7 @@ import type {
   ListAssetsOptions,
   ListDataBundleOptions,
   ListDatasetsOptions,
+  ListDeploymentEnvironmentsOptions,
   ListDocumentsOptions,
   ListModelsOptions,
   ListPaymentMethodsOptions,
@@ -985,6 +989,30 @@ export class Client {
    */
   async listModels(options?: ListModelsOptions): Promise<ModelList> {
     return this.makeGetRequest<ModelList>('/models', options);
+  }
+
+  /**
+   * List deployment environments available, calls the GET /deploymentEnvironments endpoint.
+   *
+   * @param options.maxResults Maximum number of results to be returned
+   * @param options.nextToken A unique token for each page, use the returned token to retrieve the next page.
+   * @param options.owner Organization owner
+   * @returns Deployment environments response from the REST API
+   */
+  async listDeploymentEnvironments(options?: ListDeploymentEnvironmentsOptions): Promise<DeploymentEnvironmentList> {
+    return this.makeGetRequest<DeploymentEnvironmentList>('/deploymentEnvironments', options);
+  }
+
+  /**
+   * Get deployment environment from the REST API, calls the GET /deploymentEnvironments/{deploymentEnvironmentId} endpoint.
+   * @param deploymentEnvironmentId Id of the deployment environment
+   * @returns Deployment environment response from the REST API
+   */
+  async getDeploymentEnvironment(
+    deploymentEnvironmentId: string,
+    options?: GetDeploymentEnvironmentOptions,
+  ): Promise<DeploymentEnvironment> {
+    return this.makeGetRequest<DeploymentEnvironment>(`/deploymentEnvironments/${deploymentEnvironmentId}`, options);
   }
 
   /**

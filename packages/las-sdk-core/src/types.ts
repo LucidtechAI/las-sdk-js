@@ -644,6 +644,26 @@ export type Model = {
   metadata: Record<string, JSONValue> | null;
 };
 
+export type ListDeploymentEnvironmentsOptions = RequestConfig & PaginationOptions & { owner?: string };
+
+export type DeploymentEnvironmentStatus = 'available' | 'unavailable';
+
+export type DeploymentEnvironment = {
+  deploymentEnvironmentId: string;
+  description: string | null;
+  modelDeploymentUnits: number;
+  name: string | null;
+  organizationId: string | null;
+  status: DeploymentEnvironmentStatus;
+};
+
+export type DeploymentEnvironmentList = {
+  deploymentEnvironments: Array<DeploymentEnvironment>;
+  nextToken: string | null;
+};
+
+export type GetDeploymentEnvironmentOptions = RequestConfig;
+
 export type TrainingInstanceType = 'small-gpu' | 'medium-gpu' | 'large-gpu';
 
 export type TrainingStatus = 'waiting-for-approval' | 'pending' | 'running' | 'succeeded' | 'failed' | 'cancelled';
@@ -653,6 +673,7 @@ export type Training = {
   createdTime: string | null;
   dataBundleIds: Array<string>;
   dataScientistAssistance: boolean;
+  deploymentEnvironmentId: string | null;
   description: string | null;
   evaluation: Record<string, any>;
   gpuHours: number | null;
@@ -677,17 +698,19 @@ export type ListTrainingsOptions = RequestConfig &
 
 export type CreateTrainingOption = {
   dataBundleIds: [string, ...string[]];
-  instanceType?: TrainingInstanceType;
-  name?: string | null;
+  dataScientistAssistance?: boolean;
   description?: string | null;
+  instanceType?: TrainingInstanceType;
   metadata?: Record<string, JSONValue> | null;
+  name?: string | null;
 };
 
 export type UpdateTrainingOptions = {
-  name?: string | null;
+  deploymentEnvironmentId?: string;
   description?: string | null;
-  status?: 'cancelled';
   metadata?: Record<string, JSONValue> | null;
+  name?: string | null;
+  status?: 'cancelled';
 };
 
 export type ListPaymentMethodsOptions = RequestConfig & PaginationOptions;
