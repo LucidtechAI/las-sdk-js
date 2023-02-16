@@ -305,6 +305,7 @@ export type PostPredictions = CreatePredictionsOptions & {
 export type Prediction = GroundTruthItem & {
   /** minimum: 0, maximum: 1 */
   confidence: number;
+  page: number;
 };
 
 export type PredictionResponse = {
@@ -480,6 +481,8 @@ export type UpdateOrganizationOptions = RequestConfig & {
 };
 
 export type Organization = {
+  deploymentsAllowed: Record<any, any>;
+  deploymentsCreated: Record<any, any>;
   description: string | null;
   documentRetentionInDays: number;
   monthlyNumberOfActiveModelsUsed: number;
@@ -489,6 +492,7 @@ export type Organization = {
   monthlyNumberOfDocumentsCreated: number;
   monthlyNumberOfFieldPredictionsUsed: number;
   monthlyNumberOfGpuHoursUsed: number;
+  monthlyNumberOfModelDeploymentUnitsUsed: number;
   monthlyNumberOfPredictionsAllowed: number;
   monthlyNumberOfPredictionsCreated: number;
   monthlyNumberOfTrainingsAllowed: number;
@@ -634,6 +638,7 @@ export type Model = {
   name: string | null;
   numberOfDataBundles: number;
   numberOfRunningTrainings: number;
+  organizationId: string;
   postprocessConfig: PostprocessConfig;
   preprocessConfig: PreprocessConfig;
   status: 'active' | 'inactive';
@@ -644,7 +649,7 @@ export type Model = {
   metadata: Record<string, JSONValue> | null;
 };
 
-export type ListDeploymentEnvironmentsOptions = RequestConfig & PaginationOptions & { owner?: string };
+export type ListDeploymentEnvironmentsOptions = RequestConfig & PaginationOptions & { owner?: string | Array<string> };
 
 export type DeploymentEnvironmentStatus = 'available' | 'unavailable';
 
@@ -706,7 +711,7 @@ export type CreateTrainingOption = {
 };
 
 export type UpdateTrainingOptions = {
-  deploymentEnvironmentId?: string;
+  deploymentEnvironmentId?: string | null;
   description?: string | null;
   metadata?: Record<string, JSONValue> | null;
   name?: string | null;
@@ -747,17 +752,18 @@ export type UpdatePaymentMethodOptions = {
 export type PlanCurrency = 'NOK' | 'USD' | 'EUR';
 
 export type Plan = {
+  activeModels?: Record<any, any>;
   billingCycle: number;
   currency: PlanCurrency;
+  description?: string | null;
+  fieldPredictions?: Record<any, any>;
+  gpuHours?: Record<any, any>;
   latest: number;
+  license?: Record<any, any>;
+  modelDeploymentUnits: Record<any, any>;
   name: string | null;
   organizationId: string | null;
   planId: string;
-  license?: Record<any, any>;
-  gpuHours?: Record<any, any>;
-  fieldPredictions?: Record<any, any>;
-  activeModels?: Record<any, any>;
-  description?: string | null;
 };
 
 export type PlanList = {
