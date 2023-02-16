@@ -1,5 +1,9 @@
 # Changelog 
 
+## Version 11.1.1 - 2023-02-16
+
+- Export missing types for `las-sdk-browser` package
+
 ## Version 11.1.0 - 2022-11-28
 
 - Add `getDeploymentEnvironment`, and `listDeploymentEnvironments` methods
