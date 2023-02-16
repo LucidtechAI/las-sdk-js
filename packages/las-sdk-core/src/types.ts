@@ -708,6 +708,9 @@ export type CreateTrainingOption = {
   instanceType?: TrainingInstanceType;
   metadata?: Record<string, JSONValue> | null;
   name?: string | null;
+  warmStartConfig?: {
+    trainingId: string;
+  };
 };
 
 export type UpdateTrainingOptions = {
