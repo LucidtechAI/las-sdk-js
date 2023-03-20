@@ -1,5 +1,9 @@
 # Changelog 
 
+## Version 11.1.2 - 2023-03-20
+
+- Add `monthlyNumberOfFieldPredictionsAllowed` to `Organization`
+
 ## Version 11.1.1 - 2023-02-16
 
 - Add missing type properties to `CreateTrainingOption`, `Prediction`, `Organization`, `Model`, `ListDeploymentEnvironmentsOptions`, `UpdateTrainingOptions`, and `Plan`

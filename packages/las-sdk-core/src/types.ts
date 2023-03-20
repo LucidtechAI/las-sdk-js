@@ -490,6 +490,7 @@ export type Organization = {
   monthlyNumberOfDataBundlesCreated: number;
   monthlyNumberOfDocumentsAllowed: number;
   monthlyNumberOfDocumentsCreated: number;
+  monthlyNumberOfFieldPredictionsAllowed: number;
   monthlyNumberOfFieldPredictionsUsed: number;
   monthlyNumberOfGpuHoursUsed: number;
   monthlyNumberOfModelDeploymentUnitsUsed: number;
