@@ -10,11 +10,13 @@
     "./packages/las-sdk-node"
   ],
   "scripts": {
-    "build": "pnpm run -r build --filter ./packages",
-    "publish-packages": "npm run build && pnpm -r publish --filter ./packages",
-    "bump-patch": "pnpm run -r bump-patch --filter ./packages",
-    "bump-minor": "pnpm run -r bump-minor --filter ./packages",
-    "bump-major": "pnpm run -r bump-major --filter ./packages",
+    "build": "pnpm run --filter \"./packages/**\" -r build",
+    "publish-packages": "pnpm run build && pnpm --filter \"./packages/**\" -r publish",
+    "pack-packages": "pnpm run build && pnpm run --filter \"./packages/**\" -r pack",
+    "bump-patch": "pnpm run --filter \"./packages/**\" -r bump-patch",
+    "bump-minor": "pnpm run --filter \"./packages/**\" -r bump-minor",
+    "bump-major": "pnpm run --filter \"./packages/**\" -r bump-major",
+    "bump-rc": "pnpm run --filter \"./packages/**\" -r bump-rc",
     "test": "jest",
     "coverage": "jest --coverage"
   },
@@ -35,6 +37,6 @@
     "uuid": "^8.3.2"
   },
   "dependencies": {
-    "pnpm": "^6.23.6"
+    "pnpm": "^8.6.0"
   }
 }

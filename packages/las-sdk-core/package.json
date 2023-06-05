@@ -1,6 +1,6 @@
 {
   "name": "@lucidtech/las-sdk-core",
-  "version": "12.0.0-rc.0",
+  "version": "12.0.0-rc.1",
   "author": "Lucidtech AS <hello@lucidtech.ai>",
   "maintainers": [
     "August André Kvernmo <august@lucidtech.ai>",
@@ -15,11 +15,13 @@
   "types": "lib/index.d.ts",
   "scripts": {
     "build": "tsc --project tsconfig.build.json",
+    "pack": "pnpm pack",
     "lint": "eslint ./src/**/*",
     "test": "jest src",
     "bump-patch": "pnpm version patch",
     "bump-minor": "pnpm version minor",
-    "bump-major": "pnpm version major"
+    "bump-major": "pnpm version major",
+    "bump-rc": "pnpm version prerelease --preid rc"
   },
   "dependencies": {
     "axios": "^0.24.0",
