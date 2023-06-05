@@ -29,7 +29,7 @@
     "node-abort-controller": "^3.0.1"
   },
   "devDependencies": {
-    "@types/node": "^16.11.9",
+    "@types/node": "^20.2.5",
     "@types/uuid": "^8.3.0",
     "uuid": "^8.3.1"
   }
