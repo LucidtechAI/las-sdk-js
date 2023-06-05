@@ -1,6 +1,6 @@
 # Changelog 
 
-## Version 12.0.0-rc1 - 2023-06-05
+## Version 12.0.0-rc.0 - 2023-06-05
 
 - Internal refactor of type structure.
 - Add `Profile` type
