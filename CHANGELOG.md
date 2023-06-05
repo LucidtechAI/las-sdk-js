@@ -1,5 +1,11 @@
 # Changelog 
 
+## Version 12.0.0-rc1 - 2023-06-05
+
+- Internal refactor of type structure.
+- Add `Profile` type
+- Update `User`, `Organization`, `UpdateOrganizationOptions` types
+
 ## Version 11.1.2 - 2023-03-20
 
 - Add `monthlyNumberOfFieldPredictionsAllowed` to `Organization`
