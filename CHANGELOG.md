@@ -1,9 +1,10 @@
 # Changelog 
 
-## Version 12.0.0-rc.0 - 2023-06-05
+## Version 12.0.0 - 2023-06-05
 
 - Internal refactor of type structure.
 - Add `Profile` type
+- Add `ArrayPrediction` type, to narrow down `PredictionResponse` return type
 - Update `User`, `Organization`, `UpdateOrganizationOptions` types
 
 ## Version 11.1.2 - 2023-03-20
