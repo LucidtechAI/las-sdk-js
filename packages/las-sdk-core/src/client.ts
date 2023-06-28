@@ -1181,8 +1181,12 @@ export class Client {
 
   async makeFileServerGetRequest(fileUrl: string, options: any = {}): Promise<ArrayBuffer> {
     const { requestConfig, ...query } = options;
-    const constructedRequestConfig = { responseType: 'arraybuffer', ...requestConfig }
-    return this.makeAuthorizedFileServerRequest<ArrayBuffer>(axios.get, buildURL(fileUrl, query), constructedRequestConfig);
+    const constructedRequestConfig = { responseType: 'arraybuffer', ...requestConfig };
+    return this.makeAuthorizedFileServerRequest<ArrayBuffer>(
+      axios.get,
+      buildURL(fileUrl, query),
+      constructedRequestConfig,
+    );
   }
 
   private async makeAuthorizedFileServerRequest<T>(
