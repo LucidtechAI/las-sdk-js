@@ -237,7 +237,7 @@ export class Client {
    */
   async getDocument(documentId: string, options?: GetDocumentOptions): Promise<LasDocument> {
     const lasDocument = await this.makeGetRequest<any>(`/documents/${documentId}`, options);
-    if (lasDocument.content === null && lasDocument.fileUrl) {
+    if (!lasDocument.content && lasDocument.fileUrl) {
       const fileServerDocument = await this.makeFileServerGetRequest<any>(lasDocument.fileUrl);
       lasDocument.content = btoa(fileServerDocument);
     }
