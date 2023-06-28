@@ -119,7 +119,7 @@ import type {
   WorkflowList,
   WorkflowSpecification,
 } from './types';
-import { buildURL, wait } from './utils';
+import { arrayBufferToBase64, buildURL, wait } from './utils';
 
 /**
  * A high-level http client for communicating with the Lucidtech REST API
@@ -238,8 +238,8 @@ export class Client {
   async getDocument(documentId: string, options?: GetDocumentOptions): Promise<LasDocument> {
     const lasDocument = await this.makeGetRequest<any>(`/documents/${documentId}`, options);
     if (!lasDocument.content && lasDocument.fileUrl) {
-      const fileServerDocument = await this.makeFileServerGetRequest<any>(lasDocument.fileUrl);
-      lasDocument.content = btoa(fileServerDocument);
+      const fileServerDocument = await this.makeFileServerGetRequest(lasDocument.fileUrl);
+      lasDocument.content = arrayBufferToBase64(fileServerDocument);
     }
     return lasDocument as LasDocument;
   }
@@ -1179,9 +1179,10 @@ export class Client {
     return this.makeAuthorizedBodyRequest(axios.patch, path, options);
   }
 
-  async makeFileServerGetRequest<T>(fileUrl: string, options: any = {}): Promise<T> {
+  async makeFileServerGetRequest(fileUrl: string, options: any = {}): Promise<ArrayBuffer> {
     const { requestConfig, ...query } = options;
-    return this.makeAuthorizedFileServerRequest<T>(axios.get, buildURL(fileUrl, query), requestConfig);
+    const constructedRequestConfig = { responseType: 'arraybuffer', ...requestConfig }
+    return this.makeAuthorizedFileServerRequest<ArrayBuffer>(axios.get, buildURL(fileUrl, query), constructedRequestConfig);
   }
 
   private async makeAuthorizedFileServerRequest<T>(
