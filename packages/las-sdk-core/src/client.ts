@@ -1179,14 +1179,14 @@ export class Client {
     return this.makeAuthorizedBodyRequest(axios.patch, path, options);
   }
 
-  async makeFileServerGetRequest<T>(path: string, options: any = {}): Promise<T> {
+  async makeFileServerGetRequest<T>(fileUrl: string, options: any = {}): Promise<T> {
     const { requestConfig, ...query } = options;
-    return this.makeAuthorizedFileServerRequest<T>(axios.get, buildURL(path, query), requestConfig);
+    return this.makeAuthorizedFileServerRequest<T>(axios.get, buildURL(fileUrl, query), requestConfig);
   }
 
   private async makeAuthorizedFileServerRequest<T>(
     axiosFn: AxiosFn,
-    path: string,
+    fileUrl: string,
     requestConfig: any = {},
   ): Promise<T> {
     const headers = await this.getAuthorizationHeaders();
@@ -1195,7 +1195,7 @@ export class Client {
       config = { ...config, ...requestConfig };
     }
 
-    const result = await axiosFn<T>(path, config);
+    const result = await axiosFn<T>(fileUrl, config);
 
     return result.data;
   }
