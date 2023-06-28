@@ -1,5 +1,9 @@
 # Changelog 
 
+## Version 12.0.1-rc.1 - 2023-06-28
+
+- Fix `getDocument` method to be compatible with new API changes
+
 ## Version 12.0.0 - 2023-06-05
 
 - Internal refactor of type structure.

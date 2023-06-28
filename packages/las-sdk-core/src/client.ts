@@ -236,7 +236,12 @@ export class Client {
    * @returns Document response from REST API
    */
   async getDocument(documentId: string, options?: GetDocumentOptions): Promise<LasDocument> {
-    return this.makeGetRequest<LasDocument>(`/documents/${documentId}`, options);
+    const lasDocument = await this.makeGetRequest<any>(`/documents/${documentId}`, options);
+    if (lasDocument.content === null && lasDocument.fileUrl) {
+      const fileServerDocument = await this.makeFileServerGetRequest<any>(lasDocument.fileUrl);
+      lasDocument.content = btoa(fileServerDocument);
+    }
+    return lasDocument as LasDocument;
   }
 
   /**
@@ -1172,6 +1177,27 @@ export class Client {
 
   async makePatchRequest<T>(path: string, options: any): Promise<T> {
     return this.makeAuthorizedBodyRequest(axios.patch, path, options);
+  }
+
+  async makeFileServerGetRequest<T>(fileUrl: string, options: any = {}): Promise<T> {
+    const { requestConfig, ...query } = options;
+    return this.makeAuthorizedFileServerRequest<T>(axios.get, buildURL(fileUrl, query), requestConfig);
+  }
+
+  private async makeAuthorizedFileServerRequest<T>(
+    axiosFn: AxiosFn,
+    fileUrl: string,
+    requestConfig: any = {},
+  ): Promise<T> {
+    const headers = await this.getAuthorizationHeaders();
+    let config: AxiosRequestConfig = { headers };
+    if (requestConfig) {
+      config = { ...config, ...requestConfig };
+    }
+
+    const result = await axiosFn<T>(fileUrl, config);
+
+    return result.data;
   }
 
   private async makeAuthorizedRequest<T>(axiosFn: AxiosFn, path: string, requestConfig: any = {}): Promise<T> {
