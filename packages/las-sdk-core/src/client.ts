@@ -236,7 +236,12 @@ export class Client {
    * @returns Document response from REST API
    */
   async getDocument(documentId: string, options?: GetDocumentOptions): Promise<LasDocument> {
-    return this.makeGetRequest<LasDocument>(`/documents/${documentId}`, options);
+    const lasDocument = await this.makeGetRequest<any>(`/documents/${documentId}`, options);
+    if (lasDocument.content === null && lasDocument.fileUrl) {
+      const fileServerDocument = await this.makeGetRequest<any>(lasDocument.fileUrl);
+      lasDocument.content = btoa(fileServerDocument);
+    }
+    return lasDocument as LasDocument;
   }
 
   /**
