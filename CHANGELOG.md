@@ -1,6 +1,6 @@
 # Changelog 
 
-## Version 12.0.1 - 2023-06-05
+## Version 12.0.1-rc.1 - 2023-06-28
 
 - Fix `getDocument` method to be compatible with new API changes
 
