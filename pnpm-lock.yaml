@@ -1,4 +1,4 @@
-lockfileVersion: '6.1'
+lockfileVersion: '6.0'
 
 settings:
   autoInstallPeers: true
@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       pnpm:
-        specifier: ^8.6.0
-        version: 8.6.0
+        specifier: ^8.6.8
+        version: 8.6.8
     devDependencies:
       '@types/jest':
         specifier: ^27.0.3
@@ -2865,8 +2865,8 @@ packages:
       find-up: 4.1.0
     dev: true
 
-  /pnpm@8.6.0:
-    resolution: {integrity: sha512-uMaWGXlvG+m5NIJaR4JEEenChbg+1AP4zVpqs4PEcZg4uH+lXMTd/X/lirKZA+TC0w0d+++y3btINcwyKsuwAA==}
+  /pnpm@8.6.8:
+    resolution: {integrity: sha512-OtrCRUE7VqRyKly9E3gfExZHOAHtFDpmulyVFKrnl3v/n2xJckdueVumWJqUA5FHxcRP/T42r8P8CDr9duPP9w==}
     engines: {node: '>=16.14'}
     hasBin: true
     dev: false
