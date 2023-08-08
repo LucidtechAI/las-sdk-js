@@ -203,22 +203,21 @@ export class Client {
   /**
    * Creates a document, calls the POST /documents endpoint.
    *
-   * @param content Content to POST (base64 string | Buffer)
+   * @param content Content to POST (Buffer)
    * @param contentType MIME type for the document
    * @param options.consentId Id of the consent that marks the owner of the document
    * @param options.groundTruth List of GroundTruth items representing the ground truth values for the document
-   * @param data.description Description of document
-   * @param data.name Name of document
+   * @param options.description Description of document
+   * @param options.name Name of document
    * @returns Document response from REST API
    */
   async createDocument(
-    content: string | Buffer,
+    content: Buffer,
     contentType: ContentType,
     options?: CreateDocumentOptions,
   ): Promise<LasDocumentWithoutContent> {
-    const encodedContent = typeof content === 'string' ? content : Buffer.from(content).toString('base64');
     let body = {
-      content: encodedContent,
+      content: null,
       contentType,
     };
 
@@ -226,7 +225,9 @@ export class Client {
       body = { ...body, ...options };
     }
 
-    return this.makePostRequest<LasDocumentWithoutContent>('/documents', body);
+    const lasDoc = await this.makePostRequest<LasDocumentWithoutContent>('/documents', body);
+    await this.makeFileServerPutRequest(lasDoc.fileUrl, content);
+    return lasDoc;
   }
 
   /**
@@ -993,6 +994,7 @@ export class Client {
    * @returns Models response from the REST API
    */
   async listModels(options?: ListModelsOptions): Promise<ModelList> {
+    console.log('Using link!');
     return this.makeGetRequest<ModelList>('/models', options);
   }
 
@@ -1189,6 +1191,11 @@ export class Client {
     );
   }
 
+  async makeFileServerPutRequest<T>(fileUrl: string, content: Buffer, options: any = {}): Promise<T> {
+    options.body = content;
+    return this.makeAuthorizedFileServerBodyRequest<T>(axios.put, fileUrl, options);
+  }
+
   private async makeAuthorizedFileServerRequest<T>(
     axiosFn: AxiosFn,
     fileUrl: string,
@@ -1201,6 +1208,23 @@ export class Client {
     }
 
     const result = await axiosFn<T>(fileUrl, config);
+
+    return result.data;
+  }
+
+  private async makeAuthorizedFileServerBodyRequest<T>(
+    axiosFn: AxiosFn,
+    fileUrl: string,
+    options: any = {},
+  ): Promise<T> {
+    const headers = await this.getAuthorizationHeaders();
+    const { requestConfig, ...body } = options;
+    let config: AxiosRequestConfig = { headers };
+    if (requestConfig) {
+      config = { ...config, ...requestConfig };
+    }
+
+    const result = await axiosFn<T>(fileUrl, body, config);
 
     return result.data;
   }
