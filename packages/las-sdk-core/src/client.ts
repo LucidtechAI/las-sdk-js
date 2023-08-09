@@ -1217,7 +1217,6 @@ export class Client {
     options: any = {},
   ): Promise<T> {
     const headers = await this.getAuthorizationHeaders();
-    headers['Content-Type'] = 'application/octet-stream';
     const { requestConfig, data } = options;
     let config: AxiosRequestConfig = { headers };
     if (requestConfig) {
