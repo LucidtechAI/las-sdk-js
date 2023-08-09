@@ -217,7 +217,6 @@ export class Client {
     options?: CreateDocumentOptions,
   ): Promise<LasDocumentWithoutContent> {
     let body = {
-      content: null,
       contentType,
     };
 
