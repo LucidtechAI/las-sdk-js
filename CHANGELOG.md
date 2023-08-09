@@ -1,6 +1,6 @@
 # Changelog 
 
-## Version 13.0.0-beta.7 - 2023-08-09
+## Version 13.0.0-beta.8 - 2023-08-09
 
 - BREAKING: `createDocument` now takes in Buffer/ArrayBuffer/Uint8Array
 

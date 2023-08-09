@@ -227,6 +227,9 @@ export class Client {
     const lasDoc = await this.makePostRequest<LasDocumentWithoutContent>('/documents', body);
     const asBuffer = Buffer.from(content);
     await this.makeFileServerPutRequest(lasDoc.fileUrl, asBuffer);
+    // At this point, contentType = null
+    // Knowing the fileserver PUT request succeeded, we manually override this
+    lasDoc.contentType = contentType;
     return lasDoc;
   }
 
