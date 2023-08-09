@@ -1191,7 +1191,7 @@ export class Client {
   }
 
   async makeFileServerPutRequest<T>(fileUrl: string, content: Buffer, options: any = {}): Promise<T> {
-    options.body = content.buffer;
+    options.body = content;
     return this.makeAuthorizedFileServerBodyRequest<T>(axios.put, fileUrl, options);
   }
 
@@ -1217,6 +1217,7 @@ export class Client {
     options: any = {},
   ): Promise<T> {
     const headers = await this.getAuthorizationHeaders();
+    headers['Content-Type'] = 'application/octet-stream';
     const { requestConfig, ...body } = options;
     let config: AxiosRequestConfig = { headers };
     if (requestConfig) {
