@@ -2,7 +2,7 @@
 
 ## Version 13.0.0-beta.1 - 2023-08-09
 
-- BREAKING: `createDocument` now takes in Buffer/Uint8Array
+- BREAKING: `createDocument` now takes in Buffer/ArrayBuffer/Uint8Array
 
 ## Version 12.0.1-rc.4 - 2023-06-28
 

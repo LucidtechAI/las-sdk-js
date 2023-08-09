@@ -212,7 +212,7 @@ export class Client {
    * @returns Document response from REST API
    */
   async createDocument(
-    content: Buffer,
+    content: ArrayBuffer | Uint8Array | Buffer,
     contentType: ContentType,
     options?: CreateDocumentOptions,
   ): Promise<LasDocumentWithoutContent> {
@@ -226,7 +226,8 @@ export class Client {
     }
 
     const lasDoc = await this.makePostRequest<LasDocumentWithoutContent>('/documents', body);
-    await this.makeFileServerPutRequest(lasDoc.fileUrl, content);
+    const asBuffer = Buffer.from(content);
+    await this.makeFileServerPutRequest(lasDoc.fileUrl, asBuffer);
     return lasDoc;
   }
 
