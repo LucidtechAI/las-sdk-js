@@ -1192,7 +1192,7 @@ export class Client {
 
   async makeFileServerPutRequest<T>(fileUrl: string, content: Buffer, options: any = {}): Promise<T> {
     options.data = content;
-    return this.makeAuthorizedFileServerRequest<T>(axios.put, fileUrl, options);
+    return this.makeAuthorizedFileServerBodyRequest<T>(axios.put, fileUrl, options);
   }
 
   private async makeAuthorizedFileServerRequest<T>(
@@ -1207,6 +1207,24 @@ export class Client {
     }
 
     const result = await axiosFn<T>(fileUrl, config);
+
+    return result.data;
+  }
+
+  private async makeAuthorizedFileServerBodyRequest<T>(
+    axiosFn: AxiosFn,
+    fileUrl: string,
+    options: any = {},
+  ): Promise<T> {
+    const headers = await this.getAuthorizationHeaders();
+    headers['Content-Type'] = 'application/octet-stream';
+    const { requestConfig, data } = options;
+    let config: AxiosRequestConfig = { headers };
+    if (requestConfig) {
+      config = { ...config, ...requestConfig };
+    }
+
+    const result = await axiosFn<T>(fileUrl, data, config);
 
     return result.data;
   }
