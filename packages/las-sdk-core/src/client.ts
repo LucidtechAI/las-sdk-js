@@ -1191,7 +1191,7 @@ export class Client {
   }
 
   async makeFileServerPutRequest<T>(fileUrl: string, content: Buffer, options: any = {}): Promise<T> {
-    options.body = content;
+    options.body = content.buffer;
     return this.makeAuthorizedFileServerBodyRequest<T>(axios.put, fileUrl, options);
   }
 
