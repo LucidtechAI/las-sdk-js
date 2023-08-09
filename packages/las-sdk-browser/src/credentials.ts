@@ -130,11 +130,7 @@ export class AuthorizationCodeCredentials extends Credentials {
 
       this.postToTokenEndpoint(params)
         .then((newToken) => {
-          resolve(new Token(
-            newToken.accessToken,
-            newToken.expiration,
-            newToken.refreshToken || token.refreshToken,
-          ));
+          resolve(new Token(newToken.accessToken, newToken.expiration, newToken.refreshToken || token.refreshToken));
         })
         .catch((error) => {
           console.debug(`Error getting accessToken using refreshToken: ${error.message}`);

@@ -994,7 +994,6 @@ export class Client {
    * @returns Models response from the REST API
    */
   async listModels(options?: ListModelsOptions): Promise<ModelList> {
-    console.log('Using link!');
     return this.makeGetRequest<ModelList>('/models', options);
   }
 
