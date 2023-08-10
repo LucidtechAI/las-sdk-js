@@ -1,6 +1,6 @@
 {
   "name": "@lucidtech/las-sdk-core",
-  "version": "12.0.1-rc.2",
+  "version": "13.0.0",
   "author": "Lucidtech AS <hello@lucidtech.ai>",
   "maintainers": [
     "August André Kvernmo <august@lucidtech.ai>",
@@ -26,6 +26,7 @@
   "dependencies": {
     "axios": "^0.24.0",
     "buffer": "^6.0.3",
+    "js-base64": "^3.7.5",
     "node-abort-controller": "^3.0.1"
   },
   "devDependencies": {

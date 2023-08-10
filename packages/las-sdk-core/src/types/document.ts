@@ -10,7 +10,7 @@ export type GroundTruthItem = {
 
 export type LasDocument = {
   consentId?: string;
-  content: string;
+  content: string | null;
   contentMD5: string | null;
   contentType: ContentType;
   createdBy: string | null;
@@ -19,6 +19,7 @@ export type LasDocument = {
   description: string | null;
   documentId: string;
   groundTruth?: GroundTruth;
+  fileUrl: string | null;
   metadata: Record<string, unknown> | null;
   name: string | null;
   retentionInDays: number;

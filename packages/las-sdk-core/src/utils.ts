@@ -1,3 +1,5 @@
+import { Base64 } from 'js-base64';
+
 export type BuildURLParams = Record<string, undefined | string | Array<string> | number>;
 
 export function buildURL(url: string, params?: BuildURLParams): string {
@@ -39,4 +41,10 @@ export function buildURL(url: string, params?: BuildURLParams): string {
 
 export function wait(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+export function arrayBufferToBase64(buffer: ArrayBuffer) {
+  const bytes = new Uint8Array(buffer);
+  const contentAsB64 = Base64.fromUint8Array(bytes);
+  return contentAsB64;
 }

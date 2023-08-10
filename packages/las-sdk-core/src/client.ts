@@ -119,7 +119,7 @@ import type {
   WorkflowList,
   WorkflowSpecification,
 } from './types';
-import { buildURL, wait } from './utils';
+import { arrayBufferToBase64, buildURL, wait } from './utils';
 
 /**
  * A high-level http client for communicating with the Lucidtech REST API
@@ -203,22 +203,20 @@ export class Client {
   /**
    * Creates a document, calls the POST /documents endpoint.
    *
-   * @param content Content to POST (base64 string | Buffer)
+   * @param content Content to POST (Buffer)
    * @param contentType MIME type for the document
    * @param options.consentId Id of the consent that marks the owner of the document
    * @param options.groundTruth List of GroundTruth items representing the ground truth values for the document
-   * @param data.description Description of document
-   * @param data.name Name of document
+   * @param options.description Description of document
+   * @param options.name Name of document
    * @returns Document response from REST API
    */
   async createDocument(
-    content: string | Buffer,
+    content: ArrayBuffer | Uint8Array | Buffer,
     contentType: ContentType,
     options?: CreateDocumentOptions,
   ): Promise<LasDocumentWithoutContent> {
-    const encodedContent = typeof content === 'string' ? content : Buffer.from(content).toString('base64');
     let body = {
-      content: encodedContent,
       contentType,
     };
 
@@ -226,7 +224,13 @@ export class Client {
       body = { ...body, ...options };
     }
 
-    return this.makePostRequest<LasDocumentWithoutContent>('/documents', body);
+    const lasDoc = await this.makePostRequest<LasDocumentWithoutContent>('/documents', body);
+    const asBuffer = Buffer.from(content);
+    await this.makeFileServerPutRequest(lasDoc.fileUrl, asBuffer);
+    // At this point, contentType = null
+    // Knowing the fileserver PUT request succeeded, we manually override this
+    lasDoc.contentType = contentType;
+    return lasDoc;
   }
 
   /**
@@ -238,8 +242,8 @@ export class Client {
   async getDocument(documentId: string, options?: GetDocumentOptions): Promise<LasDocument> {
     const lasDocument = await this.makeGetRequest<any>(`/documents/${documentId}`, options);
     if (!lasDocument.content && lasDocument.fileUrl) {
-      const fileServerDocument = await this.makeFileServerGetRequest<any>(lasDocument.fileUrl);
-      lasDocument.content = btoa(fileServerDocument);
+      const fileServerDocument = await this.makeFileServerGetRequest(lasDocument.fileUrl);
+      lasDocument.content = arrayBufferToBase64(fileServerDocument);
     }
     return lasDocument as LasDocument;
   }
@@ -1179,9 +1183,19 @@ export class Client {
     return this.makeAuthorizedBodyRequest(axios.patch, path, options);
   }
 
-  async makeFileServerGetRequest<T>(fileUrl: string, options: any = {}): Promise<T> {
+  async makeFileServerGetRequest(fileUrl: string, options: any = {}): Promise<ArrayBuffer> {
     const { requestConfig, ...query } = options;
-    return this.makeAuthorizedFileServerRequest<T>(axios.get, buildURL(fileUrl, query), requestConfig);
+    const constructedRequestConfig = { responseType: 'arraybuffer', ...requestConfig };
+    return this.makeAuthorizedFileServerRequest<ArrayBuffer>(
+      axios.get,
+      buildURL(fileUrl, query),
+      constructedRequestConfig,
+    );
+  }
+
+  async makeFileServerPutRequest<T>(fileUrl: string, content: Buffer, options: any = {}): Promise<T> {
+    options.data = content;
+    return this.makeAuthorizedFileServerBodyRequest<T>(axios.put, fileUrl, options);
   }
 
   private async makeAuthorizedFileServerRequest<T>(
@@ -1196,6 +1210,23 @@ export class Client {
     }
 
     const result = await axiosFn<T>(fileUrl, config);
+
+    return result.data;
+  }
+
+  private async makeAuthorizedFileServerBodyRequest<T>(
+    axiosFn: AxiosFn,
+    fileUrl: string,
+    options: any = {},
+  ): Promise<T> {
+    const headers = await this.getAuthorizationHeaders();
+    const { requestConfig, data } = options;
+    let config: AxiosRequestConfig = { headers };
+    if (requestConfig) {
+      config = { ...config, ...requestConfig };
+    }
+
+    const result = await axiosFn<T>(fileUrl, data, config);
 
     return result.data;
   }
