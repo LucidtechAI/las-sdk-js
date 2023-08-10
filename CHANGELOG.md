@@ -1,11 +1,9 @@
 # Changelog 
 
-## Version 13.0.0-beta.8 - 2023-08-09
+## Version 13.0.0 - 2023-08-10
 
+Update to make use of new file server feature for `LasDocument`:
 - BREAKING: `createDocument` now takes in Buffer/ArrayBuffer/Uint8Array
-
-## Version 12.0.1-rc.4 - 2023-06-28
-
 - Fix `getDocument` method to be compatible with new API changes
 
 ## Version 12.0.0 - 2023-06-05
