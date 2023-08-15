@@ -1,3 +1,5 @@
+import { PaginationOptions, RequestConfig } from './common';
+
 export type Role = {
   name: string | null;
   permissions: Array<RolePermission>;
@@ -14,3 +16,5 @@ export type RoleList = {
   nextToken: string | null;
   roles: Array<Role>;
 };
+
+export type ListRoleOptions = RequestConfig & PaginationOptions;

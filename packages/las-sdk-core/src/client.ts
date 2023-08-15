@@ -120,6 +120,7 @@ import type {
   WorkflowSpecification,
 } from './types';
 import { arrayBufferToBase64, buildURL, wait } from './utils';
+import { ListRoleOptions, RoleList } from './types/role';
 
 /**
  * A high-level http client for communicating with the Lucidtech REST API
@@ -1150,6 +1151,10 @@ export class Client {
    */
   async getLog(logId: string, options?: GetLogOptions): Promise<Log> {
     return this.makeGetRequest<Log>(`/logs/${logId}`, options);
+  }
+
+  async listRoles(options?: ListRoleOptions): Promise<RoleList> {
+    return this.makeGetRequest<RoleList>('/roles', options);
   }
 
   /**
