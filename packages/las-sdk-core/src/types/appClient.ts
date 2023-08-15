@@ -8,6 +8,7 @@ export type CreateAppClientOptions = RequestConfig & {
   loginUrls?: Array<string>;
   defaultLoginUrl?: string;
   name?: string;
+  roleIds?: Array<string>;
 };
 
 export type UpdateAppClientOptions = RequestConfig & {
@@ -15,6 +16,7 @@ export type UpdateAppClientOptions = RequestConfig & {
   description?: string;
   loginUrls?: Array<string>;
   name?: string;
+  roleIds?: Array<string>;
 };
 
 export type AppClient = {
@@ -30,6 +32,7 @@ export type AppClient = {
   loginUrls: Array<string> | null;
   logoutUrls: Array<string> | null;
   name: string | null;
+  roleIds: Array<string>;
   updatedBy: string | null;
   updatedTime: string | null;
 };
