@@ -1,9 +1,14 @@
 import { PaginationOptions, RequestConfig } from './common';
 
 export type Role = {
+  createdBy: null | string;
+  createdTime: null | string;
+  description: null | string;
   name: string | null;
   permissions: Array<RolePermission>;
   roleId: string;
+  updatedBy: null | string;
+  updatedTime: null | string;
 };
 
 export type RolePermission = {
@@ -18,3 +23,4 @@ export type RoleList = {
 };
 
 export type ListRoleOptions = RequestConfig & PaginationOptions;
+export type GetRoleOptions = RequestConfig;

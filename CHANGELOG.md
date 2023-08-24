@@ -1,5 +1,11 @@
 # Changelog 
 
+## Version 13.1.0 - 2023-08-24
+
+- Add `listRoles` and `getRole` methods
+- Add `roleIds` to `User` and `AppClient`
+- Add optional `roleIds` to `CreateAppClientOptions`, `UpdateAppClientOptions`, `CreateUserOptions`, and `UpdateUserOptions`
+
 ## Version 13.0.0 - 2023-08-10
 
 Update to make use of new file server feature for `LasDocument`:
