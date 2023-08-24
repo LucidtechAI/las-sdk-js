@@ -8,6 +8,7 @@ export type User = {
   metadata: Record<string, JSONValue> | null;
   name: string | null;
   profileId: string | null;
+  roleIds: Array<string>;
   updatedBy: string | null;
   updatedTime: string | null;
   userId: string;
@@ -18,12 +19,14 @@ export type CreateUserOptions = RequestConfig & {
   avatar?: string;
   metadata?: Record<string, JSONValue> | null;
   name?: string;
+  roleIds?: Array<string>;
 };
 
 export type UpdateUserOptions = RequestConfig & {
   avatar?: string | null;
   metadata?: Record<string, JSONValue> | null;
   name?: string | null;
+  roleIds?: Array<string>;
 };
 
 export type ListUsersOptions = RequestConfig & PaginationOptions;
