@@ -1,5 +1,9 @@
 # Changelog 
 
+## Version 13.1.1 - 2023-08-24
+
+- Fix missing export of `Role`-related types
+
 ## Version 13.1.0 - 2023-08-24
 
 - Add `listRoles` and `getRole` methods

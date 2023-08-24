@@ -12,6 +12,7 @@ export * from './paymentMethod';
 export * from './plan';
 export * from './prediction';
 export * from './profile';
+export * from './role';
 export * from './secret';
 export * from './training';
 export * from './transition';
