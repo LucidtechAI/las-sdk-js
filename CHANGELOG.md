@@ -4,6 +4,8 @@
 
 - Remove `height` and `width` from all `Model`-related types
 - Add optional `owner` query parameter to `listModels` method
+- Update `Workflow` type with missing fields
+- Make some `Workflow` fields optional
 
 ## Version 13.1.1 - 2023-08-24
 
