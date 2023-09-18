@@ -6,6 +6,7 @@
 - Add optional `owner` query parameter to `listModels` method
 - Update `Workflow` type with missing fields
 - Make some `Workflow` fields optional
+- Remove `avatar`, `email`, `name` from all `User`-related types
 
 ## Version 13.1.1 - 2023-08-24
 
