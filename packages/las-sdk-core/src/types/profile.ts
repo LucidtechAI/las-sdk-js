@@ -1,3 +1,7 @@
+import { RequestConfig } from './common';
+
+export type GetProfileOptions = RequestConfig;
+
 export type PrivateProfile = {
   createdTime: string | null;
   email: string | null;
@@ -10,6 +14,14 @@ export type PrivateProfile = {
   picture: string | null;
   profileId: string;
   updatedTime: string | null;
+};
+
+export type UpdateProfileOptions = RequestConfig & {
+  givenName?: string | null;
+  familyName?: string | null;
+  locale?: string | null;
+  metadata?: Record<string, unknown> | null;
+  picture?: string | null;
 };
 
 export type PublicProfile = Pick<PrivateProfile, 'givenName' | 'familyName' | 'picture' | 'profileId'>;

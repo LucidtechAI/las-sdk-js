@@ -1,5 +1,16 @@
 # Changelog 
 
+## Version 14.0.0 - 2023-09-18
+
+- Remove `height` and `width` from all `Model`-related types
+- Add optional `owner` query parameter to `listModels` method
+- Update `Workflow` type with missing fields
+- Make some `Workflow` fields optional
+- Remove `avatar`, `email`, `name` from all `User`-related types
+- Add `status` to `User`
+- Add optional `modelId` query parameter to `listPredictions` method
+- Add `getProfile` and `updateProfile` methods
+
 ## Version 13.1.1 - 2023-08-24
 
 - Fix missing export of `Role`-related types

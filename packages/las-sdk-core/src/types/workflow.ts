@@ -1,4 +1,4 @@
-import { PaginationOptions, RequestConfig } from './common';
+import { JSONValue, PaginationOptions, RequestConfig } from './common';
 
 export type WorkflowSpecification = {
   definition: object;
@@ -7,12 +7,17 @@ export type WorkflowSpecification = {
 };
 
 export type Workflow = {
-  name: string | null;
-  workflowId: string;
-  description: string | null;
-  numberOfRunningExecutions: number;
   completedConfig: WorkflowCompletedConfig;
+  createdBy: null | string;
+  createdTime: null | string;
+  description: string | null;
   errorConfig: WorkflowErrorConfig;
+  metadata: Record<string, JSONValue> | null;
+  name: string | null;
+  numberOfRunningExecutions: number;
+  updatedBy: null | string;
+  updatedTime: null | string;
+  workflowId: string;
 };
 
 export type WorkflowCompletedConfig = {
@@ -39,16 +44,19 @@ export type ListWorkflowExecutionsOptions = RequestConfig &
   };
 
 export type CreateWorkflowOptions = RequestConfig & {
+  completedConfig?: WorkflowCompletedConfig;
   description?: string | null;
   errorConfig?: WorkflowErrorConfig;
-  completedConfig?: WorkflowCompletedConfig;
+  metadata?: Record<string, JSONValue>;
+  name?: string | null;
 };
 
 export type UpdateWorkflowOptions = RequestConfig & {
-  name?: string | null;
+  completedConfig?: WorkflowCompletedConfig;
   description?: string | null;
   errorConfig?: WorkflowErrorConfig;
-  completedConfig?: WorkflowCompletedConfig;
+  metadata?: Record<string, JSONValue>;
+  name?: string | null;
 };
 
 export type GetWorkflowOptions = RequestConfig;
@@ -71,22 +79,22 @@ export type DeleteWorkflowExecution = RequestConfig;
 
 export type WorkflowExecution = {
   completedBy: Array<string>;
-  completedTaskLogId: string | null;
+  completedTaskLogId?: string | null;
   endTime: string | null;
-  events: Array<Record<any, any>>;
+  events?: Array<Record<any, any>>;
   executionId: string;
   input: Record<any, any>;
   logId: string | null;
-  output: Record<any, any>;
-  status: 'succeeded' | 'failed' | 'running' | 'rejected' | 'retry' | 'error';
+  output?: Record<any, any>;
   startTime: string | null;
-  transitionExecutions: Record<string, Array<string>> | null;
+  status: 'succeeded' | 'failed' | 'running' | 'rejected' | 'retry' | 'error';
+  transitionExecutions?: Record<string, Array<string>> | null;
   workflowId: string;
 };
 
 export type WorkflowExecutionList = {
   executions: Array<Required<WorkflowExecution>>;
   workflowId: string;
-  status?: 'succeeded' | 'failed' | 'running' | 'rejected';
+  status?: Array<'succeeded' | 'failed' | 'running' | 'rejected'>;
   nextToken: string | null;
 };

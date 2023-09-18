@@ -54,6 +54,7 @@ export type ListPredictionsOptions = RequestConfig &
   PaginationOptions & {
     order?: 'ascending' | 'descending';
     sortBy?: 'createdTime';
+    modelId?: string;
   };
 
 export type PredictionList = {

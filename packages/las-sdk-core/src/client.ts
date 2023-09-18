@@ -51,6 +51,7 @@ import type {
   GetLogOptions,
   GetModelOptions,
   GetOrganizationOptions,
+  GetProfileOptions,
   GetTransitionExecutionOptions,
   GetTransitionOptions,
   GetUserOptions,
@@ -87,6 +88,8 @@ import type {
   PostPredictions,
   PredictionList,
   PredictionResponse,
+  PrivateProfile,
+  PublicProfile,
   Secret,
   SecretList,
   Training,
@@ -104,6 +107,7 @@ import type {
   UpdateModelOptions,
   UpdateOrganizationOptions,
   UpdatePaymentMethodOptions,
+  UpdateProfileOptions,
   UpdateSecretOptions,
   UpdateTrainingOptions,
   UpdateTransitionExecution,
@@ -1151,6 +1155,28 @@ export class Client {
    */
   async getLog(logId: string, options?: GetLogOptions): Promise<Log> {
     return this.makeGetRequest<Log>(`/logs/${logId}`, options);
+  }
+
+  /**
+   * Get profile, calls the GET /profiles/{profileId} endpoint.
+   *
+   * @param profileId Id of the profile
+   * @param options Request options
+   * @returns Profile response from REST API
+   */
+  async getProfile(profileId: string, options?: GetProfileOptions): Promise<PublicProfile | PrivateProfile> {
+    return this.makeGetRequest<PublicProfile | PrivateProfile>(`/profiles/${profileId}`, options);
+  }
+
+  /**
+   * Updates a profile, calls the PATCH /profiles/{profileId} endpoint.
+   *
+   * @param profileId Id of the profile
+   * @param options Request options
+   * @returns Profile response from REST API
+   */
+  async updateProfile(profileId: string, options?: UpdateProfileOptions): Promise<PrivateProfile> {
+    return this.makePatchRequest<PrivateProfile>(`/profiles/${profileId}`, options);
   }
 
   /**
