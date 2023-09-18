@@ -8,6 +8,7 @@
 - Make some `Workflow` fields optional
 - Remove `avatar`, `email`, `name` from all `User`-related types
 - Add `status` to `User`
+- Add optional `modelId` query parameter to `listPredictions` method
 
 ## Version 13.1.1 - 2023-08-24
 
