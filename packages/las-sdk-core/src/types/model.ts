@@ -9,9 +9,8 @@ export type PreprocessConfig = {
 
 export type Field = {
   description?: string;
-  fields?: FieldConfig;
   enum?: Array<string>;
-  maxLength?: number;
+  fields?: FieldConfig;
   type: 'amount' | 'date' | 'digits' | 'enum' | 'lines' | 'numeric' | 'string';
 };
 
@@ -19,12 +18,10 @@ export type FieldConfig = Record<string, Field>;
 
 export type CreateModelOptions = RequestConfig & {
   description?: string;
+  metadata?: Record<string, JSONValue> | null;
   name?: string;
-  width?: number;
-  height?: number;
   postprocessConfig?: PostprocessConfig;
   preprocessConfig?: PreprocessConfig;
-  metadata?: Record<string, JSONValue> | null;
 };
 
 export type GetModelOptions = RequestConfig;
@@ -32,12 +29,10 @@ export type GetModelOptions = RequestConfig;
 export type UpdateModelOptions = RequestConfig & {
   description?: string;
   fieldConfig?: FieldConfig;
-  height?: number;
+  metadata?: Record<string, JSONValue> | null;
   name?: string;
   postprocessConfig?: PostprocessConfig;
   preprocessConfig?: PreprocessConfig;
-  width?: number;
-  metadata?: Record<string, JSONValue> | null;
   trainingId?: string | null;
 };
 
@@ -48,7 +43,7 @@ export type Model = {
   createdTime: string | null;
   description: string | null;
   fieldConfig: FieldConfig | null;
-  height: number;
+  metadata: Record<string, JSONValue> | null;
   modelId: string;
   name: string | null;
   numberOfDataBundles: number;
@@ -60,11 +55,9 @@ export type Model = {
   trainingId: string | null;
   updatedBy: string | null;
   updatedTime: string | null;
-  width: number;
-  metadata: Record<string, JSONValue> | null;
 };
 
-export type ListModelsOptions = RequestConfig & PaginationOptions;
+export type ListModelsOptions = { owner?: Array<string> } & RequestConfig & PaginationOptions;
 
 export type ModelList = {
   models: Array<Model>;

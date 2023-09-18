@@ -1,5 +1,10 @@
 # Changelog 
 
+## Version 14.0.0 - 2023-09-18
+
+- Remove `height` and `width` from all `Model`-related types
+- Add optional `owner` query parameter to `listModels` method
+
 ## Version 13.1.1 - 2023-08-24
 
 - Fix missing export of `Role`-related types
