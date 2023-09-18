@@ -7,6 +7,7 @@
 - Update `Workflow` type with missing fields
 - Make some `Workflow` fields optional
 - Remove `avatar`, `email`, `name` from all `User`-related types
+- Add `status` to `User`
 
 ## Version 13.1.1 - 2023-08-24
 

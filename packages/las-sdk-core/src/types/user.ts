@@ -6,6 +6,7 @@ export type User = {
   metadata: Record<string, JSONValue> | null;
   profileId: string | null;
   roleIds: Array<string>;
+  status: 'inactive' | 'active' | 'invite_pending';
   updatedBy: string | null;
   updatedTime: string | null;
   userId: string;
