@@ -1,4 +1,9 @@
-# Changelog 
+# Changelog
+
+## Version 14.0.1 - 2023-11-06
+
+- Fix `secretId` typo in `Secret` type
+- Add `pages` to `GroundTruthItem`
 
 ## Version 14.0.0 - 2023-09-18
 

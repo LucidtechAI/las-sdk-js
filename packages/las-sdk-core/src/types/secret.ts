@@ -1,7 +1,7 @@
 import { RequestConfig, PaginationOptions } from './common';
 
 export type Secret = {
-  secredId: string;
+  secretId: string;
   description: string | null;
   name: string | null;
 };
