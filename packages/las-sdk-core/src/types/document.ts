@@ -6,6 +6,7 @@ export type GroundTruth = Array<GroundTruthItem>;
 export type GroundTruthItem = {
   label: string;
   value: boolean | number | null | string | Array<Array<GroundTruthItem>>;
+  pages: Array<number>;
 };
 
 export type LasDocument = {
