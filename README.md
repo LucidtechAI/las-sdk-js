@@ -45,6 +45,11 @@ Install dependencies
 pnpm install
 ```
 
+Adding a new dependency to a specific package:
+```
+pnpm add <dependency> --filter las-sdk-core
+```
+
 Build
 ```
 pnpm run build
@@ -55,6 +60,12 @@ Run tests
 pnpm run test
 ```
 
+Most of the work will be done within the `las-sdk-core` package in the workspace. Unless there is a major architecture change to the setup, you probably will never need to work with the other packages.
+
+### Creating a new method
+
+- Add new method to `Client` in `packages/las-sdk-core/src/client.ts`
+- Add new test file like `packages/las-sdk-core/src/client.fooBarMethod.spec.ts`
 
 ## Release process
 
