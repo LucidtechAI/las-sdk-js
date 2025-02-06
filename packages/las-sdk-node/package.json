@@ -15,6 +15,7 @@
   "types": "lib/index.d.ts",
   "scripts": {
     "build": "tsc --project tsconfig.build.json",
+    "build-watch": "tsc --watch --project tsconfig.build.json",
     "pack": "pnpm pack",
     "lint": "eslint ./src/**/*",
     "test": "jest --passWithNoTests ./src",
@@ -24,7 +25,7 @@
     "bump-rc": "pnpm version prerelease --preid rc"
   },
   "dependencies": {
-    "@lucidtech/las-sdk-core": "workspace:../las-sdk-core",
-    "axios": "^0.24.0"
+    "@lucidtech/las-sdk-core": "workspace:^",
+    "axios": "^1.7.9"
   }
 }

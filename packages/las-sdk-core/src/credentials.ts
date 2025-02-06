@@ -33,12 +33,13 @@ export class Token {
 export abstract class Credentials {
   readonly apiEndpoint: string;
 
-  protected token?: Token;
+  protected token?: Token | null;
   protected storage?: TokenStorage<Token>;
 
   protected constructor(apiEndpoint: string, storage?: TokenStorage<Token>) {
     this.apiEndpoint = apiEndpoint;
     this.storage = storage;
+    this.token = storage.getPersistentToken();
   }
 
   /**

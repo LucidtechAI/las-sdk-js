@@ -15,6 +15,7 @@
   "types": "lib/index.d.ts",
   "scripts": {
     "build": "tsc --project tsconfig.build.json",
+    "build-watch": "tsc --watch --project tsconfig.build.json",
     "pack": "pnpm pack",
     "lint": "eslint ./src/**/*",
     "test": "jest ./src",
@@ -24,13 +25,13 @@
     "bump-rc": "pnpm version prerelease --preid rc"
   },
   "dependencies": {
-    "@lucidtech/las-sdk-core": "workspace:../las-sdk-core",
-    "@types/crypto-js": "^3.1.43",
-    "axios": "^0.24.0",
-    "crypto-js": "^3.1.9-1"
+    "@lucidtech/las-sdk-core": "workspace:^",
+    "@types/crypto-js": "^4.2.2",
+    "axios": "^1.7.9",
+    "crypto-js": "^4.2.0"
   },
   "devDependencies": {
-    "@types/uuid": "^8.3.3",
-    "uuid": "^8.3.2"
+    "@types/uuid": "^10.0.0",
+    "uuid": "^11.0.5"
   }
 }

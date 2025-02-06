@@ -3,6 +3,7 @@ import type { AxiosRequestConfig, AxiosResponse } from 'axios';
 export type RequestConfig = { requestConfig?: AxiosRequestConfig };
 
 export type JSONValue = string | number | boolean | { [x: string]: JSONValue } | Array<JSONValue>;
+export type JSONObject = Record<string, JSONValue>;
 
 export interface PaginationOptions {
   maxResults?: number;

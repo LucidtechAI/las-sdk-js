@@ -9,7 +9,7 @@ export type GroundTruthItem = {
   pages: Array<number>;
 };
 
-export type LasDocument = {
+export type Document = {
   consentId?: string;
   content: string | null;
   contentMD5: string | null;
@@ -28,7 +28,7 @@ export type LasDocument = {
   updatedTime: string | null;
 };
 
-export type LasDocumentWithoutContent = Omit<LasDocument, 'content'>;
+export type DocumentWithoutContent = Omit<Document, 'content'>;
 
 export type CreateDocumentOptions = RequestConfig & {
   consentId?: string;
@@ -66,7 +66,7 @@ export type ListDocumentsOptions = RequestConfig &
 
 export type DeleteDocumentOptions = RequestConfig;
 
-export type LasDocumentList = {
-  documents: Array<LasDocumentWithoutContent>;
+export type DocumentList = {
+  documents: Array<DocumentWithoutContent>;
   nextToken: string | null;
 };

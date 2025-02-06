@@ -16,6 +16,8 @@ export type PrivateProfile = {
   updatedTime: string | null;
 };
 
+export type Profile = PrivateProfile;
+
 export type UpdateProfileOptions = RequestConfig & {
   givenName?: string | null;
   familyName?: string | null;

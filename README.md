@@ -50,6 +50,12 @@ Build
 pnpm run build
 ```
 
+Local build & watch
+```
+npm run build-watch
+```
+
+
 Run tests
 ```
 pnpm run test
