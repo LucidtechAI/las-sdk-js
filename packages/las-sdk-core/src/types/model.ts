@@ -1,4 +1,4 @@
-import { JSONValue, PaginationOptions, RequestConfig } from './common';
+import { JSONObject, JSONValue, PaginationOptions, RequestConfig } from './common';
 import { PostprocessConfig } from './prediction';
 
 export type PreprocessConfig = {
@@ -7,14 +7,30 @@ export type PreprocessConfig = {
   maxPages: number;
 };
 
+export type EnumValue = { value: string; description: string };
+export type FieldType = 'string' | 'amount' | 'numeric' | 'lines' | 'date' | 'enum';
+
 export type Field = {
-  description?: string;
-  enum?: Array<string>;
+  type: FieldType;
+  name: string;
   fields?: FieldConfig;
-  type: 'amount' | 'date' | 'digits' | 'enum' | 'lines' | 'numeric' | 'string';
+  description?: string;
+  enum?: EnumValue[];
+  multiValue?: boolean;
+  formatters?: FieldFormatter[];
+  validators?: FieldValidator[];
+  isNullable?: boolean;
 };
 
 export type FieldConfig = Record<string, Field>;
+
+export type FieldFormatter = {
+  functionId: string;
+  config: JSONObject;
+  name: string;
+  description: string;
+};
+export type FieldValidator = FieldFormatter;
 
 export type CreateModelOptions = RequestConfig & {
   description?: string;

@@ -68,7 +68,7 @@ export class AuthorizationCodeCredentials extends Credentials {
   private readonly redirectUri: string;
   private readonly logoutRedirectUri?: string;
   private readonly launchUriFn: (uri: string) => void;
-  private readonly pkce?: PKCEDerived;
+  pkce?: PKCEDerived | null;
 
   constructor(
     apiEndpoint: string,
@@ -218,6 +218,8 @@ export class AuthorizationCodeCredentials extends Credentials {
     const endpoint = `https://${this.authEndpoint}/logout`;
     const config = { url: endpoint, params };
     const uri = axios.getUri(config);
+    this.token = undefined;
+    this.pkce = undefined;
     this.launchUriFn(uri);
   }
 
