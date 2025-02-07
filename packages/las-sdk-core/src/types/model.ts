@@ -63,7 +63,7 @@ export type Model = {
   status: ModelStatus;
   trainingId?: string | null;
   updatedBy?: string | null;
-  updatedTime?: string | null;
+  updatedTime?: Date | null;
 };
 
 export type CreateModelOptions = RequestConfig & {

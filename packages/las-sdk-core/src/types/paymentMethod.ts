@@ -1,4 +1,16 @@
-import { JSONObject, PaginationOptions, RequestConfig } from './common';
+import { PaginationOptions, RequestConfig } from './common';
+
+export const CardBrandValues = ['amex', 'diners_club', 'discover', 'jcb', 'mastercard', 'unionpay', 'visa'] as const;
+export type CardBrand = (typeof CardBrandValues)[number];
+
+export type PaymentMethodDetails = {
+  brand: CardBrand;
+  country: string;
+  expMonth: number;
+  expYear: number;
+  last4: string;
+  type: 'card';
+};
 
 export type PaymentMethod = {
   /* Id */
@@ -7,7 +19,7 @@ export type PaymentMethod = {
   createdBy: string;
   createdTime: Date;
   description?: string | null;
-  details?: JSONObject | null;
+  details?: PaymentMethodDetails | null;
   name?: string | null;
   stripePublishableKey?: string | null;
   stripeSetupIntentSecret?: string | null;
