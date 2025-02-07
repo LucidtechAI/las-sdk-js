@@ -1,15 +1,18 @@
-import { RequestConfig, PaginationOptions } from './common';
+import { PaginationOptions, RequestConfig } from './common';
 
 export type ListDeploymentEnvironmentsOptions = RequestConfig & PaginationOptions & { owner?: string | Array<string> };
 
-export type DeploymentEnvironmentStatus = 'available' | 'unavailable';
+export const DeploymentEnvironmentStatusValues = ['available', 'unavailable'] as const;
+export type DeploymentEnvironmentStatus = (typeof DeploymentEnvironmentStatusValues)[number];
 
 export type DeploymentEnvironment = {
+  /* Id */
   deploymentEnvironmentId: string;
-  description: string | null;
+  /* Attributes */
+  description?: string | null;
   modelDeploymentUnits: number;
-  name: string | null;
-  organizationId: string | null;
+  name?: string | null;
+  organizationId?: string | null;
   status: DeploymentEnvironmentStatus;
 };
 

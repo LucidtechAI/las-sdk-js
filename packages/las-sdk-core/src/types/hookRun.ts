@@ -1,22 +1,25 @@
-import { JSONValue, PaginationOptions, RequestConfig } from './common';
+import { JSONObject, JSONValue, PaginationOptions, RequestConfig } from './common';
 
-export type HookStatus = 'failed' | 'running' | 'succeeded';
+export const HookStatusValues = ['failed', 'running', 'succeeded'] as const;
+export type HookStatus = (typeof HookStatusValues)[number];
 
 export type HookRun = {
-  runId: string;
+  /* Id */
   actionId: string;
+  runId: string;
+  /* Attributes */
   createdBy: string;
   createdTime: Date;
-  history: object;
+  history: JSONObject;
   hookId: string;
-  input: object;
+  input: JSONObject;
   logId: string;
-  output?: object;
+  output?: JSONObject | null;
   projectId: string;
   projectRunId: string;
   status: HookStatus;
-  updatedBy: string;
-  updatedTime: Date;
+  updatedBy?: string | null;
+  updatedTime?: Date | null;
 };
 
 export type CreateHookRunOptions = RequestConfig & {

@@ -1,19 +1,14 @@
-import { RequestConfig } from './common';
-
-export type GetOrganizationOptions = RequestConfig;
-
-export type UpdateOrganizationOptions = RequestConfig & {
-  description?: string;
-  name?: string;
-  paymentMethodId?: string | null;
-  planId?: string;
-};
+import { JSONObject, RequestConfig } from './common';
 
 export type Organization = {
-  clientId: string | null;
-  deploymentsAllowed: Record<any, any>;
-  deploymentsCreated: Record<any, any>;
-  description: string | null;
+  /* Id */
+  organizationId: string;
+  /* Attributes */
+  clientId: string;
+  createdTime: Date;
+  deploymentsAllowed: Record<string, number>;
+  deploymentsCreated: Record<string, number>;
+  description?: string | null;
   documentRetentionInDays: number;
   monthlyNumberOfActiveModelsUsed: number;
   monthlyNumberOfDataBundlesAllowed: number;
@@ -24,6 +19,8 @@ export type Organization = {
   monthlyNumberOfFieldPredictionsUsed: number;
   monthlyNumberOfGpuHoursUsed: number;
   monthlyNumberOfModelDeploymentUnitsUsed: number;
+  monthlyNumberOfPagePredictionsAllowed: number;
+  monthlyNumberOfPagePredictionsUsed: number;
   monthlyNumberOfPredictionsAllowed: number;
   monthlyNumberOfPredictionsCreated: number;
   monthlyNumberOfTrainingsAllowed: number;
@@ -32,8 +29,8 @@ export type Organization = {
   monthlyNumberOfTransitionExecutionsCreated: number;
   monthlyNumberOfWorkflowExecutionsAllowed: number;
   monthlyNumberOfWorkflowExecutionsCreated: number;
-  monthlyUsageSummary: Record<string, any>;
-  name: string | null;
+  monthlyUsageSummary: JSONObject;
+  name?: string | null;
   numberOfAppClientsAllowed: number;
   numberOfAppClientsCreated: number;
   numberOfAssetsAllowed: number;
@@ -50,9 +47,18 @@ export type Organization = {
   numberOfUsersCreated: number;
   numberOfWorkflowsAllowed: number;
   numberOfWorkflowsCreated: number;
-  organizationId: string;
-  paymentMethodId: string | null;
-  planId: string | null;
-  updatedBy: string | null;
-  updatedTime: string | null;
+  paymentMethodId?: string | null;
+  picture?: string | null;
+  planId?: string | null;
+  updatedBy?: string | null;
+  updatedTime?: Date | null;
+};
+
+export type GetOrganizationOptions = RequestConfig;
+
+export type UpdateOrganizationOptions = RequestConfig & {
+  description?: string;
+  name?: string;
+  paymentMethodId?: string | null;
+  planId?: string;
 };

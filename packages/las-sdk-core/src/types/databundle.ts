@@ -1,19 +1,24 @@
-import { PaginationOptions, RequestConfig } from './common';
+import { JSONObject, PaginationOptions, RequestConfig } from './common';
 import type { Dataset } from './dataset';
 
+export const DataBundleStatusValues = ['succeeded', 'running', 'failed'] as const;
+export type DataBundleStatus = (typeof DataBundleStatusValues)[number];
+
 export type DataBundle = {
-  createdBy: string | null;
-  createdTime: string;
+  /* Id */
   dataBundleId: string;
+  /* Attributes */
+  createdBy: string;
+  createdTime: Date;
   datasets: Array<Dataset>;
-  description: string | null;
+  description?: string | null;
   modelId: string;
-  name: string | null;
+  name?: string | null;
   retentionInDays: number;
-  status: 'succeeded' | 'running' | 'failed';
-  summary: Record<string, any>;
-  updatedBy: string | null;
-  updatedTime: string;
+  status: DataBundleStatus;
+  summary: JSONObject;
+  updatedBy?: string | null;
+  updatedTime?: string | null;
 };
 
 export type CreateDataBundleOptions = RequestConfig & {

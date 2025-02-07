@@ -4,12 +4,14 @@ export const ProjectRunStatusValues = ['Ready for review', 'Exported', 'Pending 
 export type ProjectRunStatus = (typeof ProjectRunStatusValues)[number];
 
 export type ProjectRun = {
-  runId: string;
+  /* Id */
   projectId: string;
+  runId: string;
+  /* Attributes */
   createdBy: string;
   createdTime: Date;
-  updatedBy?: string;
-  updatedTime?: Date;
+  updatedBy?: string | null;
+  updatedTime?: Date | null;
   resourceIds: string[];
   status: ProjectRunStatus;
 };

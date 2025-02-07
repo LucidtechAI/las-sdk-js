@@ -1,33 +1,38 @@
-import { JSONValue, RequestConfig, PaginationOptions } from './common';
+import { JSONObject, JSONValue, PaginationOptions, RequestConfig } from './common';
 
-export type TrainingInstanceType = 'small-gpu' | 'medium-gpu' | 'large-gpu';
+export const TrainingInstanceTypeValues = ['small-gpu', 'medium-gpu', 'large-gpu'] as const;
+export type TrainingInstanceType = (typeof TrainingInstanceTypeValues)[number];
 
-export type TrainingStatus =
-  | 'waiting-for-approval'
-  | 'pending'
-  | 'running'
-  | 'running-final-evaluation'
-  | 'succeeded'
-  | 'failed'
-  | 'cancelled';
+export const TrainingStatusValues = [
+  'waiting-for-approval',
+  'pending',
+  'running',
+  'running-final-evaluation',
+  'succeeded',
+  'failed',
+  'cancelled',
+];
+export type TrainingStatus = (typeof TrainingStatusValues)[number];
 
 export type Training = {
-  createdBy: string | null;
-  createdTime: string | null;
+  /* Id */
+  trainingId: string;
+  /* Attributes */
+  createdBy: string;
+  createdTime: Date;
   dataBundleIds: Array<string>;
   dataScientistAssistance: boolean;
-  deploymentEnvironmentId: string | null;
-  description: string | null;
-  evaluation: Record<string, any>;
-  gpuHours: number | null;
+  deploymentEnvironmentId?: string | null;
+  description?: string | null;
+  evaluation: JSONObject;
+  gpuHours?: number | null;
   instanceType: TrainingInstanceType;
-  metadata: Record<string, JSONValue> | null;
+  metadata?: JSONObject | null;
   modelId: string;
-  name: string | null;
+  name?: string | null;
   status: TrainingStatus;
-  trainingId: string;
-  updatedBy: string | null;
-  updatedTime: string | null;
+  updatedBy?: string | null;
+  updatedTime?: Date | null;
 };
 
 export type TrainingList = {

@@ -1,4 +1,17 @@
-import { PaginationOptions, RequestConfig } from './common';
+import { Annotations, PaginationOptions, RequestConfig } from './common';
+
+export type Prediction = {
+  /* Id */
+  predictionId: string;
+  /* Attributes */
+  createdBy: string;
+  createdTime: Date;
+  documentId: string;
+  inferenceTime: number;
+  modelId: string;
+  trainingId?: string | null;
+  fieldValues?: Annotations | null;
+};
 
 export type BestFirst = {
   strategy: 'BEST_FIRST';
@@ -14,6 +27,18 @@ export type BestNPages = {
 
 export type PostprocessConfig = BestFirst | BestNPages;
 
+export type ListPredictionsOptions = RequestConfig &
+  PaginationOptions & {
+    order?: 'ascending' | 'descending';
+    sortBy?: 'createdTime';
+    modelId?: string;
+  };
+
+export type PredictionList = {
+  predictions: Prediction[];
+  nextToken: string | null;
+};
+
 export type CreatePredictionsOptions = RequestConfig & {
   maxPages?: number;
   autoRotate?: boolean;
@@ -25,39 +50,4 @@ export type CreatePredictionsOptions = RequestConfig & {
 export type PostPredictions = CreatePredictionsOptions & {
   documentId: string;
   modelId: string;
-};
-
-export type ArrayPrediction = {
-  label: string;
-  value: Array<Array<ArrayPrediction | Prediction>>;
-};
-
-export type Prediction = {
-  confidence: number;
-  label: string;
-  page: number;
-  value: boolean | string | number | null;
-};
-
-export type PredictionResponse = {
-  createdBy: string | null;
-  createdTime: string | null;
-  documentId: string;
-  inferenceTime: number;
-  modelId: string;
-  predictionId: string;
-  predictions: Array<ArrayPrediction | Prediction>;
-  trainingId: string | null;
-};
-
-export type ListPredictionsOptions = RequestConfig &
-  PaginationOptions & {
-    order?: 'ascending' | 'descending';
-    sortBy?: 'createdTime';
-    modelId?: string;
-  };
-
-export type PredictionList = {
-  predictions: Array<PredictionResponse>;
-  nextToken: string | null;
 };

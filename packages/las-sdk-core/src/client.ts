@@ -14,7 +14,6 @@ import type {
   AssetList,
   AuthorizationHeaders,
   AxiosFn,
-  ContentType,
   CreateActionOptions,
   CreateActionRunOptions,
   CreateAppClientOptions,
@@ -33,11 +32,9 @@ import type {
   CreateProjectRunOptions,
   CreateSecretOptions,
   CreateTrainingOption,
-  CreateTransitionOptions,
   CreateUserOptions,
   CreateValidationOptions,
   CreateValidationTaskOptions,
-  CreateWorkflowOptions,
   DataBundle,
   DataBundleList,
   Dataset,
@@ -57,19 +54,14 @@ import type {
   DeleteModelOptions,
   DeleteProjectOptions,
   DeleteProjectRunOptions,
-  DeleteTransitionOptions,
   DeleteUserOptions,
   DeleteValidationOptions,
   DeleteValidationTaskOptions,
-  DeleteWorkflowExecution,
-  DeleteWorkflowOptions,
   DeploymentEnvironment,
   DeploymentEnvironmentList,
   Document,
   DocumentList,
   DocumentWithoutContent,
-  ExecuteTransitionOptions,
-  ExecuteWorkflowOptions,
   FieldConfig,
   File,
   Function,
@@ -91,19 +83,16 @@ import type {
   GetProjectOptions,
   GetProjectRunOptions,
   GetRoleOptions,
-  GetTransitionExecutionOptions,
-  GetTransitionOptions,
   GetUserOptions,
   GetValidationOptions,
   GetValidationTaskOptions,
-  GetWorkflowExecutionOptions,
-  GetWorkflowOptions,
   Hook,
   HookList,
   HookRun,
   HookRunList,
   Invoice,
   InvoiceList,
+  JSONValue,
   ListActionRunsOptions,
   ListActionsOptions,
   ListAppClientsOptions,
@@ -125,12 +114,9 @@ import type {
   ListRoleOptions,
   ListSecretsOptions,
   ListTrainingsOptions,
-  ListTransitionOptions,
   ListUsersOptions,
   ListValidationsOptions,
   ListValidationTasksOptions,
-  ListWorkflowExecutionsOptions,
-  ListWorkflowOptions,
   Log,
   Model,
   ModelList,
@@ -139,27 +125,19 @@ import type {
   PaymentMethodList,
   Plan,
   PlanList,
-  PostHeartbeatOptions,
   PostPredictions,
+  Prediction,
   PredictionList,
-  PredictionResponse,
-  PrivateProfile,
+  Profile,
   Project,
   ProjectList,
   ProjectRun,
   ProjectRunList,
-  PublicProfile,
   Role,
   RoleList,
   Secret,
   SecretList,
   Training,
-  Transition,
-  TransitionExecution,
-  TransitionExecutionList,
-  TransitionExecutionListOptions,
-  TransitionList,
-  TransitionType,
   UpdateActionOptions,
   UpdateActionRunOptions,
   UpdateAppClientOptions,
@@ -179,26 +157,27 @@ import type {
   UpdateProjectRunOptions,
   UpdateSecretOptions,
   UpdateTrainingOptions,
-  UpdateTransitionExecution,
-  UpdateTransitionOptions,
   UpdateUserOptions,
   UpdateValidationOptions,
   UpdateValidationTaskOptions,
-  UpdateWorkflowExecutionOptions,
-  UpdateWorkflowOptions,
   User,
   UserList,
   Validation,
   ValidationList,
   ValidationTask,
   ValidationTaskList,
-  Workflow,
-  WorkflowExecution,
-  WorkflowExecutionList,
-  WorkflowList,
-  WorkflowSpecification,
 } from './types';
-import { arrayBufferToBase64, buildURL, wait } from './utils';
+import { buildURL, wait } from './utils';
+
+const maybeParseDate = (val: JSONValue) => {
+  if (typeof val === 'string') {
+    const re = /2\d{3}-[0-1]\d-[0-3]\dT[0-2]\d:[0-6]\d:[0-6]\d\.\d+(\+0000|Z)/;
+    if (val.match(re)) {
+      return new Date(val);
+    }
+  }
+  return val;
+};
 
 /**
  * A high-level http client for communicating with the Lucidtech REST API
@@ -282,34 +261,11 @@ export class Client {
   /**
    * Creates a document, calls the POST /documents endpoint.
    *
-   * @param content Content to POST (Buffer)
-   * @param contentType MIME type for the document
-   * @param options.consentId Id of the consent that marks the owner of the document
-   * @param options.groundTruth List of GroundTruth items representing the ground truth values for the document
-   * @param options.description Description of document
-   * @param options.name Name of document
+   * @param options Object with create options
    * @returns Document response from REST API
    */
-  async createDocument(
-    content: ArrayBuffer | Uint8Array | Buffer,
-    contentType: ContentType,
-    options?: CreateDocumentOptions,
-  ): Promise<DocumentWithoutContent> {
-    let body = {
-      contentType,
-    };
-
-    if (options) {
-      body = { ...body, ...options };
-    }
-
-    const lasDoc = await this.makePostRequest<DocumentWithoutContent>('/documents', body);
-    const asBuffer = Buffer.from(content);
-    await this.makeFileServerPutRequest(lasDoc.fileUrl, asBuffer);
-    // At this point, contentType = null
-    // Knowing the fileserver PUT request succeeded, we manually override this
-    lasDoc.contentType = contentType;
-    return lasDoc;
+  async createDocument(options?: CreateDocumentOptions): Promise<DocumentWithoutContent> {
+    return this.makePostRequest<Document>('/documents', options);
   }
 
   /**
@@ -371,306 +327,6 @@ export class Client {
   }
 
   /**
-   * Creates a transition, calls the POST /transitions endpoint.
-   *
-   * @param name Name of transition
-   * @param transitionType Type of transition "docker"|"manual"
-   * @param options.inputJsonSchema Json-schema that defines the input to the transition
-   * @param options.outputJsonSchema Json-schema that defines the output of the transition
-   * @param options.description Description of the transition
-   * @param options.params Extra parameters to the transition
-   * @returns Transition response from REST API
-   */
-  async createTransition(transitionType: TransitionType, options?: CreateTransitionOptions): Promise<Transition> {
-    let body = {
-      transitionType,
-    };
-
-    if (options) {
-      body = { ...body, ...options };
-    }
-
-    return this.makePostRequest<Transition>('/transitions', body);
-  }
-
-  /**
-   * Get the transition with the provided transitionId, calls the GET /transitions/{transitionId} endpoint.
-   *
-   * @param transitionId Id of the transition
-   * @returns Transition response from REST API
-   */
-  async getTransition(transitionId: string, options?: GetTransitionOptions): Promise<Transition> {
-    return this.makeGetRequest(`/transitions/${transitionId}`, options);
-  }
-
-  /**
-   * List transitions, calls the GET /transitions endpoint.
-   *
-   * @param options.transitionType Types of transitions
-   * @param options.maxResults Maximum number of results to be returned
-   * @param options.nextToken A unique token for each page, use the returned token to retrieve the next page.
-   * @returns Transitions response from REST API
-   */
-  async listTransitions(options?: ListTransitionOptions): Promise<TransitionList> {
-    return this.makeGetRequest('/transitions', options);
-  }
-
-  /**
-   * Updates a transition, calls the PATCH /transitions/{transitionId} endpoint.
-   *
-   * @param transitionId Id of the transition
-   * @param data Transition fields to PATCH
-   * @returns Transition response from REST API
-   */
-  async updateTransition(transitionId: string, data: UpdateTransitionOptions): Promise<Transition> {
-    return this.makePatchRequest<Transition>(`/transitions/${transitionId}`, data);
-  }
-
-  /**
-   * Delete the transition with the provided transitionId, calls the DELETE /transitions/{transitionId} endpoint.
-   * Will fail if transition is in use by one or more workflows.
-   *
-   * @param transitionId Id of the transition
-   * @returns Transition response from REST API
-   */
-  async deleteTransition(transitionId: string, options?: DeleteTransitionOptions): Promise<Transition> {
-    return this.makeDeleteRequest(`/transitions/${transitionId}`, options);
-  }
-
-  /**
-   * Start executing a manual transition, calls the POST /transitions/{transitionId}/executions endpoint.
-   *
-   * @param transitionId Id of the transition
-   * @returns Transition execution response from REST API
-   */
-  async executeTransition(transitionId: string, options?: ExecuteTransitionOptions): Promise<TransitionExecution> {
-    return this.makePostRequest<TransitionExecution>(`/transitions/${transitionId}/executions`, options);
-  }
-
-  /**
-   * Get an execution of a transition, calls the GET /transitions/{transitionId}/executions/{executionId} endpoint
-   *
-   * @param transitionId Id of the transition
-   * @param transitionExecutionId Id of the execution
-   * @returns Transition execution responses from REST API
-   */
-  async getTransitionExecution(
-    transitionId: string,
-    transitionExecutionId: string,
-    options?: GetTransitionExecutionOptions,
-  ): Promise<TransitionExecution> {
-    return this.makeGetRequest(`/transitions/${transitionId}/executions/${transitionExecutionId}`, options);
-  }
-
-  /**
-   * Ends the processing of the transition execution, calls the
-   * PATCH /transitions/{transitionId}/executions/{executionId} endpoint.
-   *
-   * @param transitionId Id of the transition that performs the execution
-   * @param executionId Id of the execution to update
-   * @param data.status Status of the execution 'succeeded|failed'
-   * @param data.output Output from the execution, required when status is 'succeded'
-   * @param data.error Error from the execution, required when status is 'failed', needs to contain 'message'
-   * @param data.startTime Utc start time that will replace the original start time of the execution
-   * @returns Transition execution response from REST API
-   */
-  async updateTransitionExecution(
-    transitionId: string,
-    executionId: string,
-    data: UpdateTransitionExecution,
-  ): Promise<TransitionExecution> {
-    return this.makePatchRequest<TransitionExecution>(`/transitions/${transitionId}/executions/${executionId}`, data);
-  }
-
-  /**
-   * List executions in a transition, calls the GET /transitions/{transitionId}/executions endpoint.
-   *
-   * @param transitionId Id of the transition
-   * @param options.status Statuses of the executions
-   * @param options.executionId Ids of the executions
-   * @param options.maxResults Maximum number of results to be returned
-   * @param options.nextToken A unique token for each page, use the returned token to retrieve the next page.
-   * @returns Transition executions responses from REST API
-   */
-  async listTransitionExecutions(
-    transitionId: string,
-    options?: TransitionExecutionListOptions,
-  ): Promise<TransitionExecutionList> {
-    return this.makeGetRequest<TransitionExecutionList>(`/transitions/${transitionId}/executions`, options);
-  }
-
-  /**
-   * Send heartbeat for a manual execution to signal that we are still working on it.
-   * Must be done at minimum once every 60 seconds or the transition execution will time out.
-   * Calls the POST /transitions/{transitionId}/executions/{executionId}/heartbeats endpoint.
-   *
-   * @param transitionId Id of the transition
-   * @param transitionExecutionId Id of the transition execution
-   * @returns Empty response
-   */
-  async sendHeartbeat(
-    transitionId: string,
-    transitionExecutionId: string,
-    options?: PostHeartbeatOptions,
-  ): Promise<unknown> {
-    return this.makePostRequest(`/transitions/${transitionId}/executions/${transitionExecutionId}/heartbeats`, options);
-  }
-
-  /**
-   * Creates a new workflow, calls the POST /workflows endpoint.
-   *
-   * @param name Name of the workflow
-   * @param specification Specification of the workflow
-   * @param options.description Description of the workflow
-   * @param options.errorConfig Configuration of error handler
-   * @returns Workflow response from REST API
-   */
-  async createWorkflow(
-    name: string,
-    specification: WorkflowSpecification,
-    options?: CreateWorkflowOptions,
-  ): Promise<Workflow> {
-    let body = {
-      name,
-      specification,
-    };
-
-    if (options) {
-      body = { ...body, ...options };
-    }
-
-    return this.makePostRequest<Workflow>('/workflows', body);
-  }
-
-  /**
-   * Get the workflow with the provided workflowId, calls the GET /workflows/{workflowId} endpoint.
-   *
-   * @param workflowId Id of the workflow
-   * @returns Workflow response from REST API
-   */
-  async getWorkflow(workflowId: string, options?: GetWorkflowOptions): Promise<Workflow> {
-    return this.makeGetRequest(`/workflows/${workflowId}`, options);
-  }
-
-  /**
-   * List workflows, calls the GET /workflows endpoint.
-   *
-   * @param options.maxResults Maximum number of results to be returned
-   * @param options.nextToken A unique token for each page, use the returned token to retrieve the next page.
-   * @returns Workflows response from REST API
-   */
-  async listWorkflows(options?: ListWorkflowOptions): Promise<WorkflowList> {
-    return this.makeGetRequest<WorkflowList>('/workflows', options);
-  }
-
-  /**
-   * Delete the workflow with the provided workflowId, calls the DELETE /workflows/{workflowId} endpoint.
-   *
-   * @param workflowId Id of the workflow
-   * @returns Workflow response from REST API
-   */
-  async deleteWorkflow(workflowId: string, options?: DeleteWorkflowOptions): Promise<Workflow> {
-    return this.makeDeleteRequest<Workflow>(`/workflows/${workflowId}`, options);
-  }
-
-  /**
-   * Updates a workflow, calls the PATCH /workflows/{workflowId} endpoint.
-   * @param workflowId Id of the workflow
-   * @param data Workflow fields to PATCH
-   * @returns Workflow response from REST API
-   */
-  async updateWorkflow(workflowId: string, data: UpdateWorkflowOptions): Promise<Workflow> {
-    return this.makePatchRequest<Workflow>(`/workflows/${workflowId}`, data);
-  }
-
-  /**
-   * Start a workflow execution, calls the POST /workflows/{workflowId}/executions endpoint.
-   *
-   * @param workflowId Id of the workflow
-   * @param input Input to the first step of the workflow
-   * @returns Workflow execution response from REST API
-   */
-  async executeWorkflow(
-    workflowId: string,
-    input: object,
-    options?: ExecuteWorkflowOptions,
-  ): Promise<WorkflowExecution> {
-    const body = {
-      input,
-      ...options,
-    };
-
-    return this.makePostRequest<WorkflowExecution>(`/workflows/${workflowId}/executions`, body);
-  }
-
-  /**
-   * List executions in a workflow, calls the GET /workflows/{workflowId}/executions endpoint.
-   *
-   * @param workflowId Id of the workflow
-   * @param options.status Statuses of the executions
-   * @param options.maxResults Maximum number of results to be returned
-   * @param options.nextToken A unique token for each page, use the returned token to retrieve the next page.
-   * @param options.sortBy What field to sort by ('startTime' | 'endTime')
-   * @param options.order Sort order ('ascending' | 'descending')
-   * @returns Workflow executions responses from REST API
-   */
-  async listWorkflowExecutions(
-    workflowId: string,
-    options?: ListWorkflowExecutionsOptions,
-  ): Promise<WorkflowExecutionList> {
-    return this.makeGetRequest<WorkflowExecutionList>(`/workflows/${workflowId}/executions`, options);
-  }
-
-  /**
-   * Get a workflow execution, calls the GET /workflows/{workflowId}/executions/{executionId} endpoint.
-   *
-   * @param workflowId Id of the workflow that performs the execution
-   * @param executionId Id of the execution to get
-   * @returns Workflow execution response from REST API
-   */
-  async getWorkflowExecution(
-    workflowId: string,
-    executionId: string,
-    options?: GetWorkflowExecutionOptions,
-  ): Promise<WorkflowExecution> {
-    return this.makeGetRequest(`/workflows/${workflowId}/executions/${executionId}`, options);
-  }
-
-  /**
-   * Retry or end the processing of a workflow execution,
-   * calls the PATCH /workflows/{workflowId}/executions/{executionId} endpoint.
-   *
-   * @param workflowId Id of the workflow that performs the execution
-   * @param executionId Id of the execution to update
-   * @param data.nextTransitionId The next transition to transition into. To end the workflow-execution,
-   *  use: las:transition:commons-failed.
-   * @returns Workflow execution response from REST API
-   */
-  async updateWorkflowExecution(
-    workflowId: string,
-    executionId: string,
-    data: UpdateWorkflowExecutionOptions,
-  ): Promise<WorkflowExecution> {
-    return this.makePatchRequest(`/workflows/${workflowId}/executions/${executionId}`, data);
-  }
-
-  /**
-   * Deletes the execution with the provided executionId from workflowId,
-   * calls the DELETE /workflows/{workflowId}/executions/{executionId} endpoint.
-   *
-   * @param workflowId Id of the workflow
-   * @param executionId Id of the execution
-   * @returns WorkflowExecution response from REST API
-   */
-  async deleteWorkflowExecution(
-    workflowId: string,
-    executionId: string,
-    options?: DeleteWorkflowExecution,
-  ): Promise<WorkflowExecution> {
-    return this.makeDeleteRequest(`/workflows/${workflowId}/executions/${executionId}`, options);
-  }
-
-  /**
    * Create a prediction on a document using specified model, calls the POST /predictions endpoint.
    *
    * @param documentId Id of the document to run inference and create a prediction on
@@ -682,11 +338,7 @@ export class Client {
    * better result but will also take longer time.
    * @returns Predicion response from REST API
    */
-  async createPrediction(
-    documentId: string,
-    modelId: string,
-    options?: CreatePredictionsOptions,
-  ): Promise<PredictionResponse> {
+  async createPrediction(documentId: string, modelId: string, options?: CreatePredictionsOptions): Promise<Prediction> {
     let body: PostPredictions = {
       documentId,
       modelId,
@@ -696,7 +348,7 @@ export class Client {
       body = { ...body, ...options };
     }
 
-    return this.makePostRequest<PredictionResponse>('/predictions', body);
+    return this.makePostRequest<Prediction>('/predictions', body);
   }
 
   async listPredictions(options?: ListPredictionsOptions): Promise<PredictionList> {
@@ -984,7 +636,7 @@ export class Client {
    * @param options.description Description of the secret
    * @returns Secret response from REST API
    */
-  async createSecret(data: Record<any, any>, options?: CreateSecretOptions): Promise<Secret> {
+  async createSecret(data: JSONValue, options?: CreateSecretOptions): Promise<Secret> {
     let body = { data };
 
     if (options) {
@@ -1233,8 +885,8 @@ export class Client {
    * @param options Request options
    * @returns Profile response from REST API
    */
-  async getProfile(profileId: string, options?: GetProfileOptions): Promise<PublicProfile | PrivateProfile> {
-    return this.makeGetRequest<PublicProfile | PrivateProfile>(`/profiles/${profileId}`, options);
+  async getProfile(profileId: string, options?: GetProfileOptions): Promise<Profile> {
+    return this.makeGetRequest<Profile>(`/profiles/${profileId}`, options);
   }
 
   /**
@@ -1244,8 +896,8 @@ export class Client {
    * @param options Request options
    * @returns Profile response from REST API
    */
-  async updateProfile(profileId: string, options?: UpdateProfileOptions): Promise<PrivateProfile> {
-    return this.makePatchRequest<PrivateProfile>(`/profiles/${profileId}`, options);
+  async updateProfile(profileId: string, options?: UpdateProfileOptions): Promise<Profile> {
+    return this.makePatchRequest<Profile>(`/profiles/${profileId}`, options);
   }
 
   /**
@@ -1916,7 +1568,7 @@ export class Client {
    * @param options Object with update options
    */
   async updateActionRun(actionId: string, runId: string, options: UpdateActionRunOptions): Promise<ActionRun> {
-    return this.makePatchRequest(`/actions/${actionId}/runs/${runId}`, options);
+    return this.makePatchRequest<ActionRun>(`/actions/${actionId}/runs/${runId}`, options);
   }
 
   /**
@@ -1928,10 +1580,9 @@ export class Client {
    * @returns ActionRun response from REST API
    */
   async deleteActionRun(actionId: string, runId: string, options?: DeleteActionRunOptions): Promise<ActionRun> {
-    return this.makeDeleteRequest(`/actions/${actionId}/runs/${runId}`, options);
+    return this.makeDeleteRequest<ActionRun>(`/actions/${actionId}/runs/${runId}`, options);
   }
 
-  /* eslint-disable @typescript-eslint/no-explicit-any */
   async makeGetRequest<T>(path: string, options: any = {}): Promise<T> {
     const { requestConfig, ...query } = options;
     return this.makeAuthorizedRequest<T>(axios.get, buildURL(path, query), requestConfig);
@@ -2004,8 +1655,7 @@ export class Client {
     }
 
     const result = await axiosFn<T>(endpoint, config);
-
-    return result.data;
+    return JSON.parse(JSON.stringify(result.data), (key, val) => maybeParseDate(val));
   }
 
   private async makeAuthorizedBodyRequest<T>(axiosFn: AxiosFn, path: string, options: any = {}): Promise<T> {
@@ -2018,8 +1668,7 @@ export class Client {
     }
 
     const result = await axiosFn<T>(endpoint, body, config);
-
-    return result.data;
+    return JSON.parse(JSON.stringify(result.data), (key, val) => maybeParseDate(val));
   }
 
   private async getAuthorizationHeaders(): Promise<AuthorizationHeaders> {

@@ -1,14 +1,17 @@
-import { JSONValue, PaginationOptions, RequestConfig } from './common';
+import { JSONObject, JSONValue, PaginationOptions, RequestConfig } from './common';
 
 export type Project = {
-  createdBy: string | null;
-  createdTime: string | null;
-  description: string | null;
-  metadata: Record<string, JSONValue> | null;
-  name: string | null;
+  /* Id */
   projectId: string;
-  updatedBy: string | null;
-  updatedTime: string | null;
+  /* Attributes */
+  createdBy: string;
+  createdTime: Date;
+  description?: string | null;
+  metadata?: JSONObject | null;
+  name?: string | null;
+  resourceIds: string[];
+  updatedBy?: string | null;
+  updatedTime?: Date | null;
 };
 
 export type CreateProjectOptions = RequestConfig & {

@@ -1,6 +1,8 @@
-import { JSONValue, PaginationOptions, RequestConfig } from './common';
+import { Annotations, JSONObject, JSONValue, PaginationOptions, RequestConfig } from './common';
 
-export type ContentType = 'application/pdf' | 'image/jpeg' | 'image/png' | 'image/tiff';
+export const DOCUMENT_MAX_SIZE = 64 * 1000 * 1000;
+export const DOCUMENT_MIME_TYPES = ['application/pdf', 'image/jpeg', 'image/png', 'image/webp', 'image/tiff'] as const;
+export type ContentType = (typeof DOCUMENT_MIME_TYPES)[number];
 
 export type GroundTruth = Array<GroundTruthItem>;
 export type GroundTruthItem = {
@@ -10,22 +12,25 @@ export type GroundTruthItem = {
 };
 
 export type Document = {
-  consentId?: string;
-  content: string | null;
-  contentMD5: string | null;
-  contentType: ContentType;
-  createdBy: string | null;
-  createdTime: string | null;
-  datasetId?: string;
-  description: string | null;
+  /* Id */
   documentId: string;
-  groundTruth?: GroundTruth;
-  fileUrl: string | null;
-  metadata: Record<string, unknown> | null;
-  name: string | null;
+  /* Attributes */
+  consentId?: string | null;
+  content?: string | null;
+  contentMD5?: string | null;
+  contentType: ContentType;
+  createdBy: string;
+  createdTime: Date;
+  datasetId?: string | null;
+  description?: string | null;
+  fieldValues?: Annotations | null;
+  fileUrl?: string | null;
+  groundTruth?: GroundTruth | null;
+  metadata?: JSONObject | null;
+  name?: string | null;
   retentionInDays: number;
-  updatedBy: string | null;
-  updatedTime: string | null;
+  updatedBy?: string | null;
+  updatedTime?: Date | null;
 };
 
 export type DocumentWithoutContent = Omit<Document, 'content'>;

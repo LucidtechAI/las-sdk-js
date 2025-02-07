@@ -1,15 +1,17 @@
 import { PaginationOptions, RequestConfig } from './common';
 
 export type Asset = {
+  /* Id */
   assetId: string;
+  /* Attributes */
   content: string;
-  contentMD5: string | null;
-  createdBy: string | null;
-  createdTime: string | null;
-  description: string | null;
-  name: string | null;
-  updatedBy: string | null;
-  updatedTime: string | null;
+  contentMD5?: string | null;
+  createdBy?: string | null;
+  createdTime?: Date | null;
+  description?: string | null;
+  name?: string | null;
+  updatedBy?: string | null;
+  updatedTime?: Date | null;
 };
 
 export type AssetWithoutContent = Omit<Asset, 'content'>;

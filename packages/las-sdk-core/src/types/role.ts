@@ -1,14 +1,16 @@
 import { PaginationOptions, RequestConfig } from './common';
 
 export type Role = {
-  createdBy: null | string;
-  createdTime: null | string;
-  description: null | string;
-  name: string | null;
-  permissions: Array<RolePermission>;
+  /* Id */
   roleId: string;
-  updatedBy: null | string;
-  updatedTime: null | string;
+  /* Attributes */
+  createdBy: string;
+  createdTime: Date;
+  description?: string | null;
+  name?: string | null;
+  permissions: Array<RolePermission>;
+  updatedBy?: string | null;
+  updatedTime?: Date | null;
 };
 
 export type RolePermission = {

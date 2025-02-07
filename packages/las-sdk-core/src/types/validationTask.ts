@@ -1,12 +1,19 @@
 import { JSONObject, JSONValue, PaginationOptions, RequestConfig } from './common';
 
+export const ValidationTaskStatusValues = ['custom', 'failed', 'in-progress', 'ready', 'succeeded'] as const;
+export type ValidationTaskStatus = (typeof ValidationTaskStatusValues)[number];
+
 export type ValidationTask = {
+  /* Id */
   validationId: string;
   taskId: string;
+  /* Attributes */
+  createdBy: string;
   createdTime: Date;
-  updatedTime?: Date;
   input: JSONObject;
-  status: 'custom' | 'failed' | 'in-progress' | 'ready' | 'succeeded';
+  status: ValidationTaskStatus;
+  updatedBy?: string | null;
+  updatedTime?: Date | null;
 };
 
 export type CreateValidationTaskOptions = RequestConfig & {

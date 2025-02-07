@@ -1,20 +1,23 @@
-import { RequestConfig, PaginationOptions } from './common';
+import { JSONObject, PaginationOptions, RequestConfig } from './common';
 
-export type PlanCurrency = 'NOK' | 'USD' | 'EUR';
+export const PlanCurrencyValues = ['NOK', 'USD', 'EUR'] as const;
+export type PlanCurrency = (typeof PlanCurrencyValues)[number];
 
 export type Plan = {
-  activeModels?: Record<any, any>;
+  /* Id */
+  organizationId?: string | null;
+  planId: string;
+  /* Attributes */
+  activeModels?: JSONObject | null;
   billingCycle: number;
   currency: PlanCurrency;
   description?: string | null;
-  fieldPredictions?: Record<any, any>;
-  gpuHours?: Record<any, any>;
+  fieldPredictions?: JSONObject | null;
+  gpuHours?: JSONObject | null;
   latest: number;
-  license?: Record<any, any>;
-  modelDeploymentUnits: Record<any, any>;
-  name: string | null;
-  organizationId: string | null;
-  planId: string;
+  license?: JSONObject | null;
+  modelDeploymentUnits?: JSONObject | null;
+  name?: string | null;
 };
 
 export type PlanList = {

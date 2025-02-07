@@ -20,21 +20,23 @@ export type UpdateAppClientOptions = RequestConfig & {
 };
 
 export type AppClient = {
+  /* Id */
   appClientId: string;
-  callbackUrls: Array<string> | null;
+  /* Attributes */
+  callbackUrls?: Array<string> | null;
   clientId: string;
-  clientSecret?: string;
-  createdBy: string | null;
-  createdTime: string | null;
-  defaultLoginUrl: string | null;
-  description: string | null;
+  clientSecret?: string | null;
+  createdBy: string;
+  createdTime: Date;
+  defaultLoginUrl?: string | null;
+  description?: string | null;
   hasSecret: boolean;
-  loginUrls: Array<string> | null;
-  logoutUrls: Array<string> | null;
-  name: string | null;
+  loginUrls?: Array<string> | null;
+  logoutUrls?: Array<string> | null;
+  name?: string | null;
   roleIds: Array<string>;
-  updatedBy: string | null;
-  updatedTime: string | null;
+  updatedBy?: string | null;
+  updatedTime?: Date | null;
 };
 
 export type AppClientList = {

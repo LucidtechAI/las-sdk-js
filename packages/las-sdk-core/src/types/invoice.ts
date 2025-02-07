@@ -1,12 +1,20 @@
 import { JSONValue, PaginationOptions, RequestConfig } from './common';
 
+export const CurrencyValues = ['USD', 'EUR', 'NOK'] as const;
+export type Currency = (typeof CurrencyValues)[number];
+
+export const InvoiceStatusValues = ['failed', 'paid', 'pending'] as const;
+export type InvoiceStatus = (typeof InvoiceStatusValues)[number];
+
 export type Invoice = {
+  /* Id */
   invoiceId: string;
+  /* Attributes */
   amount: number;
-  currency: 'USD' | 'EUR' | 'NOK';
   createdTime: Date;
-  status: 'failed' | 'paid' | 'pending';
+  currency: Currency;
   fileUrl: string;
+  status: InvoiceStatus;
 };
 
 export type CreateInvoiceOptions = RequestConfig & {

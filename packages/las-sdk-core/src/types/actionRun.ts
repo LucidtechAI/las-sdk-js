@@ -1,21 +1,23 @@
-import { JSONValue, PaginationOptions, RequestConfig } from './common';
+import { JSONObject, JSONValue, PaginationOptions, RequestConfig } from './common';
 
 export type ActionRunStatus = 'failed' | 'running' | 'succeeded';
 
 export type ActionRun = {
-  runId: string;
+  /* Id */
   actionId: string;
+  runId: string;
+  /* Attributes */
   createdBy: string;
   createdTime: Date;
-  history: object;
-  input: object;
+  history: JSONObject;
+  input: JSONObject;
   logId: string;
-  output?: object;
+  output?: JSONObject | null;
   projectId: string;
   projectRunId: string;
   status: ActionRunStatus;
-  updatedBy: string;
-  updatedTime: Date;
+  updatedBy?: string | null;
+  updatedTime?: Date | null;
 };
 
 export type CreateActionRunOptions = RequestConfig & {

@@ -1,28 +1,32 @@
 import { JSONObject, JSONValue, PaginationOptions, RequestConfig } from './common';
 
-export type Trigger =
-  | 'ActionRun has Completed'
-  | 'Document is Created'
-  | 'Prediction is Created'
-  | 'ValidationTask has Completed'
-  | 'ValidationTask is Created';
+export const TriggerValues = [
+  'ActionRun has Completed',
+  'Document is Created',
+  'Prediction is Created',
+  'ValidationTask has Completed',
+  'ValidationTask is Created',
+] as const;
+export type Trigger = (typeof TriggerValues)[number];
 
 export type Hook = {
+  /* Id */
   hookId: string;
+  /* Attributes */
   condition: string;
   config: JSONObject;
   createdBy: string;
   createdTime: Date;
-  description?: string;
+  description?: string | null;
   enabled: boolean;
-  falseActionId?: string;
-  metadata: object;
-  name?: string;
+  falseActionId?: string | null;
+  metadata?: JSONObject | null;
+  name?: string | null;
   projectId: string;
   trigger: Trigger;
   trueActionId: string;
-  updatedBy?: string;
-  updatedTime?: Date;
+  updatedBy?: string | null;
+  updatedTime?: Date | null;
 };
 
 export type CreateHookOptions = RequestConfig & {

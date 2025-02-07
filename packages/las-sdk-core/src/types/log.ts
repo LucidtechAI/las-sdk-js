@@ -1,8 +1,10 @@
-import { RequestConfig } from './common';
+import { JSONObject, RequestConfig } from './common';
 
 export type Log = {
+  /* Id */
   logId: string;
-  events: Array<Record<any, any>>;
+  /* Attributes */
+  events: Array<JSONObject>;
   transitionId?: string | null;
 };
 

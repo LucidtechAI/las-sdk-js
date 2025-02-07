@@ -1,9 +1,11 @@
-import { RequestConfig, PaginationOptions } from './common';
+import { PaginationOptions, RequestConfig } from './common';
 
 export type Secret = {
+  /* Id */
   secretId: string;
-  description: string | null;
-  name: string | null;
+  /* Attributes */
+  description?: string | null;
+  name?: string | null;
 };
 
 export type ListSecretsOptions = RequestConfig & PaginationOptions;

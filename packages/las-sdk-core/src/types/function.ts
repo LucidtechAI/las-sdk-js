@@ -1,15 +1,20 @@
 import { JSONValue, PaginationOptions, RequestConfig } from './common';
 
+export const RuntimeValues = ['python', 'nodejs'] as const;
+export type Runtime = (typeof RuntimeValues)[number];
+
 export type Function = {
+  /* Id */
   functionId: string;
+  /* Attributes */
   code: string;
   createdBy: string;
   createdTime: Date;
-  description?: string;
-  name?: string;
-  runtime: 'python' | 'nodejs';
-  updatedBy?: string;
-  updatedTime?: Date;
+  description?: string | null;
+  name?: string | null;
+  runtime: Runtime;
+  updatedBy?: string | null;
+  updatedTime?: Date | null;
 };
 
 export type CreateFunctionOptions = RequestConfig & {

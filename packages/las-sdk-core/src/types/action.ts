@@ -1,19 +1,21 @@
 import { JSONObject, JSONValue, PaginationOptions, RequestConfig } from './common';
 
 export type Action = {
+  /* Id */
   actionId: string;
+  /* Attributes */
   config: JSONObject;
   createdBy: string;
   createdTime: Date;
-  description?: string;
+  description?: string | null;
   enabled: boolean;
   functionId: string;
-  metadata?: object;
-  name?: string;
+  metadata?: JSONObject | null;
+  name?: string | null;
   projectId: string;
-  secretId?: string;
-  updatedBy?: string;
-  updatedTime?: Date;
+  secretId?: string | null;
+  updatedBy?: string | null;
+  updatedTime?: Date | null;
 };
 
 export type CreateActionOptions = RequestConfig & {

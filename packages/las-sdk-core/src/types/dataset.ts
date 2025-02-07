@@ -1,19 +1,21 @@
-import { JSONValue, PaginationOptions, RequestConfig } from './common';
+import { JSONObject, JSONValue, PaginationOptions, RequestConfig } from './common';
 
 export type Dataset = {
-  containsPersonallyIdentifiableInformation: boolean;
-  createdBy: string | null;
-  createdTime: string | null;
+  /* Id */
   datasetId: string;
-  description: string | null;
+  /* Attributes */
+  containsPersonallyIdentifiableInformation: boolean;
+  createdBy: string;
+  createdTime: Date;
+  description?: string | null;
   groundTruthSummary: Record<string, number>;
-  metadata: Record<string, JSONValue> | null;
-  name: string | null;
+  metadata?: JSONObject | null;
+  name?: string | null;
   numberOfDocuments: number;
   retentionInDays: number;
   storageLocation: 'EU';
-  updatedBy: string | null;
-  updatedTime: string | null;
+  updatedBy?: string | null;
+  updatedTime?: Date | null;
   version: number;
 };
 

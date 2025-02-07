@@ -19,3 +19,16 @@ export type AxiosFn = <T = any, R = AxiosResponse<T>>(
   body?: any,
   config?: AxiosRequestConfig,
 ) => Promise<R>;
+
+export type AttentionMap = number[][];
+
+export type Annotation = {
+  value?: string | null;
+  confidence?: number;
+  formattedValue?: string | null;
+  attentionMap?: AttentionMap;
+};
+
+export type HeaderAnnotations = Annotation[];
+export type TableAnnotations = Record<string, Annotation[]>[];
+export type Annotations = Record<string, HeaderAnnotations | TableAnnotations>;

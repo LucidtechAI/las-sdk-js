@@ -1,14 +1,16 @@
-import { JSONValue, PaginationOptions, RequestConfig } from './common';
+import { JSONObject, JSONValue, PaginationOptions, RequestConfig } from './common';
 
 export type Validation = {
+  /* Id */
   validationId: string;
-  config: object;
+  /* Attributes */
+  config: JSONObject;
   createdBy: string;
   createdTime: Date;
   enabled: boolean;
   projectId: string;
-  updatedBy?: string;
-  updatedTime?: Date;
+  updatedBy?: string | null;
+  updatedTime?: Date | null;
 };
 
 export type CreateValidationOptions = RequestConfig & {

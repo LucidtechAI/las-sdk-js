@@ -1,22 +1,22 @@
-import { RequestConfig } from './common';
+import { JSONObject, RequestConfig } from './common';
 
 export type GetProfileOptions = RequestConfig;
 
-export type PrivateProfile = {
-  createdTime: string | null;
-  email: string | null;
-  familyName: string | null;
-  givenName: string | null;
-  locale: string | null;
-  metadata: Record<string, unknown> | null;
-  numberOfOrganizationsAllowed: number;
-  numberOfOrganizationsCreated: number;
-  picture: string | null;
+export type Profile = {
+  /* Id */
   profileId: string;
-  updatedTime: string | null;
+  /* Attributes */
+  createdTime?: Date | null;
+  email: string;
+  familyName?: string | null;
+  givenName?: string | null;
+  locale?: string | null;
+  metadata?: JSONObject | null;
+  numberOfOrganizationsAllowed?: number | null;
+  numberOfOrganizationsCreated?: number | null;
+  picture?: string | null;
+  updatedTime?: Date | null;
 };
-
-export type Profile = PrivateProfile;
 
 export type UpdateProfileOptions = RequestConfig & {
   givenName?: string | null;
@@ -26,4 +26,4 @@ export type UpdateProfileOptions = RequestConfig & {
   picture?: string | null;
 };
 
-export type PublicProfile = Pick<PrivateProfile, 'givenName' | 'familyName' | 'picture' | 'profileId'>;
+export type PublicProfile = Pick<Profile, 'email' | 'givenName' | 'familyName' | 'picture' | 'profileId'>;
