@@ -1,4 +1,4 @@
-import { PaginationOptions, RequestConfig } from './common';
+import { JSONObject, OptionsOmit, PaginationOptions, RequestConfig } from './common';
 
 export const PermissionActionValues = ['*', 'delegate', 'read', 'write'] as const;
 export type PermissionAction = (typeof PermissionActionValues)[number];
@@ -19,6 +19,7 @@ export type Role = {
   createdBy: string;
   createdTime: Date;
   description?: string | null;
+  metadata?: JSONObject | null;
   name?: string | null;
   permissions: Array<Permission>;
   updatedBy?: string | null;
@@ -26,9 +27,12 @@ export type Role = {
 };
 
 export type RoleList = {
-  nextToken: string | null;
-  roles: Array<Role>;
+  roles: Role[];
+  nextToken?: string | null;
 };
 
-export type ListRoleOptions = RequestConfig & PaginationOptions;
+export type ListRolesOptions = RequestConfig & PaginationOptions;
 export type GetRoleOptions = RequestConfig;
+export type CreateRoleOptions = RequestConfig & OptionsOmit<Role, 'roleId'>;
+export type UpdateRoleOptions = RequestConfig & OptionsOmit<Role, 'roleId'>;
+export type DeleteRoleOptions = RequestConfig;

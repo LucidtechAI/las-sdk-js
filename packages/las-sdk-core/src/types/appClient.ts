@@ -1,23 +1,4 @@
-import { PaginationOptions, RequestConfig } from './common';
-
-export type CreateAppClientOptions = RequestConfig & {
-  callbackUrls?: Array<string>;
-  description?: string;
-  generateSecret?: boolean;
-  logoutUrls?: Array<string>;
-  loginUrls?: Array<string>;
-  defaultLoginUrl?: string;
-  name?: string;
-  roleIds?: Array<string>;
-};
-
-export type UpdateAppClientOptions = RequestConfig & {
-  defaultLoginUrl?: string;
-  description?: string;
-  loginUrls?: Array<string>;
-  name?: string;
-  roleIds?: Array<string>;
-};
+import { JSONObject, OptionsOmit, PaginationOptions, RequestConfig } from './common';
 
 export type AppClient = {
   /* Id */
@@ -33,6 +14,7 @@ export type AppClient = {
   hasSecret: boolean;
   loginUrls?: Array<string> | null;
   logoutUrls?: Array<string> | null;
+  metadata?: JSONObject | null;
   name?: string | null;
   roleIds: Array<string>;
   updatedBy?: string | null;
@@ -40,10 +22,14 @@ export type AppClient = {
 };
 
 export type AppClientList = {
-  appClients: Array<AppClient>;
-  nextToken: string | null;
+  appClients: AppClient[];
+  nextToken?: string | null;
 };
 
 export type ListAppClientsOptions = RequestConfig & PaginationOptions;
-
+export type GetAppClientOptions = RequestConfig;
+export type CreateAppClientOptions = RequestConfig &
+  OptionsOmit<AppClient, 'appClientId' | 'clientId' | 'clientSecret' | 'hasSecret'>;
+export type UpdateAppClientOptions = RequestConfig &
+  OptionsOmit<AppClient, 'appClientId' | 'clientId' | 'clientSecret' | 'hasSecret'>;
 export type DeleteAppClientOptions = RequestConfig;

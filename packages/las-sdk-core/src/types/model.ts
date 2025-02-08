@@ -1,14 +1,11 @@
-import { JSONObject, JSONValue, PaginationOptions, RequestConfig } from './common';
-import { PostprocessConfig } from './prediction';
-
-export const ImageQualityValues = ['LOW', 'HIGH'] as const;
-export type ImageQuality = (typeof ImageQualityValues)[number];
-
-export type PreprocessConfig = {
-  autoRotate: boolean;
-  imageQuality: ImageQuality;
-  maxPages: number;
-};
+import {
+  JSONObject,
+  OptionsOmit,
+  PaginationOptions,
+  PostprocessConfig,
+  PreprocessConfig,
+  RequestConfig,
+} from './common';
 
 export type EnumValue = { value: string; description: string };
 
@@ -55,42 +52,19 @@ export type Model = {
   fieldConfig?: FieldConfig | null;
   metadata?: JSONObject | null;
   name?: string | null;
-  numberOfDataBundles: number;
-  numberOfRunningTrainings: number;
-  organizationId: string;
   postprocessConfig: PostprocessConfig;
   preprocessConfig: PreprocessConfig;
-  status: ModelStatus;
-  trainingId?: string | null;
   updatedBy?: string | null;
   updatedTime?: Date | null;
 };
 
-export type CreateModelOptions = RequestConfig & {
-  description?: string;
-  metadata?: Record<string, JSONValue> | null;
-  name?: string;
-  postprocessConfig?: PostprocessConfig;
-  preprocessConfig?: PreprocessConfig;
-};
-
-export type GetModelOptions = RequestConfig;
-
-export type UpdateModelOptions = RequestConfig & {
-  description?: string;
-  fieldConfig?: FieldConfig;
-  metadata?: Record<string, JSONValue> | null;
-  name?: string;
-  postprocessConfig?: PostprocessConfig;
-  preprocessConfig?: PreprocessConfig;
-  trainingId?: string | null;
-};
-
-export type DeleteModelOptions = RequestConfig;
-
-export type ListModelsOptions = { owner?: Array<string> } & RequestConfig & PaginationOptions;
-
 export type ModelList = {
-  models: Array<Model>;
-  nextToken: string | null;
+  models: Model[];
+  nextToken?: string | null;
 };
+
+export type ListModelsOptions = RequestConfig & PaginationOptions;
+export type GetModelOptions = RequestConfig;
+export type CreateModelOptions = RequestConfig & OptionsOmit<Model, 'modelId'>;
+export type UpdateModelOptions = RequestConfig & OptionsOmit<Model, 'modelId'>;
+export type DeleteModelOptions = RequestConfig;

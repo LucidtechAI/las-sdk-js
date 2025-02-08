@@ -1,4 +1,4 @@
-import { JSONValue, PaginationOptions, RequestConfig } from './common';
+import { PaginationOptions, RequestConfig } from './common';
 
 export const CurrencyValues = ['USD', 'EUR', 'NOK'] as const;
 export type Currency = (typeof CurrencyValues)[number];
@@ -17,25 +17,10 @@ export type Invoice = {
   status: InvoiceStatus;
 };
 
-export type CreateInvoiceOptions = RequestConfig & {
-  description?: string;
-  metadata?: Record<string, JSONValue> | null;
-  name?: string;
-};
-
-export type UpdateInvoiceOptions = RequestConfig & {
-  description?: string;
-  metadata?: Record<string, JSONValue> | null;
-  name?: string;
-};
-
 export type InvoiceList = {
-  functions: Array<Invoice>;
-  nextToken: string | null;
+  invoices: Invoice[];
+  nextToken?: string | null;
 };
-
-export type GetInvoiceOptions = RequestConfig;
 
 export type ListInvoicesOptions = RequestConfig & PaginationOptions;
-
-export type DeleteInvoiceOptions = RequestConfig;
+export type GetInvoiceOptions = RequestConfig;

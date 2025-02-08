@@ -1,53 +1,31 @@
-import { Annotations, PaginationOptions, RequestConfig } from './common';
+import { OrderParam, PaginationOptions, PostprocessConfig, PreprocessConfig, RequestConfig } from './common';
 
 export type Prediction = {
   /* Id */
   predictionId: string;
   /* Attributes */
+  annotationsFileUrl?: string | null;
   createdBy: string;
   createdTime: Date;
   documentId: string;
   inferenceTime: number;
   modelId: string;
-  trainingId?: string | null;
-  fieldValues?: Annotations | null;
+  postprocessConfig?: PostprocessConfig | null;
+  preprocessConfig?: PreprocessConfig | null;
 };
-
-export type BestFirst = {
-  strategy: 'BEST_FIRST';
-};
-
-export type BestNPages = {
-  strategy: 'BEST_N_PAGES';
-  parameters: {
-    n: 1 | 2 | 3;
-    collapse?: boolean;
-  };
-};
-
-export type PostprocessConfig = BestFirst | BestNPages;
-
-export type ListPredictionsOptions = RequestConfig &
-  PaginationOptions & {
-    order?: 'ascending' | 'descending';
-    sortBy?: 'createdTime';
-    modelId?: string;
-  };
 
 export type PredictionList = {
   predictions: Prediction[];
-  nextToken: string | null;
+  nextToken?: string | null;
 };
 
-export type CreatePredictionsOptions = RequestConfig & {
-  maxPages?: number;
-  autoRotate?: boolean;
-  imageQuality?: 'LOW' | 'HIGH';
-  postprocessConfig?: PostprocessConfig;
-  trainingId?: string;
-};
-
-export type PostPredictions = CreatePredictionsOptions & {
-  documentId: string;
-  modelId: string;
-};
+export type ListPredictionsOptions = RequestConfig &
+  PaginationOptions &
+  OrderParam & {
+    sortBy?: 'createdTime';
+    modelId?: string;
+  };
+export type GetPredictionOptions = RequestConfig;
+export type CreatePredictionOptions = RequestConfig &
+  Pick<Prediction, 'documentId' | 'modelId' | 'postprocessConfig' | 'preprocessConfig'>;
+export type DeletePredictionOptions = RequestConfig;

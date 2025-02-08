@@ -1,4 +1,4 @@
-import { JSONObject, JSONValue, PaginationOptions, RequestConfig } from './common';
+import { JSONObject, OptionsOmit, PaginationOptions, RequestConfig } from './common';
 
 export const TriggerValues = [
   'ActionRun has Completed',
@@ -29,25 +29,13 @@ export type Hook = {
   updatedTime?: Date | null;
 };
 
-export type CreateHookOptions = RequestConfig & {
-  description?: string;
-  metadata?: Record<string, JSONValue> | null;
-  name?: string;
-};
-
-export type UpdateHookOptions = RequestConfig & {
-  description?: string;
-  metadata?: Record<string, JSONValue> | null;
-  name?: string;
-};
-
 export type HookList = {
-  functions: Array<Hook>;
-  nextToken: string | null;
+  hooks: Hook[];
+  nextToken?: string | null;
 };
-
-export type GetHookOptions = RequestConfig;
 
 export type ListHooksOptions = RequestConfig & PaginationOptions;
-
+export type GetHookOptions = RequestConfig;
+export type CreateHookOptions = RequestConfig & OptionsOmit<Hook, 'hookId'>;
+export type UpdateHookOptions = RequestConfig & OptionsOmit<Hook, 'hookId'>;
 export type DeleteHookOptions = RequestConfig;

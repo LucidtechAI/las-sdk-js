@@ -1,4 +1,4 @@
-import { JSONObject, RequestConfig } from './common';
+import { JSONObject, PaginationOptions, RequestConfig } from './common';
 
 export type Organization = {
   /* Id */
@@ -48,17 +48,19 @@ export type Organization = {
   numberOfWorkflowsAllowed: number;
   numberOfWorkflowsCreated: number;
   paymentMethodId?: string | null;
-  picture?: string | null;
+  pictureUrl?: string | null;
   planId?: string | null;
   updatedBy?: string | null;
   updatedTime?: Date | null;
 };
 
-export type GetOrganizationOptions = RequestConfig;
-
-export type UpdateOrganizationOptions = RequestConfig & {
-  description?: string;
-  name?: string;
-  paymentMethodId?: string | null;
-  planId?: string;
+export type OrganizationList = {
+  organizations: Organization[];
+  nextToken?: string | null;
 };
+
+export type ListOrganizationsOptions = RequestConfig & PaginationOptions;
+export type GetOrganizationOptions = RequestConfig;
+export type CreateOrganizationOptions = RequestConfig & Pick<Organization, 'description' | 'name' | 'pictureUrl'>;
+export type UpdateOrganizationOptions = RequestConfig &
+  Pick<Organization, 'description' | 'name' | 'paymentMethodId' | 'pictureUrl' | 'planId'>;

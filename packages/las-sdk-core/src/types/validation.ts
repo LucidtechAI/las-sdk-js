@@ -1,4 +1,4 @@
-import { JSONObject, JSONValue, PaginationOptions, RequestConfig } from './common';
+import { JSONObject, OptionsOmit, PaginationOptions, RequestConfig } from './common';
 
 export type Validation = {
   /* Id */
@@ -8,30 +8,19 @@ export type Validation = {
   createdBy: string;
   createdTime: Date;
   enabled: boolean;
+  metadata?: JSONObject | null;
   projectId: string;
   updatedBy?: string | null;
   updatedTime?: Date | null;
 };
 
-export type CreateValidationOptions = RequestConfig & {
-  description?: string;
-  metadata?: Record<string, JSONValue> | null;
-  name?: string;
-};
-
-export type UpdateValidationOptions = RequestConfig & {
-  description?: string;
-  metadata?: Record<string, JSONValue> | null;
-  name?: string;
-};
-
 export type ValidationList = {
-  projects: Array<Validation>;
+  validations: Array<Validation>;
   nextToken: string | null;
 };
 
-export type GetValidationOptions = RequestConfig;
-
 export type ListValidationsOptions = RequestConfig & PaginationOptions;
-
+export type GetValidationOptions = RequestConfig;
+export type CreateValidationOptions = RequestConfig & OptionsOmit<Validation, 'validationId'>;
+export type UpdateValidationOptions = RequestConfig & OptionsOmit<Validation, 'validationId'>;
 export type DeleteValidationOptions = RequestConfig;

@@ -1,4 +1,4 @@
-import { JSONObject, PaginationOptions, RequestConfig } from './common';
+import { JSONObject, OwnerParam, PaginationOptions, RequestConfig } from './common';
 
 export const PlanCurrencyValues = ['NOK', 'USD', 'EUR'] as const;
 export type PlanCurrency = (typeof PlanCurrencyValues)[number];
@@ -21,9 +21,10 @@ export type Plan = {
 };
 
 export type PlanList = {
-  plans: Array<Plan>;
-  nextToken: string | null;
-  owner: Array<string>;
+  plans: Plan[];
+  nextToken?: string | null;
+  owner: string[];
 };
 
-export type ListPlansOptions = RequestConfig & PaginationOptions & { owner?: string | Array<string> };
+export type ListPlansOptions = RequestConfig & PaginationOptions & OwnerParam;
+export type GetPlanOptions = RequestConfig;

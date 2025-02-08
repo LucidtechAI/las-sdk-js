@@ -1,4 +1,4 @@
-import { JSONValue, PaginationOptions, RequestConfig } from './common';
+import { JSONObject, PaginationOptions, RequestConfig } from './common';
 
 export const RuntimeValues = ['python', 'nodejs'] as const;
 export type Runtime = (typeof RuntimeValues)[number];
@@ -7,35 +7,24 @@ export type Function = {
   /* Id */
   functionId: string;
   /* Attributes */
-  code: string;
+  fileUrl: string;
   createdBy: string;
   createdTime: Date;
   description?: string | null;
+  metadata?: JSONObject | null;
   name?: string | null;
   runtime: Runtime;
   updatedBy?: string | null;
   updatedTime?: Date | null;
 };
 
-export type CreateFunctionOptions = RequestConfig & {
-  description?: string;
-  metadata?: Record<string, JSONValue> | null;
-  name?: string;
-};
-
-export type UpdateFunctionOptions = RequestConfig & {
-  description?: string;
-  metadata?: Record<string, JSONValue> | null;
-  name?: string;
-};
-
 export type FunctionList = {
-  functions: Array<Function>;
-  nextToken: string | null;
+  functions: Function[];
+  nextToken?: string | null;
 };
-
-export type GetFunctionOptions = RequestConfig;
 
 export type ListFunctionsOptions = RequestConfig & PaginationOptions;
-
+export type GetFunctionOptions = RequestConfig;
+export type CreateFunctionOptions = RequestConfig & Pick<Function, 'description' | 'metadata' | 'name'>;
+export type UpdateFunctionOptions = RequestConfig & Pick<Function, 'description' | 'metadata' | 'name'>;
 export type DeleteFunctionOptions = RequestConfig;

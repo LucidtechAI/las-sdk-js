@@ -27,20 +27,14 @@ export type PaymentMethod = {
   updatedTime?: Date | null;
 };
 
-export type ListPaymentMethodsOptions = RequestConfig & PaginationOptions;
-
 export type PaymentMethodList = {
-  nextToken: string | null;
-  paymentMethods: Array<PaymentMethod>;
+  paymentMethods: PaymentMethod[];
+  nextToken?: string | null;
 };
 
-export type CreatePaymentMethodOptions = {
-  description?: string;
-  name?: string;
-};
-
-export type UpdatePaymentMethodOptions = {
-  description?: string | null;
-  name?: string | null;
-  stripeSetupIntentSecret?: string;
-};
+export type ListPaymentMethodsOptions = RequestConfig & PaginationOptions;
+export type GetPaymentMethodOptions = RequestConfig;
+export type CreatePaymentMethodOptions = RequestConfig & Pick<PaymentMethod, 'description' | 'name'>;
+export type UpdatePaymentMethodOptions = RequestConfig &
+  Pick<PaymentMethod, 'description' | 'name' | 'stripeSetupIntentSecret'>;
+export type DeletePaymentMethodOptions = RequestConfig;

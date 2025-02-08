@@ -1,7 +1,6 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import { Buffer } from 'buffer';
 
-import { TrainingList } from '.';
 import { Credentials } from './credentials';
 import type {
   Action,
@@ -10,67 +9,51 @@ import type {
   ActionRunList,
   AppClient,
   AppClientList,
-  Asset,
-  AssetList,
   AuthorizationHeaders,
   AxiosFn,
   CreateActionOptions,
   CreateActionRunOptions,
   CreateAppClientOptions,
-  CreateAssetOptions,
-  CreateDataBundleOptions,
-  CreateDatasetOptions,
   CreateDocumentOptions,
   CreateFunctionOptions,
   CreateHookOptions,
   CreateHookRunOptions,
-  CreateInvoiceOptions,
   CreateModelOptions,
+  CreateOrganizationOptions,
   CreatePaymentMethodOptions,
-  CreatePredictionsOptions,
+  CreatePredictionOptions,
   CreateProjectOptions,
   CreateProjectRunOptions,
+  CreateRoleOptions,
   CreateSecretOptions,
-  CreateTrainingOption,
   CreateUserOptions,
   CreateValidationOptions,
   CreateValidationTaskOptions,
-  DataBundle,
-  DataBundleList,
-  Dataset,
-  DatasetList,
   DeleteActionOptions,
   DeleteActionRunOptions,
   DeleteAppClientOptions,
-  DeleteAssetOptions,
-  DeleteDataBundleOptions,
-  DeleteDatasetOptions,
   DeleteDocumentOptions,
-  DeleteDocumentsOptions,
   DeleteFunctionOptions,
   DeleteHookOptions,
   DeleteHookRunOptions,
-  DeleteInvoiceOptions,
   DeleteModelOptions,
+  DeletePaymentMethodOptions,
+  DeletePredictionOptions,
   DeleteProjectOptions,
   DeleteProjectRunOptions,
+  DeleteRoleOptions,
+  DeleteSecretOptions,
   DeleteUserOptions,
   DeleteValidationOptions,
   DeleteValidationTaskOptions,
-  DeploymentEnvironment,
-  DeploymentEnvironmentList,
   Document,
   DocumentList,
-  DocumentWithoutContent,
-  FieldConfig,
   File,
   Function,
   FunctionList,
   GetActionOptions,
   GetActionRunOptions,
-  GetAssetOptions,
-  GetDatasetOptions,
-  GetDeploymentEnvironmentOptions,
+  GetAppClientOptions,
   GetDocumentOptions,
   GetFunctionOptions,
   GetHookOptions,
@@ -79,10 +62,14 @@ import type {
   GetLogOptions,
   GetModelOptions,
   GetOrganizationOptions,
+  GetPaymentMethodOptions,
+  GetPlanOptions,
+  GetPredictionOptions,
   GetProfileOptions,
   GetProjectOptions,
   GetProjectRunOptions,
   GetRoleOptions,
+  GetSecretOptions,
   GetUserOptions,
   GetValidationOptions,
   GetValidationTaskOptions,
@@ -96,36 +83,34 @@ import type {
   ListActionRunsOptions,
   ListActionsOptions,
   ListAppClientsOptions,
-  ListAssetsOptions,
-  ListDataBundleOptions,
-  ListDatasetsOptions,
-  ListDeploymentEnvironmentsOptions,
   ListDocumentsOptions,
   ListFunctionsOptions,
   ListHookRunsOptions,
   ListHooksOptions,
   ListInvoicesOptions,
+  ListLogsOptions,
   ListModelsOptions,
+  ListOrganizationsOptions,
   ListPaymentMethodsOptions,
   ListPlansOptions,
   ListPredictionsOptions,
   ListProjectRunsOptions,
   ListProjectsOptions,
-  ListRoleOptions,
+  ListRolesOptions,
   ListSecretsOptions,
-  ListTrainingsOptions,
   ListUsersOptions,
   ListValidationsOptions,
   ListValidationTasksOptions,
   Log,
+  LogList,
   Model,
   ModelList,
   Organization,
+  OrganizationList,
   PaymentMethod,
   PaymentMethodList,
   Plan,
   PlanList,
-  PostPredictions,
   Prediction,
   PredictionList,
   Profile,
@@ -137,26 +122,21 @@ import type {
   RoleList,
   Secret,
   SecretList,
-  Training,
   UpdateActionOptions,
   UpdateActionRunOptions,
   UpdateAppClientOptions,
-  UpdateAssetOptions,
-  UpdateDataBundleOptions,
-  UpdateDatasetOptions,
   UpdateDocumentOptions,
   UpdateFunctionOptions,
   UpdateHookOptions,
   UpdateHookRunOptions,
-  UpdateInvoiceOptions,
   UpdateModelOptions,
   UpdateOrganizationOptions,
   UpdatePaymentMethodOptions,
   UpdateProfileOptions,
   UpdateProjectOptions,
   UpdateProjectRunOptions,
+  UpdateRoleOptions,
   UpdateSecretOptions,
-  UpdateTrainingOptions,
   UpdateUserOptions,
   UpdateValidationOptions,
   UpdateValidationTaskOptions,
@@ -167,7 +147,7 @@ import type {
   ValidationTask,
   ValidationTaskList,
 } from './types';
-import { buildURL, wait } from './utils';
+import { buildURL } from './utils';
 
 const maybeParseDate = (val: JSONValue) => {
   if (typeof val === 'string') {
@@ -180,7 +160,7 @@ const maybeParseDate = (val: JSONValue) => {
 };
 
 /**
- * A high-level http client for communicating with the Lucidtech REST API
+ * A high-level http client for communicating with the Cradl REST API
  */
 export class Client {
   credentials: Credentials;
@@ -190,58 +170,149 @@ export class Client {
   }
 
   /**
-   * Updates an organization, calls the PATCH /organizations/{organizationId} endpoint.
+   * Action section
+   * Endpoint: /actions
    *
-   * @param organizationId Id of the organization
-   * @param options.description Description of organization
-   * @param options.name Name of organization
-   * @returns Organization response from REST API with content
+   * Methods:
+   * - listActions
+   * - getAction
+   * - createAction
+   * - updateAction
+   * - deleteAction
    */
-  async updateOrganization(organizationId: string, options: UpdateOrganizationOptions): Promise<Organization> {
-    return this.makePatchRequest(`/organizations/${organizationId}`, options);
+
+  /**
+   * List actions, calls the GET /actions endpoint.
+   * @param options Object with list options
+   * @returns ActionList response from REST API
+   */
+  async listActions(options?: ListActionsOptions): Promise<ActionList> {
+    return this.makeGetRequest<ActionList>('/actions', options);
   }
 
   /**
-   * Get organization from the REST API, calls the GET /organizations/{organizationId} endpoint.
-   *
-   * @param organizationId Id of the organization
-   * @returns Organization response from REST API
+   * Get an action, calls the GET /actions/:id endpoint.
+   * @param actionId Id of the action
+   * @param options Object with get options
+   * @returns Action response from REST API
    */
-  async getOrganization(organizationId: string, options?: GetOrganizationOptions): Promise<Organization> {
-    return this.makeGetRequest<Organization>(`/organizations/${organizationId}`, options);
+  async getAction(actionId: string, options?: GetActionOptions): Promise<Action> {
+    return this.makeGetRequest<Action>(`/actions/${actionId}`, options);
   }
 
   /**
-   * Creates an app client, calls the POST /appClients endpoint.
+   * Creates an action, calls the POST /actions endpoint.
    *
-   * @param options.callbackUrls List of callback urls
-   * @param options.description Description of app client
-   * @param options.generateSecret Set to true to generate credentials for the client_credentials grant type
-   * @param options.logoutUrls List of logout urls
-   * @param options.name Name of app client
-   * @returns AppClient response from REST API
+   * @param options Object with create options
+   * @returns Action response from REST API
    */
-  async createAppClient(options: CreateAppClientOptions): Promise<AppClient> {
-    return this.makePostRequest<AppClient>('/appClients', options);
+  async createAction(options: CreateActionOptions): Promise<Action> {
+    return this.makePostRequest<Action>('/actions', options);
   }
 
   /**
-   * Updates an appClient, calls the PATCH /appClients/{appClientId} endpoint.
+   * Updates an action, calls the PATCH /actions/:id endpoint.
    *
-   * @param appClientId Id of the appClient
-   * @param options.description Description of app client
-   * @param options.name Name of app client
-   * @returns AppClient response from REST API with content
+   * @param actionId Id of the action
+   * @param options Object with update options
    */
-  async updateAppClient(appClientId: string, options: UpdateAppClientOptions): Promise<AppClient> {
-    return this.makePatchRequest(`/appClients/${appClientId}`, options);
+  async updateAction(actionId: string, options: UpdateActionOptions): Promise<Action> {
+    return this.makePatchRequest(`/actions/${actionId}`, options);
   }
 
   /**
-   * List app clients, calls the GET /appClients endpoint.
+   * Delete an action, calls the DELETE /actions/:id endpoint.
    *
-   * @param options.maxResults Maximum number of results to be returned
-   * @param options.nextToken A unique token for each page, use the returned token to retrieve the next page.
+   * @param actionId Id of the action
+   * @param options Object with delete options
+   * @returns Action response from REST API
+   */
+  async deleteAction(actionId: string, options?: DeleteActionOptions): Promise<Action> {
+    return this.makeDeleteRequest(`/actions/${actionId}`, options);
+  }
+
+  /**
+   * ActionRun section
+   * Endpoint: /actions/:id/runs
+   *
+   * Methods:
+   * - listActionRuns
+   * - getActionRun
+   * - createActionRun
+   * - updateActionRun
+   * - deleteActionRun
+   */
+
+  /**
+   * List action runs, calls the GET /actions/:id/runs endpoint.
+   * @param actionId Id of the action
+   * @param options Object with list options
+   * @returns ActionRunList response from REST API
+   */
+  async listActionRuns(actionId: string, options?: ListActionRunsOptions): Promise<ActionRunList> {
+    return this.makeGetRequest<ActionRunList>(`/actions/${actionId}/runs`, options);
+  }
+
+  /**
+   * Get an action run, calls the GET /actions/:id/runs/:id endpoint.
+   * @param actionId Id of the action
+   * @param runId Id of the run
+   * @param options Object with get options
+   * @returns ActionRun response from REST API
+   */
+  async getActionRun(actionId: string, runId: string, options?: GetActionRunOptions): Promise<ActionRun> {
+    return this.makeGetRequest<ActionRun>(`/actions/${actionId}/runs/${runId}`, options);
+  }
+
+  /**
+   * Creates an action run, calls the POST /actions/:id/runs endpoint.
+   *
+   * @param options Object with create options
+   * @param actionId Id of the action
+   * @returns ActionRun response from REST API
+   */
+  async createActionRun(actionId: string, options: CreateActionRunOptions): Promise<ActionRun> {
+    return this.makePostRequest<ActionRun>(`/actions/${actionId}/runs`, options);
+  }
+
+  /**
+   * Updates an action run, calls the PATCH /actions/:id/runs/:id endpoint.
+   *
+   * @param actionId Id of the action
+   * @param runId Id of the run
+   * @param options Object with update options
+   */
+  async updateActionRun(actionId: string, runId: string, options: UpdateActionRunOptions): Promise<ActionRun> {
+    return this.makePatchRequest<ActionRun>(`/actions/${actionId}/runs/${runId}`, options);
+  }
+
+  /**
+   * Delete an action run, calls the DELETE /actions/:id/runs/:id endpoint.
+   *
+   * @param actionId Id of the action
+   * @param runId Id of the run
+   * @param options Object with delete options
+   * @returns ActionRun response from REST API
+   */
+  async deleteActionRun(actionId: string, runId: string, options?: DeleteActionRunOptions): Promise<ActionRun> {
+    return this.makeDeleteRequest<ActionRun>(`/actions/${actionId}/runs/${runId}`, options);
+  }
+
+  /**
+   * AppClient section
+   * Endpoint: /appClients
+   *
+   * Methods:
+   * - listAppClients
+   * - getAppClient
+   * - createAppClient
+   * - updateAppClient
+   * - deleteAppClient
+   */
+
+  /**
+   * List appClients, calls the GET /appClients endpoint.
+   * @param options Object with list options
    * @returns AppClientList response from REST API
    */
   async listAppClients(options?: ListAppClientsOptions): Promise<AppClientList> {
@@ -249,13 +320,75 @@ export class Client {
   }
 
   /**
-   * Delete the app client, calls the DELETE /appClients/{appClientId} endpoint.
+   * Get a appClient, calls the GET /appClients/:id endpoint.
+   * @param appClientId Id of the appClient
+   * @param options Object with get options
+   * @returns AppClient response from REST API
+   */
+  async getAppClient(appClientId: string, options?: GetAppClientOptions): Promise<AppClient> {
+    return this.makeGetRequest<AppClient>(`/appClients/${appClientId}`, options);
+  }
+
+  /**
+   * Creates a appClient, calls the POST /appClients endpoint.
    *
-   * @param appClientId of the app client
+   * @param options Object with create options
+   * @returns AppClient response from REST API
+   */
+  async createAppClient(options: CreateAppClientOptions): Promise<AppClient> {
+    return this.makePostRequest<AppClient>('/appClients', options);
+  }
+
+  /**
+   * Updates a appClient, calls the PATCH /appClients/:id endpoint.
+   *
+   * @param appClientId Id of the appClient
+   * @param options Object with update options
+   */
+  async updateAppClient(appClientId: string, options: UpdateAppClientOptions): Promise<AppClient> {
+    return this.makePatchRequest(`/appClients/${appClientId}`, options);
+  }
+
+  /**
+   * Delete a appClient, calls the DELETE /appClients/:id endpoint.
+   *
+   * @param appClientId Id of the appClient
+   * @param options Object with delete options
    * @returns AppClient response from REST API
    */
   async deleteAppClient(appClientId: string, options?: DeleteAppClientOptions): Promise<AppClient> {
     return this.makeDeleteRequest(`/appClients/${appClientId}`, options);
+  }
+
+  /**
+   * Document section
+   * Endpoint: /documents
+   *
+   * Methods:
+   * - listDocuments
+   * - getDocument
+   * - createDocument
+   * - updateDocument
+   * - deleteDocument
+   */
+
+  /**
+   * List documents, calls the GET /documents endpoint.
+   * @param options Object with list options
+   * @returns DocumentList response from REST API
+   */
+  async listDocuments(options?: ListDocumentsOptions): Promise<DocumentList> {
+    return this.makeGetRequest<DocumentList>('/documents', options);
+  }
+
+  /**
+   * Get a document, calls the GET /documents/:id endpoint.
+   * @param documentId Id of the document
+   * @param options Object with get options
+   * @returns Document response from REST API
+   */
+  async getDocument(documentId: string, options?: GetDocumentOptions): Promise<Document> {
+    return this.makeGetRequest<Document>(`/documents/${documentId}`, options);
   }
 
   /**
@@ -264,62 +397,25 @@ export class Client {
    * @param options Object with create options
    * @returns Document response from REST API
    */
-  async createDocument(options?: CreateDocumentOptions): Promise<DocumentWithoutContent> {
+  async createDocument(options: CreateDocumentOptions): Promise<Document> {
     return this.makePostRequest<Document>('/documents', options);
   }
 
   /**
-   * Get document from the REST API, calls the GET /documents/{documentId} endpoint.
+   * Updates a document, calls the PATCH /documents/:id endpoint.
    *
    * @param documentId Id of the document
-   * @returns Document response from REST API
+   * @param options Object with update options
    */
-  async getDocument(documentId: string, options?: GetDocumentOptions): Promise<Document> {
-    return this.makeGetRequest<Document>(`/documents/${documentId}`, options);
+  async updateDocument(documentId: string, options: UpdateDocumentOptions): Promise<Document> {
+    return this.makePatchRequest(`/documents/${documentId}`, options);
   }
 
   /**
-   * List documents available for inference, calls the GET /documents endpoint.
-   *
-   * @param options.consentId Ids of the consents that marks the owner of the document
-   * @param options.maxResults Maximum number of results to be returned
-   * @param options.nextToken A unique token for each page, use the returned token to retrieve the next page.
-   * @returns Documents response from REST API
-   */
-  async listDocuments(options?: ListDocumentsOptions): Promise<DocumentList> {
-    return this.makeGetRequest<DocumentList>('/documents', options);
-  }
-
-  /**
-   * Post ground truth to the REST API, calls the PATCH /documents/{documentId} endpoint.
-   * Posting ground truth means posting the ground truth data for the particular document.
-   * This enables the API to learn from past mistakes.
+   * Delete a document, calls the DELETE /documents/:id endpoint.
    *
    * @param documentId Id of the document
-   * @param data.groundTruth List of GroundTruth items representing the ground truth values for the document
-   * @param data.description Description of document
-   * @param data.name Name of document
-   * @returns Document response from REST API
-   */
-  async updateDocument(documentId: string, data: UpdateDocumentOptions): Promise<Document> {
-    return this.makePatchRequest<Document>(`/documents/${documentId}`, data);
-  }
-
-  /**
-   * Delete documents with the provided consentId, calls the DELETE /documents endpoint.
-   * Will delete all documents when no consentId is provided.
-   *
-   * @param options.consentId Ids of the consents that marks the owner of the document
-   * @returns Documents response from REST API
-   */
-  async deleteDocuments(options?: DeleteDocumentsOptions): Promise<DocumentList> {
-    return this.makeDeleteRequest<DocumentList>('/documents', options);
-  }
-
-  /**
-   * Delete an document, calls the DELETE /documents/{documentId} endpoint.
-   *
-   * @param documentId of the document
+   * @param options Object with delete options
    * @returns Document response from REST API
    */
   async deleteDocument(documentId: string, options?: DeleteDocumentOptions): Promise<Document> {
@@ -327,608 +423,194 @@ export class Client {
   }
 
   /**
-   * Create a prediction on a document using specified model, calls the POST /predictions endpoint.
+   * Function section
+   * Endpoint: /functions
    *
-   * @param documentId Id of the document to run inference and create a prediction on
-   * @param modelId Id of the model to use for inference
-   * @param options.maxPages Maximum number of pages to run predictions on
-   * @param options.autoRotate Whether or not to let the API try different rotations on the document
-   * when running predictions
-   * @param options.imageQuality: Image quality for prediction ("LOW|HIGH"). High quality could give
-   * better result but will also take longer time.
-   * @returns Predicion response from REST API
+   * Methods:
+   * - listFunctions
+   * - getFunction
+   * - createFunction
+   * - updateFunction
+   * - deleteFunction
    */
-  async createPrediction(documentId: string, modelId: string, options?: CreatePredictionsOptions): Promise<Prediction> {
-    let body: PostPredictions = {
-      documentId,
-      modelId,
-    };
 
-    if (options) {
-      body = { ...body, ...options };
-    }
-
-    return this.makePostRequest<Prediction>('/predictions', body);
-  }
-
-  async listPredictions(options?: ListPredictionsOptions): Promise<PredictionList> {
-    return this.makeGetRequest<PredictionList>('/predictions', options);
+  /**
+   * List functions, calls the GET /functions endpoint.
+   * @param options Object with list options
+   * @returns FunctionList response from REST API
+   */
+  async listFunctions(options?: ListFunctionsOptions): Promise<FunctionList> {
+    return this.makeGetRequest<FunctionList>('/functions', options);
   }
 
   /**
-   * Creates an asset, calls the POST /assets endpoint.
+   * Get a function, calls the GET /functions/:id endpoint.
+   * @param functionId Id of the function
+   * @param options Object with get options
+   * @returns Function response from REST API
+   */
+  async getFunction(functionId: string, options?: GetFunctionOptions): Promise<Function> {
+    return this.makeGetRequest<Function>(`/functions/${functionId}`, options);
+  }
+
+  /**
+   * Creates a function, calls the POST /functions endpoint.
    *
-   * @param content Content to POST (base64-encoded string | Buffer)
-   * @returns Asset response from REST API
+   * @param options Object with create options
+   * @returns Function response from REST API
    */
-  async createAsset(content: string, options?: CreateAssetOptions): Promise<Asset> {
-    const encodedContent = typeof content === 'string' ? content : Buffer.from(content).toString('base64');
-    return this.makePostRequest<Asset>('/assets', { content: encodedContent, ...options });
+  async createFunction(options: CreateFunctionOptions): Promise<Function> {
+    return this.makePostRequest<Function>('/functions', options);
   }
 
   /**
-   * Delete an asset, calls the DELETE /assets/{assetId} endpoint.
+   * Updates a function, calls the PATCH /functions/:id endpoint.
    *
-   * @param assetId of the app client
-   * @returns Asset response from REST API
+   * @param functionId Id of the function
+   * @param options Object with update options
    */
-  async deleteAsset(assetId: string, options?: DeleteAssetOptions): Promise<Asset> {
-    return this.makeDeleteRequest(`/assets/${assetId}`, options);
+  async updateFunction(functionId: string, options: UpdateFunctionOptions): Promise<Function> {
+    return this.makePatchRequest(`/functions/${functionId}`, options);
   }
 
   /**
-   * List assets available, calls the GET /assets endpoint.
+   * Delete a function, calls the DELETE /functions/:id endpoint.
    *
-   * @param options.maxResults Maximum number of results to be returned
-   * @param options.nextToken A unique token for each page, use the returned token to retrieve the next page.
-   * @returns Assets response from REST API without the content of each asset
+   * @param functionId Id of the function
+   * @param options Object with delete options
+   * @returns Function response from REST API
    */
-  async listAssets(options?: ListAssetsOptions): Promise<AssetList> {
-    return this.makeGetRequest<AssetList>('/assets', options);
+  async deleteFunction(functionId: string, options?: DeleteFunctionOptions): Promise<Function> {
+    return this.makeDeleteRequest(`/functions/${functionId}`, options);
   }
 
   /**
-   * Get asset from the REST API, calls the GET /assets/{assetId} endpoint.
+   * Hook section
+   * Endpoint: /hooks
    *
-   * @param assetId Id of the asset
-   * @returns Asset response from REST API
+   * Methods:
+   * - listHooks
+   * - getHook
+   * - createHook
+   * - updateHook
+   * - deleteHook
    */
-  async getAsset(assetId: string, options?: GetAssetOptions): Promise<Asset> {
-    return this.makeGetRequest(`/assets/${assetId}`, options);
+
+  /**
+   * List hooks, calls the GET /hooks endpoint.
+   * @param options Object with list options
+   * @returns HookList response from REST API
+   */
+  async listHooks(options?: ListHooksOptions): Promise<HookList> {
+    return this.makeGetRequest<HookList>('/hooks', options);
   }
 
   /**
-   * Updates an asset, calls the PATCH /assets/{assetId} endpoint.
+   * Get a hook, calls the GET /hooks/:id endpoint.
+   * @param hookId Id of the hook
+   * @param options Object with get options
+   * @returns Hook response from REST API
+   */
+  async getHook(hookId: string, options?: GetHookOptions): Promise<Hook> {
+    return this.makeGetRequest<Hook>(`/hooks/${hookId}`, options);
+  }
+
+  /**
+   * Creates a hook, calls the POST /hooks endpoint.
    *
-   * @param assetId Id of the asset
-   * @param data.content Content to PATCH (base64-encoded string | Buffer)
-   * @returns Asset response from REST API with content
+   * @param options Object with create options
+   * @returns Hook response from REST API
    */
-  async updateAsset(assetId: string, data: UpdateAssetOptions): Promise<Asset> {
-    let body;
-    if (data) {
-      body = { ...data };
-      if (data.content) {
-        const encodedContent =
-          typeof data.content === 'string' ? data.content : Buffer.from(data.content).toString('base64');
-        body = { ...body, content: encodedContent };
-      }
-    }
-
-    return this.makePatchRequest(`/assets/${assetId}`, body);
+  async createHook(options: CreateHookOptions): Promise<Hook> {
+    return this.makePostRequest<Hook>('/hooks', options);
   }
 
   /**
-   * Get dataset from the REST API, calls the GET /datasets/{datasetId} endpoint.
+   * Updates a hook, calls the PATCH /hooks/:id endpoint.
    *
-   * @param datasetId Id of the dataset
-   * @returns Dataset response from REST API
+   * @param hookId Id of the hook
+   * @param options Object with update options
    */
-  async getDataset(datasetId: string, options?: GetDatasetOptions): Promise<Dataset> {
-    return this.makeGetRequest(`/datasets/${datasetId}`, options);
+  async updateHook(hookId: string, options: UpdateHookOptions): Promise<Hook> {
+    return this.makePatchRequest(`/hooks/${hookId}`, options);
   }
 
   /**
-   * Creates a dataset, calls the POST /datasets endpoint.
+   * Delete a hook, calls the DELETE /hooks/:id endpoint.
    *
-   * @param options.name Name of the dataset
-   * @param options.description Description of the dataset
-   * @param options.retentionInDays Maximum retention for documents in the dataset
-   * @param options.containsPersonallyIdentifiableInformation If dataset contains personally identifiable information
-   * @returns Dataset response from REST API
+   * @param hookId Id of the hook
+   * @param options Object with delete options
+   * @returns Hook response from REST API
    */
-  async createDataset(options: CreateDatasetOptions): Promise<Dataset> {
-    return this.makePostRequest<Dataset>('/datasets', options);
+  async deleteHook(hookId: string, options?: DeleteHookOptions): Promise<Hook> {
+    return this.makeDeleteRequest(`/hooks/${hookId}`, options);
   }
 
   /**
-   * Updates a dataset, calls the PATCH /datasets/{datasetId} endpoint.
+   * HookRun section
+   * Endpoint: /hooks/:id/runs
    *
-   * @param datasetId Id of the dataset
-   * @param options.description Description of dataset
-   * @param options.name Name of dataset
-   * @param options.retentionInDays Maximum retention for documents in the dataset
-   * @param options.containsPersonallyIdentifiableInformation If dataset contains personally identifiable information
-   * @returns Dataset response from REST API with content
+   * Methods:
+   * - listHookRuns
+   * - getHookRun
+   * - createHookRun
+   * - updateHookRun
+   * - deleteHookRun
    */
-  async updateDataset(datasetId: string, options: UpdateDatasetOptions): Promise<Dataset> {
-    return this.makePatchRequest(`/datasets/${datasetId}`, options);
+
+  /**
+   * List hook runs, calls the GET /hooks/:id/runs endpoint.
+   * @param hookId Id of the hook
+   * @param options Object with list options
+   * @returns HookRunList response from REST API
+   */
+  async listHookRuns(hookId: string, options?: ListHookRunsOptions): Promise<HookRunList> {
+    return this.makeGetRequest<HookRunList>(`/hooks/${hookId}/runs`, options);
   }
 
   /**
-   * List datasets, calls the GET /datasets endpoint.
+   * Get a hook run, calls the GET /hooks/:id/runs/:id endpoint.
+   * @param hookId Id of the hook
+   * @param runId Id of the run
+   * @param options Object with get options
+   * @returns HookRun response from REST API
+   */
+  async getHookRun(hookId: string, runId: string, options?: GetHookRunOptions): Promise<HookRun> {
+    return this.makeGetRequest<HookRun>(`/hooks/${hookId}/runs/${runId}`, options);
+  }
+
+  /**
+   * Creates a hook run, calls the POST /hooks/:id/runs endpoint.
    *
-   * @param options.maxResults Maximum number of results to be returned
-   * @param options.nextToken A unique token for each page, use the returned token to retrieve the next page.
-   * @returns DatasetList response from REST API
+   * @param options Object with create options
+   * @param hookId Id of the hook
+   * @returns HookRun response from REST API
    */
-  async listDatasets(options?: ListDatasetsOptions): Promise<DatasetList> {
-    return this.makeGetRequest<DatasetList>('/datasets', options);
+  async createHookRun(hookId: string, options: CreateHookRunOptions): Promise<HookRun> {
+    return this.makePostRequest<HookRun>(`/hooks/${hookId}/runs`, options);
   }
 
   /**
-   * Deletes a dataset, calls the DELETE /datasets/{datasetId} endpoint.
+   * Updates a hook run, calls the PATCH /hooks/:id/runs/:id endpoint.
    *
-   * @param datasetId Id of the dataset
-   * @param deleteDocuments Set to true to delete documents in dataset before deleting dataset
-   * @returns Dataset response from REST API
+   * @param hookId Id of the hook
+   * @param runId Id of the run
+   * @param options Object with update options
    */
-  async deleteDataset(datasetId: string, deleteDocuments = false, options?: DeleteDatasetOptions): Promise<Dataset> {
-    if (deleteDocuments) {
-      let response = await this.deleteDocuments({ datasetId });
-      while (response.nextToken) {
-        response = await this.deleteDocuments({ datasetId, nextToken: response.nextToken });
-      }
-
-      let WAIT_MS = 1000;
-      let TOTAL_WAIT = WAIT_MS;
-      const MAX_WAIT_MS = 10000;
-
-      await wait(WAIT_MS);
-      let datasetResponse = await this.getDataset(datasetId);
-
-      // wait until we get the updated numberOfDocuments, OR we time out
-      while (datasetResponse.numberOfDocuments > 0 && TOTAL_WAIT < MAX_WAIT_MS) {
-        // exponentially back off
-        WAIT_MS *= 1.25;
-        TOTAL_WAIT += WAIT_MS;
-        await wait(WAIT_MS);
-        datasetResponse = await this.getDataset(datasetId);
-      }
-
-      // if the numberOfDocuments has not yet been updated, throw an error
-      if (datasetResponse.numberOfDocuments > 0) {
-        throw Error('Dataset numberOfDocuments not updated in time');
-      }
-    }
-
-    return this.makeDeleteRequest<Dataset>(`/datasets/${datasetId}`, options);
+  async updateHookRun(hookId: string, runId: string, options: UpdateHookRunOptions): Promise<HookRun> {
+    return this.makePatchRequest(`/hooks/${hookId}/runs/${runId}`, options);
   }
 
   /**
-   * Creates a dataBundle, calls the POST /models/{modelId}/dataBundles endpoint.
+   * Delete a hook run, calls the DELETE /hooks/:id/runs/:id endpoint.
    *
-   * @param modelId Id of the model to create dataBundle for
-   * @param datasetIds Ids of the datasets to create dataBundle with
-   * @param options.description Description of dataBundle
-   * @param options.name Name of dataBundle
-   * @returns DataBundle response from REST API
+   * @param hookId Id of the hook
+   * @param runId Id of the run
+   * @param options Object with delete options
+   * @returns HookRun response from REST API
    */
-  async createDataBundle(
-    modelId: string,
-    datasetIds: Array<string>,
-    options: CreateDataBundleOptions,
-  ): Promise<DataBundle> {
-    let body = { datasetIds };
-
-    if (options) {
-      body = { ...body, ...options };
-    }
-
-    return this.makePostRequest<DataBundle>(`/models/${modelId}/dataBundles`, body);
-  }
-
-  /**
-   * Delete a dataBundle, calls the DELETE /dataBundles/{dataBundleId} endpoint.
-   *
-   * @param modelId of the model
-   * @param dataBundleId of the dataBundle
-   * @returns DataBundle response from REST API
-   */
-  async deleteDataBundle(
-    modelId: string,
-    dataBundleId: string,
-    options?: DeleteDataBundleOptions,
-  ): Promise<DataBundle> {
-    return this.makeDeleteRequest(`/models/${modelId}/dataBundles/${dataBundleId}`, options);
-  }
-
-  /**
-   * List dataBundles available, calls the GET /dataBundles endpoint.
-   *
-   * @param modelId of the model
-   * @param options.maxResults Maximum number of results to be returned
-   * @param options.nextToken A unique token for each page, use the returned token to retrieve the next page.
-   * @returns DataBundles response from REST API
-   */
-  async listDataBundles(modelId: string, options?: ListDataBundleOptions): Promise<DataBundleList> {
-    return this.makeGetRequest<DataBundleList>(`/models/${modelId}/dataBundles`, options);
-  }
-
-  /**
-   * Updates a dataBundle, calls the PATCH /dataBundles/{dataBundleId} endpoint.
-   *
-   * @param modelId of the model
-   * @param dataBundleId Id of the dataBundle
-   * @param options.description Description of dataBundle
-   * @param options.name Name of dataBundle
-   * @returns DataBundle response from REST API
-   */
-  async updateDataBundle(modelId: string, dataBundleId: string, options: UpdateDataBundleOptions): Promise<DataBundle> {
-    return this.makePatchRequest(`/models/${modelId}/dataBundles/${dataBundleId}`, options);
-  }
-
-  /**
-   * Creates a new user, calls the POST /users endpoint.
-   *
-   * @param email Email to the new user
-   * @param data.name Name of the user
-   * @param data.avatar base64 encoded JPEG avatar of the user
-   * @param data.appClientId Id of appClient issuing the invite. Defaults to the current
-   * appClientId of the user or appClient issuing the invite
-   * @returns User response from REST API
-   */
-  async createUser(email: string, data?: CreateUserOptions): Promise<User> {
-    let body = { email };
-    if (data) {
-      body = { ...body, ...data };
-    }
-    return this.makePostRequest<User>('/users', body);
-  }
-
-  /**
-   * List users, calls the GET /users endpoint.
-   *
-   * @param options.maxResults Maximum number of results to be returned
-   * @param options.nextToken A unique token for each page, use the returned token to retrieve the next page.
-   * @returns User response from REST API
-   */
-  async listUsers(options?: ListUsersOptions): Promise<UserList> {
-    return this.makeGetRequest<UserList>('/users', options);
-  }
-
-  /**
-   * Get information about a specific user, calls the GET /users/{userId} endpoint.
-   *
-   * @param userId Id of the user
-   * @returns User response from REST API
-   */
-  async getUser(userId: string, options?: GetUserOptions): Promise<User> {
-    return this.makeGetRequest<User>(`/users/${userId}`, options);
-  }
-
-  /**
-   * Updates a user, calls the PATCH /users/{userId} endpoint.
-   *
-   * @param userId Id of the user
-   * @param data.name Name of the user
-   * @param data.avatar base64 encoded JPEG avatar of the user
-   * @returns User response from REST API
-   */
-  async updateUser(userId: string, data: UpdateUserOptions): Promise<User> {
-    return this.makePatchRequest(`/users/${userId}`, data);
-  }
-
-  /**
-   * Delete a user, calls the DELETE /users/{userId} endpoint.
-   *
-   * @param userId Id of the user
-   * @returns User response from REST API
-   */
-  async deleteUser(userId: string, options?: DeleteUserOptions): Promise<User> {
-    return this.makeDeleteRequest(`/users/${userId}`, options);
-  }
-
-  /**
-   * Creates a secret, calls the POST /secrets endpoint.
-   *
-   * @param data Object containing the data you want to keep secret
-   * @param options.description Description of the secret
-   * @returns Secret response from REST API
-   */
-  async createSecret(data: JSONValue, options?: CreateSecretOptions): Promise<Secret> {
-    let body = { data };
-
-    if (options) {
-      body = { ...body, ...options };
-    }
-
-    return this.makePostRequest<Secret>('/secrets', body);
-  }
-
-  /**
-   * List secrets available, calls the GET /secrets endpoint.
-   *
-   * @param options.maxResults Maximum number of results to be returned
-   * @param options.nextToken A unique token for each page, use the returned token to retrieve the next page.
-   * @returns Secrets response from REST API without the username of each secret
-   */
-  async listSecrets(options?: ListSecretsOptions): Promise<SecretList> {
-    return this.makeGetRequest<SecretList>('/secrets', options);
-  }
-
-  /**
-   * Creates a model, calls the POST /models endpoint.
-   *
-   * @param fieldConfig Specification of the fields that the model is going to predict
-   * @param options.width The number of pixels to be used for the input image width of your model
-   * @param options.height The number of pixels to be used for the input image height of your model
-   * @param options.description Description of the model
-   * @param options.name Name of the model
-   * @param options.preprocessConfig Specification of the processing steps prior to the prediction of an image
-   * @returns Model response from REST API
-   */
-  async createModel(fieldConfig: FieldConfig, options?: CreateModelOptions): Promise<Model> {
-    let body = { fieldConfig };
-
-    if (options) {
-      body = { ...body, ...options };
-    }
-
-    return this.makePostRequest<Model>('/models', body);
-  }
-
-  /**
-   * Get model from the REST API, calls the GET /models/{modelId} endpoint.
-   *
-   * @param modelId Id of the model
-   * @returns Model response from REST API
-   */
-  async getModel(modelId: string, options?: GetModelOptions): Promise<Model> {
-    return this.makeGetRequest(`/models/${modelId}`, options);
-  }
-
-  /**
-   * Updates a model, calls the PATCH /models/{modelId} endpoint.
-   *
-   * @param modelId Id of the model
-   * @param options.description Description of the model
-   * @param options.fieldConfig Specification of the fields that the model is going to predict
-   * @param options.height The number of pixels to be used for the input image height of your model
-   * @param options.name Name of the model
-   * @param options.preprocessConfig Specification of the processing steps prior to the prediction of an image
-   * @param options.status Update status to training
-   * @param options.width The number of pixels to be used for the input image width of your model
-   * @returns Model response from REST API
-   */
-  async updateModel(modelId: string, options: UpdateModelOptions): Promise<Model> {
-    return this.makePatchRequest(`/models/${modelId}`, options);
-  }
-
-  /**
-   * Delete an model, calls the DELETE /models/{modelId} endpoint.
-   *
-   * @param modelId Id of the model
-   * @returns Model response from REST API
-   */
-  async deleteModel(modelId: string, options?: DeleteModelOptions): Promise<Model> {
-    return this.makeDeleteRequest(`/models/${modelId}`, options);
-  }
-
-  /**
-   * List models available, calls the GET /models endpoint.
-   *
-   * @param options.maxResults Maximum number of results to be returned
-   * @param options.nextToken A unique token for each page, use the returned token to retrieve the next page.
-   * @returns Models response from the REST API
-   */
-  async listModels(options?: ListModelsOptions): Promise<ModelList> {
-    return this.makeGetRequest<ModelList>('/models', options);
-  }
-
-  /**
-   * List deployment environments available, calls the GET /deploymentEnvironments endpoint.
-   *
-   * @param options.maxResults Maximum number of results to be returned
-   * @param options.nextToken A unique token for each page, use the returned token to retrieve the next page.
-   * @param options.owner Organization owner
-   * @returns Deployment environments response from the REST API
-   */
-  async listDeploymentEnvironments(options?: ListDeploymentEnvironmentsOptions): Promise<DeploymentEnvironmentList> {
-    return this.makeGetRequest<DeploymentEnvironmentList>('/deploymentEnvironments', options);
-  }
-
-  /**
-   * Get deployment environment from the REST API, calls the GET /deploymentEnvironments/{deploymentEnvironmentId} endpoint.
-   * @param deploymentEnvironmentId Id of the deployment environment
-   * @returns Deployment environment response from the REST API
-   */
-  async getDeploymentEnvironment(
-    deploymentEnvironmentId: string,
-    options?: GetDeploymentEnvironmentOptions,
-  ): Promise<DeploymentEnvironment> {
-    return this.makeGetRequest<DeploymentEnvironment>(`/deploymentEnvironments/${deploymentEnvironmentId}`, options);
-  }
-
-  /**
-   * List trainings available, calls the GET /models/{modelId}/trainings endpoint.
-   *
-   * @param modelId Id of the model
-   * @param options.maxResults Maximum number of results to be returned
-   * @param options.nextToken A unique token for each page, use the returned token to retrieve the next page.
-   * @param options.status List Trainings with the specified TrainingStatus, or array of TrainingStatus
-   * @returns Trainings response from the REST API
-   */
-  async listTrainings(modelId: string, options?: ListTrainingsOptions): Promise<TrainingList> {
-    return this.makeGetRequest<TrainingList>(`/models/${modelId}/trainings`, options);
-  }
-
-  /**
-   * Requests a training, calls the POST /models/{modelId}/trainings endpoint.
-   *
-   * @param modelId Id of the model
-   * @param options.dataBundleIds DataBundle ids that will be used for training
-   * @param options.instanceType The type of instance that will be used for training
-   * @param options.name Name of the training
-   * @param options.description Description of the training
-   * @returns Training response from the REST API
-   */
-  async createTraining(modelId: string, options: CreateTrainingOption): Promise<Training> {
-    return this.makePostRequest<Training>(`/models/${modelId}/trainings`, options);
-  }
-
-  /**
-   * Update a training, calls the PATCH /models/{modelId}/trainings/{trainingId} endpoint.
-   *
-   * @param modelId Id of the model
-   * @param trainingId Id of the training
-   * @param options.name New name of the training
-   * @param options.description New description of the training
-   * @param options.status Cancel the training with status = 'cancelled'
-   * @returns
-   */
-  async updateTraining(modelId: string, trainingId: string, options: UpdateTrainingOptions): Promise<Training> {
-    return this.makePatchRequest<Training>(`/models/${modelId}/trainings/${trainingId}`, options);
-  }
-
-  /**
-   * List payment methods available, calls the GET /paymentMethods endpoint.
-   *
-   * @param options.maxResults Maximum number of results to be returned
-   * @param options.nextToken A unique token for each page, use the returned token to retrieve the next page.
-   * @returns PaymentMethods response from the REST API
-   */
-  async listPaymentMethods(options?: ListPaymentMethodsOptions): Promise<PaymentMethodList> {
-    return this.makeGetRequest('/paymentMethods', options);
-  }
-
-  /**
-   * Creates a payment method, calls the POST /paymentMethods endpoint.
-   *
-   * @param options.description Optional description of payment method
-   * @param options.name Optional name of payment method
-   * @returns PaymentMethod response from REST API
-   */
-  async createPaymentMethod(options?: CreatePaymentMethodOptions): Promise<PaymentMethod> {
-    return this.makePostRequest('/paymentMethods', options);
-  }
-
-  /**
-   * Get payment method from the REST API, calls the GET /paymentMethods/{paymentMethodId} endpoint.
-   *
-   * @param paymentMethodId Id of the payment method
-   * @returns PaymentMethod response from REST API
-   */
-  async getPaymentMethod(paymentMethodId: string): Promise<PaymentMethod> {
-    return this.makeGetRequest(`/paymentMethods/${paymentMethodId}`);
-  }
-
-  /**
-   * Updates a payment method, calls the PATCH /paymentMethods/{paymentMethodId} endpoint.
-   *
-   * @param paymentMethodId Id of the payment method
-   * @param options.description Optional description of payment method
-   * @param options.name Optional name of payment method
-   * @param options.stripeSetupIntentSecret Optional input to confirm a payment method has been successfully set up through Stripe
-   * @returns PaymentMethod response from REST API
-   */
-  async updatePaymentMethod(paymentMethodId: string, options: UpdatePaymentMethodOptions): Promise<PaymentMethod> {
-    return this.makePatchRequest(`/paymentMethods/${paymentMethodId}`, options);
-  }
-
-  /**
-   * Deletes a payment method, calls the DELETE /paymentMethods/{paymentMethodId} endpoint.
-   *
-   * @param paymentMethodId Id of the payment method to delete
-   * @returns PaymentMethod response from REST API
-   */
-  async deletePaymentMethod(paymentMethodId: string): Promise<PaymentMethod> {
-    return this.makeDeleteRequest(`/paymentMethods/${paymentMethodId}`);
-  }
-
-  /**
-   * List plans available, calls the GET /plans endpoint.
-   *
-   * @param options.owner Organizations to retrieve plans from
-   * @param options.maxResults Maximum number of results to be returned
-   * @param options.nextToken A unique token for each page, use the returned token to retrieve the next page.
-   * @returns Plans response from the REST API
-   */
-  async listPlans(options?: ListPlansOptions): Promise<PlanList> {
-    return this.makeGetRequest('/plans', options);
-  }
-
-  /**
-   * Get information about a specific plan, calls the GET /plans/{plan_id} endpoint.
-   *
-   * @param planId Id of the plan
-   * @returns Plan response from the REST API
-   */
-  async getPlan(planId: string): Promise<Plan> {
-    return this.makeGetRequest(`/plans/${planId}`);
-  }
-
-  /**
-   * Get log, calls the GET /logs/{logId} endpoint.
-   *
-   * @param logId Id of the log
-   * @returns Log response from REST API
-   */
-  async getLog(logId: string, options?: GetLogOptions): Promise<Log> {
-    return this.makeGetRequest<Log>(`/logs/${logId}`, options);
-  }
-
-  /**
-   * Get profile, calls the GET /profiles/{profileId} endpoint.
-   *
-   * @param profileId Id of the profile
-   * @param options Request options
-   * @returns Profile response from REST API
-   */
-  async getProfile(profileId: string, options?: GetProfileOptions): Promise<Profile> {
-    return this.makeGetRequest<Profile>(`/profiles/${profileId}`, options);
-  }
-
-  /**
-   * Updates a profile, calls the PATCH /profiles/{profileId} endpoint.
-   *
-   * @param profileId Id of the profile
-   * @param options Request options
-   * @returns Profile response from REST API
-   */
-  async updateProfile(profileId: string, options?: UpdateProfileOptions): Promise<Profile> {
-    return this.makePatchRequest<Profile>(`/profiles/${profileId}`, options);
-  }
-
-  /**
-   * List roles, calls the GET /roles endpoint.
-   * @param options Request options
-   * @returns Roles response from REST API
-   */
-  async listRoles(options?: ListRoleOptions): Promise<RoleList> {
-    return this.makeGetRequest<RoleList>('/roles', options);
-  }
-
-  /**
-   * Get role, calls the GET /roles/{roleId} endpoint.
-   * @param roleId Id of the role
-   * @param options Request options
-   * @returns Role response from REST API
-   */
-  async getRole(roleId: string, options?: GetRoleOptions): Promise<Role> {
-    return this.makeGetRequest<Role>(`/roles/${roleId}`, options);
-  }
-
-  /**
-   * Updates a secret, calls the PATCH /secrets/{secretId} endpoint.
-   *
-   * @param secretId Id of the secret
-   * @param data.data Object containing the data you want to keep secret
-   * @param data.description Description of the secret
-   * @param data.name Name of the secret
-   */
-  async updateSecret(secretId: string, data: UpdateSecretOptions): Promise<Secret> {
-    return this.makePatchRequest(`/secrets/${secretId}`, data);
+  async deleteHookRun(hookId: string, runId: string, options?: DeleteHookRunOptions): Promise<HookRun> {
+    return this.makeDeleteRequest(`/hooks/${hookId}/runs/${runId}`, options);
   }
 
   /**
@@ -938,9 +620,6 @@ export class Client {
    * Methods:
    * - listInvoices
    * - getInvoice
-   * - createInvoice
-   * - updateInvoice
-   * - deleteInvoice
    */
 
   /**
@@ -963,34 +642,313 @@ export class Client {
   }
 
   /**
-   * Creates a invoice, calls the POST /invoices endpoint.
+   * Log section
+   * Endpoint: /logs
+   *
+   * Methods:
+   * - listLogs
+   * - getLog
+   */
+
+  /**
+   * List logs, calls the GET /logs endpoint.
+   * @param options Object with list options
+   * @returns LogList response from REST API
+   */
+  async listLogs(options?: ListLogsOptions): Promise<LogList> {
+    return this.makeGetRequest<LogList>('/logs', options);
+  }
+
+  /**
+   * Get a log, calls the GET /logs/:id endpoint.
+   * @param logId Id of the log
+   * @param options Object with get options
+   * @returns Log response from REST API
+   */
+  async getLog(logId: string, options?: GetLogOptions): Promise<Log> {
+    return this.makeGetRequest<Log>(`/logs/${logId}`, options);
+  }
+
+  /**
+   * Model section
+   * Endpoint: /models
+   *
+   * Methods:
+   * - listModels
+   * - getModel
+   * - createModel
+   * - updateModel
+   * - deleteModel
+   */
+
+  /**
+   * List models, calls the GET /models endpoint.
+   * @param options Object with list options
+   * @returns ModelList response from REST API
+   */
+  async listModels(options?: ListModelsOptions): Promise<ModelList> {
+    return this.makeGetRequest<ModelList>('/models', options);
+  }
+
+  /**
+   * Get a model, calls the GET /models/:id endpoint.
+   * @param modelId Id of the model
+   * @param options Object with get options
+   * @returns Model response from REST API
+   */
+  async getModel(modelId: string, options?: GetModelOptions): Promise<Model> {
+    return this.makeGetRequest<Model>(`/models/${modelId}`, options);
+  }
+
+  /**
+   * Creates a model, calls the POST /models endpoint.
    *
    * @param options Object with create options
-   * @returns Invoice response from REST API
+   * @returns Model response from REST API
    */
-  async createInvoice(options: CreateInvoiceOptions): Promise<Invoice> {
-    return this.makePostRequest<Invoice>('/invoices', options);
+  async createModel(options: CreateModelOptions): Promise<Model> {
+    return this.makePostRequest<Model>('/models', options);
   }
 
   /**
-   * Updates a invoice, calls the PATCH /invoices/:id endpoint.
+   * Updates a model, calls the PATCH /models/:id endpoint.
    *
-   * @param invoiceId Id of the invoice
+   * @param modelId Id of the model
    * @param options Object with update options
    */
-  async updateInvoice(invoiceId: string, options: UpdateInvoiceOptions): Promise<Invoice> {
-    return this.makePatchRequest(`/invoices/${invoiceId}`, options);
+  async updateModel(modelId: string, options: UpdateModelOptions): Promise<Model> {
+    return this.makePatchRequest(`/models/${modelId}`, options);
   }
 
   /**
-   * Delete a invoice, calls the DELETE /invoices/:id endpoint.
+   * Delete a model, calls the DELETE /models/:id endpoint.
    *
-   * @param invoiceId Id of the invoice
+   * @param modelId Id of the model
    * @param options Object with delete options
-   * @returns Invoice response from REST API
+   * @returns Model response from REST API
    */
-  async deleteInvoice(invoiceId: string, options?: DeleteInvoiceOptions): Promise<Invoice> {
-    return this.makeDeleteRequest(`/invoices/${invoiceId}`, options);
+  async deleteModel(modelId: string, options?: DeleteModelOptions): Promise<Model> {
+    return this.makeDeleteRequest(`/models/${modelId}`, options);
+  }
+
+  /**
+   * Organization section
+   * Endpoint: /organizations
+   *
+   * Methods:
+   * - listOrganizations
+   * - getOrganization
+   * - createOrganization
+   * - updateOrganization
+   */
+
+  /**
+   * List organizations, calls the GET /organizations endpoint.
+   * @param options Object with list options
+   * @returns OrganizationList response from REST API
+   */
+  async listOrganizations(options?: ListOrganizationsOptions): Promise<OrganizationList> {
+    return this.makeGetRequest<OrganizationList>('/organizations', options);
+  }
+
+  /**
+   * Get an organization, calls the GET /organizations/:id endpoint.
+   * @param organizationId Id of the organization
+   * @param options Object with get options
+   * @returns Organization response from REST API
+   */
+  async getOrganization(organizationId: string, options?: GetOrganizationOptions): Promise<Organization> {
+    return this.makeGetRequest<Organization>(`/organizations/${organizationId}`, options);
+  }
+
+  /**
+   * Creates an organization, calls the POST /organizations endpoint.
+   *
+   * @param options Object with create options
+   * @returns Organization response from REST API
+   */
+  async createOrganization(options: CreateOrganizationOptions): Promise<Organization> {
+    return this.makePostRequest<Organization>('/organizations', options);
+  }
+
+  /**
+   * Updates an organization, calls the PATCH /organizations/:id endpoint.
+   *
+   * @param organizationId Id of the organization
+   * @param options Object with update options
+   */
+  async updateOrganization(organizationId: string, options: UpdateOrganizationOptions): Promise<Organization> {
+    return this.makePatchRequest(`/organizations/${organizationId}`, options);
+  }
+
+  /**
+   * PaymentMethod section
+   * Endpoint: /paymentMethods
+   *
+   * Methods:
+   * - listPaymentMethods
+   * - getPaymentMethod
+   * - createPaymentMethod
+   * - updatePaymentMethod
+   * - deletePaymentMethod
+   */
+
+  /**
+   * List paymentMethods, calls the GET /paymentMethods endpoint.
+   * @param options Object with list options
+   * @returns PaymentMethodList response from REST API
+   */
+  async listPaymentMethods(options?: ListPaymentMethodsOptions): Promise<PaymentMethodList> {
+    return this.makeGetRequest<PaymentMethodList>('/paymentMethods', options);
+  }
+
+  /**
+   * Get a paymentMethod, calls the GET /paymentMethods/:id endpoint.
+   * @param paymentMethodId Id of the paymentMethod
+   * @param options Object with get options
+   * @returns PaymentMethod response from REST API
+   */
+  async getPaymentMethod(paymentMethodId: string, options?: GetPaymentMethodOptions): Promise<PaymentMethod> {
+    return this.makeGetRequest<PaymentMethod>(`/paymentMethods/${paymentMethodId}`, options);
+  }
+
+  /**
+   * Creates a paymentMethod, calls the POST /paymentMethods endpoint.
+   *
+   * @param options Object with create options
+   * @returns PaymentMethod response from REST API
+   */
+  async createPaymentMethod(options: CreatePaymentMethodOptions): Promise<PaymentMethod> {
+    return this.makePostRequest<PaymentMethod>('/paymentMethods', options);
+  }
+
+  /**
+   * Updates a paymentMethod, calls the PATCH /paymentMethods/:id endpoint.
+   *
+   * @param paymentMethodId Id of the paymentMethod
+   * @param options Object with update options
+   */
+  async updatePaymentMethod(paymentMethodId: string, options: UpdatePaymentMethodOptions): Promise<PaymentMethod> {
+    return this.makePatchRequest(`/paymentMethods/${paymentMethodId}`, options);
+  }
+
+  /**
+   * Delete a paymentMethod, calls the DELETE /paymentMethods/:id endpoint.
+   *
+   * @param paymentMethodId Id of the paymentMethod
+   * @param options Object with delete options
+   * @returns PaymentMethod response from REST API
+   */
+  async deletePaymentMethod(paymentMethodId: string, options?: DeletePaymentMethodOptions): Promise<PaymentMethod> {
+    return this.makeDeleteRequest(`/paymentMethods/${paymentMethodId}`, options);
+  }
+
+  /**
+   * Plan section
+   * Endpoint: /plans
+   *
+   * Methods:
+   * - listPlans
+   * - getPlan
+   */
+
+  /**
+   * List plans, calls the GET /plans endpoint.
+   * @param options Object with list options
+   * @returns PlanList response from REST API
+   */
+  async listPlans(options?: ListPlansOptions): Promise<PlanList> {
+    return this.makeGetRequest<PlanList>('/plans', options);
+  }
+
+  /**
+   * Get a plan, calls the GET /plans/:id endpoint.
+   * @param planId Id of the plan
+   * @param options Object with get options
+   * @returns Plan response from REST API
+   */
+  async getPlan(planId: string, options?: GetPlanOptions): Promise<Plan> {
+    return this.makeGetRequest<Plan>(`/plans/${planId}`, options);
+  }
+
+  /**
+   * Prediction section
+   * Endpoint: /predictions
+   *
+   * Methods:
+   * - listPredictions
+   * - getPrediction
+   * - createPrediction
+   * - deletePrediction
+   */
+
+  /**
+   * List predictions, calls the GET /predictions endpoint.
+   * @param options Object with list options
+   * @returns PredictionList response from REST API
+   */
+  async listPredictions(options?: ListPredictionsOptions): Promise<PredictionList> {
+    return this.makeGetRequest<PredictionList>('/predictions', options);
+  }
+
+  /**
+   * Get a prediction, calls the GET /predictions/:id endpoint.
+   * @param predictionId Id of the prediction
+   * @param options Object with get options
+   * @returns Prediction response from REST API
+   */
+  async getPrediction(predictionId: string, options?: GetPredictionOptions): Promise<Prediction> {
+    return this.makeGetRequest<Prediction>(`/predictions/${predictionId}`, options);
+  }
+
+  /**
+   * Creates a prediction, calls the POST /predictions endpoint.
+   *
+   * @param options Object with create options
+   * @returns Prediction response from REST API
+   */
+  async createPrediction(options: CreatePredictionOptions): Promise<Prediction> {
+    return this.makePostRequest<Prediction>('/predictions', options);
+  }
+
+  /**
+   * Delete a prediction, calls the DELETE /predictions/:id endpoint.
+   *
+   * @param predictionId Id of the prediction
+   * @param options Object with delete options
+   * @returns Prediction response from REST API
+   */
+  async deletePrediction(predictionId: string, options?: DeletePredictionOptions): Promise<Prediction> {
+    return this.makeDeleteRequest(`/predictions/${predictionId}`, options);
+  }
+
+  /**
+   * Profile section
+   * Endpoint: /profiles
+   *
+   * Methods:
+   * - getProfile
+   * - updateProfile
+   */
+
+  /**
+   * Get a profile, calls the GET /profiles/:id endpoint.
+   * @param profileId Id of the profile
+   * @param options Object with get options
+   * @returns Profile response from REST API
+   */
+  async getProfile(profileId: string, options?: GetProfileOptions): Promise<Profile> {
+    return this.makeGetRequest<Profile>(`/profiles/${profileId}`, options);
+  }
+
+  /**
+   * Updates a profile, calls the PATCH /profiles/:id endpoint.
+   *
+   * @param profileId Id of the profile
+   * @param options Object with update options
+   */
+  async updateProfile(profileId: string, options: UpdateProfileOptions): Promise<Profile> {
+    return this.makePatchRequest(`/profiles/${profileId}`, options);
   }
 
   /**
@@ -1120,6 +1078,192 @@ export class Client {
    */
   async deleteProjectRun(projectId: string, runId: string, options?: DeleteProjectRunOptions): Promise<ProjectRun> {
     return this.makeDeleteRequest(`/projects/${projectId}/runs/${runId}`, options);
+  }
+
+  /**
+   * Role section
+   * Endpoint: /roles
+   *
+   * Methods:
+   * - listRoles
+   * - getRole
+   * - createRole
+   * - updateRole
+   * - deleteRole
+   */
+
+  /**
+   * List roles, calls the GET /roles endpoint.
+   * @param options Object with list options
+   * @returns RoleList response from REST API
+   */
+  async listRoles(options?: ListRolesOptions): Promise<RoleList> {
+    return this.makeGetRequest<RoleList>('/roles', options);
+  }
+
+  /**
+   * Get a role, calls the GET /roles/:id endpoint.
+   * @param roleId Id of the role
+   * @param options Object with get options
+   * @returns Role response from REST API
+   */
+  async getRole(roleId: string, options?: GetRoleOptions): Promise<Role> {
+    return this.makeGetRequest<Role>(`/roles/${roleId}`, options);
+  }
+
+  /**
+   * Creates a role, calls the POST /roles endpoint.
+   *
+   * @param options Object with create options
+   * @returns Role response from REST API
+   */
+  async createRole(options: CreateRoleOptions): Promise<Role> {
+    return this.makePostRequest<Role>('/roles', options);
+  }
+
+  /**
+   * Updates a role, calls the PATCH /roles/:id endpoint.
+   *
+   * @param roleId Id of the role
+   * @param options Object with update options
+   */
+  async updateRole(roleId: string, options: UpdateRoleOptions): Promise<Role> {
+    return this.makePatchRequest(`/roles/${roleId}`, options);
+  }
+
+  /**
+   * Delete a role, calls the DELETE /roles/:id endpoint.
+   *
+   * @param roleId Id of the role
+   * @param options Object with delete options
+   * @returns Role response from REST API
+   */
+  async deleteRole(roleId: string, options?: DeleteRoleOptions): Promise<Role> {
+    return this.makeDeleteRequest(`/roles/${roleId}`, options);
+  }
+
+  /**
+   * Secret section
+   * Endpoint: /secrets
+   *
+   * Methods:
+   * - listSecrets
+   * - getSecret
+   * - createSecret
+   * - updateSecret
+   * - deleteSecret
+   */
+
+  /**
+   * List secrets, calls the GET /secrets endpoint.
+   * @param options Object with list options
+   * @returns SecretList response from REST API
+   */
+  async listSecrets(options?: ListSecretsOptions): Promise<SecretList> {
+    return this.makeGetRequest<SecretList>('/secrets', options);
+  }
+
+  /**
+   * Get a secret, calls the GET /secrets/:id endpoint.
+   * @param secretId Id of the secret
+   * @param options Object with get options
+   * @returns Secret response from REST API
+   */
+  async getSecret(secretId: string, options?: GetSecretOptions): Promise<Secret> {
+    return this.makeGetRequest<Secret>(`/secrets/${secretId}`, options);
+  }
+
+  /**
+   * Creates a secret, calls the POST /secrets endpoint.
+   *
+   * @param options Object with create options
+   * @returns Secret response from REST API
+   */
+  async createSecret(options: CreateSecretOptions): Promise<Secret> {
+    return this.makePostRequest<Secret>('/secrets', options);
+  }
+
+  /**
+   * Updates a secret, calls the PATCH /secrets/:id endpoint.
+   *
+   * @param secretId Id of the secret
+   * @param options Object with update options
+   */
+  async updateSecret(secretId: string, options: UpdateSecretOptions): Promise<Secret> {
+    return this.makePatchRequest(`/secrets/${secretId}`, options);
+  }
+
+  /**
+   * Delete a secret, calls the DELETE /secrets/:id endpoint.
+   *
+   * @param secretId Id of the secret
+   * @param options Object with delete options
+   * @returns Secret response from REST API
+   */
+  async deleteSecret(secretId: string, options?: DeleteSecretOptions): Promise<Secret> {
+    return this.makeDeleteRequest(`/secrets/${secretId}`, options);
+  }
+
+  /**
+   * User section
+   * Endpoint: /users
+   *
+   * Methods:
+   * - listUsers
+   * - getUser
+   * - createUser
+   * - updateUser
+   * - deleteUser
+   */
+
+  /**
+   * List users, calls the GET /users endpoint.
+   * @param options Object with list options
+   * @returns UserList response from REST API
+   */
+  async listUsers(options?: ListUsersOptions): Promise<UserList> {
+    return this.makeGetRequest<UserList>('/users', options);
+  }
+
+  /**
+   * Get a user, calls the GET /users/:id endpoint.
+   * @param userId Id of the user
+   * @param options Object with get options
+   * @returns User response from REST API
+   */
+  async getUser(userId: string, options?: GetUserOptions): Promise<User> {
+    return this.makeGetRequest<User>(`/users/${userId}`, options);
+  }
+
+  /**
+   * Creates a user, calls the POST /users endpoint.
+   *
+   * @param options Object with create options
+   * @returns User response from REST API
+   */
+  async createUser(options: CreateUserOptions): Promise<User> {
+    return this.makePostRequest<User>('/users', options);
+  }
+
+  /**
+   * Updates a user, calls the PATCH /users/:id endpoint.
+   *
+   * @param userId Id of the user
+   * @param options Object with update options
+   */
+  async updateUser(userId: string, options: UpdateUserOptions): Promise<User> {
+    return this.makePatchRequest(`/users/${userId}`, options);
+  }
+
+  /**
+   * Delete a user, calls the DELETE /users/:id endpoint.
+   *
+   * @param userId Id of the user
+   * @param options Object with delete options
+   * @returns User response from REST API
+   */
+  async deleteUser(userId: string, options?: DeleteUserOptions): Promise<User> {
+    return this.makeDeleteRequest(`/users/${userId}`, options);
   }
 
   /**
@@ -1263,350 +1407,36 @@ export class Client {
     return this.makeDeleteRequest(`/validations/${validationId}/tasks/${taskId}`, options);
   }
 
-  /**
-   * Hook section
-   * Endpoint: /hooks
-   *
-   * Methods:
-   * - listHooks
-   * - getHook
-   * - createHook
-   * - updateHook
-   * - deleteHook
-   */
-
-  /**
-   * List hooks, calls the GET /hooks endpoint.
-   * @param options Object with list options
-   * @returns HookList response from REST API
-   */
-  async listHooks(options?: ListHooksOptions): Promise<HookList> {
-    return this.makeGetRequest<HookList>('/hooks', options);
-  }
-
-  /**
-   * Get a hook, calls the GET /hooks/:id endpoint.
-   * @param hookId Id of the hook
-   * @param options Object with get options
-   * @returns Hook response from REST API
-   */
-  async getHook(hookId: string, options?: GetHookOptions): Promise<Hook> {
-    return this.makeGetRequest<Hook>(`/hooks/${hookId}`, options);
-  }
-
-  /**
-   * Creates a hook, calls the POST /hooks endpoint.
-   *
-   * @param options Object with create options
-   * @returns Hook response from REST API
-   */
-  async createHook(options: CreateHookOptions): Promise<Hook> {
-    return this.makePostRequest<Hook>('/hooks', options);
-  }
-
-  /**
-   * Updates a hook, calls the PATCH /hooks/:id endpoint.
-   *
-   * @param hookId Id of the hook
-   * @param options Object with update options
-   */
-  async updateHook(hookId: string, options: UpdateHookOptions): Promise<Hook> {
-    return this.makePatchRequest(`/hooks/${hookId}`, options);
-  }
-
-  /**
-   * Delete a hook, calls the DELETE /hooks/:id endpoint.
-   *
-   * @param hookId Id of the hook
-   * @param options Object with delete options
-   * @returns Hook response from REST API
-   */
-  async deleteHook(hookId: string, options?: DeleteHookOptions): Promise<Hook> {
-    return this.makeDeleteRequest(`/hooks/${hookId}`, options);
-  }
-
-  /**
-   * HookRun section
-   * Endpoint: /hooks/:id/runs
-   *
-   * Methods:
-   * - listHookRuns
-   * - getHookRun
-   * - createHookRun
-   * - updateHookRun
-   * - deleteHookRun
-   */
-
-  /**
-   * List hook runs, calls the GET /hooks/:id/runs endpoint.
-   * @param hookId Id of the hook
-   * @param options Object with list options
-   * @returns HookRunList response from REST API
-   */
-  async listHookRuns(hookId: string, options?: ListHookRunsOptions): Promise<HookRunList> {
-    return this.makeGetRequest<HookRunList>(`/hooks/${hookId}/runs`, options);
-  }
-
-  /**
-   * Get a hook run, calls the GET /hooks/:id/runs/:id endpoint.
-   * @param hookId Id of the hook
-   * @param runId Id of the run
-   * @param options Object with get options
-   * @returns HookRun response from REST API
-   */
-  async getHookRun(hookId: string, runId: string, options?: GetHookRunOptions): Promise<HookRun> {
-    return this.makeGetRequest<HookRun>(`/hooks/${hookId}/runs/${runId}`, options);
-  }
-
-  /**
-   * Creates a hook run, calls the POST /hooks/:id/runs endpoint.
-   *
-   * @param options Object with create options
-   * @param hookId Id of the hook
-   * @returns HookRun response from REST API
-   */
-  async createHookRun(hookId: string, options: CreateHookRunOptions): Promise<HookRun> {
-    return this.makePostRequest<HookRun>(`/hooks/${hookId}/runs`, options);
-  }
-
-  /**
-   * Updates a hook run, calls the PATCH /hooks/:id/runs/:id endpoint.
-   *
-   * @param hookId Id of the hook
-   * @param runId Id of the run
-   * @param options Object with update options
-   */
-  async updateHookRun(hookId: string, runId: string, options: UpdateHookRunOptions): Promise<HookRun> {
-    return this.makePatchRequest(`/hooks/${hookId}/runs/${runId}`, options);
-  }
-
-  /**
-   * Delete a hook run, calls the DELETE /hooks/:id/runs/:id endpoint.
-   *
-   * @param hookId Id of the hook
-   * @param runId Id of the run
-   * @param options Object with delete options
-   * @returns HookRun response from REST API
-   */
-  async deleteHookRun(hookId: string, runId: string, options?: DeleteHookRunOptions): Promise<HookRun> {
-    return this.makeDeleteRequest(`/hooks/${hookId}/runs/${runId}`, options);
-  }
-
-  /**
-   * Function section
-   * Endpoint: /functions
-   *
-   * Methods:
-   * - listFunctions
-   * - getFunction
-   * - createFunction
-   * - updateFunction
-   * - deleteFunction
-   */
-
-  /**
-   * List functions, calls the GET /functions endpoint.
-   * @param options Object with list options
-   * @returns FunctionList response from REST API
-   */
-  async listFunctions(options?: ListFunctionsOptions): Promise<FunctionList> {
-    return this.makeGetRequest<FunctionList>('/functions', options);
-  }
-
-  /**
-   * Get a function, calls the GET /functions/:id endpoint.
-   * @param functionId Id of the function
-   * @param options Object with get options
-   * @returns Function response from REST API
-   */
-  async getFunction(functionId: string, options?: GetFunctionOptions): Promise<Function> {
-    return this.makeGetRequest<Function>(`/functions/${functionId}`, options);
-  }
-
-  /**
-   * Creates an function, calls the POST /functions endpoint.
-   *
-   * @param options Object with create options
-   * @returns Function response from REST API
-   */
-  async createFunction(options: CreateFunctionOptions): Promise<Function> {
-    return this.makePostRequest<Function>('/functions', options);
-  }
-
-  /**
-   * Updates an function, calls the PATCH /functions/:id endpoint.
-   *
-   * @param functionId Id of the function
-   * @param options Object with update options
-   */
-  async updateFunction(functionId: string, options: UpdateFunctionOptions): Promise<Function> {
-    return this.makePatchRequest(`/functions/${functionId}`, options);
-  }
-
-  /**
-   * Delete an function, calls the DELETE /functions/:id endpoint.
-   *
-   * @param functionId Id of the function
-   * @param options Object with delete options
-   * @returns Function response from REST API
-   */
-  async deleteFunction(functionId: string, options?: DeleteFunctionOptions): Promise<Function> {
-    return this.makeDeleteRequest(`/functions/${functionId}`, options);
-  }
-
-  /**
-   * Action section
-   * Endpoint: /actions
-   *
-   * Methods:
-   * - listActions
-   * - getAction
-   * - createAction
-   * - updateAction
-   * - deleteAction
-   */
-
-  /**
-   * List actions, calls the GET /actions endpoint.
-   * @param options Object with list options
-   * @returns ActionList response from REST API
-   */
-  async listActions(options?: ListActionsOptions): Promise<ActionList> {
-    return this.makeGetRequest<ActionList>('/actions', options);
-  }
-
-  /**
-   * Get an action, calls the GET /actions/:id endpoint.
-   * @param actionId Id of the action
-   * @param options Object with get options
-   * @returns Action response from REST API
-   */
-  async getAction(actionId: string, options?: GetActionOptions): Promise<Action> {
-    return this.makeGetRequest<Action>(`/actions/${actionId}`, options);
-  }
-
-  /**
-   * Creates an action, calls the POST /actions endpoint.
-   *
-   * @param options Object with create options
-   * @returns Action response from REST API
-   */
-  async createAction(options: CreateActionOptions): Promise<Action> {
-    return this.makePostRequest<Action>('/actions', options);
-  }
-
-  /**
-   * Updates an action, calls the PATCH /actions/:id endpoint.
-   *
-   * @param actionId Id of the action
-   * @param options Object with update options
-   */
-  async updateAction(actionId: string, options: UpdateActionOptions): Promise<Action> {
-    return this.makePatchRequest(`/actions/${actionId}`, options);
-  }
-
-  /**
-   * Delete an action, calls the DELETE /actions/:id endpoint.
-   *
-   * @param actionId Id of the action
-   * @param options Object with delete options
-   * @returns Action response from REST API
-   */
-  async deleteAction(actionId: string, options?: DeleteActionOptions): Promise<Action> {
-    return this.makeDeleteRequest(`/actions/${actionId}`, options);
-  }
-
-  /**
-   * ActionRun section
-   * Endpoint: /actions/:id/runs
-   *
-   * Methods:
-   * - listActionRuns
-   * - getActionRun
-   * - createActionRun
-   * - updateActionRun
-   * - deleteActionRun
-   */
-
-  /**
-   * List action runs, calls the GET /actions/:id/runs endpoint.
-   * @param actionId Id of the action
-   * @param options Object with list options
-   * @returns ActionRunList response from REST API
-   */
-  async listActionRuns(actionId: string, options?: ListActionRunsOptions): Promise<ActionRunList> {
-    return this.makeGetRequest<ActionRunList>(`/actions/${actionId}/runs`, options);
-  }
-
-  /**
-   * Get an action run, calls the GET /actions/:id/runs/:id endpoint.
-   * @param actionId Id of the action
-   * @param runId Id of the run
-   * @param options Object with get options
-   * @returns ActionRun response from REST API
-   */
-  async getActionRun(actionId: string, runId: string, options?: GetActionRunOptions): Promise<ActionRun> {
-    return this.makeGetRequest<ActionRun>(`/actions/${actionId}/runs/${runId}`, options);
-  }
-
-  /**
-   * Creates an action run, calls the POST /actions/:id/runs endpoint.
-   *
-   * @param options Object with create options
-   * @param actionId Id of the action
-   * @returns ActionRun response from REST API
-   */
-  async createActionRun(actionId: string, options: CreateActionRunOptions): Promise<ActionRun> {
-    return this.makePostRequest<ActionRun>(`/actions/${actionId}/runs`, options);
-  }
-
-  /**
-   * Updates an action run, calls the PATCH /actions/:id/runs/:id endpoint.
-   *
-   * @param actionId Id of the action
-   * @param runId Id of the run
-   * @param options Object with update options
-   */
-  async updateActionRun(actionId: string, runId: string, options: UpdateActionRunOptions): Promise<ActionRun> {
-    return this.makePatchRequest<ActionRun>(`/actions/${actionId}/runs/${runId}`, options);
-  }
-
-  /**
-   * Delete an action run, calls the DELETE /actions/:id/runs/:id endpoint.
-   *
-   * @param actionId Id of the action
-   * @param runId Id of the run
-   * @param options Object with delete options
-   * @returns ActionRun response from REST API
-   */
-  async deleteActionRun(actionId: string, runId: string, options?: DeleteActionRunOptions): Promise<ActionRun> {
-    return this.makeDeleteRequest<ActionRun>(`/actions/${actionId}/runs/${runId}`, options);
-  }
-
+  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   async makeGetRequest<T>(path: string, options: any = {}): Promise<T> {
     const { requestConfig, ...query } = options;
     return this.makeAuthorizedRequest<T>(axios.get, buildURL(path, query), requestConfig);
   }
 
+  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   async makeDeleteRequest<T>(path: string, options: any = {}): Promise<T> {
     const { requestConfig, ...query } = options;
     return this.makeAuthorizedRequest(axios.delete, buildURL(path, query), requestConfig);
   }
 
+  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   async makePostRequest<T>(path: string, options: any): Promise<T> {
     return this.makeAuthorizedBodyRequest(axios.post, path, options);
   }
 
+  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   async makePatchRequest<T>(path: string, options: any): Promise<T> {
     return this.makeAuthorizedBodyRequest(axios.patch, path, options);
   }
 
+  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   async makeFileServerGetRequest(fileUrl: string, options: any = {}): Promise<File> {
     const { requestConfig, ...query } = options;
     const constructedRequestConfig = { responseType: 'arraybuffer', ...requestConfig };
     return this.makeAuthorizedFileServerRequest(axios.get, buildURL(fileUrl, query), constructedRequestConfig);
   }
 
+  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   async makeFileServerPutRequest<T>(fileUrl: string, content: Buffer, options: any = {}): Promise<T> {
     options.data = content;
     return this.makeAuthorizedFileServerBodyRequest<T>(axios.put, fileUrl, options);
@@ -1615,6 +1445,7 @@ export class Client {
   private async makeAuthorizedFileServerRequest(
     axiosFn: AxiosFn,
     fileUrl: string,
+    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
     requestConfig: any = {},
   ): Promise<File> {
     const headers = await this.getAuthorizationHeaders();
@@ -1632,6 +1463,7 @@ export class Client {
   private async makeAuthorizedFileServerBodyRequest<T>(
     axiosFn: AxiosFn,
     fileUrl: string,
+    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
     options: any = {},
   ): Promise<T> {
     const headers = await this.getAuthorizationHeaders();
@@ -1646,6 +1478,7 @@ export class Client {
     return result.data;
   }
 
+  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   private async makeAuthorizedRequest<T>(axiosFn: AxiosFn, path: string, requestConfig: any = {}): Promise<T> {
     const endpoint = `${this.credentials.apiEndpoint}${path}`;
     const headers = await this.getAuthorizationHeaders();
@@ -1658,6 +1491,7 @@ export class Client {
     return JSON.parse(JSON.stringify(result.data), (key, val) => maybeParseDate(val));
   }
 
+  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   private async makeAuthorizedBodyRequest<T>(axiosFn: AxiosFn, path: string, options: any = {}): Promise<T> {
     const endpoint = `${this.credentials.apiEndpoint}${path}`;
     const headers = await this.getAuthorizationHeaders();

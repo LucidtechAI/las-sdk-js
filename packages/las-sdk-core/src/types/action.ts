@@ -1,4 +1,4 @@
-import { JSONObject, JSONValue, PaginationOptions, RequestConfig } from './common';
+import { JSONObject, OptionsOmit, PaginationOptions, RequestConfig } from './common';
 
 export type Action = {
   /* Id */
@@ -18,25 +18,13 @@ export type Action = {
   updatedTime?: Date | null;
 };
 
-export type CreateActionOptions = RequestConfig & {
-  description?: string;
-  metadata?: Record<string, JSONValue> | null;
-  name?: string;
-};
-
-export type UpdateActionOptions = RequestConfig & {
-  description?: string;
-  metadata?: Record<string, JSONValue> | null;
-  name?: string;
-};
-
 export type ActionList = {
-  actions: Array<Action>;
-  nextToken: string | null;
+  actions: Action[];
+  nextToken?: string | null;
 };
-
-export type GetActionOptions = RequestConfig;
 
 export type ListActionsOptions = RequestConfig & PaginationOptions;
-
+export type GetActionOptions = RequestConfig;
+export type CreateActionOptions = RequestConfig & OptionsOmit<Action, 'actionId'>;
+export type UpdateActionOptions = RequestConfig & OptionsOmit<Action, 'actionId'>;
 export type DeleteActionOptions = RequestConfig;

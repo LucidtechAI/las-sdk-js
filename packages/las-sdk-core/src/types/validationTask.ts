@@ -1,4 +1,4 @@
-import { JSONObject, JSONValue, PaginationOptions, RequestConfig } from './common';
+import { JSONObject, PaginationOptions, RequestConfig } from './common';
 
 export const ValidationTaskStatusValues = ['custom', 'failed', 'in-progress', 'ready', 'succeeded'] as const;
 export type ValidationTaskStatus = (typeof ValidationTaskStatusValues)[number];
@@ -11,30 +11,20 @@ export type ValidationTask = {
   createdBy: string;
   createdTime: Date;
   input: JSONObject;
+  metadata?: JSONObject | null;
+  output?: JSONObject | null;
   status: ValidationTaskStatus;
   updatedBy?: string | null;
   updatedTime?: Date | null;
 };
 
-export type CreateValidationTaskOptions = RequestConfig & {
-  description?: string;
-  metadata?: Record<string, JSONValue> | null;
-  name?: string;
-};
-
-export type UpdateValidationTaskOptions = RequestConfig & {
-  description?: string;
-  metadata?: Record<string, JSONValue> | null;
-  name?: string;
-};
-
 export type ValidationTaskList = {
-  projects: Array<ValidationTask>;
+  tasks: Array<ValidationTask>;
   nextToken: string | null;
 };
 
-export type GetValidationTaskOptions = RequestConfig;
-
 export type ListValidationTasksOptions = RequestConfig & PaginationOptions;
-
+export type GetValidationTaskOptions = RequestConfig;
+export type CreateValidationTaskOptions = RequestConfig & Pick<ValidationTask, 'input' | 'metadata'>;
+export type UpdateValidationTaskOptions = RequestConfig & Pick<ValidationTask, 'output' | 'metadata'>;
 export type DeleteValidationTaskOptions = RequestConfig;

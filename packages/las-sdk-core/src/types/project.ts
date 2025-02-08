@@ -1,4 +1,4 @@
-import { JSONObject, JSONValue, PaginationOptions, RequestConfig } from './common';
+import { JSONObject, OptionsOmit, PaginationOptions, RequestConfig } from './common';
 
 export type Project = {
   /* Id */
@@ -14,25 +14,13 @@ export type Project = {
   updatedTime?: Date | null;
 };
 
-export type CreateProjectOptions = RequestConfig & {
-  description?: string;
-  metadata?: Record<string, JSONValue> | null;
-  name?: string;
-};
-
-export type UpdateProjectOptions = RequestConfig & {
-  description?: string;
-  metadata?: Record<string, JSONValue> | null;
-  name?: string;
-};
-
 export type ProjectList = {
   projects: Array<Project>;
-  nextToken: string | null;
+  nextToken?: string | null;
 };
 
-export type GetProjectOptions = RequestConfig;
-
 export type ListProjectsOptions = RequestConfig & PaginationOptions;
-
+export type GetProjectOptions = RequestConfig;
+export type CreateProjectOptions = RequestConfig & OptionsOmit<Project, 'projectId'>;
+export type UpdateProjectOptions = RequestConfig & OptionsOmit<Project, 'projectId'>;
 export type DeleteProjectOptions = RequestConfig;

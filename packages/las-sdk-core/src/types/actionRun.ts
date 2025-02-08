@@ -1,6 +1,7 @@
-import { JSONObject, JSONValue, PaginationOptions, RequestConfig } from './common';
+import { JSONObject, PaginationOptions, RequestConfig } from './common';
 
-export type ActionRunStatus = 'failed' | 'running' | 'succeeded';
+export const ActionRunStatusValues = ['failed', 'running', 'succeeded'] as const;
+export type ActionRunStatus = (typeof ActionRunStatusValues)[number];
 
 export type ActionRun = {
   /* Id */
@@ -12,6 +13,7 @@ export type ActionRun = {
   history: JSONObject;
   input: JSONObject;
   logId: string;
+  metadata?: JSONObject | null;
   output?: JSONObject | null;
   projectId: string;
   projectRunId: string;
@@ -20,25 +22,13 @@ export type ActionRun = {
   updatedTime?: Date | null;
 };
 
-export type CreateActionRunOptions = RequestConfig & {
-  description?: string;
-  metadata?: Record<string, JSONValue> | null;
-  name?: string;
-};
-
-export type UpdateActionRunOptions = RequestConfig & {
-  description?: string;
-  metadata?: Record<string, JSONValue> | null;
-  name?: string;
-};
-
 export type ActionRunList = {
-  actionRuns: Array<ActionRun>;
-  nextToken: string | null;
+  runs: ActionRun[];
+  nextToken?: string | null;
 };
-
-export type GetActionRunOptions = RequestConfig;
 
 export type ListActionRunsOptions = RequestConfig & PaginationOptions;
-
+export type GetActionRunOptions = RequestConfig;
+export type CreateActionRunOptions = RequestConfig & Pick<ActionRun, 'input' | 'metadata'>;
+export type UpdateActionRunOptions = RequestConfig & Pick<ActionRun, 'output' | 'metadata'>;
 export type DeleteActionRunOptions = RequestConfig;
