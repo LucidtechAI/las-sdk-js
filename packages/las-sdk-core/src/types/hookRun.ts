@@ -30,6 +30,6 @@ export type HookRunList = {
 
 export type ListHookRunsOptions = RequestConfig & PaginationOptions;
 export type GetHookRunOptions = RequestConfig;
-export type CreateHookRunOptions = RequestConfig & Pick<HookRun, 'input' | 'metadata'>;
-export type UpdateHookRunOptions = RequestConfig & Pick<HookRun, 'output' | 'metadata'>;
+export type CreateHookRunOptions = RequestConfig & Pick<Partial<HookRun>, 'input' | 'metadata'>;
+export type UpdateHookRunOptions = RequestConfig & Pick<Partial<HookRun>, 'output' | 'metadata'>;
 export type DeleteHookRunOptions = RequestConfig;

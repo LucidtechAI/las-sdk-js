@@ -24,6 +24,6 @@ export type UserList = {
 
 export type ListUsersOptions = RequestConfig & PaginationOptions;
 export type GetUserOptions = RequestConfig;
-export type CreateUserOptions = RequestConfig & Pick<User, 'metadata' | 'roleIds'> & { email: string };
-export type UpdateUserOptions = RequestConfig & Pick<User, 'metadata' | 'roleIds'>;
+export type CreateUserOptions = RequestConfig & Pick<Partial<User>, 'metadata' | 'roleIds'> & { email: string };
+export type UpdateUserOptions = RequestConfig & Pick<Partial<User>, 'metadata' | 'roleIds'>;
 export type DeleteUserOptions = RequestConfig;

@@ -39,7 +39,7 @@ export type ListDocumentsOptions = RequestConfig &
 
 export type GetDocumentOptions = RequestConfig;
 export type CreateDocumentOptions = RequestConfig &
-  Pick<Document, 'description' | 'metadata' | 'name' | 'retentionInDays'>;
+  Pick<Partial<Document>, 'description' | 'metadata' | 'name' | 'retentionInDays'>;
 export type UpdateDocumentOptions = RequestConfig &
-  Pick<Document, 'description' | 'metadata' | 'name' | 'retentionInDays'>;
+  Pick<Partial<Document>, 'description' | 'metadata' | 'name' | 'retentionInDays'>;
 export type DeleteDocumentOptions = RequestConfig;

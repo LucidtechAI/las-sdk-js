@@ -61,6 +61,7 @@ export type OrganizationList = {
 
 export type ListOrganizationsOptions = RequestConfig & PaginationOptions;
 export type GetOrganizationOptions = RequestConfig;
-export type CreateOrganizationOptions = RequestConfig & Pick<Organization, 'description' | 'name' | 'pictureUrl'>;
+export type CreateOrganizationOptions = RequestConfig &
+  Pick<Partial<Organization>, 'description' | 'name' | 'pictureUrl'>;
 export type UpdateOrganizationOptions = RequestConfig &
-  Pick<Organization, 'description' | 'name' | 'paymentMethodId' | 'pictureUrl' | 'planId'>;
+  Pick<Partial<Organization>, 'description' | 'name' | 'paymentMethodId' | 'pictureUrl' | 'planId'>;

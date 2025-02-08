@@ -17,5 +17,5 @@ export type Profile = {
 };
 
 export type UpdateProfileOptions = RequestConfig &
-  Pick<Profile, 'familyName' | 'givenName' | 'locale' | 'metadata' | 'pictureUrl'>;
+  Pick<Partial<Profile>, 'familyName' | 'givenName' | 'locale' | 'metadata' | 'pictureUrl'>;
 export type GetProfileOptions = RequestConfig;

@@ -27,5 +27,5 @@ export type ListPredictionsOptions = RequestConfig &
   };
 export type GetPredictionOptions = RequestConfig;
 export type CreatePredictionOptions = RequestConfig &
-  Pick<Prediction, 'documentId' | 'modelId' | 'postprocessConfig' | 'preprocessConfig'>;
+  Pick<Partial<Prediction>, 'documentId' | 'modelId' | 'postprocessConfig' | 'preprocessConfig'>;
 export type DeletePredictionOptions = RequestConfig;

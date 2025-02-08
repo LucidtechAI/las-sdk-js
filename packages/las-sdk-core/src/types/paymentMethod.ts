@@ -34,7 +34,7 @@ export type PaymentMethodList = {
 
 export type ListPaymentMethodsOptions = RequestConfig & PaginationOptions;
 export type GetPaymentMethodOptions = RequestConfig;
-export type CreatePaymentMethodOptions = RequestConfig & Pick<PaymentMethod, 'description' | 'name'>;
+export type CreatePaymentMethodOptions = RequestConfig & Pick<Partial<PaymentMethod>, 'description' | 'name'>;
 export type UpdatePaymentMethodOptions = RequestConfig &
-  Pick<PaymentMethod, 'description' | 'name' | 'stripeSetupIntentSecret'>;
+  Pick<Partial<PaymentMethod>, 'description' | 'name' | 'stripeSetupIntentSecret'>;
 export type DeletePaymentMethodOptions = RequestConfig;

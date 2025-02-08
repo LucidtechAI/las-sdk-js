@@ -25,6 +25,6 @@ export type ValidationTaskList = {
 
 export type ListValidationTasksOptions = RequestConfig & PaginationOptions;
 export type GetValidationTaskOptions = RequestConfig;
-export type CreateValidationTaskOptions = RequestConfig & Pick<ValidationTask, 'input' | 'metadata'>;
-export type UpdateValidationTaskOptions = RequestConfig & Pick<ValidationTask, 'output' | 'metadata'>;
+export type CreateValidationTaskOptions = RequestConfig & Pick<Partial<ValidationTask>, 'input' | 'metadata'>;
+export type UpdateValidationTaskOptions = RequestConfig & Pick<Partial<ValidationTask>, 'output' | 'metadata'>;
 export type DeleteValidationTaskOptions = RequestConfig;

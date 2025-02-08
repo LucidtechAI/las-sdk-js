@@ -25,6 +25,6 @@ export type FunctionList = {
 
 export type ListFunctionsOptions = RequestConfig & PaginationOptions;
 export type GetFunctionOptions = RequestConfig;
-export type CreateFunctionOptions = RequestConfig & Pick<Function, 'description' | 'metadata' | 'name'>;
-export type UpdateFunctionOptions = RequestConfig & Pick<Function, 'description' | 'metadata' | 'name'>;
+export type CreateFunctionOptions = RequestConfig & Pick<Partial<Function>, 'description' | 'metadata' | 'name'>;
+export type UpdateFunctionOptions = RequestConfig & Pick<Partial<Function>, 'description' | 'metadata' | 'name'>;
 export type DeleteFunctionOptions = RequestConfig;
