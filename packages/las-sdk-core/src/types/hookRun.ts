@@ -10,7 +10,7 @@ export type HookRun = {
   /* Attributes */
   createdBy: string;
   createdTime: Date;
-  history: JSONObject;
+  history: JSONObject[];
   hookId: string;
   input: JSONObject;
   logId: string;

@@ -10,6 +10,7 @@ export type ValidationTask = {
   /* Attributes */
   createdBy: string;
   createdTime: Date;
+  history: JSONObject[];
   input: JSONObject;
   metadata?: JSONObject | null;
   output?: JSONObject | null;

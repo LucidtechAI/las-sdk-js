@@ -10,6 +10,7 @@ export type ProjectRun = {
   /* Attributes */
   createdBy: string;
   createdTime: Date;
+  history: JSONObject[];
   metadata?: JSONObject | null;
   resourceIds: string[];
   status: ProjectRunStatus;

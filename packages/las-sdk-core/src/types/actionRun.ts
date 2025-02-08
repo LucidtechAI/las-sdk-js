@@ -10,7 +10,7 @@ export type ActionRun = {
   /* Attributes */
   createdBy: string;
   createdTime: Date;
-  history: JSONObject;
+  history: JSONObject[];
   input: JSONObject;
   logId: string;
   metadata?: JSONObject | null;

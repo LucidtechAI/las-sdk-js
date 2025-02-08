@@ -10,7 +10,7 @@ export type User = {
   createdBy: string;
   createdTime: Date;
   metadata?: JSONObject | null;
-  profileId?: string | null;
+  profileId: string;
   roleIds: string[];
   status: UserStatus;
   updatedBy?: string | null;

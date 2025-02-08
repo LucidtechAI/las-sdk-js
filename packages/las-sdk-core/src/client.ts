@@ -1437,9 +1437,10 @@ export class Client {
   }
 
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-  async makeFileServerPutRequest<T>(fileUrl: string, content: Buffer, options: any = {}): Promise<T> {
+  async makeFileServerPutRequest(fileUrl: string, content: Buffer, options: any = {}): Promise<File> {
     options.data = content;
-    return this.makeAuthorizedFileServerBodyRequest<T>(axios.put, fileUrl, options);
+    await this.makeAuthorizedFileServerBodyRequest(axios.put, fileUrl, options);
+    return { content, mimeType: options.headers['Content-Type'] };
   }
 
   private async makeAuthorizedFileServerRequest(
@@ -1454,9 +1455,6 @@ export class Client {
       config = { ...config, ...requestConfig };
     }
     const result = await axiosFn<ArrayBuffer>(fileUrl, config);
-    if (fileUrl.includes('formatter')) {
-      console.log('result', result);
-    }
     return { content: result.data, mimeType: result.headers['content-type'] };
   }
 
@@ -1466,9 +1464,9 @@ export class Client {
     /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
     options: any = {},
   ): Promise<T> {
-    const headers = await this.getAuthorizationHeaders();
-    const { requestConfig, data } = options;
-    let config: AxiosRequestConfig = { headers };
+    const authHeaders = await this.getAuthorizationHeaders();
+    const { requestConfig, data, headers } = options;
+    let config: AxiosRequestConfig = { headers: { ...authHeaders, ...headers } };
     if (requestConfig) {
       config = { ...config, ...requestConfig };
     }
