@@ -3,7 +3,6 @@ export * from './actionRun';
 export * from './appClient';
 export * from './common';
 export * from './document';
-export * from './file';
 export * from './function';
 export * from './hook';
 export * from './hookRun';

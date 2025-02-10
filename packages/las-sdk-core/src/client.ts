@@ -48,7 +48,6 @@ import type {
   DeleteValidationTaskOptions,
   Document,
   DocumentList,
-  File,
   Function,
   FunctionList,
   GetActionOptions,
@@ -1430,17 +1429,17 @@ export class Client {
   }
 
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-  async makeFileServerGetRequest(fileUrl: string, options: any = {}): Promise<File> {
+  async makeFileServerGetRequest(fileUrl: string, options: any = {}): Promise<Blob> {
     const { requestConfig, ...query } = options;
     const constructedRequestConfig = { responseType: 'arraybuffer', ...requestConfig };
     return this.makeAuthorizedFileServerRequest(axios.get, buildURL(fileUrl, query), constructedRequestConfig);
   }
 
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-  async makeFileServerPutRequest(fileUrl: string, content: Buffer, options: any = {}): Promise<File> {
+  async makeFileServerPutRequest(fileUrl: string, content: Buffer, options: any = {}): Promise<Blob> {
     options.data = content;
     await this.makeAuthorizedFileServerBodyRequest(axios.put, fileUrl, options);
-    return { content, mimeType: options.headers['Content-Type'] };
+    return new Blob([content], { type: options.headers['Content-Type'] });
   }
 
   private async makeAuthorizedFileServerRequest(
@@ -1448,14 +1447,14 @@ export class Client {
     fileUrl: string,
     /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
     requestConfig: any = {},
-  ): Promise<File> {
+  ): Promise<Blob> {
     const headers = await this.getAuthorizationHeaders();
     let config: AxiosRequestConfig = { headers };
     if (requestConfig) {
       config = { ...config, ...requestConfig };
     }
     const result = await axiosFn<ArrayBuffer>(fileUrl, config);
-    return { content: result.data, mimeType: result.headers['content-type'] };
+    return new Blob([result.data], { type: result.headers['content-type'] });
   }
 
   private async makeAuthorizedFileServerBodyRequest<T>(
