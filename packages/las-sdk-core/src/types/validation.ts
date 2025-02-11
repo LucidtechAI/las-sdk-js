@@ -21,6 +21,8 @@ export type ValidationList = {
 
 export type ListValidationsOptions = RequestConfig & PaginationOptions;
 export type GetValidationOptions = RequestConfig;
-export type CreateValidationOptions = RequestConfig & OptionsOmit<Validation, 'validationId'>;
+export type CreateValidationOptions = RequestConfig &
+  OptionsOmit<Validation, 'validationId'> &
+  Pick<Validation, 'config' | 'projectId'>;
 export type UpdateValidationOptions = RequestConfig & OptionsOmit<Validation, 'validationId'>;
 export type DeleteValidationOptions = RequestConfig;

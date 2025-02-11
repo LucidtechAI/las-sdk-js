@@ -33,6 +33,6 @@ export type RoleList = {
 
 export type ListRolesOptions = RequestConfig & PaginationOptions;
 export type GetRoleOptions = RequestConfig;
-export type CreateRoleOptions = RequestConfig & OptionsOmit<Role, 'roleId'>;
+export type CreateRoleOptions = RequestConfig & OptionsOmit<Role, 'roleId'> & Pick<Role, 'permissions'>;
 export type UpdateRoleOptions = RequestConfig & OptionsOmit<Role, 'roleId'>;
 export type DeleteRoleOptions = RequestConfig;

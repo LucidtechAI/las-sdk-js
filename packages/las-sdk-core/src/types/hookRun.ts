@@ -5,13 +5,12 @@ export type HookStatus = (typeof HookStatusValues)[number];
 
 export type HookRun = {
   /* Id */
-  actionId: string;
+  hookId: string;
   runId: string;
   /* Attributes */
   createdBy: string;
   createdTime: Date;
   history: JSONObject[];
-  hookId: string;
   input: JSONObject;
   logId: string;
   metadata?: JSONObject | null;
@@ -30,6 +29,6 @@ export type HookRunList = {
 
 export type ListHookRunsOptions = RequestConfig & PaginationOptions;
 export type GetHookRunOptions = RequestConfig;
-export type CreateHookRunOptions = RequestConfig & Pick<Partial<HookRun>, 'input' | 'metadata'>;
+export type CreateHookRunOptions = RequestConfig & Pick<HookRun, 'input' | 'metadata' | 'projectRunId'>;
 export type UpdateHookRunOptions = RequestConfig & Pick<Partial<HookRun>, 'output' | 'metadata'>;
 export type DeleteHookRunOptions = RequestConfig;

@@ -4,11 +4,11 @@ export type Prediction = {
   /* Id */
   predictionId: string;
   /* Attributes */
-  annotationsFileUrl?: string | null;
   createdBy: string;
   createdTime: Date;
   documentId: string;
-  inferenceTime: number;
+  fileUrl: string;
+  inferenceTime?: number | null;
   modelId: string;
   postprocessConfig?: PostprocessConfig | null;
   preprocessConfig?: PreprocessConfig | null;
@@ -27,5 +27,5 @@ export type ListPredictionsOptions = RequestConfig &
   };
 export type GetPredictionOptions = RequestConfig;
 export type CreatePredictionOptions = RequestConfig &
-  Pick<Partial<Prediction>, 'documentId' | 'modelId' | 'postprocessConfig' | 'preprocessConfig'>;
+  Pick<Prediction, 'documentId' | 'modelId' | 'postprocessConfig' | 'preprocessConfig'>;
 export type DeletePredictionOptions = RequestConfig;

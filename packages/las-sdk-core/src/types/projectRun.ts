@@ -1,4 +1,4 @@
-import { JSONObject, PaginationOptions, RequestConfig } from './common';
+import { JSONObject, OrderParam, PaginationOptions, RequestConfig } from './common';
 
 export const ProjectRunStatusValues = ['Ready for review', 'Exported', 'Pending predictions', 'Archived'] as const;
 export type ProjectRunStatus = (typeof ProjectRunStatusValues)[number];
@@ -23,7 +23,9 @@ export type ProjectRunList = {
   nextToken?: string | null;
 };
 
-export type ListProjectRunsOptions = RequestConfig & PaginationOptions;
+export type ListProjectRunsOptions = RequestConfig &
+  PaginationOptions &
+  OrderParam & { sortBy?: keyof ProjectRun };
 export type GetProjectRunOptions = RequestConfig;
 export type CreateProjectRunOptions = RequestConfig & Pick<Partial<ProjectRun>, 'metadata' | 'resourceIds'>;
 export type UpdateProjectRunOptions = RequestConfig & Pick<Partial<ProjectRun>, 'metadata' | 'resourceIds'>;

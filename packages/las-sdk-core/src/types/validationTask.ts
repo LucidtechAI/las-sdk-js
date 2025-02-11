@@ -14,6 +14,8 @@ export type ValidationTask = {
   input: JSONObject;
   metadata?: JSONObject | null;
   output?: JSONObject | null;
+  projectId: string;
+  projectRunId: string;
   status: ValidationTaskStatus;
   updatedBy?: string | null;
   updatedTime?: Date | null;
@@ -26,6 +28,6 @@ export type ValidationTaskList = {
 
 export type ListValidationTasksOptions = RequestConfig & PaginationOptions;
 export type GetValidationTaskOptions = RequestConfig;
-export type CreateValidationTaskOptions = RequestConfig & Pick<Partial<ValidationTask>, 'input' | 'metadata'>;
+export type CreateValidationTaskOptions = RequestConfig & Pick<ValidationTask, 'input' | 'metadata' | 'projectRunId'>;
 export type UpdateValidationTaskOptions = RequestConfig & Pick<Partial<ValidationTask>, 'output' | 'metadata'>;
 export type DeleteValidationTaskOptions = RequestConfig;

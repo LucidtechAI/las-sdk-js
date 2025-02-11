@@ -8,7 +8,6 @@ export type Document = {
   /* Id */
   documentId: string;
   /* Attributes */
-  annotationsFileUrl?: string | null;
   consentId?: string | null;
   contentLength?: number | null;
   contentMD5?: string | null;
@@ -16,7 +15,7 @@ export type Document = {
   createdBy: string;
   createdTime: Date;
   description?: string | null;
-  fileUrl?: string | null;
+  fileUrl: string;
   metadata?: JSONObject | null;
   name?: string | null;
   retentionInDays: number;

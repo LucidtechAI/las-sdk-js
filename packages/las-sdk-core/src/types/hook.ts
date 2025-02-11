@@ -36,6 +36,8 @@ export type HookList = {
 
 export type ListHooksOptions = RequestConfig & PaginationOptions;
 export type GetHookOptions = RequestConfig;
-export type CreateHookOptions = RequestConfig & OptionsOmit<Hook, 'hookId'>;
+export type CreateHookOptions = RequestConfig &
+  OptionsOmit<Hook, 'hookId'> &
+  Pick<Hook, 'condition' | 'config' | 'projectId' | 'trigger' | 'trueActionId'>;
 export type UpdateHookOptions = RequestConfig & OptionsOmit<Hook, 'hookId'>;
 export type DeleteHookOptions = RequestConfig;

@@ -29,7 +29,8 @@ export type AppClientList = {
 export type ListAppClientsOptions = RequestConfig & PaginationOptions;
 export type GetAppClientOptions = RequestConfig;
 export type CreateAppClientOptions = RequestConfig &
-  OptionsOmit<AppClient, 'appClientId' | 'clientId' | 'clientSecret' | 'hasSecret'>;
+  OptionsOmit<AppClient, 'appClientId' | 'clientId' | 'clientSecret' | 'hasSecret'> &
+  Pick<AppClient, 'roleIds'> & { generateSecret: boolean };
 export type UpdateAppClientOptions = RequestConfig &
   OptionsOmit<AppClient, 'appClientId' | 'clientId' | 'clientSecret' | 'hasSecret'>;
 export type DeleteAppClientOptions = RequestConfig;

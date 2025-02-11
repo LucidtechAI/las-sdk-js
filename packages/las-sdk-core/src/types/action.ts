@@ -25,6 +25,8 @@ export type ActionList = {
 
 export type ListActionsOptions = RequestConfig & PaginationOptions;
 export type GetActionOptions = RequestConfig;
-export type CreateActionOptions = RequestConfig & OptionsOmit<Action, 'actionId'>;
+export type CreateActionOptions = RequestConfig &
+  OptionsOmit<Action, 'actionId'> &
+  Pick<Action, 'config' | 'functionId' | 'projectId'>;
 export type UpdateActionOptions = RequestConfig & OptionsOmit<Action, 'actionId'>;
 export type DeleteActionOptions = RequestConfig;

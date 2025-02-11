@@ -29,6 +29,6 @@ export type ActionRunList = {
 
 export type ListActionRunsOptions = RequestConfig & PaginationOptions;
 export type GetActionRunOptions = RequestConfig;
-export type CreateActionRunOptions = RequestConfig & Pick<Partial<ActionRun>, 'input' | 'metadata'>;
+export type CreateActionRunOptions = RequestConfig & Pick<ActionRun, 'input' | 'metadata' | 'projectRunId'>;
 export type UpdateActionRunOptions = RequestConfig & Pick<Partial<ActionRun>, 'output' | 'metadata'>;
 export type DeleteActionRunOptions = RequestConfig;
