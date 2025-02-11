@@ -8,6 +8,7 @@ export type Document = {
   /* Id */
   documentId: string;
   /* Attributes */
+  annotationsFileUrl: string;
   consentId?: string | null;
   contentLength?: number | null;
   contentMD5?: string | null;

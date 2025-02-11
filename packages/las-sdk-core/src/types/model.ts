@@ -39,9 +39,6 @@ export type FieldValidator = {
   name: string;
 };
 
-export const ModelStatusValues = ['active', 'inactive'] as const;
-export type ModelStatus = (typeof ModelStatusValues)[number];
-
 export type Model = {
   /* Id */
   modelId: string;
@@ -49,7 +46,7 @@ export type Model = {
   createdBy: string;
   createdTime: Date;
   description?: string | null;
-  fieldConfig?: FieldConfig | null;
+  fieldConfig: FieldConfig;
   metadata?: JSONObject | null;
   name?: string | null;
   postprocessConfig: PostprocessConfig;
@@ -65,6 +62,6 @@ export type ModelList = {
 
 export type ListModelsOptions = RequestConfig & PaginationOptions;
 export type GetModelOptions = RequestConfig;
-export type CreateModelOptions = RequestConfig & OptionsOmit<Model, 'modelId'>;
+export type CreateModelOptions = RequestConfig & OptionsOmit<Model, 'modelId'> & Pick<Model, 'fieldConfig'>;
 export type UpdateModelOptions = RequestConfig & OptionsOmit<Model, 'modelId'>;
 export type DeleteModelOptions = RequestConfig;
