@@ -25,6 +25,6 @@ export type ProjectRunList = {
 
 export type ListProjectRunsOptions = RequestConfig & PaginationOptions & OrderParam & { sortBy?: keyof ProjectRun };
 export type GetProjectRunOptions = RequestConfig;
-export type CreateProjectRunOptions = RequestConfig & Pick<Partial<ProjectRun>, 'metadata' | 'resourceIds'>;
+export type CreateProjectRunOptions = RequestConfig & Pick<ProjectRun, 'metadata' | 'resourceIds'>;
 export type UpdateProjectRunOptions = RequestConfig & Pick<Partial<ProjectRun>, 'metadata' | 'resourceIds'>;
 export type DeleteProjectRunOptions = RequestConfig;
