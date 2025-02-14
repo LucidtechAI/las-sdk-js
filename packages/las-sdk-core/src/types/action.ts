@@ -10,7 +10,7 @@ export type Action = {
   description?: string | null;
   enabled: boolean;
   functionId: string;
-  metadata?: JSONObject | null;
+  metadata: JSONObject;
   name?: string | null;
   projectId: string;
   secretId?: string | null;

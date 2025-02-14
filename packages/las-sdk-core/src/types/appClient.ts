@@ -14,7 +14,7 @@ export type AppClient = {
   hasSecret: boolean;
   loginUrls?: Array<string> | null;
   logoutUrls?: Array<string> | null;
-  metadata?: JSONObject | null;
+  metadata: JSONObject;
   name?: string | null;
   roleIds: Array<string>;
   updatedBy?: string | null;

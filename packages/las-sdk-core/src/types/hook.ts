@@ -20,7 +20,7 @@ export type Hook = {
   description?: string | null;
   enabled: boolean;
   falseActionId?: string | null;
-  metadata?: JSONObject | null;
+  metadata: JSONObject;
   name?: string | null;
   projectId: string;
   trigger: Trigger;

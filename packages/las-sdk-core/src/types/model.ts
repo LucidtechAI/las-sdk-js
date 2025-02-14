@@ -47,7 +47,7 @@ export type Model = {
   createdTime: Date;
   description?: string | null;
   fieldConfig: FieldConfig;
-  metadata?: JSONObject | null;
+  metadata: JSONObject;
   name?: string | null;
   postprocessConfig: PostprocessConfig;
   preprocessConfig: PreprocessConfig;

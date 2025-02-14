@@ -8,7 +8,7 @@ export type Validation = {
   createdBy: string;
   createdTime: Date;
   enabled: boolean;
-  metadata?: JSONObject | null;
+  metadata: JSONObject;
   projectId: string;
   updatedBy?: string | null;
   updatedTime?: Date | null;

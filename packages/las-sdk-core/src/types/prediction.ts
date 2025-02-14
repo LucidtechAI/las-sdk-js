@@ -7,6 +7,7 @@ export type Prediction = {
   createdBy: string;
   createdTime: Date;
   documentId: string;
+  error?: string | null;
   fileUrl: string;
   inferenceTime?: number | null;
   modelId: string;

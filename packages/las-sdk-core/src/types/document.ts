@@ -1,7 +1,14 @@
-import { JSONObject, OrderParam, PaginationOptions, RequestConfig } from './common';
+import { JSONObject, OptionsOmit, OrderParam, PaginationOptions, RequestConfig } from './common';
 
 export const DOCUMENT_MAX_SIZE = 64 * 1000 * 1000;
-export const DOCUMENT_MIME_TYPES = ['application/pdf', 'image/jpeg', 'image/png', 'image/webp', 'image/tiff'] as const;
+export const DOCUMENT_MIME_TYPES = [
+  'application/pdf',
+  'image/jpeg',
+  'image/png',
+  'image/webp',
+  'image/tiff',
+  'text/email',
+] as const;
 export type DocumentContentType = (typeof DOCUMENT_MIME_TYPES)[number];
 
 export type Document = {
@@ -17,7 +24,7 @@ export type Document = {
   createdTime: Date;
   description?: string | null;
   fileUrl: string;
-  metadata?: JSONObject | null;
+  metadata: JSONObject;
   name?: string | null;
   retentionInDays: number;
   updatedBy?: string | null;
@@ -38,8 +45,7 @@ export type ListDocumentsOptions = RequestConfig &
   };
 
 export type GetDocumentOptions = RequestConfig;
-export type CreateDocumentOptions = RequestConfig &
-  Pick<Partial<Document>, 'description' | 'metadata' | 'name' | 'retentionInDays'>;
+export type CreateDocumentOptions = RequestConfig & OptionsOmit<Document, 'documentId'>;
 export type UpdateDocumentOptions = RequestConfig &
   Pick<Partial<Document>, 'description' | 'metadata' | 'name' | 'retentionInDays'>;
 export type DeleteDocumentOptions = RequestConfig;

@@ -1,4 +1,4 @@
-import { JSONObject, PaginationOptions, RequestConfig } from './common';
+import { JSONObject, OptionsOmit, PaginationOptions, RequestConfig } from './common';
 
 export const HookStatusValues = ['failed', 'running', 'succeeded'] as const;
 export type HookStatus = (typeof HookStatusValues)[number];
@@ -8,12 +8,13 @@ export type HookRun = {
   hookId: string;
   runId: string;
   /* Attributes */
+  actionId?: string | null;
   createdBy: string;
   createdTime: Date;
   history: JSONObject[];
   input: JSONObject;
   logId: string;
-  metadata?: JSONObject | null;
+  metadata: JSONObject;
   output?: JSONObject | null;
   projectId: string;
   projectRunId: string;
@@ -29,6 +30,8 @@ export type HookRunList = {
 
 export type ListHookRunsOptions = RequestConfig & PaginationOptions;
 export type GetHookRunOptions = RequestConfig;
-export type CreateHookRunOptions = RequestConfig & Pick<HookRun, 'input' | 'metadata' | 'projectRunId'>;
+export type CreateHookRunOptions = RequestConfig &
+  OptionsOmit<HookRun, 'hookId' | 'runId' | 'logId'> &
+  Pick<HookRun, 'input' | 'projectRunId'>;
 export type UpdateHookRunOptions = RequestConfig & Pick<Partial<HookRun>, 'output' | 'metadata'>;
 export type DeleteHookRunOptions = RequestConfig;

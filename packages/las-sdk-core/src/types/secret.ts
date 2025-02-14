@@ -8,7 +8,7 @@ export type Secret = {
   createdTime: Date;
   data: JSONObject;
   description?: string | null;
-  metadata?: JSONObject | null;
+  metadata: JSONObject;
   name?: string | null;
   updatedBy?: string | null;
   updatedTime?: Date | null;
@@ -21,6 +21,6 @@ export type SecretList = {
 
 export type ListSecretsOptions = RequestConfig & PaginationOptions;
 export type GetSecretOptions = RequestConfig;
-export type CreateSecretOptions = RequestConfig & OptionsOmit<Secret, 'secretId'>;
+export type CreateSecretOptions = RequestConfig & OptionsOmit<Secret, 'secretId'> & Pick<Secret, 'data'>;
 export type UpdateSecretOptions = RequestConfig & OptionsOmit<Secret, 'secretId'>;
 export type DeleteSecretOptions = RequestConfig;

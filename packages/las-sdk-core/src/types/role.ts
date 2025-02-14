@@ -19,7 +19,7 @@ export type Role = {
   createdBy: string;
   createdTime: Date;
   description?: string | null;
-  metadata?: JSONObject | null;
+  metadata: JSONObject;
   name?: string | null;
   permissions: Array<Permission>;
   updatedBy?: string | null;

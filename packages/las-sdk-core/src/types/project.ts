@@ -7,7 +7,7 @@ export type Project = {
   createdBy: string;
   createdTime: Date;
   description?: string | null;
-  metadata?: JSONObject | null;
+  metadata: JSONObject;
   name?: string | null;
   resourceIds: string[];
   updatedBy?: string | null;

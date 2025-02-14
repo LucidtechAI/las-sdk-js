@@ -1,4 +1,4 @@
-import { JSONObject, PaginationOptions, RequestConfig } from './common';
+import { JSONObject, OptionsOmit, PaginationOptions, RequestConfig } from './common';
 
 export const UserStatusValues = ['inactive', 'active', 'invite_pending'] as const;
 export type UserStatus = (typeof UserStatusValues)[number];
@@ -9,7 +9,7 @@ export type User = {
   /* Attributes */
   createdBy: string;
   createdTime: Date;
-  metadata?: JSONObject | null;
+  metadata: JSONObject;
   profileId: string;
   roleIds: string[];
   status: UserStatus;
@@ -24,6 +24,8 @@ export type UserList = {
 
 export type ListUsersOptions = RequestConfig & PaginationOptions;
 export type GetUserOptions = RequestConfig;
-export type CreateUserOptions = RequestConfig & Pick<User, 'metadata' | 'roleIds'> & { email: string };
+export type CreateUserOptions = RequestConfig &
+  OptionsOmit<User, 'userId' | 'profileId' | 'status'> &
+  Pick<User, 'roleIds'> & { email: string };
 export type UpdateUserOptions = RequestConfig & Pick<Partial<User>, 'metadata' | 'roleIds'>;
 export type DeleteUserOptions = RequestConfig;
