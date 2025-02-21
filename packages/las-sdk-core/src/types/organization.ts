@@ -29,6 +29,7 @@ export type Organization = {
   planId?: string | null;
   updatedBy?: string | null;
   updatedTime?: Date | null;
+  url?: string | null;
 };
 
 export type OrganizationList = {
