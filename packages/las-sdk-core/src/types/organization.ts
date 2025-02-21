@@ -29,6 +29,7 @@ export type Organization = {
   planId?: string | null;
   updatedBy?: string | null;
   updatedTime?: Date | null;
+  url?: string | null;
 };
 
 export type OrganizationList = {
@@ -38,6 +39,6 @@ export type OrganizationList = {
 
 export type ListOrganizationsOptions = RequestConfig & PaginationOptions;
 export type GetOrganizationOptions = RequestConfig;
-export type CreateOrganizationOptions = RequestConfig & Pick<Organization, 'description' | 'name'>;
+export type CreateOrganizationOptions = RequestConfig & Pick<Organization, 'description' | 'name' | 'url'>;
 export type UpdateOrganizationOptions = RequestConfig &
   Pick<Partial<Organization>, 'description' | 'name' | 'paymentMethodId' | 'planId'>;
