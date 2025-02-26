@@ -18,7 +18,7 @@ export type Field = {
   fields?: FieldConfig | null;
   formatters?: FieldFormatter[] | null;
   isNullable?: boolean | null;
-  multiValue?: boolean | null;
+  isMultiValue?: boolean | null;
   name: string;
   type: FieldType;
   validators?: FieldValidator[] | null;

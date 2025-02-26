@@ -449,7 +449,7 @@ export class Client {
    * @returns Function response from REST API
    */
   async getFunction(functionId: string, options?: GetFunctionOptions): Promise<Function> {
-    return this.makeGetRequest<Function>(`/functions/${functionId}`, options);
+    return this.makeGetRequest<Function>(`/functions/${encodeURIComponent(functionId)}`, options);
   }
 
   /**
