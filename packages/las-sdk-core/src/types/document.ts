@@ -27,6 +27,7 @@ export type Document = {
   metadata: JSONObject;
   name?: string | null;
   projectId?: string | null;
+  projectRunId?: string | null;
   retentionInDays: number;
   updatedBy?: string | null;
   updatedTime?: Date | null;
