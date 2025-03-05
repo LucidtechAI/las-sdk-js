@@ -24,7 +24,7 @@ export type Hook = {
   name?: string | null;
   projectId: string;
   trigger: Trigger;
-  trueActionId: string;
+  trueActionId?: string | null;
   updatedBy?: string | null;
   updatedTime?: Date | null;
 };
@@ -38,6 +38,6 @@ export type ListHooksOptions = RequestConfig & PaginationOptions;
 export type GetHookOptions = RequestConfig;
 export type CreateHookOptions = RequestConfig &
   OptionsOmit<Hook, 'hookId'> &
-  Pick<Hook, 'functionId' | 'config' | 'projectId' | 'trigger' | 'trueActionId'>;
+  Pick<Hook, 'functionId' | 'config' | 'projectId' | 'trigger'>;
 export type UpdateHookOptions = RequestConfig & OptionsOmit<Hook, 'hookId'>;
 export type DeleteHookOptions = RequestConfig;
