@@ -63,7 +63,7 @@ export class PKCEDerived extends PKCE {
 }
 
 export class AuthorizationCodeCredentials extends Credentials {
-  private readonly clientId: string;
+  readonly clientId: string;
   private readonly authEndpoint: string;
   private readonly redirectUri: string;
   private readonly logoutRedirectUri?: string;

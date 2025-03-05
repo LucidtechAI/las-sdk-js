@@ -41,4 +41,4 @@ export type ListOrganizationsOptions = RequestConfig & PaginationOptions;
 export type GetOrganizationOptions = RequestConfig;
 export type CreateOrganizationOptions = RequestConfig & Pick<Organization, 'description' | 'name' | 'url'>;
 export type UpdateOrganizationOptions = RequestConfig &
-  Pick<Partial<Organization>, 'description' | 'name' | 'paymentMethodId' | 'planId'>;
+  Pick<Partial<Organization>, 'description' | 'name' | 'paymentMethodId' | 'planId' | 'url'>;
