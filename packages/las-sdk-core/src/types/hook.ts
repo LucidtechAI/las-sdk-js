@@ -13,13 +13,13 @@ export type Hook = {
   /* Id */
   hookId: string;
   /* Attributes */
-  condition: string;
   config: JSONObject;
   createdBy: string;
   createdTime: Date;
   description?: string | null;
   enabled: boolean;
   falseActionId?: string | null;
+  functionId?: string | null;
   metadata: JSONObject;
   name?: string | null;
   projectId: string;
@@ -38,6 +38,6 @@ export type ListHooksOptions = RequestConfig & PaginationOptions;
 export type GetHookOptions = RequestConfig;
 export type CreateHookOptions = RequestConfig &
   OptionsOmit<Hook, 'hookId'> &
-  Pick<Hook, 'condition' | 'config' | 'projectId' | 'trigger' | 'trueActionId'>;
+  Pick<Hook, 'functionId' | 'config' | 'projectId' | 'trigger' | 'trueActionId'>;
 export type UpdateHookOptions = RequestConfig & OptionsOmit<Hook, 'hookId'>;
 export type DeleteHookOptions = RequestConfig;
