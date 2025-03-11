@@ -9,17 +9,16 @@ import {
 
 export type EnumValue = { value: string; description: string };
 
-export const FieldTypeValues = ['string', 'amount', 'numeric', 'lines', 'date', 'enum'] as const;
+export const FieldTypeValues = ['single-value', 'multi-value', 'table'] as const;
 export type FieldType = (typeof FieldTypeValues)[number];
 
 export type Field = {
   description?: string | null;
-  enum?: EnumValue[] | null;
   fields?: FieldConfig | null;
   formatters?: FieldFormatter[] | null;
   isNullable?: boolean | null;
-  isMultiValue?: boolean | null;
   name: string;
+  promptHint?: string | null;
   type: FieldType;
   validators?: FieldValidator[] | null;
 };
