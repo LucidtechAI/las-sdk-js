@@ -7,7 +7,7 @@ export const DOCUMENT_MIME_TYPES = [
   'image/png',
   'image/webp',
   'image/tiff',
-  'text/email',
+  'message/rfc822',
 ] as const;
 export type DocumentContentType = (typeof DOCUMENT_MIME_TYPES)[number];
 

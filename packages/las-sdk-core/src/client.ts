@@ -867,7 +867,7 @@ export class Client {
    * @returns Plan response from REST API
    */
   async getPlan(planId: string, options?: GetPlanOptions): Promise<Plan> {
-    return this.makeGetRequest<Plan>(`/plans/${planId}`, options);
+    return this.makeGetRequest<Plan>(`/plans/${encodeURIComponent(planId)}`, options);
   }
 
   /**

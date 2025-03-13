@@ -1,6 +1,14 @@
 import { JSONObject, OrderParam, PaginationOptions, RequestConfig } from './common';
 
-export const ProjectRunStatusValues = ['Ready for review', 'Exported', 'Pending predictions', 'Archived'] as const;
+export const ProjectRunStatusValues = [
+  'Archived',
+  'Exported',
+  'Pending export',
+  'Pending predictions',
+  'Ready for review',
+  'Review completed',
+  'Succeeded predictions',
+] as const;
 export type ProjectRunStatus = (typeof ProjectRunStatusValues)[number];
 
 export type ProjectRun = {
