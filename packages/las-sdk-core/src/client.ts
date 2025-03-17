@@ -146,6 +146,7 @@ import type {
   ValidationTask,
   ValidationTaskList,
 } from './types';
+import { toListProjectRunsQueryParams } from './types';
 import { buildURL } from './utils';
 
 const maybeParseDate = (val: JSONValue) => {
@@ -1031,7 +1032,7 @@ export class Client {
    * @returns ProjectRunList response from REST API
    */
   async listProjectRuns(projectId: string, options?: ListProjectRunsOptions): Promise<ProjectRunList> {
-    return this.makeGetRequest<ProjectRunList>(`/projects/${projectId}/runs`, options);
+    return this.makeGetRequest<ProjectRunList>(`/projects/${projectId}/runs`, toListProjectRunsQueryParams(options));
   }
 
   /**

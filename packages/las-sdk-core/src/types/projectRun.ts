@@ -1,4 +1,4 @@
-import { JSONObject, OrderParam, PaginationOptions, RequestConfig } from './common';
+import { JSONObject, PaginationOptions, RequestConfig, SortParam } from './common';
 
 export const ProjectRunStatusValues = [
   'Archived',
@@ -32,9 +32,46 @@ export type ProjectRunList = {
 };
 
 export type ListProjectRunsOptions = RequestConfig &
-  PaginationOptions &
-  OrderParam & { sortBy?: keyof ProjectRun; history?: string; status?: ProjectRunStatus[] };
+  PaginationOptions & {
+    history?: string;
+    status?: ProjectRunStatus[];
+    sort?: SortParam<ProjectRun>[];
+    createdTimeAfter?: Date;
+    createdTimeBefore?: Date;
+    updatedTimeAfter?: Date;
+    updatedTimeBefore?: Date;
+  };
 export type GetProjectRunOptions = RequestConfig;
 export type CreateProjectRunOptions = RequestConfig & Pick<Partial<ProjectRun>, 'metadata' | 'resourceIds'>;
 export type UpdateProjectRunOptions = RequestConfig & Pick<Partial<ProjectRun>, 'metadata' | 'resourceIds'>;
 export type DeleteProjectRunOptions = RequestConfig;
+
+export const toListProjectRunsQueryParams = (options?: ListProjectRunsOptions) => {
+  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+  const params: Record<string, any> = {};
+
+  for (const [key, val] of Object.entries(options)) {
+    switch (key) {
+      case 'sort':
+        {
+          const sorting: string[] = [];
+          for (const sort of val as SortParam<ProjectRun>[]) {
+            sorting.push(`${sort.column}:${sort.order}`);
+          }
+          params[key] = sorting;
+        }
+        break;
+      case 'createdTimeAfter':
+      case 'createdTimeBefore':
+      case 'updatedTimeAfter':
+      case 'updatedTimeBefore':
+        params[key] = val?.toISOString();
+        break;
+      default:
+        params[key] = val;
+        break;
+    }
+  }
+
+  return params;
+};

@@ -62,3 +62,7 @@ export type BestNPages = {
 export type PostprocessConfig = BestFirst | BestNPages;
 export type OwnerParam = { owner?: string | string[] };
 export type OrderParam = { order?: 'ascending' | 'descending' };
+export type SortParam<T> = {
+  column: keyof T;
+  order: 'asc' | 'desc';
+};
