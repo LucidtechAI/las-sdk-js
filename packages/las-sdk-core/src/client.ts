@@ -11,9 +11,12 @@ import type {
   AppClientList,
   AuthorizationHeaders,
   AxiosFn,
+  Connection,
+  ConnectionList,
   CreateActionOptions,
   CreateActionRunOptions,
   CreateAppClientOptions,
+  CreateConnectionOptions,
   CreateDocumentOptions,
   CreateFunctionOptions,
   CreateHookOptions,
@@ -32,6 +35,7 @@ import type {
   DeleteActionOptions,
   DeleteActionRunOptions,
   DeleteAppClientOptions,
+  DeleteConnectionOptions,
   DeleteDocumentOptions,
   DeleteFunctionOptions,
   DeleteHookOptions,
@@ -53,6 +57,7 @@ import type {
   GetActionOptions,
   GetActionRunOptions,
   GetAppClientOptions,
+  GetConnectionOptions,
   GetDocumentOptions,
   GetFunctionOptions,
   GetHookOptions,
@@ -82,6 +87,7 @@ import type {
   ListActionRunsOptions,
   ListActionsOptions,
   ListAppClientsOptions,
+  ListConnectionsOptions,
   ListDocumentsOptions,
   ListFunctionsOptions,
   ListHookRunsOptions,
@@ -124,6 +130,7 @@ import type {
   UpdateActionOptions,
   UpdateActionRunOptions,
   UpdateAppClientOptions,
+  UpdateConnectionOptions,
   UpdateDocumentOptions,
   UpdateFunctionOptions,
   UpdateHookOptions,
@@ -1405,6 +1412,68 @@ export class Client {
     options?: DeleteValidationTaskOptions,
   ): Promise<ValidationTask> {
     return this.makeDeleteRequest(`/validations/${validationId}/tasks/${taskId}`, options);
+  }
+
+  /**
+   * Connection section
+   * Endpoint: /connections
+   *
+   * Methods:
+   * - listConnections
+   * - getConnection
+   * - createConnection
+   * - updateConnection
+   * - deleteConnection
+   */
+
+  /**
+   * List connections, calls the GET /connections endpoint.
+   * @param options Object with list options
+   * @returns ConnectionList response from REST API
+   */
+  async listConnections(options?: ListConnectionsOptions): Promise<ConnectionList> {
+    return this.makeGetRequest<ConnectionList>('/connections', options);
+  }
+
+  /**
+   * Get a connection, calls the GET /connections/:id endpoint.
+   * @param connectionId Id of the connection
+   * @param options Object with get options
+   * @returns Connection response from REST API
+   */
+  async getConnection(connectionId: string, options?: GetConnectionOptions): Promise<Connection> {
+    return this.makeGetRequest<Connection>(`/connections/${connectionId}`, options);
+  }
+
+  /**
+   * Creates a connection, calls the POST /connections endpoint.
+   *
+   * @param options Object with create options
+   * @returns Connection response from REST API
+   */
+  async createConnection(options: CreateConnectionOptions): Promise<Connection> {
+    return this.makePostRequest<Connection>('/connections', options);
+  }
+
+  /**
+   * Updates a connection, calls the PATCH /connections/:id endpoint.
+   *
+   * @param connectionId Id of the connection
+   * @param options Object with update options
+   */
+  async updateConnection(connectionId: string, options: UpdateConnectionOptions): Promise<Connection> {
+    return this.makePatchRequest(`/connections/${connectionId}`, options);
+  }
+
+  /**
+   * Delete a connection, calls the DELETE /connections/:id endpoint.
+   *
+   * @param connectionId Id of the connection
+   * @param options Object with delete options
+   * @returns Connection response from REST API
+   */
+  async deleteConnection(connectionId: string, options?: DeleteConnectionOptions): Promise<Connection> {
+    return this.makeDeleteRequest(`/connections/${connectionId}`, options);
   }
 
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */

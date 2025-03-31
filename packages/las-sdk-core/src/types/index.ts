@@ -2,6 +2,7 @@ export * from './action';
 export * from './actionRun';
 export * from './appClient';
 export * from './common';
+export * from './connection';
 export * from './document';
 export * from './function';
 export * from './hook';
