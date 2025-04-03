@@ -5,6 +5,7 @@ export type Action = {
   actionId: string;
   /* Attributes */
   config: JSONObject;
+  connectionId?: string | null;
   createdBy: string;
   createdTime: Date;
   description?: string | null;
