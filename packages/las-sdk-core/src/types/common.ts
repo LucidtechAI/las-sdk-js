@@ -2,7 +2,7 @@ import type { AxiosRequestConfig, AxiosResponse } from 'axios';
 
 export type RequestConfig = { requestConfig?: AxiosRequestConfig };
 
-export type JSONValue = string | number | boolean | { [x: string]: JSONValue } | Array<JSONValue>;
+export type JSONValue = string | number | boolean | { [x: string]: JSONValue } | Array<JSONValue> | null;
 export type JSONObject = Record<string, JSONValue>;
 
 export type OptionsOmit<T, K extends keyof T> = Omit<
