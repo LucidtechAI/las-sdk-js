@@ -127,7 +127,6 @@ import type {
   RoleList,
   Secret,
   SecretList,
-  toListAgentRunsQueryParams,
   UpdateActionOptions,
   UpdateActionRunOptions,
   UpdateAgentOptions,
@@ -154,6 +153,7 @@ import type {
   ValidationTask,
   ValidationTaskList,
 } from './types';
+import { toListAgentRunsQueryParams } from './types';
 import { buildURL } from './utils';
 
 const maybeParseDate = (val: JSONValue) => {
