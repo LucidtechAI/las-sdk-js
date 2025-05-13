@@ -22,7 +22,7 @@ export type Hook = {
   functionId?: string | null;
   metadata: JSONObject;
   name?: string | null;
-  projectId: string;
+  agentId: string;
   trigger: Trigger;
   trueActionId?: string | null;
   updatedBy?: string | null;
@@ -38,6 +38,6 @@ export type ListHooksOptions = RequestConfig & PaginationOptions;
 export type GetHookOptions = RequestConfig;
 export type CreateHookOptions = RequestConfig &
   OptionsOmit<Hook, 'hookId'> &
-  Pick<Hook, 'functionId' | 'config' | 'projectId' | 'trigger'>;
+  Pick<Hook, 'functionId' | 'config' | 'agentId' | 'trigger'>;
 export type UpdateHookOptions = RequestConfig & OptionsOmit<Hook, 'hookId'>;
 export type DeleteHookOptions = RequestConfig;

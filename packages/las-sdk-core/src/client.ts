@@ -7,6 +7,10 @@ import type {
   ActionList,
   ActionRun,
   ActionRunList,
+  Agent,
+  AgentList,
+  AgentRun,
+  AgentRunList,
   AppClient,
   AppClientList,
   AuthorizationHeaders,
@@ -15,6 +19,8 @@ import type {
   ConnectionList,
   CreateActionOptions,
   CreateActionRunOptions,
+  CreateAgentOptions,
+  CreateAgentRunOptions,
   CreateAppClientOptions,
   CreateConnectionOptions,
   CreateDocumentOptions,
@@ -25,8 +31,6 @@ import type {
   CreateOrganizationOptions,
   CreatePaymentMethodOptions,
   CreatePredictionOptions,
-  CreateProjectOptions,
-  CreateProjectRunOptions,
   CreateRoleOptions,
   CreateSecretOptions,
   CreateUserOptions,
@@ -34,6 +38,8 @@ import type {
   CreateValidationTaskOptions,
   DeleteActionOptions,
   DeleteActionRunOptions,
+  DeleteAgentOptions,
+  DeleteAgentRunOptions,
   DeleteAppClientOptions,
   DeleteConnectionOptions,
   DeleteDocumentOptions,
@@ -43,8 +49,6 @@ import type {
   DeleteModelOptions,
   DeletePaymentMethodOptions,
   DeletePredictionOptions,
-  DeleteProjectOptions,
-  DeleteProjectRunOptions,
   DeleteRoleOptions,
   DeleteSecretOptions,
   DeleteUserOptions,
@@ -56,6 +60,8 @@ import type {
   FunctionList,
   GetActionOptions,
   GetActionRunOptions,
+  GetAgentOptions,
+  GetAgentRunOptions,
   GetAppClientOptions,
   GetConnectionOptions,
   GetDocumentOptions,
@@ -70,8 +76,6 @@ import type {
   GetPlanOptions,
   GetPredictionOptions,
   GetProfileOptions,
-  GetProjectOptions,
-  GetProjectRunOptions,
   GetRoleOptions,
   GetSecretOptions,
   GetUserOptions,
@@ -86,6 +90,8 @@ import type {
   JSONValue,
   ListActionRunsOptions,
   ListActionsOptions,
+  ListAgentRunsOptions,
+  ListAgentsOptions,
   ListAppClientsOptions,
   ListConnectionsOptions,
   ListDocumentsOptions,
@@ -99,8 +105,6 @@ import type {
   ListPaymentMethodsOptions,
   ListPlansOptions,
   ListPredictionsOptions,
-  ListProjectRunsOptions,
-  ListProjectsOptions,
   ListRolesOptions,
   ListSecretsOptions,
   ListUsersOptions,
@@ -119,16 +123,14 @@ import type {
   Prediction,
   PredictionList,
   Profile,
-  Project,
-  ProjectList,
-  ProjectRun,
-  ProjectRunList,
   Role,
   RoleList,
   Secret,
   SecretList,
   UpdateActionOptions,
   UpdateActionRunOptions,
+  UpdateAgentOptions,
+  UpdateAgentRunOptions,
   UpdateAppClientOptions,
   UpdateConnectionOptions,
   UpdateDocumentOptions,
@@ -139,8 +141,6 @@ import type {
   UpdateOrganizationOptions,
   UpdatePaymentMethodOptions,
   UpdateProfileOptions,
-  UpdateProjectOptions,
-  UpdateProjectRunOptions,
   UpdateRoleOptions,
   UpdateSecretOptions,
   UpdateUserOptions,
@@ -153,7 +153,7 @@ import type {
   ValidationTask,
   ValidationTaskList,
 } from './types';
-import { toListProjectRunsQueryParams } from './types';
+import { toListAgentRunsQueryParams } from './types';
 import { buildURL } from './utils';
 
 const maybeParseDate = (val: JSONValue) => {
@@ -959,132 +959,132 @@ export class Client {
   }
 
   /**
-   * Project section
-   * Endpoint: /projects
+   * Agent section
+   * Endpoint: /agents
    *
    * Methods:
-   * - listProjects
-   * - getProject
-   * - createProject
-   * - updateProject
-   * - deleteProject
+   * - listAgents
+   * - getAgent
+   * - createAgent
+   * - updateAgent
+   * - deleteAgent
    */
 
   /**
-   * List projects, calls the GET /projects endpoint.
+   * List agents, calls the GET /agents endpoint.
    * @param options Object with list options
-   * @returns ProjectList response from REST API
+   * @returns AgentList response from REST API
    */
-  async listProjects(options?: ListProjectsOptions): Promise<ProjectList> {
-    return this.makeGetRequest<ProjectList>('/projects', options);
+  async listAgents(options?: ListAgentsOptions): Promise<AgentList> {
+    return this.makeGetRequest<AgentList>('/agents', options);
   }
 
   /**
-   * Get a project, calls the GET /projects/:id endpoint.
-   * @param projectId Id of the project
+   * Get a agent, calls the GET /agents/:id endpoint.
+   * @param agentId Id of the agent
    * @param options Object with get options
-   * @returns Project response from REST API
+   * @returns Agent response from REST API
    */
-  async getProject(projectId: string, options?: GetProjectOptions): Promise<Project> {
-    return this.makeGetRequest<Project>(`/projects/${projectId}`, options);
+  async getAgent(agentId: string, options?: GetAgentOptions): Promise<Agent> {
+    return this.makeGetRequest<Agent>(`/agents/${agentId}`, options);
   }
 
   /**
-   * Creates a project, calls the POST /projects endpoint.
+   * Creates a agent, calls the POST /agents endpoint.
    *
    * @param options Object with create options
-   * @returns Project response from REST API
+   * @returns Agent response from REST API
    */
-  async createProject(options: CreateProjectOptions): Promise<Project> {
-    return this.makePostRequest<Project>('/projects', options);
+  async createAgent(options: CreateAgentOptions): Promise<Agent> {
+    return this.makePostRequest<Agent>('/agents', options);
   }
 
   /**
-   * Updates a project, calls the PATCH /projects/:id endpoint.
+   * Updates a agent, calls the PATCH /agents/:id endpoint.
    *
-   * @param projectId Id of the project
+   * @param agentId Id of the agent
    * @param options Object with update options
    */
-  async updateProject(projectId: string, options: UpdateProjectOptions): Promise<Project> {
-    return this.makePatchRequest(`/projects/${projectId}`, options);
+  async updateAgent(agentId: string, options: UpdateAgentOptions): Promise<Agent> {
+    return this.makePatchRequest(`/agents/${agentId}`, options);
   }
 
   /**
-   * Delete a project, calls the DELETE /projects/:id endpoint.
+   * Delete a agent, calls the DELETE /agents/:id endpoint.
    *
-   * @param projectId Id of the project
+   * @param agentId Id of the agent
    * @param options Object with delete options
-   * @returns Project response from REST API
+   * @returns Agent response from REST API
    */
-  async deleteProject(projectId: string, options?: DeleteProjectOptions): Promise<Project> {
-    return this.makeDeleteRequest(`/projects/${projectId}`, options);
+  async deleteAgent(agentId: string, options?: DeleteAgentOptions): Promise<Agent> {
+    return this.makeDeleteRequest(`/agents/${agentId}`, options);
   }
 
   /**
-   * ProjectRun section
-   * Endpoint: /projects/:id/runs
+   * AgentRun section
+   * Endpoint: /agents/:id/runs
    *
    * Methods:
-   * - listProjectRuns
-   * - getProjectRun
-   * - createProjectRun
-   * - updateProjectRun
-   * - deleteProjectRun
+   * - listAgentRuns
+   * - getAgentRun
+   * - createAgentRun
+   * - updateAgentRun
+   * - deleteAgentRun
    */
 
   /**
-   * List project runs, calls the GET /projects/:id/runs endpoint.
-   * @param projectId Id of the project
+   * List agent runs, calls the GET /agents/:id/runs endpoint.
+   * @param agentId Id of the agent
    * @param options Object with list options
-   * @returns ProjectRunList response from REST API
+   * @returns AgentRunList response from REST API
    */
-  async listProjectRuns(projectId: string, options?: ListProjectRunsOptions): Promise<ProjectRunList> {
-    return this.makeGetRequest<ProjectRunList>(`/projects/${projectId}/runs`, toListProjectRunsQueryParams(options));
+  async listAgentRuns(agentId: string, options?: ListAgentRunsOptions): Promise<AgentRunList> {
+    return this.makeGetRequest<AgentRunList>(`/agents/${agentId}/runs`, toListAgentRunsQueryParams(options));
   }
 
   /**
-   * Get a project run, calls the GET /projects/:id/runs/:id endpoint.
-   * @param projectId Id of the project
+   * Get a agent run, calls the GET /agents/:id/runs/:id endpoint.
+   * @param agentId Id of the agent
    * @param runId Id of the run
    * @param options Object with get options
-   * @returns ProjectRun response from REST API
+   * @returns AgentRun response from REST API
    */
-  async getProjectRun(projectId: string, runId: string, options?: GetProjectRunOptions): Promise<ProjectRun> {
-    return this.makeGetRequest<ProjectRun>(`/projects/${projectId}/runs/${runId}`, options);
+  async getAgentRun(agentId: string, runId: string, options?: GetAgentRunOptions): Promise<AgentRun> {
+    return this.makeGetRequest<AgentRun>(`/agents/${agentId}/runs/${runId}`, options);
   }
 
   /**
-   * Creates a project run, calls the POST /projects/:id/runs endpoint.
+   * Creates a agent run, calls the POST /agents/:id/runs endpoint.
    *
    * @param options Object with create options
-   * @param projectId Id of the project
-   * @returns ProjectRun response from REST API
+   * @param agentId Id of the agent
+   * @returns AgentRun response from REST API
    */
-  async createProjectRun(projectId: string, options: CreateProjectRunOptions): Promise<ProjectRun> {
-    return this.makePostRequest<ProjectRun>(`/projects/${projectId}/runs`, options);
+  async createAgentRun(agentId: string, options: CreateAgentRunOptions): Promise<AgentRun> {
+    return this.makePostRequest<AgentRun>(`/agents/${agentId}/runs`, options);
   }
 
   /**
-   * Updates a project run, calls the PATCH /projects/:id/runs/:id endpoint.
+   * Updates a agent run, calls the PATCH /agents/:id/runs/:id endpoint.
    *
-   * @param projectId Id of the project
+   * @param agentId Id of the agent
    * @param runId Id of the run
    * @param options Object with update options
    */
-  async updateProjectRun(projectId: string, runId: string, options: UpdateProjectRunOptions): Promise<ProjectRun> {
-    return this.makePatchRequest(`/projects/${projectId}/runs/${runId}`, options);
+  async updateAgentRun(agentId: string, runId: string, options: UpdateAgentRunOptions): Promise<AgentRun> {
+    return this.makePatchRequest(`/agents/${agentId}/runs/${runId}`, options);
   }
 
   /**
-   * Delete a project run, calls the DELETE /projects/:id/runs/:id endpoint.
+   * Delete a agent run, calls the DELETE /agents/:id/runs/:id endpoint.
    *
-   * @param projectId Id of the project
+   * @param agentId Id of the agent
    * @param runId Id of the run
    * @param options Object with delete options
-   * @returns ProjectRun response from REST API
+   * @returns AgentRun response from REST API
    */
-  async deleteProjectRun(projectId: string, runId: string, options?: DeleteProjectRunOptions): Promise<ProjectRun> {
-    return this.makeDeleteRequest(`/projects/${projectId}/runs/${runId}`, options);
+  async deleteAgentRun(agentId: string, runId: string, options?: DeleteAgentRunOptions): Promise<AgentRun> {
+    return this.makeDeleteRequest(`/agents/${agentId}/runs/${runId}`, options);
   }
 
   /**

@@ -26,8 +26,8 @@ export type Document = {
   fileUrl: string;
   metadata: JSONObject;
   name?: string | null;
-  projectId?: string | null;
-  projectRunId?: string | null;
+  agentId?: string | null;
+  agentRunId?: string | null;
   retentionInDays: number;
   updatedBy?: string | null;
   updatedTime?: Date | null;

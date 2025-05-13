@@ -1,6 +1,6 @@
 import { JSONObject, PaginationOptions, RequestConfig, SortParam } from './common';
 
-export const ProjectRunStatusValues = [
+export const AgentRunStatusValues = [
   'Archived',
   'Exported',
   'Pending export',
@@ -9,11 +9,11 @@ export const ProjectRunStatusValues = [
   'Review completed',
   'Succeeded predictions',
 ] as const;
-export type ProjectRunStatus = (typeof ProjectRunStatusValues)[number];
+export type AgentRunStatus = (typeof AgentRunStatusValues)[number];
 
-export type ProjectRun = {
+export type AgentRun = {
   /* Id */
-  projectId: string;
+  agentId: string;
   runId: string;
   /* Attributes */
   createdBy: string;
@@ -21,32 +21,32 @@ export type ProjectRun = {
   history: JSONObject[];
   metadata?: JSONObject | null;
   resourceIds: string[];
-  status: ProjectRunStatus;
+  status: AgentRunStatus;
   updatedBy?: string | null;
   updatedTime?: Date | null;
 };
 
-export type ProjectRunList = {
-  runs: Array<ProjectRun>;
+export type AgentRunList = {
+  runs: Array<AgentRun>;
   nextToken?: string | null;
 };
 
-export type ListProjectRunsOptions = RequestConfig &
+export type ListAgentRunsOptions = RequestConfig &
   PaginationOptions & {
     history?: string;
-    status?: ProjectRunStatus[];
-    sort?: SortParam<ProjectRun>[];
+    status?: AgentRunStatus[];
+    sort?: SortParam<AgentRun>[];
     createdTimeAfter?: Date;
     createdTimeBefore?: Date;
     updatedTimeAfter?: Date;
     updatedTimeBefore?: Date;
   };
-export type GetProjectRunOptions = RequestConfig;
-export type CreateProjectRunOptions = RequestConfig & Pick<Partial<ProjectRun>, 'metadata' | 'resourceIds'>;
-export type UpdateProjectRunOptions = RequestConfig & Pick<Partial<ProjectRun>, 'metadata' | 'resourceIds'>;
-export type DeleteProjectRunOptions = RequestConfig;
+export type GetAgentRunOptions = RequestConfig;
+export type CreateAgentRunOptions = RequestConfig & Pick<Partial<AgentRun>, 'metadata' | 'resourceIds'>;
+export type UpdateAgentRunOptions = RequestConfig & Pick<Partial<AgentRun>, 'metadata' | 'resourceIds'>;
+export type DeleteAgentRunOptions = RequestConfig;
 
-export const toListProjectRunsQueryParams = (options?: ListProjectRunsOptions) => {
+export const toListAgentRunsQueryParams = (options?: ListAgentRunsOptions) => {
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   const params: Record<string, any> = {};
 
@@ -55,7 +55,7 @@ export const toListProjectRunsQueryParams = (options?: ListProjectRunsOptions) =
       case 'sort':
         {
           const sorting: string[] = [];
-          for (const sort of val as SortParam<ProjectRun>[]) {
+          for (const sort of val as SortParam<AgentRun>[]) {
             sorting.push(`${sort.column}:${sort.order}`);
           }
           params[key] = sorting;

@@ -1,5 +1,7 @@
 export * from './action';
 export * from './actionRun';
+export * from './agent';
+export * from './agentRun';
 export * from './appClient';
 export * from './common';
 export * from './connection';
@@ -15,8 +17,6 @@ export * from './paymentMethod';
 export * from './plan';
 export * from './prediction';
 export * from './profile';
-export * from './project';
-export * from './projectRun';
 export * from './role';
 export * from './secret';
 export * from './user';

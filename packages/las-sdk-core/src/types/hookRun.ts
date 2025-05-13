@@ -16,8 +16,8 @@ export type HookRun = {
   logId: string;
   metadata: JSONObject;
   output?: JSONObject | null;
-  projectId: string;
-  projectRunId: string;
+  agentId: string;
+  agentRunId: string;
   status: HookStatus;
   updatedBy?: string | null;
   updatedTime?: Date | null;
@@ -32,6 +32,6 @@ export type ListHookRunsOptions = RequestConfig & PaginationOptions;
 export type GetHookRunOptions = RequestConfig;
 export type CreateHookRunOptions = RequestConfig &
   OptionsOmit<HookRun, 'hookId' | 'runId' | 'logId'> &
-  Pick<HookRun, 'input' | 'projectRunId'>;
+  Pick<HookRun, 'input' | 'agentRunId'>;
 export type UpdateHookRunOptions = RequestConfig & Pick<Partial<HookRun>, 'output' | 'metadata'>;
 export type DeleteHookRunOptions = RequestConfig;

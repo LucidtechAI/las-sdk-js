@@ -13,7 +13,7 @@ export type Action = {
   functionId: string;
   metadata: JSONObject;
   name?: string | null;
-  projectId: string;
+  agentId: string;
   secretId?: string | null;
   updatedBy?: string | null;
   updatedTime?: Date | null;
@@ -28,6 +28,6 @@ export type ListActionsOptions = RequestConfig & PaginationOptions;
 export type GetActionOptions = RequestConfig;
 export type CreateActionOptions = RequestConfig &
   OptionsOmit<Action, 'actionId'> &
-  Pick<Action, 'config' | 'functionId' | 'projectId'>;
+  Pick<Action, 'config' | 'functionId' | 'agentId'>;
 export type UpdateActionOptions = RequestConfig & OptionsOmit<Action, 'actionId'>;
 export type DeleteActionOptions = RequestConfig;
