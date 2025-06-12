@@ -30,6 +30,7 @@ export type Organization = {
   updatedBy?: string | null;
   updatedTime?: Date | null;
   url?: string | null;
+  useNewScopes?: boolean | null;
 };
 
 export type OrganizationList = {

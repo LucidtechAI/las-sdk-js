@@ -1,13 +1,14 @@
 import { JSONObject, PaginationOptions, RequestConfig, SortParam } from './common';
 
 export const AgentRunStatusValues = [
-  'Archived',
-  'Exported',
-  'Pending export',
-  'Pending predictions',
-  'Ready for review',
-  'Review completed',
-  'Succeeded predictions',
+  'archived',
+  'exported',
+  'pending-export',
+  'pending-predictions',
+  'ready-for-review',
+  'review-completed',
+  'succeeded-predictions',
+  'error',
 ] as const;
 export type AgentRunStatus = (typeof AgentRunStatusValues)[number];
 
