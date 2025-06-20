@@ -12,6 +12,17 @@ export const AgentRunStatusValues = [
 ] as const;
 export type AgentRunStatus = (typeof AgentRunStatusValues)[number];
 
+export type AgentRunEvent = {
+  resourceId: string;
+  status: 'running' | 'pending' | 'ready' | 'succeeded' | 'failed';
+  timestamp: string;
+  errors?: string[] | null;
+  warnings?: string[] | null;
+  modelId?: string | null;
+  validationId?: string | null;
+  actionId?: string | null;
+}
+
 export type AgentRun = {
   /* Id */
   agentId: string;
@@ -23,6 +34,7 @@ export type AgentRun = {
   metadata?: JSONObject | null;
   resourceIds: string[];
   status: AgentRunStatus;
+  events: AgentRunEvent[];
   updatedBy?: string | null;
   updatedTime?: Date | null;
 };
