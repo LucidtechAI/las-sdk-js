@@ -9,7 +9,6 @@ export type Validation = {
   createdTime: Date;
   enabled: boolean;
   metadata: JSONObject;
-  agentId: string;
   updatedBy?: string | null;
   updatedTime?: Date | null;
 };
@@ -23,6 +22,6 @@ export type ListValidationsOptions = RequestConfig & PaginationOptions;
 export type GetValidationOptions = RequestConfig;
 export type CreateValidationOptions = RequestConfig &
   OptionsOmit<Validation, 'validationId'> &
-  Pick<Validation, 'config' | 'agentId'>;
+  Pick<Validation, 'config'>;
 export type UpdateValidationOptions = RequestConfig & OptionsOmit<Validation, 'validationId'>;
 export type DeleteValidationOptions = RequestConfig;

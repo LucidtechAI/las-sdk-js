@@ -15,8 +15,7 @@ export type ActionRun = {
   logId: string;
   metadata: JSONObject;
   output?: JSONObject | null;
-  agentId: string;
-  agentRunId: string;
+  agentRunId?: string | null;
   status: ActionRunStatus;
   updatedBy?: string | null;
   updatedTime?: Date | null;
@@ -31,6 +30,6 @@ export type ListActionRunsOptions = RequestConfig & PaginationOptions;
 export type GetActionRunOptions = RequestConfig;
 export type CreateActionRunOptions = RequestConfig &
   OptionsOmit<ActionRun, 'actionId' | 'runId' | 'logId'> &
-  Pick<ActionRun, 'input' | 'agentId' | 'agentRunId'>;
+  Pick<ActionRun, 'input'>;
 export type UpdateActionRunOptions = RequestConfig & Pick<Partial<ActionRun>, 'output' | 'metadata'>;
 export type DeleteActionRunOptions = RequestConfig;

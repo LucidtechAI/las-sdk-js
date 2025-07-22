@@ -16,7 +16,6 @@ export type HookRun = {
   logId: string;
   metadata: JSONObject;
   output?: JSONObject | null;
-  agentId: string;
   agentRunId: string;
   status: HookStatus;
   updatedBy?: string | null;
