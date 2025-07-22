@@ -11,6 +11,7 @@ export type Trigger = (typeof TriggerValues)[number];
 
 export type Hook = {
   /* Id */
+  id: string;
   hookId: string;
   /* Attributes */
   config: JSONObject;

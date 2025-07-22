@@ -2,6 +2,7 @@ import { JSONObject, OptionsOmit, PaginationOptions, RequestConfig } from './com
 
 export type Agent = {
   /* Id */
+  id: string;
   agentId: string;
   /* Attributes */
   createdBy: string;

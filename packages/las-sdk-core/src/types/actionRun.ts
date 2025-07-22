@@ -5,6 +5,7 @@ export type ActionRunStatus = (typeof ActionRunStatusValues)[number];
 
 export type ActionRun = {
   /* Id */
+  id: string;
   actionId: string;
   runId: string;
   /* Attributes */

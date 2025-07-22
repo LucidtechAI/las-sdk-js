@@ -5,6 +5,7 @@ export type ValidationTaskStatus = (typeof ValidationTaskStatusValues)[number];
 
 export type ValidationTask = {
   /* Id */
+  id: string;
   validationId: string;
   taskId: string;
   /* Attributes */

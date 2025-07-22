@@ -2,6 +2,7 @@ import { JSONObject, OptionsOmit, PaginationOptions, RequestConfig } from './com
 
 export type Validation = {
   /* Id */
+  id: string;
   validationId: string;
   /* Attributes */
   config: JSONObject;

@@ -5,6 +5,7 @@ export type HookStatus = (typeof HookStatusValues)[number];
 
 export type HookRun = {
   /* Id */
+  id: string;
   hookId: string;
   runId: string;
   /* Attributes */

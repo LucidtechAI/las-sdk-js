@@ -14,6 +14,7 @@ export type AgentRunStatus = (typeof AgentRunStatusValues)[number];
 
 export type AgentRun = {
   /* Id */
+  id: string;
   agentId: string;
   runId: string;
   /* Attributes */

@@ -2,6 +2,7 @@ import { JSONObject, OptionsOmit, PaginationOptions, RequestConfig } from './com
 
 export type Action = {
   /* Id */
+  id: string;
   actionId: string;
   /* Attributes */
   config: JSONObject;
