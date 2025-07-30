@@ -5,22 +5,22 @@ import { TokenStorage } from './storage';
  */
 export class Token {
   readonly accessToken: string;
-  readonly expiration: number;
+  readonly expiration?: number;
   readonly refreshToken?: string;
 
   /**
    * Checks if current timestamp is larger than token expiration time
    */
   isValid(): boolean {
-    return Date.now() < this.expiration;
+    return Date.now() < (this.expiration ?? 0);
   }
 
   /**
    * @param {string} accessToken
    * @param {number} expiration
-   * @param {string} [refreshToken]
+   * @param {string} refreshToken
    */
-  constructor(accessToken: string, expiration: number, refreshToken?: string) {
+  constructor(accessToken: string, expiration?: number, refreshToken?: string) {
     this.accessToken = accessToken;
     this.expiration = expiration;
     this.refreshToken = refreshToken;
@@ -36,10 +36,10 @@ export abstract class Credentials {
   protected token?: Token | null;
   protected storage?: TokenStorage<Token>;
 
-  protected constructor(apiEndpoint: string, storage?: TokenStorage<Token>) {
+  protected constructor(apiEndpoint: string, storage?: TokenStorage<Token>, token?: Token | null) {
     this.apiEndpoint = apiEndpoint;
     this.storage = storage;
-    this.token = storage.getPersistentToken();
+    this.token = token ?? storage?.getPersistentToken();
   }
 
   /**

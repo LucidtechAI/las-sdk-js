@@ -11,6 +11,7 @@ export type Trigger = (typeof TriggerValues)[number];
 
 export type Hook = {
   /* Id */
+  id: string;
   hookId: string;
   /* Attributes */
   config: JSONObject;
@@ -22,7 +23,6 @@ export type Hook = {
   functionId?: string | null;
   metadata: JSONObject;
   name?: string | null;
-  agentId: string;
   trigger: Trigger;
   trueActionId?: string | null;
   updatedBy?: string | null;
@@ -38,6 +38,6 @@ export type ListHooksOptions = RequestConfig & PaginationOptions;
 export type GetHookOptions = RequestConfig;
 export type CreateHookOptions = RequestConfig &
   OptionsOmit<Hook, 'hookId'> &
-  Pick<Hook, 'functionId' | 'config' | 'agentId' | 'trigger'>;
+  Pick<Hook, 'functionId' | 'config' | 'trigger'>;
 export type UpdateHookOptions = RequestConfig & OptionsOmit<Hook, 'hookId'>;
 export type DeleteHookOptions = RequestConfig;

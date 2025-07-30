@@ -25,6 +25,7 @@ export type AgentRunEvent = {
 
 export type AgentRun = {
   /* Id */
+  id: string;
   agentId: string;
   runId: string;
   /* Attributes */

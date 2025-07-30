@@ -26,7 +26,6 @@ export type Document = {
   fileUrl: string;
   metadata: JSONObject;
   name?: string | null;
-  agentId?: string | null;
   agentRunId?: string | null;
   retentionInDays: number;
   updatedBy?: string | null;

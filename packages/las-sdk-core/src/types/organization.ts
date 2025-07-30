@@ -5,6 +5,7 @@ export type Organization = {
   organizationId: string;
   /* Attributes */
   clientId: string;
+  code: string;
   createdTime: Date;
   description?: string | null;
   documentRetentionInDays: number;

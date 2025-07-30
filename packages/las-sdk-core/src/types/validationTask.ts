@@ -5,6 +5,7 @@ export type ValidationTaskStatus = (typeof ValidationTaskStatusValues)[number];
 
 export type ValidationTask = {
   /* Id */
+  id: string;
   validationId: string;
   taskId: string;
   /* Attributes */
@@ -15,7 +16,6 @@ export type ValidationTask = {
   logId: string;
   metadata: JSONObject;
   output?: JSONObject | null;
-  agentId: string;
   agentRunId: string;
   status: ValidationTaskStatus;
   updatedBy?: string | null;
@@ -31,7 +31,7 @@ export type ListValidationTasksOptions = RequestConfig & PaginationOptions;
 export type GetValidationTaskOptions = RequestConfig;
 export type CreateValidationTaskOptions = RequestConfig &
   OptionsOmit<ValidationTask, 'validationId' | 'taskId' | 'logId'> &
-  Pick<ValidationTask, 'input' | 'agentId' | 'agentRunId'>;
+  Pick<ValidationTask, 'input' | 'agentRunId'>;
 export type UpdateValidationTaskOptions = RequestConfig &
   Pick<Partial<ValidationTask>, 'output' | 'metadata' | 'status'>;
 export type DeleteValidationTaskOptions = RequestConfig;

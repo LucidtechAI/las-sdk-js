@@ -5,6 +5,7 @@ export type Runtime = (typeof RuntimeValues)[number];
 
 export type Function = {
   /* Id */
+  id: string;
   functionId: string;
   /* Attributes */
   fileUrl: string;

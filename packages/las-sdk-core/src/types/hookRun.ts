@@ -5,6 +5,7 @@ export type HookStatus = (typeof HookStatusValues)[number];
 
 export type HookRun = {
   /* Id */
+  id: string;
   hookId: string;
   runId: string;
   /* Attributes */
@@ -16,7 +17,6 @@ export type HookRun = {
   logId: string;
   metadata: JSONObject;
   output?: JSONObject | null;
-  agentId: string;
   agentRunId: string;
   status: HookStatus;
   updatedBy?: string | null;
