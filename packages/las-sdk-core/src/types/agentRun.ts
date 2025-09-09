@@ -38,6 +38,7 @@ export type AgentRun = {
   events: AgentRunEvent[];
   updatedBy?: string | null;
   updatedTime?: Date | null;
+  variablesFileUrl?: string | null;
 };
 
 export type AgentRunList = {
@@ -56,7 +57,9 @@ export type ListAgentRunsOptions = RequestConfig &
     updatedTimeBefore?: Date;
   };
 export type GetAgentRunOptions = RequestConfig;
-export type CreateAgentRunOptions = RequestConfig & Pick<Partial<AgentRun>, 'metadata' | 'resourceIds'>;
+export type CreateAgentRunOptions = RequestConfig & Pick<Partial<AgentRun>, 'metadata' | 'resourceIds'> & {
+  variables?: JSONObject | null;
+};
 export type UpdateAgentRunOptions = RequestConfig & Pick<Partial<AgentRun>, 'metadata' | 'resourceIds'>;
 export type DeleteAgentRunOptions = RequestConfig;
 
