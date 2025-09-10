@@ -12,6 +12,22 @@ export type EnumValue = { value: string; description: string };
 export const FieldTypeValues = ['single-value', 'multi-value', 'table'] as const;
 export type FieldType = (typeof FieldTypeValues)[number];
 
+export type FieldFormatter = {
+  id: string;
+  config: JSONObject;
+  description: string;
+  functionId: string;
+  name: string;
+};
+
+export type FieldValidator = {
+  id: string;
+  config: JSONObject;
+  description: string;
+  functionId: string;
+  name: string;
+};
+
 export type Field = {
   description?: string | null;
   fields?: FieldConfig | null;
@@ -24,19 +40,6 @@ export type Field = {
 };
 
 export type FieldConfig = Record<string, Field>;
-
-export type FieldFormatter = {
-  config: JSONObject;
-  description: string;
-  functionId: string;
-  name: string;
-};
-export type FieldValidator = {
-  config: JSONObject;
-  description: string;
-  functionId: string;
-  name: string;
-};
 
 export type Model = {
   /* Id */

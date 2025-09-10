@@ -28,6 +28,7 @@ export type Organization = {
   paymentMethodId?: string | null;
   pictureUrl: string;
   planId?: string | null;
+  privileges: JSONObject;
   updatedBy?: string | null;
   updatedTime?: Date | null;
   url?: string | null;

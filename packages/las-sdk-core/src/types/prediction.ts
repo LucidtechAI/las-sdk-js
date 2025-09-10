@@ -1,5 +1,8 @@
 import { OrderParam, PaginationOptions, PostprocessConfig, PreprocessConfig, RequestConfig } from './common';
 
+export const PredictionStatusValues = ['pending', 'suceeded', 'failed'] as const;
+export type PredictionStatus = (typeof PredictionStatusValues)[number];
+
 export type Prediction = {
   /* Id */
   predictionId: string;
@@ -13,6 +16,7 @@ export type Prediction = {
   modelId: string;
   postprocessConfig?: PostprocessConfig | null;
   preprocessConfig?: PreprocessConfig | null;
+  status: PredictionStatus;
 };
 
 export type PredictionList = {
