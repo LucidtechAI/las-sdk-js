@@ -4,10 +4,11 @@ export const AgentRunStatusValues = [
   'archived',
   'completed',
   'error',
-  'exported',
   'ready-for-review',
   'review-in-progress',
+  'running',
   /* Depracated */
+  'exported',
   'pending-export',
   'pending-predictions',
   'review-completed',
