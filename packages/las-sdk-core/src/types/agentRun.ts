@@ -2,26 +2,41 @@ import { JSONObject, PaginationOptions, RequestConfig, SortParam } from './commo
 
 export const AgentRunStatusValues = [
   'archived',
+  'completed',
+  'error',
   'exported',
+  'ready-for-review',
+  'review-in-progress',
+  /* Depracated */
   'pending-export',
   'pending-predictions',
-  'ready-for-review',
   'review-completed',
   'succeeded-predictions',
-  'error',
 ] as const;
 export type AgentRunStatus = (typeof AgentRunStatusValues)[number];
 
+export const AgentRunEventStatusValues = [
+  'running',
+  'pending',
+  'ready',
+  'succeeded',
+  'failed',
+  'in-progress',
+  'ignored',
+] as const;
+export type AgentRunEventStatus = (typeof AgentRunEventStatusValues)[number];
+
 export type AgentRunEvent = {
-  resourceId: string;
-  status: 'running' | 'pending' | 'ready' | 'succeeded' | 'failed';
-  timestamp: string;
-  errors?: string[] | null;
-  warnings?: string[] | null;
-  modelId?: string | null;
-  validationId?: string | null;
   actionId?: string | null;
-}
+  errors?: string[] | null;
+  hookId?: string | null;
+  modelId?: string | null;
+  resourceId: string;
+  status: AgentRunEventStatus;
+  timestamp: Date;
+  validationId?: string | null;
+  warnings?: string[] | null;
+};
 
 export type AgentRun = {
   /* Id */
