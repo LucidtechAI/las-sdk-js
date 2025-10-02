@@ -1,5 +1,13 @@
 import { JSONObject, PaginationOptions, RequestConfig, SortParam } from './common';
 
+export const DeprecatedAgentRunStatusValues = [
+  'exported',
+  'pending-export',
+  'pending-predictions',
+  'review-completed',
+  'succeeded-predictions',
+] as const;
+
 export const AgentRunStatusValues = [
   'archived',
   'completed',
@@ -7,14 +15,9 @@ export const AgentRunStatusValues = [
   'ready-for-review',
   'review-in-progress',
   'running',
-  /* Depracated */
-  'exported',
-  'pending-export',
-  'pending-predictions',
-  'review-completed',
-  'succeeded-predictions',
 ] as const;
-export type AgentRunStatus = (typeof AgentRunStatusValues)[number];
+
+export type AgentRunStatus = (typeof AgentRunStatusValues | typeof DeprecatedAgentRunStatusValues)[number];
 
 export const AgentRunEventStatusValues = [
   'running',
@@ -73,9 +76,10 @@ export type ListAgentRunsOptions = RequestConfig &
     updatedTimeBefore?: Date;
   };
 export type GetAgentRunOptions = RequestConfig;
-export type CreateAgentRunOptions = RequestConfig & Pick<Partial<AgentRun>, 'metadata' | 'resourceIds'> & {
-  variables?: JSONObject | null;
-};
+export type CreateAgentRunOptions = RequestConfig &
+  Pick<Partial<AgentRun>, 'metadata' | 'resourceIds'> & {
+    variables?: JSONObject | null;
+  };
 export type UpdateAgentRunOptions = RequestConfig & Pick<Partial<AgentRun>, 'metadata' | 'resourceIds'>;
 export type DeleteAgentRunOptions = RequestConfig;
 

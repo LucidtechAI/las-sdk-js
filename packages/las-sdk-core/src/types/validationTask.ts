@@ -1,6 +1,13 @@
 import { JSONObject, OptionsOmit, PaginationOptions, RequestConfig } from './common';
 
-export const ValidationTaskStatusValues = ['custom', 'failed', 'in-progress', 'ready', 'succeeded'] as const;
+export const ValidationTaskStatusValues = [
+  'cancelled',
+  'custom',
+  'failed',
+  'in-progress',
+  'ready',
+  'succeeded',
+] as const;
 export type ValidationTaskStatus = (typeof ValidationTaskStatusValues)[number];
 
 export type ValidationTask = {
