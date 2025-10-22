@@ -11,6 +11,7 @@ import type {
   AgentList,
   AgentRun,
   AgentRunList,
+  AgentStatistic,
   AppClient,
   AppClientList,
   AuthorizationHeaders,
@@ -62,6 +63,7 @@ import type {
   GetActionRunOptions,
   GetAgentOptions,
   GetAgentRunOptions,
+  GetAgentStatisticsOptions,
   GetAppClientOptions,
   GetConnectionOptions,
   GetDocumentOptions,
@@ -153,7 +155,7 @@ import type {
   ValidationTask,
   ValidationTaskList,
 } from './types';
-import { toListAgentRunsQueryParams } from './types';
+import { toGetAgentStatisticsQueryParams, toListAgentRunsQueryParams } from './types';
 import { buildURL } from './utils';
 
 const maybeParseDate = (val: JSONValue) => {
@@ -1085,6 +1087,27 @@ export class Client {
    */
   async deleteAgentRun(agentId: string, runId: string, options?: DeleteAgentRunOptions): Promise<AgentRun> {
     return this.makeDeleteRequest(`/agents/${agentId}/runs/${runId}`, options);
+  }
+
+  /**
+   * AgentStatistic section
+   * Endpoint: /agents/:id/statistics
+   *
+   * Methods:
+   * - getAgentStatistics
+   */
+
+  /**
+   * List agent statistics, calls the GET /agents/:id/statistics endpoint.
+   * @param agentId Id of the agent
+   * @param options Object with get options
+   * @returns AgentStatistic response from REST API
+   */
+  async getAgentStatistics(agentId: string, options?: GetAgentStatisticsOptions): Promise<AgentStatistic> {
+    return this.makeGetRequest<AgentStatistic>(
+      `/agents/${agentId}/statistics`,
+      toGetAgentStatisticsQueryParams(options),
+    );
   }
 
   /**

@@ -2,6 +2,7 @@ export * from './action';
 export * from './actionRun';
 export * from './agent';
 export * from './agentRun';
+export * from './agentStatistic';
 export * from './appClient';
 export * from './common';
 export * from './connection';
