@@ -15,6 +15,7 @@ export type Document = {
   /* Id */
   documentId: string;
   /* Attributes */
+  agentRunId?: string | null;
   annotationFileUrl: string;
   consentId?: string | null;
   contentLength?: number | null;
@@ -26,7 +27,7 @@ export type Document = {
   fileUrl: string;
   metadata: JSONObject;
   name?: string | null;
-  agentRunId?: string | null;
+  ocrFileUrl?: string | null;
   retentionInDays: number;
   updatedBy?: string | null;
   updatedTime?: Date | null;
