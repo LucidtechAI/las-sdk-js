@@ -1522,17 +1522,21 @@ export class Client {
   }
 
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-  async makeFileServerGetRequest(fileUrl: string, options: any = {}): Promise<Blob> {
+  async makeFileServerGetRequest(fileUrl: string, options: any = {}): Promise<File> {
     const { requestConfig, ...query } = options;
     const constructedRequestConfig = { responseType: 'arraybuffer', ...requestConfig };
     return this.makeAuthorizedFileServerRequest(axios.get, buildURL(fileUrl, query), constructedRequestConfig);
   }
 
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-  async makeFileServerPutRequest(fileUrl: string, content: Buffer, options: any = {}): Promise<Blob> {
+  async makeFileServerPutRequest(fileUrl: string, content: Buffer, options: any = {}): Promise<File> {
     options.data = content;
     await this.makeAuthorizedFileServerBodyRequest(axios.put, fileUrl, options);
-    return new Blob([content], { type: options.headers['Content-Type'] });
+
+    return new File([content], fileUrl, {
+      type: options.headers['Content-Type'],
+      lastModified: new Date().getTime(),
+    });
   }
 
   private async makeAuthorizedFileServerRequest(
@@ -1540,14 +1544,18 @@ export class Client {
     fileUrl: string,
     /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
     requestConfig: any = {},
-  ): Promise<Blob> {
+  ): Promise<File> {
     const headers = await this.getAuthorizationHeaders();
     let config: AxiosRequestConfig = { headers };
     if (requestConfig) {
       config = { ...config, ...requestConfig };
     }
     const result = await axiosFn<ArrayBuffer>(fileUrl, config);
-    return new Blob([result.data], { type: result.headers['content-type'] });
+
+    return new File([result.data], fileUrl, {
+      type: result.headers['content-type'],
+      lastModified: new Date(result.headers['last-modified']).getTime(),
+    });
   }
 
   private async makeAuthorizedFileServerBodyRequest<T>(
