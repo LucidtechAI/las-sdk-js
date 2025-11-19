@@ -1,12 +1,11 @@
 {
   "name": "@lucidtech/las-sdk-node",
   "version": "14.0.1",
-  "author": "Lucidtech AS <hello@lucidtech.ai>",
+  "author": "Cradl <hello@cradl.ai>",
   "maintainers": [
-    "August André Kvernmo <august@lucidtech.ai>",
-    "Roger Andersen <roger@lucidtech.ai>"
+    "August André Kvernmo <august@cradl.ai>"
   ],
-  "homepage": "https://lucidtech.ai",
+  "homepage": "https://cradl.ai",
   "license": "Apache-2.0",
   "publishConfig": {
     "access": "public"
@@ -26,6 +25,6 @@
   },
   "dependencies": {
     "@lucidtech/las-sdk-core": "workspace:^",
-    "axios": "^1.8.3"
+    "axios": "^1.13.2"
   }
 }
