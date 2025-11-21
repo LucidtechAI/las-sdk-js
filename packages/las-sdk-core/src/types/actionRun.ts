@@ -9,14 +9,15 @@ export type ActionRun = {
   actionId: string;
   runId: string;
   /* Attributes */
+  agentRunId?: string | null;
   createdBy: string;
   createdTime: Date;
   history: JSONObject[];
   input: JSONObject;
   logId: string;
   metadata: JSONObject;
+  noAgentRunUpdate?: boolean;
   output?: JSONObject | null;
-  agentRunId?: string | null;
   status: ActionRunStatus;
   updatedBy?: string | null;
   updatedTime?: Date | null;
