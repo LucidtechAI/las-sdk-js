@@ -45,10 +45,12 @@ export type Model = {
   /* Id */
   modelId: string;
   /* Attributes */
+  confidenceVersion?: 'v1' | 'v2' | null;
   createdBy: string;
   createdTime: Date;
   description?: string | null;
   fieldConfig: FieldConfig;
+  llmVersion?: 'sonnet-3.7' | 'sonnet-4.0' | 'sonnet-4.5' | null;
   metadata: JSONObject;
   name?: string | null;
   postprocessConfig: PostprocessConfig;
