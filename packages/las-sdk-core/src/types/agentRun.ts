@@ -40,6 +40,7 @@ export type AgentRunEvent = {
   timestamp: Date;
   validationId?: string | null;
   warnings?: string[] | null;
+  skipped?: boolean;
 };
 
 export type AgentRun = {
