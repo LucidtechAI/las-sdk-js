@@ -158,9 +158,21 @@ import type {
 import { toGetAgentStatisticsQueryParams, toListAgentRunsQueryParams } from './types';
 import { buildURL } from './utils';
 
-const maybeParseDate = (val: JSONValue) => {
-  if (typeof val === 'string') {
-    const re = /2\d{3}-[0-1]\d-[0-3]\dT[0-2]\d:[0-6]\d:[0-6]\d\.\d+(\+0000|Z)/;
+const maybeParseDate = (key: string, val: JSONValue) => {
+  const dateKeys = [
+    'after',
+    'before',
+    'createdTime',
+    'createdTimeAfter',
+    'createdTimeBefore',
+    'timestamp',
+    'updatedTime',
+    'updatedTimeAfter',
+    'updatedTimeBefore',
+  ];
+
+  if (dateKeys.includes(key) && typeof val === 'string') {
+    const re = /^2\d{3}-[0-1]\d-[0-3]\dT[0-2]\d:[0-6]\d:[0-6]\d\.\d+(\+0000|Z)$/;
     if (val.match(re)) {
       return new Date(val);
     }
@@ -1586,7 +1598,7 @@ export class Client {
     }
 
     const result = await axiosFn<T>(endpoint, config);
-    return JSON.parse(JSON.stringify(result.data), (key, val) => maybeParseDate(val));
+    return JSON.parse(JSON.stringify(result.data), (key, val) => maybeParseDate(key, val));
   }
 
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
@@ -1600,7 +1612,7 @@ export class Client {
     }
 
     const result = await axiosFn<T>(endpoint, body, config);
-    return JSON.parse(JSON.stringify(result.data), (key, val) => maybeParseDate(val));
+    return JSON.parse(JSON.stringify(result.data), (key, val) => maybeParseDate(key, val));
   }
 
   private async getAuthorizationHeaders(): Promise<AuthorizationHeaders> {
