@@ -37,6 +37,7 @@ export type Field = {
   formatters?: FieldFormatter[] | null;
   isNullable?: boolean | null;
   name: string;
+  order?: number | null;
   promptHint?: string | null;
   type: FieldType;
   validators?: FieldValidator[] | null;
