@@ -11,6 +11,8 @@ export type AgentStatistic = {
   statistics: {
     global: Statistic;
     fields: Record<string, Statistic>;
+    globalPerDay: Record<string, Statistic>;
+    fieldsPerDay: Record<string, Record<string, Statistic>>;
   };
 };
 
