@@ -17,6 +17,8 @@ export type Organization = {
   monthlyNumberOfPredictionsCreated: number;
   monthlyUsageSummary: JSONObject;
   name?: string | null;
+  numberOfAgentsAllowed: number;
+  numberOfAgentsCreated: number;
   numberOfAppClientsAllowed: number;
   numberOfAppClientsCreated: number;
   numberOfModelsAllowed: number;

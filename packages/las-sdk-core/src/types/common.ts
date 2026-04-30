@@ -42,9 +42,10 @@ export const ImageQualityValues = ['LOW', 'HIGH'] as const;
 export type ImageQuality = (typeof ImageQualityValues)[number];
 
 export type PreprocessConfig = {
-  autoRotate: boolean;
-  imageQuality: ImageQuality;
-  maxPages: number;
+  autoRotate?: boolean;
+  imageQuality?: ImageQuality;
+  maxPages?: number;
+  pages?: number[];
 };
 
 export type BestFirst = {
