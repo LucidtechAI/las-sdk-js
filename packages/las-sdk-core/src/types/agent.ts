@@ -11,6 +11,7 @@ export type Agent = {
   metadata: JSONObject;
   name?: string | null;
   resourceIds: string[];
+  status: 'active' | 'inactive';
   updatedBy?: string | null;
   updatedTime?: Date | null;
 };
