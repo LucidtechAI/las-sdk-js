@@ -1565,8 +1565,8 @@ export class Client {
     const result = await axiosFn<ArrayBuffer>(fileUrl, config);
 
     return new File([result.data], fileUrl, {
-      type: result.headers['content-type'],
-      lastModified: new Date(result.headers['last-modified']).getTime(),
+      type: result.headers['content-type'] as string | undefined,
+      lastModified: new Date(result.headers['last-modified'] as string).getTime(),
     });
   }
 

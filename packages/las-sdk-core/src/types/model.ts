@@ -12,7 +12,7 @@ export type EnumValue = { value: string; description: string };
 export const FieldTypeValues = ['single-value', 'multi-value', 'table'] as const;
 export type FieldType = (typeof FieldTypeValues)[number];
 
-export const LlmVersionValues = ['sonnet-3.7', 'sonnet-4.0', 'sonnet-4.5', 'qwen3-vl'] as const;
+export const LlmVersionValues = ['sonnet-3.7', 'sonnet-4.0', 'sonnet-4.5', 'sonnet-4.6', 'qwen3-vl'] as const;
 export type LlmVersion = (typeof LlmVersionValues)[number];
 
 export type FieldFormatter = {
