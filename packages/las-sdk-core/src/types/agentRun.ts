@@ -20,12 +20,13 @@ export const AgentRunStatusValues = [
 export type AgentRunStatus = (typeof AgentRunStatusValues | typeof DeprecatedAgentRunStatusValues)[number];
 
 export const AgentRunEventStatusValues = [
-  'running',
-  'pending',
-  'ready',
-  'succeeded',
+  'cancelled',
   'failed',
   'in-progress',
+  'pending',
+  'ready',
+  'running',
+  'succeeded',
   'ignored',
 ] as const;
 export type AgentRunEventStatus = (typeof AgentRunEventStatusValues)[number];
