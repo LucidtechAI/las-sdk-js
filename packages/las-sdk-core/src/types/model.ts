@@ -15,29 +15,56 @@ export type FieldType = (typeof FieldTypeValues)[number];
 export const LlmVersionValues = ['sonnet-3.7', 'sonnet-4.0', 'sonnet-4.5', 'sonnet-4.6', 'qwen3-vl'] as const;
 export type LlmVersion = (typeof LlmVersionValues)[number];
 
-export type FieldFormatter = {
+export const ConditionOperatorValues = ['all', 'any', 'none'] as const;
+export type ConditionOperator = (typeof ConditionOperatorValues)[number];
+
+export type FieldCondition = {
+  id: string;
+  name?: string | null;
+  fieldId: string;
+  functionId: string;
+  config?: JSONObject;
+  valuesOp?: ConditionOperator;
+};
+
+export type FieldConditionGroup = {
+  id: string;
+  name?: string | null;
+  op: ConditionOperator;
+  conditions: FieldCondition[];
+};
+
+export type ConditionOwner = {
+  conditionGroups?: FieldConditionGroup[] | null;
+  conditionGroupsOp?: ConditionOperator | null;
+};
+
+export type FieldFormatter = ConditionOwner & {
   id: string;
   config: JSONObject;
   description: string;
   functionId: string;
-  name: string;
+  name?: string | null;
 };
 
-export type FieldValidator = {
+export type FieldValidator = ConditionOwner & {
   id: string;
   config: JSONObject;
   description: string;
   functionId: string;
-  name: string;
+  name?: string | null;
 };
 
-export type Field = {
+export type Field = ConditionOwner & {
   description?: string | null;
+  extractWithAI?: boolean | null;
   fields?: FieldConfig | null;
   formatters?: FieldFormatter[] | null;
+  hidden?: boolean | null;
   isNullable?: boolean | null;
   name: string;
   order?: number | null;
+  processingOrder?: number | null;
   promptHint?: string | null;
   type: FieldType;
   validators?: FieldValidator[] | null;
