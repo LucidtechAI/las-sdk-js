@@ -1,11 +1,38 @@
 import { JSONObject, OptionsOmit, PaginationOptions, RequestConfig } from './common';
 
+export const ValidationNotificationTypes = ['email', 'http'] as const;
+export type ValidationNotificationType = (typeof ValidationNotificationTypes)[number];
+
+export type ValidationNotification = {
+  type?: ValidationNotificationType;
+  when?: string;
+  enabled?: boolean;
+  timezone?: string;
+  onValidationTaskCreated?: boolean;
+  onValidationTaskCancelled?: boolean;
+  onAgentRunFailed?: boolean;
+
+  /* For HTTP notifications */
+  url?: string;
+  httpMethod?: string;
+  headers?: Record<string, string | number | boolean>;
+  params?: Record<string, string | number | boolean>;
+  hmacSecret?: string;
+
+  /* For Email notifications */
+  emails?: string[];
+};
+
+export type ValidationConfig = {
+  notifications?: Record<string, ValidationNotification>;
+};
+
 export type Validation = {
   /* Id */
   id: string;
   validationId: string;
   /* Attributes */
-  config: JSONObject;
+  config: ValidationConfig;
   createdBy: string;
   createdTime: Date;
   enabled: boolean;
