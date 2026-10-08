@@ -18,6 +18,8 @@ export const LlmVersionValues = [
   'sonnet-4.5',
   'sonnet-4.6',
   'sonnet-5',
+  'sonnet-5.5',
+  'haiku-5.5',
   'qwen3-vl',
 ] as const;
 export type LlmVersion = (typeof LlmVersionValues)[number];
