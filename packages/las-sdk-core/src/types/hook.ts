@@ -34,9 +34,15 @@ export type Hook = {
 export type HookList = {
   hooks: Hook[];
   nextToken?: string | null;
+  /* A batch get's IDs it couldn't return in this response (it was full): request them again */
+  unprocessedIds?: string[];
 };
 
-export type ListHooksOptions = RequestConfig & PaginationOptions;
+export type ListHooksOptions = RequestConfig &
+  PaginationOptions & {
+    /* Batch get: only these Hooks (at most 100), in one request. Missing ones are left out of the response */
+    hookId?: string | Array<string>;
+  };
 export type GetHookOptions = RequestConfig;
 export type CreateHookOptions = RequestConfig &
   OptionsOmit<Hook, 'hookId'> &

@@ -102,9 +102,15 @@ export type Model = {
 export type ModelList = {
   models: Model[];
   nextToken?: string | null;
+  /* A batch get's IDs it couldn't return in this response (it was full): request them again */
+  unprocessedIds?: string[];
 };
 
-export type ListModelsOptions = RequestConfig & PaginationOptions;
+export type ListModelsOptions = RequestConfig &
+  PaginationOptions & {
+    /* Batch get: only these Models (at most 100), in one request. Missing ones are left out of the response */
+    modelId?: string | Array<string>;
+  };
 export type GetModelOptions = RequestConfig;
 export type CreateModelOptions = RequestConfig & OptionsOmit<Model, 'modelId'> & Pick<Model, 'fieldConfig'>;
 export type UpdateModelOptions = RequestConfig & OptionsOmit<Model, 'modelId' | 'agentId'>;

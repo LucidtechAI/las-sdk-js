@@ -46,9 +46,15 @@ export type Validation = {
 export type ValidationList = {
   validations: Array<Validation>;
   nextToken: string | null;
+  /* A batch get's IDs it couldn't return in this response (it was full): request them again */
+  unprocessedIds?: string[];
 };
 
-export type ListValidationsOptions = RequestConfig & PaginationOptions;
+export type ListValidationsOptions = RequestConfig &
+  PaginationOptions & {
+    /* Batch get: only these Validations (at most 100), in one request. Missing ones are left out of the response */
+    validationId?: string | Array<string>;
+  };
 export type GetValidationOptions = RequestConfig;
 export type CreateValidationOptions = RequestConfig &
   OptionsOmit<Validation, 'validationId'> &

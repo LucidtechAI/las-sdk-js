@@ -24,9 +24,15 @@ export type Action = {
 export type ActionList = {
   actions: Action[];
   nextToken?: string | null;
+  /* A batch get's IDs it couldn't return in this response (it was full): request them again */
+  unprocessedIds?: string[];
 };
 
-export type ListActionsOptions = RequestConfig & PaginationOptions;
+export type ListActionsOptions = RequestConfig &
+  PaginationOptions & {
+    /* Batch get: only these Actions (at most 100), in one request. Missing ones are left out of the response */
+    actionId?: string | Array<string>;
+  };
 export type GetActionOptions = RequestConfig;
 export type CreateActionOptions = RequestConfig &
   OptionsOmit<Action, 'actionId'> &
