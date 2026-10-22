@@ -83,6 +83,8 @@ export type Model = {
   /* Id */
   modelId: string;
   /* Attributes */
+  /* The agent it belongs to: set when it's created (agentId on create), it leaves the agent when deleted */
+  agentId?: string | null;
   confidenceVersion?: 'v1' | 'v2' | null;
   createdBy: string;
   createdTime: Date;
@@ -105,5 +107,5 @@ export type ModelList = {
 export type ListModelsOptions = RequestConfig & PaginationOptions;
 export type GetModelOptions = RequestConfig;
 export type CreateModelOptions = RequestConfig & OptionsOmit<Model, 'modelId'> & Pick<Model, 'fieldConfig'>;
-export type UpdateModelOptions = RequestConfig & OptionsOmit<Model, 'modelId'>;
+export type UpdateModelOptions = RequestConfig & OptionsOmit<Model, 'modelId' | 'agentId'>;
 export type DeleteModelOptions = RequestConfig;

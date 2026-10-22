@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+- Add `getAgentGraph` and `updateAgentGraph` methods (`GET`/`PATCH /agents/:id/graph`) and the `AgentGraph` types
+- Add optional `agentId` to `Action`, `Hook`, `Model` and `Validation`: set on create to make the resource a member of
+  that agent; not an update option
+
 ## Version 14.0.1 - 2023-11-06
 
 - Fix `secretId` typo in `Secret` type

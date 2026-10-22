@@ -8,6 +8,7 @@ import type {
   ActionRun,
   ActionRunList,
   Agent,
+  AgentGraph,
   AgentList,
   AgentRun,
   AgentRunList,
@@ -61,6 +62,7 @@ import type {
   FunctionList,
   GetActionOptions,
   GetActionRunOptions,
+  GetAgentGraphOptions,
   GetAgentOptions,
   GetAgentRunOptions,
   GetAgentStatisticsOptions,
@@ -131,6 +133,7 @@ import type {
   SecretList,
   UpdateActionOptions,
   UpdateActionRunOptions,
+  UpdateAgentGraphOptions,
   UpdateAgentOptions,
   UpdateAgentRunOptions,
   UpdateAppClientOptions,
@@ -982,6 +985,8 @@ export class Client {
    * - createAgent
    * - updateAgent
    * - deleteAgent
+   * - getAgentGraph
+   * - updateAgentGraph
    */
 
   /**
@@ -1032,6 +1037,27 @@ export class Client {
    */
   async deleteAgent(agentId: string, options?: DeleteAgentOptions): Promise<Agent> {
     return this.makeDeleteRequest(`/agents/${agentId}`, options);
+  }
+
+  /**
+   * Get an agent's graph, calls the GET /agents/:id/graph endpoint: its resources (nodes), how they connect (edges)
+   * and where each node is drawn (layout).
+   * @param agentId Id of the agent
+   * @param options Object with get options
+   * @returns AgentGraph response from REST API
+   */
+  async getAgentGraph(agentId: string, options?: GetAgentGraphOptions): Promise<AgentGraph> {
+    return this.makeGetRequest<AgentGraph>(`/agents/${agentId}/graph`, options);
+  }
+
+  /**
+   * Save positions of an agent's graph nodes, calls the PATCH /agents/:id/graph endpoint.
+   * @param agentId Id of the agent
+   * @param options Object with the moved nodes' positions (null for back to computed)
+   * @returns AgentGraph response from REST API, with the layout as saved
+   */
+  async updateAgentGraph(agentId: string, options: UpdateAgentGraphOptions): Promise<AgentGraph> {
+    return this.makePatchRequest<AgentGraph>(`/agents/${agentId}/graph`, options);
   }
 
   /**

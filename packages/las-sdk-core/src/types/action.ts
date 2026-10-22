@@ -5,6 +5,8 @@ export type Action = {
   id: string;
   actionId: string;
   /* Attributes */
+  /* The agent it belongs to: set when it's created (agentId on create), it leaves the agent when deleted */
+  agentId?: string | null;
   config: JSONObject;
   connectionId?: string | null;
   createdBy: string;
@@ -29,5 +31,5 @@ export type GetActionOptions = RequestConfig;
 export type CreateActionOptions = RequestConfig &
   OptionsOmit<Action, 'actionId'> &
   Pick<Action, 'config' | 'functionId'>;
-export type UpdateActionOptions = RequestConfig & OptionsOmit<Action, 'actionId'>;
+export type UpdateActionOptions = RequestConfig & OptionsOmit<Action, 'actionId' | 'agentId'>;
 export type DeleteActionOptions = RequestConfig;

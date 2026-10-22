@@ -32,6 +32,8 @@ export type Validation = {
   id: string;
   validationId: string;
   /* Attributes */
+  /* The agent it belongs to: set when it's created (agentId on create), it leaves the agent when deleted */
+  agentId?: string | null;
   config: ValidationConfig;
   createdBy: string;
   createdTime: Date;
@@ -51,5 +53,5 @@ export type GetValidationOptions = RequestConfig;
 export type CreateValidationOptions = RequestConfig &
   OptionsOmit<Validation, 'validationId'> &
   Pick<Validation, 'config'>;
-export type UpdateValidationOptions = RequestConfig & OptionsOmit<Validation, 'validationId'>;
+export type UpdateValidationOptions = RequestConfig & OptionsOmit<Validation, 'validationId' | 'agentId'>;
 export type DeleteValidationOptions = RequestConfig;

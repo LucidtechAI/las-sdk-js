@@ -14,6 +14,8 @@ export type Hook = {
   id: string;
   hookId: string;
   /* Attributes */
+  /* The agent it belongs to: set when it's created (agentId on create), it leaves the agent when deleted */
+  agentId?: string | null;
   config: JSONObject;
   createdBy: string;
   createdTime: Date;
@@ -39,5 +41,5 @@ export type GetHookOptions = RequestConfig;
 export type CreateHookOptions = RequestConfig &
   OptionsOmit<Hook, 'hookId'> &
   Pick<Hook, 'functionId' | 'config' | 'trigger'>;
-export type UpdateHookOptions = RequestConfig & OptionsOmit<Hook, 'hookId'>;
+export type UpdateHookOptions = RequestConfig & OptionsOmit<Hook, 'hookId' | 'agentId'>;
 export type DeleteHookOptions = RequestConfig;
