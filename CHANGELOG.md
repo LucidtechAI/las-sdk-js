@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Upgrade Axios to 1.21.0 across the browser, core and Node packages, and the workspace pnpm dependency to 10.34.9,
+  to address dependency security advisories; use Axios method signatures for the internal request function type.
+
 - Add `getAgentGraph` and `updateAgentGraph` methods (`GET`/`PATCH /agents/:id/graph`) and the `AgentGraph` types
 - Add optional `agentId` to `Action`, `Hook`, `Model` and `Validation`: set on create to make the resource a member of
   that agent; not an update option

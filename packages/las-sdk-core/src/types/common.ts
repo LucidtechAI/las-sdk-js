@@ -1,4 +1,4 @@
-import type { AxiosRequestConfig, AxiosResponse } from 'axios';
+import type { Axios, AxiosRequestConfig } from 'axios';
 
 export type RequestConfig = { requestConfig?: AxiosRequestConfig };
 
@@ -19,11 +19,7 @@ export type AuthorizationHeaders = {
   Authorization: string;
 };
 
-export type AxiosFn = <T = any, R = AxiosResponse<T>>(
-  url: string,
-  body?: any,
-  config?: AxiosRequestConfig,
-) => Promise<R>;
+export type AxiosFn = Axios['get'] | Axios['post'];
 
 export type AttentionMap = number[][];
 
