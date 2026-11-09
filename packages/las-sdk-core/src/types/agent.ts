@@ -23,8 +23,8 @@ export type AgentList = {
 
 export type ListAgentsOptions = RequestConfig & PaginationOptions;
 export type GetAgentOptions = RequestConfig;
-export type CreateAgentOptions = RequestConfig & OptionsOmit<Agent, 'agentId'>;
-export type UpdateAgentOptions = RequestConfig & OptionsOmit<Agent, 'agentId'>;
+export type CreateAgentOptions = RequestConfig & OptionsOmit<Agent, 'agentId' | 'resourceIds'>;
+export type UpdateAgentOptions = RequestConfig & OptionsOmit<Agent, 'agentId' | 'resourceIds'>;
 export type DeleteAgentOptions = RequestConfig;
 
 /* GET /agents/:id/graph: the agent's resources and how they connect */
