@@ -8,6 +8,8 @@
 - Add `getAgentGraph` and `updateAgentGraph` methods (`GET`/`PATCH /agents/:id/graph`) and the `AgentGraph` types
 - Add optional `agentId` to `Action`, `Hook`, `Model` and `Validation`: set on create to make the resource a member of
   that agent; not an update option
+- `resourceIds` is no longer a `createAgent` or `updateAgent` option: an agent's `resourceIds` is read-only (the API
+  refuses writing it). Create the agent's resources with `agentId` instead; deleting one takes it out of the agent
 - Add batch get to `listActions`, `listHooks`, `listModels`, `listValidations` and `listFunctions`: `actionId`,
   `hookId`, `modelId`, `validationId` and `functionId` options (at most 100 IDs per request), and `unprocessedIds` in
   their responses for the IDs to request again
