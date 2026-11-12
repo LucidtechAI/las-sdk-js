@@ -13,6 +13,32 @@
 - Add batch get to `listActions`, `listHooks`, `listModels`, `listValidations` and `listFunctions`: `actionId`,
   `hookId`, `modelId`, `validationId` and `functionId` options (at most 100 IDs per request), and `unprocessedIds` in
   their responses for the IDs to request again
+- Add agent, model and function versions: `createAgentVersion`, `createModelVersion` and `createFunctionVersion`
+  publish one, and `listAgentVersions`, `listModelVersions` and `listFunctionVersions` list them. A version is the
+  resource as published, its ID qualified with the version number, with `publishedBy` and `publishedTime`
+- Add aliases: `setAgentAlias`, `setModelAlias` and `setFunctionAlias` (`PUT .../aliases/:alias`) create an alias or
+  move it to a version, and `get*Alias`, `list*Aliases` and `delete*Alias`. `setAgentAlias` also takes an
+  `environmentId`: `null` clears it, leaving it out keeps the alias's
+- `getAgent`, `getModel`, `getFunction`, `createAgentRun` and `getAgentGraph` take qualified IDs: `<id>:3`,
+  `<id>:@prod` or `<id>:$latest`
+- IDs are encoded in request paths, so an ID naming its organization (`cradl:organization:cradl/cradl:function:...`)
+  works. `getFunction` and `getPlan` no longer encode `:`, as the other methods don't
+- Add `environments` and `draftEnvironmentId` to `Agent` and `updateAgent` (`null` clears the draft's environment), and
+  `agentAlias`, `environmentId` and `triggerId` to `AgentRun`
+- Add `deleteResources` to `deleteAgent`: also deletes the agent's hooks, actions, models and validations
+- Add `triggerId` to `createAgentRun`. `metadata` and `resourceIds` are no longer `createAgentRun` options, and
+  `createAgent` and `updateAgent` only take `name`, `description` and `metadata` (and `updateAgent` the environments):
+  the API refuses the rest
+- Add `status` to `updateHookRun`, and `ignored` to `HookStatusValues`. `agentRunId` is optional in `createHookRun`
+- Add the `ActionRun has Failed`, `ActionRun has Succeeded` and `Email is Received` triggers to `TriggerValues`.
+  `createHook` takes the triggers in `CreateHookTriggerValues`, which the API accepts on create
+- Update `LlmVersionValues` to the API's: add `sonnet-4.0` and `haiku-5.5`, and remove `sonnet-3.7`
+- Add `documentId` to `listDocuments`, `order` to `listLogs`, and `sortBy` and `order` to `listFunctions`
+- Add `name`, `description`, `metadata`, `agentRunId` and `async` to `createPrediction`
+- Add `name` and `description` to `User`, `updateUser` and `Validation`, `metadata` to `Organization` and
+  `createOrganization`, and `metadata` and `documentRetentionInDays` to `updateOrganization`
+- `createAppClient` creates app clients with a secret, and doesn't take `generateSecret`, `callbackUrls`, `loginUrls`,
+  `logoutUrls` or `defaultLoginUrl`: they only configured public app clients, a legacy of Cognito
 
 ## Version 14.0.1 - 2023-11-06
 

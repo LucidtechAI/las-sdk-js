@@ -1,4 +1,11 @@
-import { OrderParam, PaginationOptions, PostprocessConfig, PreprocessConfig, RequestConfig } from './common';
+import {
+  JSONObject,
+  OrderParam,
+  PaginationOptions,
+  PostprocessConfig,
+  PreprocessConfig,
+  RequestConfig,
+} from './common';
 
 export const PredictionStatusValues = ['pending', 'suceeded', 'failed'] as const;
 export type PredictionStatus = (typeof PredictionStatusValues)[number];
@@ -32,5 +39,12 @@ export type ListPredictionsOptions = RequestConfig &
   };
 export type GetPredictionOptions = RequestConfig;
 export type CreatePredictionOptions = RequestConfig &
-  Pick<Prediction, 'documentId' | 'modelId' | 'postprocessConfig' | 'preprocessConfig'>;
+  Pick<Prediction, 'documentId' | 'modelId' | 'postprocessConfig' | 'preprocessConfig'> & {
+    agentRunId?: string | null;
+    /* Respond right away, with the prediction pending, rather than when it's done */
+    async?: boolean;
+    description?: string | null;
+    metadata?: JSONObject;
+    name?: string | null;
+  };
 export type DeletePredictionOptions = RequestConfig;

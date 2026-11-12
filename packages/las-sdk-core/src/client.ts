@@ -8,11 +8,14 @@ import type {
   ActionRun,
   ActionRunList,
   Agent,
+  AgentAlias,
+  AgentAliasList,
   AgentGraph,
   AgentList,
   AgentRun,
   AgentRunList,
   AgentStatistic,
+  AgentVersionList,
   AppClient,
   AppClientList,
   AuthorizationHeaders,
@@ -23,13 +26,16 @@ import type {
   CreateActionRunOptions,
   CreateAgentOptions,
   CreateAgentRunOptions,
+  CreateAgentVersionOptions,
   CreateAppClientOptions,
   CreateConnectionOptions,
   CreateDocumentOptions,
   CreateFunctionOptions,
+  CreateFunctionVersionOptions,
   CreateHookOptions,
   CreateHookRunOptions,
   CreateModelOptions,
+  CreateModelVersionOptions,
   CreateOrganizationOptions,
   CreatePaymentMethodOptions,
   CreatePredictionOptions,
@@ -40,14 +46,17 @@ import type {
   CreateValidationTaskOptions,
   DeleteActionOptions,
   DeleteActionRunOptions,
+  DeleteAgentAliasOptions,
   DeleteAgentOptions,
   DeleteAgentRunOptions,
   DeleteAppClientOptions,
   DeleteConnectionOptions,
   DeleteDocumentOptions,
+  DeleteFunctionAliasOptions,
   DeleteFunctionOptions,
   DeleteHookOptions,
   DeleteHookRunOptions,
+  DeleteModelAliasOptions,
   DeleteModelOptions,
   DeletePaymentMethodOptions,
   DeletePredictionOptions,
@@ -59,9 +68,13 @@ import type {
   Document,
   DocumentList,
   Function,
+  FunctionAlias,
+  FunctionAliasList,
   FunctionList,
+  FunctionVersionList,
   GetActionOptions,
   GetActionRunOptions,
+  GetAgentAliasOptions,
   GetAgentGraphOptions,
   GetAgentOptions,
   GetAgentRunOptions,
@@ -69,11 +82,13 @@ import type {
   GetAppClientOptions,
   GetConnectionOptions,
   GetDocumentOptions,
+  GetFunctionAliasOptions,
   GetFunctionOptions,
   GetHookOptions,
   GetHookRunOptions,
   GetInvoiceOptions,
   GetLogOptions,
+  GetModelAliasOptions,
   GetModelOptions,
   GetOrganizationOptions,
   GetPaymentMethodOptions,
@@ -94,17 +109,23 @@ import type {
   JSONValue,
   ListActionRunsOptions,
   ListActionsOptions,
+  ListAgentAliasesOptions,
   ListAgentRunsOptions,
   ListAgentsOptions,
+  ListAgentVersionsOptions,
   ListAppClientsOptions,
   ListConnectionsOptions,
   ListDocumentsOptions,
+  ListFunctionAliasesOptions,
   ListFunctionsOptions,
+  ListFunctionVersionsOptions,
   ListHookRunsOptions,
   ListHooksOptions,
   ListInvoicesOptions,
   ListLogsOptions,
+  ListModelAliasesOptions,
   ListModelsOptions,
+  ListModelVersionsOptions,
   ListOrganizationsOptions,
   ListPaymentMethodsOptions,
   ListPlansOptions,
@@ -117,7 +138,10 @@ import type {
   Log,
   LogList,
   Model,
+  ModelAlias,
+  ModelAliasList,
   ModelList,
+  ModelVersionList,
   Organization,
   OrganizationList,
   PaymentMethod,
@@ -131,6 +155,9 @@ import type {
   RoleList,
   Secret,
   SecretList,
+  SetAgentAliasOptions,
+  SetFunctionAliasOptions,
+  SetModelAliasOptions,
   UpdateActionOptions,
   UpdateActionRunOptions,
   UpdateAgentGraphOptions,
@@ -159,7 +186,7 @@ import type {
   ValidationTaskList,
 } from './types';
 import { toGetAgentStatisticsQueryParams, toListAgentRunsQueryParams } from './types';
-import { buildURL } from './utils';
+import { buildURL, pathId } from './utils';
 
 const maybeParseDate = (key: string, val: JSONValue) => {
   const dateKeys = [
@@ -168,6 +195,7 @@ const maybeParseDate = (key: string, val: JSONValue) => {
     'createdTime',
     'createdTimeAfter',
     'createdTimeBefore',
+    'publishedTime',
     'timestamp',
     'updatedTime',
     'updatedTimeAfter',
@@ -221,7 +249,7 @@ export class Client {
    * @returns Action response from REST API
    */
   async getAction(actionId: string, options?: GetActionOptions): Promise<Action> {
-    return this.makeGetRequest<Action>(`/actions/${actionId}`, options);
+    return this.makeGetRequest<Action>(`/actions/${pathId(actionId)}`, options);
   }
 
   /**
@@ -241,7 +269,7 @@ export class Client {
    * @param options Object with update options
    */
   async updateAction(actionId: string, options: UpdateActionOptions): Promise<Action> {
-    return this.makePatchRequest(`/actions/${actionId}`, options);
+    return this.makePatchRequest(`/actions/${pathId(actionId)}`, options);
   }
 
   /**
@@ -252,7 +280,7 @@ export class Client {
    * @returns Action response from REST API
    */
   async deleteAction(actionId: string, options?: DeleteActionOptions): Promise<Action> {
-    return this.makeDeleteRequest(`/actions/${actionId}`, options);
+    return this.makeDeleteRequest(`/actions/${pathId(actionId)}`, options);
   }
 
   /**
@@ -274,7 +302,7 @@ export class Client {
    * @returns ActionRunList response from REST API
    */
   async listActionRuns(actionId: string, options?: ListActionRunsOptions): Promise<ActionRunList> {
-    return this.makeGetRequest<ActionRunList>(`/actions/${actionId}/runs`, options);
+    return this.makeGetRequest<ActionRunList>(`/actions/${pathId(actionId)}/runs`, options);
   }
 
   /**
@@ -285,7 +313,7 @@ export class Client {
    * @returns ActionRun response from REST API
    */
   async getActionRun(actionId: string, runId: string, options?: GetActionRunOptions): Promise<ActionRun> {
-    return this.makeGetRequest<ActionRun>(`/actions/${actionId}/runs/${runId}`, options);
+    return this.makeGetRequest<ActionRun>(`/actions/${pathId(actionId)}/runs/${pathId(runId)}`, options);
   }
 
   /**
@@ -296,7 +324,7 @@ export class Client {
    * @returns ActionRun response from REST API
    */
   async createActionRun(actionId: string, options: CreateActionRunOptions): Promise<ActionRun> {
-    return this.makePostRequest<ActionRun>(`/actions/${actionId}/runs`, options);
+    return this.makePostRequest<ActionRun>(`/actions/${pathId(actionId)}/runs`, options);
   }
 
   /**
@@ -307,7 +335,7 @@ export class Client {
    * @param options Object with update options
    */
   async updateActionRun(actionId: string, runId: string, options: UpdateActionRunOptions): Promise<ActionRun> {
-    return this.makePatchRequest<ActionRun>(`/actions/${actionId}/runs/${runId}`, options);
+    return this.makePatchRequest<ActionRun>(`/actions/${pathId(actionId)}/runs/${pathId(runId)}`, options);
   }
 
   /**
@@ -319,7 +347,7 @@ export class Client {
    * @returns ActionRun response from REST API
    */
   async deleteActionRun(actionId: string, runId: string, options?: DeleteActionRunOptions): Promise<ActionRun> {
-    return this.makeDeleteRequest<ActionRun>(`/actions/${actionId}/runs/${runId}`, options);
+    return this.makeDeleteRequest<ActionRun>(`/actions/${pathId(actionId)}/runs/${pathId(runId)}`, options);
   }
 
   /**
@@ -350,17 +378,17 @@ export class Client {
    * @returns AppClient response from REST API
    */
   async getAppClient(appClientId: string, options?: GetAppClientOptions): Promise<AppClient> {
-    return this.makeGetRequest<AppClient>(`/appClients/${appClientId}`, options);
+    return this.makeGetRequest<AppClient>(`/appClients/${pathId(appClientId)}`, options);
   }
 
   /**
-   * Creates a appClient, calls the POST /appClients endpoint.
+   * Creates a appClient, calls the POST /appClients endpoint. It's created with a secret.
    *
    * @param options Object with create options
-   * @returns AppClient response from REST API
+   * @returns AppClient response from REST API, with the clientId and clientSecret to get tokens with
    */
   async createAppClient(options: CreateAppClientOptions): Promise<AppClient> {
-    return this.makePostRequest<AppClient>('/appClients', options);
+    return this.makePostRequest<AppClient>('/appClients', { ...options, generateSecret: true });
   }
 
   /**
@@ -370,7 +398,7 @@ export class Client {
    * @param options Object with update options
    */
   async updateAppClient(appClientId: string, options: UpdateAppClientOptions): Promise<AppClient> {
-    return this.makePatchRequest(`/appClients/${appClientId}`, options);
+    return this.makePatchRequest(`/appClients/${pathId(appClientId)}`, options);
   }
 
   /**
@@ -381,7 +409,7 @@ export class Client {
    * @returns AppClient response from REST API
    */
   async deleteAppClient(appClientId: string, options?: DeleteAppClientOptions): Promise<AppClient> {
-    return this.makeDeleteRequest(`/appClients/${appClientId}`, options);
+    return this.makeDeleteRequest(`/appClients/${pathId(appClientId)}`, options);
   }
 
   /**
@@ -412,7 +440,7 @@ export class Client {
    * @returns Document response from REST API
    */
   async getDocument(documentId: string, options?: GetDocumentOptions): Promise<Document> {
-    return this.makeGetRequest<Document>(`/documents/${documentId}`, options);
+    return this.makeGetRequest<Document>(`/documents/${pathId(documentId)}`, options);
   }
 
   /**
@@ -432,7 +460,7 @@ export class Client {
    * @param options Object with update options
    */
   async updateDocument(documentId: string, options: UpdateDocumentOptions): Promise<Document> {
-    return this.makePatchRequest(`/documents/${documentId}`, options);
+    return this.makePatchRequest(`/documents/${pathId(documentId)}`, options);
   }
 
   /**
@@ -443,7 +471,7 @@ export class Client {
    * @returns Document response from REST API
    */
   async deleteDocument(documentId: string, options?: DeleteDocumentOptions): Promise<Document> {
-    return this.makeDeleteRequest(`/documents/${documentId}`, options);
+    return this.makeDeleteRequest(`/documents/${pathId(documentId)}`, options);
   }
 
   /**
@@ -456,6 +484,12 @@ export class Client {
    * - createFunction
    * - updateFunction
    * - deleteFunction
+   * - listFunctionVersions
+   * - createFunctionVersion
+   * - listFunctionAliases
+   * - getFunctionAlias
+   * - setFunctionAlias
+   * - deleteFunctionAlias
    */
 
   /**
@@ -469,12 +503,13 @@ export class Client {
 
   /**
    * Get a function, calls the GET /functions/:id endpoint.
-   * @param functionId Id of the function
+   * @param functionId Id of the function: the draft, or qualified with a version (`<id>:3`), an alias (`<id>:@prod`)
+   * or `<id>:$latest`
    * @param options Object with get options
    * @returns Function response from REST API
    */
   async getFunction(functionId: string, options?: GetFunctionOptions): Promise<Function> {
-    return this.makeGetRequest<Function>(`/functions/${encodeURIComponent(functionId)}`, options);
+    return this.makeGetRequest<Function>(`/functions/${pathId(functionId)}`, options);
   }
 
   /**
@@ -494,7 +529,7 @@ export class Client {
    * @param options Object with update options
    */
   async updateFunction(functionId: string, options: UpdateFunctionOptions): Promise<Function> {
-    return this.makePatchRequest(`/functions/${functionId}`, options);
+    return this.makePatchRequest(`/functions/${pathId(functionId)}`, options);
   }
 
   /**
@@ -505,7 +540,76 @@ export class Client {
    * @returns Function response from REST API
    */
   async deleteFunction(functionId: string, options?: DeleteFunctionOptions): Promise<Function> {
-    return this.makeDeleteRequest(`/functions/${functionId}`, options);
+    return this.makeDeleteRequest(`/functions/${pathId(functionId)}`, options);
+  }
+
+  /**
+   * List a function's published versions, newest first, calls the GET /functions/:id/versions endpoint.
+   * @param functionId Id of the function
+   * @param options Object with list options
+   * @returns FunctionVersionList response from REST API
+   */
+  async listFunctionVersions(functionId: string, options?: ListFunctionVersionsOptions): Promise<FunctionVersionList> {
+    return this.makeGetRequest<FunctionVersionList>(`/functions/${pathId(functionId)}/versions`, options);
+  }
+
+  /**
+   * Publish a function as it is now as a new version, calls the POST /functions/:id/versions endpoint. If nothing
+   * changed since the latest version, that version is returned.
+   * @param functionId Id of the function
+   * @param options Object with create options
+   * @returns The version from REST API, its functionId qualified with the version number
+   */
+  async createFunctionVersion(functionId: string, options?: CreateFunctionVersionOptions): Promise<Function> {
+    return this.makePostRequest<Function>(`/functions/${pathId(functionId)}/versions`, options);
+  }
+
+  /**
+   * List a function's aliases, calls the GET /functions/:id/aliases endpoint.
+   * @param functionId Id of the function
+   * @param options Object with list options
+   * @returns FunctionAliasList response from REST API
+   */
+  async listFunctionAliases(functionId: string, options?: ListFunctionAliasesOptions): Promise<FunctionAliasList> {
+    return this.makeGetRequest<FunctionAliasList>(`/functions/${pathId(functionId)}/aliases`, options);
+  }
+
+  /**
+   * Get an alias of a function, calls the GET /functions/:id/aliases/:alias endpoint.
+   * @param functionId Id of the function
+   * @param alias Name of the alias, e.g. prod
+   * @param options Object with get options
+   * @returns FunctionAlias response from REST API
+   */
+  async getFunctionAlias(functionId: string, alias: string, options?: GetFunctionAliasOptions): Promise<FunctionAlias> {
+    return this.makeGetRequest<FunctionAlias>(`/functions/${pathId(functionId)}/aliases/${pathId(alias)}`, options);
+  }
+
+  /**
+   * Create an alias of a function, or move it to another version, calls the PUT /functions/:id/aliases/:alias
+   * endpoint. `<functionId>:@<alias>` refers to that version.
+   * @param functionId Id of the function
+   * @param alias Name of the alias, e.g. prod
+   * @param options Object with the version the alias points to
+   * @returns FunctionAlias response from REST API
+   */
+  async setFunctionAlias(functionId: string, alias: string, options: SetFunctionAliasOptions): Promise<FunctionAlias> {
+    return this.makePutRequest<FunctionAlias>(`/functions/${pathId(functionId)}/aliases/${pathId(alias)}`, options);
+  }
+
+  /**
+   * Delete an alias of a function, calls the DELETE /functions/:id/aliases/:alias endpoint.
+   * @param functionId Id of the function
+   * @param alias Name of the alias, e.g. prod
+   * @param options Object with delete options
+   * @returns FunctionAlias response from REST API
+   */
+  async deleteFunctionAlias(
+    functionId: string,
+    alias: string,
+    options?: DeleteFunctionAliasOptions,
+  ): Promise<FunctionAlias> {
+    return this.makeDeleteRequest<FunctionAlias>(`/functions/${pathId(functionId)}/aliases/${pathId(alias)}`, options);
   }
 
   /**
@@ -536,7 +640,7 @@ export class Client {
    * @returns Hook response from REST API
    */
   async getHook(hookId: string, options?: GetHookOptions): Promise<Hook> {
-    return this.makeGetRequest<Hook>(`/hooks/${hookId}`, options);
+    return this.makeGetRequest<Hook>(`/hooks/${pathId(hookId)}`, options);
   }
 
   /**
@@ -556,7 +660,7 @@ export class Client {
    * @param options Object with update options
    */
   async updateHook(hookId: string, options: UpdateHookOptions): Promise<Hook> {
-    return this.makePatchRequest(`/hooks/${hookId}`, options);
+    return this.makePatchRequest(`/hooks/${pathId(hookId)}`, options);
   }
 
   /**
@@ -567,7 +671,7 @@ export class Client {
    * @returns Hook response from REST API
    */
   async deleteHook(hookId: string, options?: DeleteHookOptions): Promise<Hook> {
-    return this.makeDeleteRequest(`/hooks/${hookId}`, options);
+    return this.makeDeleteRequest(`/hooks/${pathId(hookId)}`, options);
   }
 
   /**
@@ -589,7 +693,7 @@ export class Client {
    * @returns HookRunList response from REST API
    */
   async listHookRuns(hookId: string, options?: ListHookRunsOptions): Promise<HookRunList> {
-    return this.makeGetRequest<HookRunList>(`/hooks/${hookId}/runs`, options);
+    return this.makeGetRequest<HookRunList>(`/hooks/${pathId(hookId)}/runs`, options);
   }
 
   /**
@@ -600,7 +704,7 @@ export class Client {
    * @returns HookRun response from REST API
    */
   async getHookRun(hookId: string, runId: string, options?: GetHookRunOptions): Promise<HookRun> {
-    return this.makeGetRequest<HookRun>(`/hooks/${hookId}/runs/${runId}`, options);
+    return this.makeGetRequest<HookRun>(`/hooks/${pathId(hookId)}/runs/${pathId(runId)}`, options);
   }
 
   /**
@@ -611,7 +715,7 @@ export class Client {
    * @returns HookRun response from REST API
    */
   async createHookRun(hookId: string, options: CreateHookRunOptions): Promise<HookRun> {
-    return this.makePostRequest<HookRun>(`/hooks/${hookId}/runs`, options);
+    return this.makePostRequest<HookRun>(`/hooks/${pathId(hookId)}/runs`, options);
   }
 
   /**
@@ -622,7 +726,7 @@ export class Client {
    * @param options Object with update options
    */
   async updateHookRun(hookId: string, runId: string, options: UpdateHookRunOptions): Promise<HookRun> {
-    return this.makePatchRequest(`/hooks/${hookId}/runs/${runId}`, options);
+    return this.makePatchRequest(`/hooks/${pathId(hookId)}/runs/${pathId(runId)}`, options);
   }
 
   /**
@@ -634,7 +738,7 @@ export class Client {
    * @returns HookRun response from REST API
    */
   async deleteHookRun(hookId: string, runId: string, options?: DeleteHookRunOptions): Promise<HookRun> {
-    return this.makeDeleteRequest(`/hooks/${hookId}/runs/${runId}`, options);
+    return this.makeDeleteRequest(`/hooks/${pathId(hookId)}/runs/${pathId(runId)}`, options);
   }
 
   /**
@@ -662,7 +766,7 @@ export class Client {
    * @returns Invoice response from REST API
    */
   async getInvoice(invoiceId: string, options?: GetInvoiceOptions): Promise<Invoice> {
-    return this.makeGetRequest<Invoice>(`/invoices/${invoiceId}`, options);
+    return this.makeGetRequest<Invoice>(`/invoices/${pathId(invoiceId)}`, options);
   }
 
   /**
@@ -690,7 +794,7 @@ export class Client {
    * @returns Log response from REST API
    */
   async getLog(logId: string, options?: GetLogOptions): Promise<Log> {
-    return this.makeGetRequest<Log>(`/logs/${logId}`, options);
+    return this.makeGetRequest<Log>(`/logs/${pathId(logId)}`, options);
   }
 
   /**
@@ -703,6 +807,12 @@ export class Client {
    * - createModel
    * - updateModel
    * - deleteModel
+   * - listModelVersions
+   * - createModelVersion
+   * - listModelAliases
+   * - getModelAlias
+   * - setModelAlias
+   * - deleteModelAlias
    */
 
   /**
@@ -716,12 +826,13 @@ export class Client {
 
   /**
    * Get a model, calls the GET /models/:id endpoint.
-   * @param modelId Id of the model
+   * @param modelId Id of the model: the draft, or qualified with a version (`<id>:3`), an alias (`<id>:@prod`) or
+   * `<id>:$latest`
    * @param options Object with get options
    * @returns Model response from REST API
    */
   async getModel(modelId: string, options?: GetModelOptions): Promise<Model> {
-    return this.makeGetRequest<Model>(`/models/${modelId}`, options);
+    return this.makeGetRequest<Model>(`/models/${pathId(modelId)}`, options);
   }
 
   /**
@@ -741,7 +852,7 @@ export class Client {
    * @param options Object with update options
    */
   async updateModel(modelId: string, options: UpdateModelOptions): Promise<Model> {
-    return this.makePatchRequest(`/models/${modelId}`, options);
+    return this.makePatchRequest(`/models/${pathId(modelId)}`, options);
   }
 
   /**
@@ -752,7 +863,72 @@ export class Client {
    * @returns Model response from REST API
    */
   async deleteModel(modelId: string, options?: DeleteModelOptions): Promise<Model> {
-    return this.makeDeleteRequest(`/models/${modelId}`, options);
+    return this.makeDeleteRequest(`/models/${pathId(modelId)}`, options);
+  }
+
+  /**
+   * List a model's published versions, newest first, calls the GET /models/:id/versions endpoint.
+   * @param modelId Id of the model
+   * @param options Object with list options
+   * @returns ModelVersionList response from REST API
+   */
+  async listModelVersions(modelId: string, options?: ListModelVersionsOptions): Promise<ModelVersionList> {
+    return this.makeGetRequest<ModelVersionList>(`/models/${pathId(modelId)}/versions`, options);
+  }
+
+  /**
+   * Publish a model as it is now as a new version, calls the POST /models/:id/versions endpoint. If nothing changed
+   * since the latest version, that version is returned.
+   * @param modelId Id of the model
+   * @param options Object with create options
+   * @returns The version from REST API, its modelId qualified with the version number
+   */
+  async createModelVersion(modelId: string, options?: CreateModelVersionOptions): Promise<Model> {
+    return this.makePostRequest<Model>(`/models/${pathId(modelId)}/versions`, options);
+  }
+
+  /**
+   * List a model's aliases, calls the GET /models/:id/aliases endpoint.
+   * @param modelId Id of the model
+   * @param options Object with list options
+   * @returns ModelAliasList response from REST API
+   */
+  async listModelAliases(modelId: string, options?: ListModelAliasesOptions): Promise<ModelAliasList> {
+    return this.makeGetRequest<ModelAliasList>(`/models/${pathId(modelId)}/aliases`, options);
+  }
+
+  /**
+   * Get an alias of a model, calls the GET /models/:id/aliases/:alias endpoint.
+   * @param modelId Id of the model
+   * @param alias Name of the alias, e.g. prod
+   * @param options Object with get options
+   * @returns ModelAlias response from REST API
+   */
+  async getModelAlias(modelId: string, alias: string, options?: GetModelAliasOptions): Promise<ModelAlias> {
+    return this.makeGetRequest<ModelAlias>(`/models/${pathId(modelId)}/aliases/${pathId(alias)}`, options);
+  }
+
+  /**
+   * Create an alias of a model, or move it to another version, calls the PUT /models/:id/aliases/:alias endpoint.
+   * `<modelId>:@<alias>` refers to that version.
+   * @param modelId Id of the model
+   * @param alias Name of the alias, e.g. prod
+   * @param options Object with the version the alias points to
+   * @returns ModelAlias response from REST API
+   */
+  async setModelAlias(modelId: string, alias: string, options: SetModelAliasOptions): Promise<ModelAlias> {
+    return this.makePutRequest<ModelAlias>(`/models/${pathId(modelId)}/aliases/${pathId(alias)}`, options);
+  }
+
+  /**
+   * Delete an alias of a model, calls the DELETE /models/:id/aliases/:alias endpoint.
+   * @param modelId Id of the model
+   * @param alias Name of the alias, e.g. prod
+   * @param options Object with delete options
+   * @returns ModelAlias response from REST API
+   */
+  async deleteModelAlias(modelId: string, alias: string, options?: DeleteModelAliasOptions): Promise<ModelAlias> {
+    return this.makeDeleteRequest<ModelAlias>(`/models/${pathId(modelId)}/aliases/${pathId(alias)}`, options);
   }
 
   /**
@@ -782,7 +958,7 @@ export class Client {
    * @returns Organization response from REST API
    */
   async getOrganization(organizationId: string, options?: GetOrganizationOptions): Promise<Organization> {
-    return this.makeGetRequest<Organization>(`/organizations/${organizationId}`, options);
+    return this.makeGetRequest<Organization>(`/organizations/${pathId(organizationId)}`, options);
   }
 
   /**
@@ -802,7 +978,7 @@ export class Client {
    * @param options Object with update options
    */
   async updateOrganization(organizationId: string, options: UpdateOrganizationOptions): Promise<Organization> {
-    return this.makePatchRequest(`/organizations/${organizationId}`, options);
+    return this.makePatchRequest(`/organizations/${pathId(organizationId)}`, options);
   }
 
   /**
@@ -833,7 +1009,7 @@ export class Client {
    * @returns PaymentMethod response from REST API
    */
   async getPaymentMethod(paymentMethodId: string, options?: GetPaymentMethodOptions): Promise<PaymentMethod> {
-    return this.makeGetRequest<PaymentMethod>(`/paymentMethods/${paymentMethodId}`, options);
+    return this.makeGetRequest<PaymentMethod>(`/paymentMethods/${pathId(paymentMethodId)}`, options);
   }
 
   /**
@@ -853,7 +1029,7 @@ export class Client {
    * @param options Object with update options
    */
   async updatePaymentMethod(paymentMethodId: string, options: UpdatePaymentMethodOptions): Promise<PaymentMethod> {
-    return this.makePatchRequest(`/paymentMethods/${paymentMethodId}`, options);
+    return this.makePatchRequest(`/paymentMethods/${pathId(paymentMethodId)}`, options);
   }
 
   /**
@@ -864,7 +1040,7 @@ export class Client {
    * @returns PaymentMethod response from REST API
    */
   async deletePaymentMethod(paymentMethodId: string, options?: DeletePaymentMethodOptions): Promise<PaymentMethod> {
-    return this.makeDeleteRequest(`/paymentMethods/${paymentMethodId}`, options);
+    return this.makeDeleteRequest(`/paymentMethods/${pathId(paymentMethodId)}`, options);
   }
 
   /**
@@ -892,7 +1068,7 @@ export class Client {
    * @returns Plan response from REST API
    */
   async getPlan(planId: string, options?: GetPlanOptions): Promise<Plan> {
-    return this.makeGetRequest<Plan>(`/plans/${encodeURIComponent(planId)}`, options);
+    return this.makeGetRequest<Plan>(`/plans/${pathId(planId)}`, options);
   }
 
   /**
@@ -922,7 +1098,7 @@ export class Client {
    * @returns Prediction response from REST API
    */
   async getPrediction(predictionId: string, options?: GetPredictionOptions): Promise<Prediction> {
-    return this.makeGetRequest<Prediction>(`/predictions/${predictionId}`, options);
+    return this.makeGetRequest<Prediction>(`/predictions/${pathId(predictionId)}`, options);
   }
 
   /**
@@ -943,7 +1119,7 @@ export class Client {
    * @returns Prediction response from REST API
    */
   async deletePrediction(predictionId: string, options?: DeletePredictionOptions): Promise<Prediction> {
-    return this.makeDeleteRequest(`/predictions/${predictionId}`, options);
+    return this.makeDeleteRequest(`/predictions/${pathId(predictionId)}`, options);
   }
 
   /**
@@ -962,7 +1138,7 @@ export class Client {
    * @returns Profile response from REST API
    */
   async getProfile(profileId: string, options?: GetProfileOptions): Promise<Profile> {
-    return this.makeGetRequest<Profile>(`/profiles/${profileId}`, options);
+    return this.makeGetRequest<Profile>(`/profiles/${pathId(profileId)}`, options);
   }
 
   /**
@@ -972,7 +1148,7 @@ export class Client {
    * @param options Object with update options
    */
   async updateProfile(profileId: string, options: UpdateProfileOptions): Promise<Profile> {
-    return this.makePatchRequest(`/profiles/${profileId}`, options);
+    return this.makePatchRequest(`/profiles/${pathId(profileId)}`, options);
   }
 
   /**
@@ -987,6 +1163,12 @@ export class Client {
    * - deleteAgent
    * - getAgentGraph
    * - updateAgentGraph
+   * - listAgentVersions
+   * - createAgentVersion
+   * - listAgentAliases
+   * - getAgentAlias
+   * - setAgentAlias
+   * - deleteAgentAlias
    */
 
   /**
@@ -1000,12 +1182,13 @@ export class Client {
 
   /**
    * Get a agent, calls the GET /agents/:id endpoint.
-   * @param agentId Id of the agent
+   * @param agentId Id of the agent: the draft, or qualified with a version (`<id>:3`), an alias (`<id>:@prod`) or
+   * `<id>:$latest`
    * @param options Object with get options
    * @returns Agent response from REST API
    */
   async getAgent(agentId: string, options?: GetAgentOptions): Promise<Agent> {
-    return this.makeGetRequest<Agent>(`/agents/${agentId}`, options);
+    return this.makeGetRequest<Agent>(`/agents/${pathId(agentId)}`, options);
   }
 
   /**
@@ -1025,29 +1208,30 @@ export class Client {
    * @param options Object with update options
    */
   async updateAgent(agentId: string, options: UpdateAgentOptions): Promise<Agent> {
-    return this.makePatchRequest(`/agents/${agentId}`, options);
+    return this.makePatchRequest(`/agents/${pathId(agentId)}`, options);
   }
 
   /**
    * Delete a agent, calls the DELETE /agents/:id endpoint.
    *
    * @param agentId Id of the agent
-   * @param options Object with delete options
+   * @param options Object with delete options: deleteResources also deletes the agent's hooks, actions, models and
+   * validations
    * @returns Agent response from REST API
    */
   async deleteAgent(agentId: string, options?: DeleteAgentOptions): Promise<Agent> {
-    return this.makeDeleteRequest(`/agents/${agentId}`, options);
+    return this.makeDeleteRequest(`/agents/${pathId(agentId)}`, options);
   }
 
   /**
    * Get an agent's graph, calls the GET /agents/:id/graph endpoint: its resources (nodes), how they connect (edges)
    * and where each node is drawn (layout).
-   * @param agentId Id of the agent
+   * @param agentId Id of the agent, optionally qualified with a version, an alias or `:$latest`
    * @param options Object with get options
    * @returns AgentGraph response from REST API
    */
   async getAgentGraph(agentId: string, options?: GetAgentGraphOptions): Promise<AgentGraph> {
-    return this.makeGetRequest<AgentGraph>(`/agents/${agentId}/graph`, options);
+    return this.makeGetRequest<AgentGraph>(`/agents/${pathId(agentId)}/graph`, options);
   }
 
   /**
@@ -1057,7 +1241,72 @@ export class Client {
    * @returns AgentGraph response from REST API, with the layout as saved
    */
   async updateAgentGraph(agentId: string, options: UpdateAgentGraphOptions): Promise<AgentGraph> {
-    return this.makePatchRequest<AgentGraph>(`/agents/${agentId}/graph`, options);
+    return this.makePatchRequest<AgentGraph>(`/agents/${pathId(agentId)}/graph`, options);
+  }
+
+  /**
+   * List an agent's published versions, newest first, calls the GET /agents/:id/versions endpoint.
+   * @param agentId Id of the agent
+   * @param options Object with list options
+   * @returns AgentVersionList response from REST API
+   */
+  async listAgentVersions(agentId: string, options?: ListAgentVersionsOptions): Promise<AgentVersionList> {
+    return this.makeGetRequest<AgentVersionList>(`/agents/${pathId(agentId)}/versions`, options);
+  }
+
+  /**
+   * Publish an agent as it is now, with its resources, as a new version, calls the POST /agents/:id/versions
+   * endpoint. If nothing changed since the latest version, that version is returned.
+   * @param agentId Id of the agent
+   * @param options Object with create options
+   * @returns The version from REST API, its agentId qualified with the version number
+   */
+  async createAgentVersion(agentId: string, options?: CreateAgentVersionOptions): Promise<Agent> {
+    return this.makePostRequest<Agent>(`/agents/${pathId(agentId)}/versions`, options);
+  }
+
+  /**
+   * List an agent's aliases, calls the GET /agents/:id/aliases endpoint.
+   * @param agentId Id of the agent
+   * @param options Object with list options
+   * @returns AgentAliasList response from REST API
+   */
+  async listAgentAliases(agentId: string, options?: ListAgentAliasesOptions): Promise<AgentAliasList> {
+    return this.makeGetRequest<AgentAliasList>(`/agents/${pathId(agentId)}/aliases`, options);
+  }
+
+  /**
+   * Get an alias of an agent, calls the GET /agents/:id/aliases/:alias endpoint.
+   * @param agentId Id of the agent
+   * @param alias Name of the alias, e.g. prod
+   * @param options Object with get options
+   * @returns AgentAlias response from REST API
+   */
+  async getAgentAlias(agentId: string, alias: string, options?: GetAgentAliasOptions): Promise<AgentAlias> {
+    return this.makeGetRequest<AgentAlias>(`/agents/${pathId(agentId)}/aliases/${pathId(alias)}`, options);
+  }
+
+  /**
+   * Create an alias of an agent, or move it to another version, calls the PUT /agents/:id/aliases/:alias endpoint.
+   * Runs of `<agentId>:@<alias>` run that version.
+   * @param agentId Id of the agent
+   * @param alias Name of the alias, e.g. prod
+   * @param options Object with the version the alias points to, and the environment its runs run with
+   * @returns AgentAlias response from REST API
+   */
+  async setAgentAlias(agentId: string, alias: string, options: SetAgentAliasOptions): Promise<AgentAlias> {
+    return this.makePutRequest<AgentAlias>(`/agents/${pathId(agentId)}/aliases/${pathId(alias)}`, options);
+  }
+
+  /**
+   * Delete an alias of an agent, calls the DELETE /agents/:id/aliases/:alias endpoint.
+   * @param agentId Id of the agent
+   * @param alias Name of the alias, e.g. prod
+   * @param options Object with delete options
+   * @returns AgentAlias response from REST API
+   */
+  async deleteAgentAlias(agentId: string, alias: string, options?: DeleteAgentAliasOptions): Promise<AgentAlias> {
+    return this.makeDeleteRequest<AgentAlias>(`/agents/${pathId(agentId)}/aliases/${pathId(alias)}`, options);
   }
 
   /**
@@ -1079,7 +1328,7 @@ export class Client {
    * @returns AgentRunList response from REST API
    */
   async listAgentRuns(agentId: string, options?: ListAgentRunsOptions): Promise<AgentRunList> {
-    return this.makeGetRequest<AgentRunList>(`/agents/${agentId}/runs`, toListAgentRunsQueryParams(options));
+    return this.makeGetRequest<AgentRunList>(`/agents/${pathId(agentId)}/runs`, toListAgentRunsQueryParams(options));
   }
 
   /**
@@ -1090,18 +1339,19 @@ export class Client {
    * @returns AgentRun response from REST API
    */
   async getAgentRun(agentId: string, runId: string, options?: GetAgentRunOptions): Promise<AgentRun> {
-    return this.makeGetRequest<AgentRun>(`/agents/${agentId}/runs/${runId}`, options);
+    return this.makeGetRequest<AgentRun>(`/agents/${pathId(agentId)}/runs/${pathId(runId)}`, options);
   }
 
   /**
    * Creates a agent run, calls the POST /agents/:id/runs endpoint.
    *
    * @param options Object with create options
-   * @param agentId Id of the agent
+   * @param agentId Id of the agent: the draft runs, or a version when qualified with one (`<id>:3`), an alias
+   * (`<id>:@prod`) or `<id>:$latest`
    * @returns AgentRun response from REST API
    */
   async createAgentRun(agentId: string, options: CreateAgentRunOptions): Promise<AgentRun> {
-    return this.makePostRequest<AgentRun>(`/agents/${agentId}/runs`, options);
+    return this.makePostRequest<AgentRun>(`/agents/${pathId(agentId)}/runs`, options);
   }
 
   /**
@@ -1112,7 +1362,7 @@ export class Client {
    * @param options Object with update options
    */
   async updateAgentRun(agentId: string, runId: string, options: UpdateAgentRunOptions): Promise<AgentRun> {
-    return this.makePatchRequest(`/agents/${agentId}/runs/${runId}`, options);
+    return this.makePatchRequest(`/agents/${pathId(agentId)}/runs/${pathId(runId)}`, options);
   }
 
   /**
@@ -1124,7 +1374,7 @@ export class Client {
    * @returns AgentRun response from REST API
    */
   async deleteAgentRun(agentId: string, runId: string, options?: DeleteAgentRunOptions): Promise<AgentRun> {
-    return this.makeDeleteRequest(`/agents/${agentId}/runs/${runId}`, options);
+    return this.makeDeleteRequest(`/agents/${pathId(agentId)}/runs/${pathId(runId)}`, options);
   }
 
   /**
@@ -1143,7 +1393,7 @@ export class Client {
    */
   async getAgentStatistics(agentId: string, options?: GetAgentStatisticsOptions): Promise<AgentStatistic> {
     return this.makeGetRequest<AgentStatistic>(
-      `/agents/${agentId}/statistics`,
+      `/agents/${pathId(agentId)}/statistics`,
       toGetAgentStatisticsQueryParams(options),
     );
   }
@@ -1176,7 +1426,7 @@ export class Client {
    * @returns Role response from REST API
    */
   async getRole(roleId: string, options?: GetRoleOptions): Promise<Role> {
-    return this.makeGetRequest<Role>(`/roles/${roleId}`, options);
+    return this.makeGetRequest<Role>(`/roles/${pathId(roleId)}`, options);
   }
 
   /**
@@ -1196,7 +1446,7 @@ export class Client {
    * @param options Object with update options
    */
   async updateRole(roleId: string, options: UpdateRoleOptions): Promise<Role> {
-    return this.makePatchRequest(`/roles/${roleId}`, options);
+    return this.makePatchRequest(`/roles/${pathId(roleId)}`, options);
   }
 
   /**
@@ -1207,7 +1457,7 @@ export class Client {
    * @returns Role response from REST API
    */
   async deleteRole(roleId: string, options?: DeleteRoleOptions): Promise<Role> {
-    return this.makeDeleteRequest(`/roles/${roleId}`, options);
+    return this.makeDeleteRequest(`/roles/${pathId(roleId)}`, options);
   }
 
   /**
@@ -1238,7 +1488,7 @@ export class Client {
    * @returns Secret response from REST API
    */
   async getSecret(secretId: string, options?: GetSecretOptions): Promise<Secret> {
-    return this.makeGetRequest<Secret>(`/secrets/${secretId}`, options);
+    return this.makeGetRequest<Secret>(`/secrets/${pathId(secretId)}`, options);
   }
 
   /**
@@ -1258,7 +1508,7 @@ export class Client {
    * @param options Object with update options
    */
   async updateSecret(secretId: string, options: UpdateSecretOptions): Promise<Secret> {
-    return this.makePatchRequest(`/secrets/${secretId}`, options);
+    return this.makePatchRequest(`/secrets/${pathId(secretId)}`, options);
   }
 
   /**
@@ -1269,7 +1519,7 @@ export class Client {
    * @returns Secret response from REST API
    */
   async deleteSecret(secretId: string, options?: DeleteSecretOptions): Promise<Secret> {
-    return this.makeDeleteRequest(`/secrets/${secretId}`, options);
+    return this.makeDeleteRequest(`/secrets/${pathId(secretId)}`, options);
   }
 
   /**
@@ -1300,7 +1550,7 @@ export class Client {
    * @returns User response from REST API
    */
   async getUser(userId: string, options?: GetUserOptions): Promise<User> {
-    return this.makeGetRequest<User>(`/users/${userId}`, options);
+    return this.makeGetRequest<User>(`/users/${pathId(userId)}`, options);
   }
 
   /**
@@ -1320,7 +1570,7 @@ export class Client {
    * @param options Object with update options
    */
   async updateUser(userId: string, options: UpdateUserOptions): Promise<User> {
-    return this.makePatchRequest(`/users/${userId}`, options);
+    return this.makePatchRequest(`/users/${pathId(userId)}`, options);
   }
 
   /**
@@ -1331,7 +1581,7 @@ export class Client {
    * @returns User response from REST API
    */
   async deleteUser(userId: string, options?: DeleteUserOptions): Promise<User> {
-    return this.makeDeleteRequest(`/users/${userId}`, options);
+    return this.makeDeleteRequest(`/users/${pathId(userId)}`, options);
   }
 
   /**
@@ -1362,7 +1612,7 @@ export class Client {
    * @returns Validation response from REST API
    */
   async getValidation(validationId: string, options?: GetValidationOptions): Promise<Validation> {
-    return this.makeGetRequest<Validation>(`/validations/${validationId}`, options);
+    return this.makeGetRequest<Validation>(`/validations/${pathId(validationId)}`, options);
   }
 
   /**
@@ -1382,7 +1632,7 @@ export class Client {
    * @param options Object with update options
    */
   async updateValidation(validationId: string, options: UpdateValidationOptions): Promise<Validation> {
-    return this.makePatchRequest(`/validations/${validationId}`, options);
+    return this.makePatchRequest(`/validations/${pathId(validationId)}`, options);
   }
 
   /**
@@ -1393,7 +1643,7 @@ export class Client {
    * @returns Validation response from REST API
    */
   async deleteValidation(validationId: string, options?: DeleteValidationOptions): Promise<Validation> {
-    return this.makeDeleteRequest(`/validations/${validationId}`, options);
+    return this.makeDeleteRequest(`/validations/${pathId(validationId)}`, options);
   }
 
   /**
@@ -1415,7 +1665,7 @@ export class Client {
    * @returns ValidationTaskList response from REST API
    */
   async listValidationTasks(validationId: string, options?: ListValidationTasksOptions): Promise<ValidationTaskList> {
-    return this.makeGetRequest<ValidationTaskList>(`/validations/${validationId}/tasks`, options);
+    return this.makeGetRequest<ValidationTaskList>(`/validations/${pathId(validationId)}/tasks`, options);
   }
 
   /**
@@ -1430,7 +1680,7 @@ export class Client {
     taskId: string,
     options?: GetValidationTaskOptions,
   ): Promise<ValidationTask> {
-    return this.makeGetRequest<ValidationTask>(`/validations/${validationId}/tasks/${taskId}`, options);
+    return this.makeGetRequest<ValidationTask>(`/validations/${pathId(validationId)}/tasks/${pathId(taskId)}`, options);
   }
 
   /**
@@ -1441,7 +1691,7 @@ export class Client {
    * @returns ValidationTask response from REST API
    */
   async createValidationTask(validationId: string, options: CreateValidationTaskOptions): Promise<ValidationTask> {
-    return this.makePostRequest<ValidationTask>(`/validations/${validationId}/tasks`, options);
+    return this.makePostRequest<ValidationTask>(`/validations/${pathId(validationId)}/tasks`, options);
   }
 
   /**
@@ -1456,7 +1706,7 @@ export class Client {
     taskId: string,
     options: UpdateValidationTaskOptions,
   ): Promise<ValidationTask> {
-    return this.makePatchRequest(`/validations/${validationId}/tasks/${taskId}`, options);
+    return this.makePatchRequest(`/validations/${pathId(validationId)}/tasks/${pathId(taskId)}`, options);
   }
 
   /**
@@ -1472,7 +1722,7 @@ export class Client {
     taskId: string,
     options?: DeleteValidationTaskOptions,
   ): Promise<ValidationTask> {
-    return this.makeDeleteRequest(`/validations/${validationId}/tasks/${taskId}`, options);
+    return this.makeDeleteRequest(`/validations/${pathId(validationId)}/tasks/${pathId(taskId)}`, options);
   }
 
   /**
@@ -1503,7 +1753,7 @@ export class Client {
    * @returns Connection response from REST API
    */
   async getConnection(connectionId: string, options?: GetConnectionOptions): Promise<Connection> {
-    return this.makeGetRequest<Connection>(`/connections/${connectionId}`, options);
+    return this.makeGetRequest<Connection>(`/connections/${pathId(connectionId)}`, options);
   }
 
   /**
@@ -1523,7 +1773,7 @@ export class Client {
    * @param options Object with update options
    */
   async updateConnection(connectionId: string, options: UpdateConnectionOptions): Promise<Connection> {
-    return this.makePatchRequest(`/connections/${connectionId}`, options);
+    return this.makePatchRequest(`/connections/${pathId(connectionId)}`, options);
   }
 
   /**
@@ -1534,7 +1784,7 @@ export class Client {
    * @returns Connection response from REST API
    */
   async deleteConnection(connectionId: string, options?: DeleteConnectionOptions): Promise<Connection> {
-    return this.makeDeleteRequest(`/connections/${connectionId}`, options);
+    return this.makeDeleteRequest(`/connections/${pathId(connectionId)}`, options);
   }
 
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
@@ -1557,6 +1807,11 @@ export class Client {
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   async makePatchRequest<T>(path: string, options: any): Promise<T> {
     return this.makeAuthorizedBodyRequest(axios.patch, path, options);
+  }
+
+  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+  async makePutRequest<T>(path: string, options: any): Promise<T> {
+    return this.makeAuthorizedBodyRequest(axios.put, path, options);
   }
 
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */

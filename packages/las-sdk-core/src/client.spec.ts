@@ -731,20 +731,9 @@ describe('AppClients', () => {
     test.each<[CreateAppClientOptions]>([
       [
         {
-          generateSecret: true,
           name: 'App client name',
           description: 'App client description',
-        },
-      ],
-      [
-        {
-          generateSecret: false,
-          name: 'App client name',
-          description: 'App client description',
-          callbackUrls: ['http://localhost:3030/authCallback'],
-          logoutUrls: ['http://localhost:3030/logout'],
-          loginUrls: ['http://localhost:3030/login'],
-          defaultLoginUrl: 'http://localhost:3030/login',
+          roleIds: [],
         },
       ],
     ])('input: %o', async (options) => {

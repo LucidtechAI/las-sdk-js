@@ -28,9 +28,10 @@ export type AppClientList = {
 
 export type ListAppClientsOptions = RequestConfig & PaginationOptions;
 export type GetAppClientOptions = RequestConfig;
+/* An app client is always created with a secret: one without is a public app client, a legacy of Cognito */
 export type CreateAppClientOptions = RequestConfig &
-  OptionsOmit<AppClient, 'appClientId' | 'clientId' | 'clientSecret' | 'hasSecret'> &
-  Pick<AppClient, 'roleIds'> & { generateSecret: boolean };
+  Pick<Partial<AppClient>, 'description' | 'metadata' | 'name'> &
+  Pick<AppClient, 'roleIds'>;
 export type UpdateAppClientOptions = RequestConfig &
   OptionsOmit<AppClient, 'appClientId' | 'clientId' | 'clientSecret' | 'hasSecret'>;
 export type DeleteAppClientOptions = RequestConfig;

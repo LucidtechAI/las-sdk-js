@@ -50,13 +50,18 @@ export type AgentRun = {
   agentId: string;
   runId: string;
   /* Attributes */
+  /* The alias the run was created through */
+  agentAlias?: string | null;
   createdBy: string;
   createdTime: Date;
+  environmentId?: string | null;
   history: JSONObject[];
   metadata?: JSONObject | null;
   resourceIds: string[];
   status: AgentRunStatus;
   events: AgentRunEvent[];
+  /* The agent's action that started the run */
+  triggerId?: string | null;
   updatedBy?: string | null;
   updatedTime?: Date | null;
   variablesFileUrl?: string | null;
@@ -79,7 +84,7 @@ export type ListAgentRunsOptions = RequestConfig &
   };
 export type GetAgentRunOptions = RequestConfig;
 export type CreateAgentRunOptions = RequestConfig &
-  Pick<Partial<AgentRun>, 'metadata' | 'resourceIds'> & {
+  Pick<Partial<AgentRun>, 'triggerId'> & {
     variables?: JSONObject | null;
   };
 export type UpdateAgentRunOptions = RequestConfig & Pick<Partial<AgentRun>, 'metadata' | 'resourceIds'>;
