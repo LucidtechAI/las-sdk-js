@@ -9,6 +9,7 @@ export type Organization = {
   createdTime: Date;
   description?: string | null;
   documentRetentionInDays: number;
+  metadata?: JSONObject | null;
   monthlyNumberOfDocumentsAllowed: number;
   monthlyNumberOfDocumentsCreated: number;
   monthlyNumberOfPagePredictionsAllowed: number;
@@ -45,6 +46,9 @@ export type OrganizationList = {
 export type ListOrganizationsOptions = RequestConfig & PaginationOptions;
 export type GetOrganizationOptions = RequestConfig;
 export type CreateOrganizationOptions = RequestConfig &
-  Pick<Organization, 'description' | 'name' | 'url'> & { useNewScopes?: boolean };
+  Pick<Partial<Organization>, 'description' | 'metadata' | 'name' | 'url'> & { useNewScopes?: boolean };
 export type UpdateOrganizationOptions = RequestConfig &
-  Pick<Partial<Organization>, 'description' | 'name' | 'paymentMethodId' | 'planId' | 'url'>;
+  Pick<
+    Partial<Organization>,
+    'description' | 'documentRetentionInDays' | 'metadata' | 'name' | 'paymentMethodId' | 'planId' | 'url'
+  >;

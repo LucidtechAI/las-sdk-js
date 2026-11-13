@@ -7,7 +7,7 @@ export type JSONObject = Record<string, JSONValue>;
 
 export type OptionsOmit<T, K extends keyof T> = Omit<
   Partial<T>,
-  K | 'createdBy' | 'createdTime' | 'updatedBy' | 'updatedTime'
+  K | 'createdBy' | 'createdTime' | 'publishedBy' | 'publishedTime' | 'updatedBy' | 'updatedTime'
 >;
 
 export interface PaginationOptions {
@@ -62,4 +62,26 @@ export type OrderParam = { order?: 'ascending' | 'descending' };
 export type SortParam<T> = {
   column: keyof T;
   order: 'asc' | 'desc';
+};
+
+/* An alias's earlier and current versions, oldest first */
+export type AliasHistoryEntry = {
+  resourceVersion: number;
+  environmentId?: string | null;
+  updatedBy?: string | null;
+  updatedTime?: string | null;
+};
+
+/* A name for a version of an agent, a model or a function: `<id>:@<alias>` refers to that version */
+export type Alias = {
+  alias: string;
+  resourceVersion: number;
+  history: AliasHistoryEntry[];
+  updatedBy?: string | null;
+  updatedTime?: Date | null;
+};
+
+export type SetAliasOptions = RequestConfig & {
+  /* The version the alias points to */
+  resourceVersion: number;
 };

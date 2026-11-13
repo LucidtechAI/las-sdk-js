@@ -9,7 +9,9 @@ export type User = {
   /* Attributes */
   createdBy: string;
   createdTime: Date;
+  description?: string | null;
   metadata: JSONObject;
+  name?: string | null;
   profileId: string;
   roleIds: string[];
   status: UserStatus;
@@ -27,5 +29,5 @@ export type GetUserOptions = RequestConfig;
 export type CreateUserOptions = RequestConfig &
   OptionsOmit<User, 'userId' | 'profileId' | 'status'> &
   Pick<User, 'roleIds'> & { email: string };
-export type UpdateUserOptions = RequestConfig & Pick<Partial<User>, 'metadata' | 'roleIds'>;
+export type UpdateUserOptions = RequestConfig & Pick<Partial<User>, 'description' | 'metadata' | 'name' | 'roleIds'>;
 export type DeleteUserOptions = RequestConfig;
