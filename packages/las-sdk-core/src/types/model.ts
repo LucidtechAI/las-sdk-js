@@ -14,15 +14,11 @@ export type EnumValue = { value: string; description: string };
 export const FieldTypeValues = ['single-value', 'multi-value', 'table'] as const;
 export type FieldType = (typeof FieldTypeValues)[number];
 
-export const LlmVersionValues = [
-  'sonnet-4.0',
-  'sonnet-4.5',
-  'sonnet-4.6',
-  'sonnet-5',
-  'sonnet-5.5',
-  'haiku-5.5',
-  'qwen3-vl',
-] as const;
+/* No longer supported: a model can still have one, but can't be created or updated with it */
+export const DeprecatedLlmVersionValues = ['sonnet-4.0', 'sonnet-4.5', 'haiku-5.5'] as const;
+export type DeprecatedLlmVersion = (typeof DeprecatedLlmVersionValues)[number];
+
+export const LlmVersionValues = ['sonnet-4.6', 'sonnet-5', 'sonnet-5.5', 'qwen3-vl'] as const;
 export type LlmVersion = (typeof LlmVersionValues)[number];
 
 export const ConditionOperatorValues = ['all', 'any', 'none'] as const;
@@ -94,7 +90,7 @@ export type Model = {
   createdTime: Date;
   description?: string | null;
   fieldConfig: FieldConfig;
-  llmVersion?: LlmVersion | null;
+  llmVersion?: LlmVersion | DeprecatedLlmVersion | null;
   metadata: JSONObject;
   name?: string | null;
   postprocessConfig: PostprocessConfig;
@@ -119,8 +115,11 @@ export type ListModelsOptions = RequestConfig &
     modelId?: string | Array<string>;
   };
 export type GetModelOptions = RequestConfig;
-export type CreateModelOptions = RequestConfig & OptionsOmit<Model, 'modelId'> & Pick<Model, 'fieldConfig'>;
-export type UpdateModelOptions = RequestConfig & OptionsOmit<Model, 'modelId' | 'agentId'>;
+export type CreateModelOptions = RequestConfig &
+  OptionsOmit<Model, 'modelId' | 'llmVersion'> &
+  Pick<Model, 'fieldConfig'> & { llmVersion?: LlmVersion | null };
+export type UpdateModelOptions = RequestConfig &
+  OptionsOmit<Model, 'modelId' | 'agentId' | 'llmVersion'> & { llmVersion?: LlmVersion | null };
 export type DeleteModelOptions = RequestConfig;
 
 /* Published versions, newest first: each is the model as it was published */

@@ -32,7 +32,9 @@
 - Add `status` to `updateHookRun`, and `ignored` to `HookStatusValues`. `agentRunId` is optional in `createHookRun`
 - Add the `ActionRun has Failed`, `ActionRun has Succeeded` and `Email is Received` triggers to `TriggerValues`.
   `createHook` takes the triggers in `CreateHookTriggerValues`, which the API accepts on create
-- Update `LlmVersionValues` to the API's: add `sonnet-4.0` and `haiku-5.5`, and remove `sonnet-3.7`
+- `LlmVersionValues` are the supported LLM versions: `sonnet-4.6`, `sonnet-5`, `sonnet-5.5` and `qwen3-vl`, which
+  `createModel` and `updateModel` take. A model can still have one of `DeprecatedLlmVersionValues` (`sonnet-4.0`,
+  `sonnet-4.5` and `haiku-5.5`); `sonnet-3.7` is removed
 - Add `documentId` to `listDocuments`, `order` to `listLogs`, and `sortBy` and `order` to `listFunctions`
 - Add `name`, `description`, `metadata`, `agentRunId` and `async` to `createPrediction`
 - Add `name` and `description` to `User`, `updateUser` and `Validation`, `metadata` to `Organization` and

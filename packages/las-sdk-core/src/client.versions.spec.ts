@@ -184,3 +184,18 @@ describe('AppClients', () => {
     expect(post).toHaveBeenCalledWith('/appClients', { name: 'name', roleIds: [], generateSecret: true });
   });
 });
+
+describe('Models', () => {
+  test('are created and updated with a supported LLM version only', async () => {
+    const post = jest.spyOn(client, 'makePostRequest').mockResolvedValue({});
+    jest.spyOn(client, 'makePatchRequest').mockResolvedValue({});
+
+    await client.createModel({ fieldConfig: {}, llmVersion: 'sonnet-5.5' });
+    expect(post).toHaveBeenCalledWith('/models', { fieldConfig: {}, llmVersion: 'sonnet-5.5' });
+
+    // @ts-expect-error sonnet-4.5 is no longer supported
+    await client.createModel({ fieldConfig: {}, llmVersion: 'sonnet-4.5' });
+    // @ts-expect-error haiku-5.5 is no longer supported
+    await client.updateModel('cradl:model:abc', { llmVersion: 'haiku-5.5' });
+  });
+});
