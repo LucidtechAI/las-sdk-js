@@ -180,7 +180,7 @@ describe('Models', () => {
     await client.createModel({ fieldConfig: {}, llmVersion: 'sonnet-5.5' });
     expect(post).toHaveBeenCalledWith('/models', { fieldConfig: {}, llmVersion: 'sonnet-5.5' });
 
-    // @ts-expect-error sonnet-4.5 is no longer supported
+    // @ts-expect-error sonnet-4.5 is no LLM version any more
     await client.createModel({ fieldConfig: {}, llmVersion: 'sonnet-4.5' });
     // @ts-expect-error haiku-5.5 is no longer supported
     await client.updateModel('cradl:model:abc', { llmVersion: 'haiku-5.5' });

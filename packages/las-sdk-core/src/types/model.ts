@@ -15,7 +15,7 @@ export const FieldTypeValues = ['single-value', 'multi-value', 'table'] as const
 export type FieldType = (typeof FieldTypeValues)[number];
 
 /* No longer supported: a model can still have one, but can't be created or updated with it */
-export const DeprecatedLlmVersionValues = ['sonnet-4.0', 'sonnet-4.5', 'haiku-5.5'] as const;
+export const DeprecatedLlmVersionValues = ['haiku-5.5'] as const;
 export type DeprecatedLlmVersion = (typeof DeprecatedLlmVersionValues)[number];
 
 export const LlmVersionValues = ['sonnet-4.6', 'sonnet-5', 'sonnet-5.5', 'qwen3-vl'] as const;
