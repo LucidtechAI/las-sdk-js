@@ -1,4 +1,4 @@
-import { buildURL, BuildURLParams, pathId } from './utils';
+import { arrayBufferToBase64, buildURL, BuildURLParams, pathId, wait } from './utils';
 
 describe('buildUrl', () => {
   test.each<[BuildURLParams | undefined, string, string]>([
@@ -28,5 +28,27 @@ describe('pathId', () => {
     ['cradl:plan:per seat', 'cradl:plan:per%20seat'],
   ])('%s is %s in a path', (resourceId, expected) => {
     expect(pathId(resourceId)).toBe(expected);
+  });
+});
+
+describe('arrayBufferToBase64', () => {
+  test('encodes the bytes', () => {
+    expect(arrayBufferToBase64(new TextEncoder().encode('content').buffer)).toBe('Y29udGVudA==');
+    expect(arrayBufferToBase64(new Uint8Array([0xff, 0x00]).buffer)).toBe('/wA=');
+  });
+});
+
+describe('wait', () => {
+  test('resolves after the given time', async () => {
+    jest.useFakeTimers();
+    const waited = jest.fn();
+    const promise = wait(1000).then(waited);
+
+    await jest.advanceTimersByTimeAsync(999);
+    expect(waited).not.toHaveBeenCalled();
+    await jest.advanceTimersByTimeAsync(1);
+    await promise;
+    expect(waited).toHaveBeenCalled();
+    jest.useRealTimers();
   });
 });

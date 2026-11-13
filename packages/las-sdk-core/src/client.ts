@@ -1823,11 +1823,10 @@ export class Client {
 
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   async makeFileServerPutRequest(fileUrl: string, content: Buffer, options: any = {}): Promise<File> {
-    options.data = content;
-    await this.makeAuthorizedFileServerBodyRequest(axios.put, fileUrl, options);
+    await this.makeAuthorizedFileServerBodyRequest(axios.put, fileUrl, { ...options, data: content });
 
     return new File([content], fileUrl, {
-      type: options.headers['Content-Type'],
+      type: options.headers?.['Content-Type'],
       lastModified: new Date().getTime(),
     });
   }
@@ -1839,10 +1838,7 @@ export class Client {
     requestConfig: any = {},
   ): Promise<File> {
     const headers = await this.getAuthorizationHeaders();
-    let config: AxiosRequestConfig = { headers };
-    if (requestConfig) {
-      config = { ...config, ...requestConfig };
-    }
+    const config: AxiosRequestConfig = { ...requestConfig, headers: { ...headers, ...requestConfig?.headers } };
     const result = await axiosFn<ArrayBuffer>(fileUrl, config);
 
     return new File([result.data], fileUrl, {
@@ -1859,10 +1855,10 @@ export class Client {
   ): Promise<T> {
     const authHeaders = await this.getAuthorizationHeaders();
     const { requestConfig, data, headers } = options;
-    let config: AxiosRequestConfig = { headers: { ...authHeaders, ...headers } };
-    if (requestConfig) {
-      config = { ...config, ...requestConfig };
-    }
+    const config: AxiosRequestConfig = {
+      ...requestConfig,
+      headers: { ...authHeaders, ...headers, ...requestConfig?.headers },
+    };
 
     const result = await axiosFn<T>(fileUrl, data, config);
 
@@ -1873,10 +1869,7 @@ export class Client {
   private async makeAuthorizedRequest<T>(axiosFn: AxiosFn, path: string, requestConfig: any = {}): Promise<T> {
     const endpoint = `${this.credentials.apiEndpoint}${path}`;
     const headers = await this.getAuthorizationHeaders();
-    let config: AxiosRequestConfig = { headers };
-    if (requestConfig) {
-      config = { ...config, ...requestConfig };
-    }
+    const config: AxiosRequestConfig = { ...requestConfig, headers: { ...headers, ...requestConfig?.headers } };
 
     const result = await axiosFn<T>(endpoint, config);
     return JSON.parse(JSON.stringify(result.data), (key, val) => maybeParseDate(key, val));
@@ -1887,10 +1880,7 @@ export class Client {
     const endpoint = `${this.credentials.apiEndpoint}${path}`;
     const headers = await this.getAuthorizationHeaders();
     const { requestConfig, ...body } = options;
-    let config: AxiosRequestConfig = { headers };
-    if (requestConfig) {
-      config = { ...config, ...requestConfig };
-    }
+    const config: AxiosRequestConfig = { ...requestConfig, headers: { ...headers, ...requestConfig?.headers } };
 
     const result = await axiosFn<T>(endpoint, body, config);
     return JSON.parse(JSON.stringify(result.data), (key, val) => maybeParseDate(key, val));

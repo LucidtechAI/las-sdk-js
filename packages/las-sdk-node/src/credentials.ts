@@ -1,6 +1,6 @@
+import { Credentials, Token, TokenStorage } from '@lucidtech/las-sdk-core';
 import axios, { AxiosResponse } from 'axios';
 import * as qs from 'querystring';
-import { Credentials, Token, TokenStorage } from '@lucidtech/las-sdk-core';
 
 export class ClientCredentials extends Credentials {
   private readonly clientId: string;
@@ -28,7 +28,7 @@ export class ClientCredentials extends Credentials {
         client_id: this.clientId,
         client_secret: this.clientSecret,
         audience: 'https://api.cradl.ai/v1',
-      }
+      };
 
       axios
         .post(this.authEndpoint, qs.stringify(data))

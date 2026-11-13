@@ -8,30 +8,23 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [16]
+        node-version: [20, 22, 24]
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
+    - uses: pnpm/action-setup@v4
+      with:
+        version: 10.34.9
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
+      uses: actions/setup-node@v4
       with:
         node-version: ${{ matrix.node-version }}
-    - name: Cache pnpm modules
-      uses: actions/cache@v2
-      with:
-        path: ~/.pnpm-store
-        key: ${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
-        restore-keys: |
-          ${{ runner.os }}-
+        cache: pnpm
 
-    - uses: pnpm/action-setup@v2.0.1
-      with:
-        version: 6.0.2
-        run_install: true
-
-    - run: make prism-start
-    - run: pnpm install
+    - run: pnpm install --frozen-lockfile
     - run: pnpm build
-    - run: pnpm test
+    - run: pnpm exec eslint packages
+    - run: pnpm exec tsc --noEmit -p tsconfig.json
+    - run: pnpm coverage
       env:
         CI: true

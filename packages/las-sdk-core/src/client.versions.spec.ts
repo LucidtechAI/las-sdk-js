@@ -4,25 +4,12 @@
 
 import axios from 'axios';
 
-import { Client } from './client';
-import { Credentials, Token } from './credentials';
+import { getTestClient, testEndpoint } from './helpers';
 
-// Not helpers.getTestClient: helpers imports uuid, an ES module jest doesn't load. Requests are stubbed here anyway.
-class StubCredentials extends Credentials {
-  constructor(apiEndpoint: string) {
-    super(apiEndpoint);
-  }
-
-  getToken(): Promise<Token> {
-    return Promise.resolve(new Token('testAccessToken', Date.now() + 3600 * 1000, 'testRefreshToken'));
-  }
-}
-
-const apiEndpoint = 'http://localhost:4010';
-let client = new Client(new StubCredentials(apiEndpoint));
+let client = getTestClient();
 
 beforeEach(() => {
-  client = new Client(new StubCredentials(apiEndpoint));
+  client = getTestClient();
 });
 
 afterEach(() => {
@@ -88,7 +75,7 @@ describe('Versions and aliases', () => {
     await client.setAgentAlias('cradl:agent:abc', 'prod', { resourceVersion: 2, environmentId: 'env-0123456789ab' });
     await client.setAgentAlias('cradl:agent:abc', 'prod', { resourceVersion: 2, environmentId: null });
 
-    const url = `${apiEndpoint}/agents/cradl:agent:abc/aliases/prod`;
+    const url = `${testEndpoint}/agents/cradl:agent:abc/aliases/prod`;
     expect(put).toHaveBeenNthCalledWith(
       1,
       url,
@@ -102,7 +89,7 @@ describe('Versions and aliases', () => {
     const post = jest.spyOn(axios, 'post').mockResolvedValue({ data: {} });
 
     await client.createAgentVersion('cradl:agent:abc');
-    expect(post).toHaveBeenCalledWith(`${apiEndpoint}/agents/cradl:agent:abc/versions`, {}, expect.anything());
+    expect(post).toHaveBeenCalledWith(`${testEndpoint}/agents/cradl:agent:abc/versions`, {}, expect.anything());
   });
 
   test("a version's publishedTime is a Date", async () => {
@@ -125,7 +112,7 @@ describe('Qualified and organization-named IDs in paths', () => {
     const get = jest.spyOn(axios, 'get').mockResolvedValue({ data: {} });
 
     await client.getAgent(agentId);
-    expect(get).toHaveBeenCalledWith(`${apiEndpoint}${path}`, expect.anything());
+    expect(get).toHaveBeenCalledWith(`${testEndpoint}${path}`, expect.anything());
   });
 
   test("an ID naming its organization has its '/' encoded", async () => {
@@ -133,7 +120,7 @@ describe('Qualified and organization-named IDs in paths', () => {
 
     await client.getFunction('cradl:organization:cradl/cradl:function:abc:@prod');
     expect(get).toHaveBeenCalledWith(
-      `${apiEndpoint}/functions/cradl:organization:cradl%2Fcradl:function:abc:@prod`,
+      `${testEndpoint}/functions/cradl:organization:cradl%2Fcradl:function:abc:@prod`,
       expect.anything(),
     );
   });
@@ -148,10 +135,10 @@ describe('Agents', () => {
 
     expect(del).toHaveBeenNthCalledWith(
       1,
-      `${apiEndpoint}/agents/cradl:agent:abc?deleteResources=true`,
+      `${testEndpoint}/agents/cradl:agent:abc?deleteResources=true`,
       expect.anything(),
     );
-    expect(del).toHaveBeenNthCalledWith(2, `${apiEndpoint}/agents/cradl:agent:abc`, expect.anything());
+    expect(del).toHaveBeenNthCalledWith(2, `${testEndpoint}/agents/cradl:agent:abc`, expect.anything());
   });
 
   test('updateAgent sends environments and the draft environment', async () => {

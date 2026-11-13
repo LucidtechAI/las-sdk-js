@@ -42,6 +42,11 @@
 - `createAppClient` creates app clients with a secret, and doesn't take `generateSecret`, `callbackUrls`, `loginUrls`,
   `logoutUrls` or `defaultLoginUrl`: they only configured public app clients, a legacy of Cognito
 
+- Fix `listAgentRuns` and `getAgentStatistics` throwing a `TypeError` when called without options
+- Fix a `requestConfig` with `headers` dropping the `Authorization` header: its headers are added to it
+- Fix `makeFileServerPutRequest` throwing after the upload when called without headers, and writing `data` into the
+  options it was given
+
 ## Version 14.0.1 - 2023-11-06
 
 - Fix `secretId` typo in `Secret` type
