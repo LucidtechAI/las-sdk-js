@@ -1,4 +1,4 @@
-import { JSONObject, PaginationOptions, RequestConfig } from './common';
+import { JSONObject, OrderParam, PaginationOptions, RequestConfig } from './common';
 
 export type Log = {
   /* Id */
@@ -12,5 +12,5 @@ export type LogList = {
   nextToken?: string | null;
 };
 
-export type ListLogsOptions = RequestConfig & PaginationOptions;
+export type ListLogsOptions = RequestConfig & PaginationOptions & OrderParam;
 export type GetLogOptions = RequestConfig;

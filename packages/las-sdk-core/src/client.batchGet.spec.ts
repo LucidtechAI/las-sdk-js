@@ -2,24 +2,12 @@
  * @jest-environment node
  */
 
-import { Client } from './client';
-import { Credentials, Token } from './credentials';
+import { getTestClient } from './helpers';
 
-// Not helpers.getTestClient: helpers imports uuid, an ES module jest doesn't load. Requests are stubbed here anyway.
-class StubCredentials extends Credentials {
-  constructor(apiEndpoint: string) {
-    super(apiEndpoint);
-  }
-
-  getToken(): Promise<Token> {
-    return Promise.resolve(new Token('testAccessToken', Date.now() + 3600 * 1000, 'testRefreshToken'));
-  }
-}
-
-let client = new Client(new StubCredentials('http://localhost:4010'));
+let client = getTestClient();
 
 beforeEach(() => {
-  client = new Client(new StubCredentials('http://localhost:4010'));
+  client = getTestClient();
 });
 
 afterEach(() => {

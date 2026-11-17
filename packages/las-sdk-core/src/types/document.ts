@@ -43,6 +43,8 @@ export type ListDocumentsOptions = RequestConfig &
   OrderParam & {
     consentId?: string | Array<string>;
     datasetId?: string | Array<string>;
+    /* Only these documents */
+    documentId?: string | Array<string>;
     sortBy?: 'createdTime';
   };
 

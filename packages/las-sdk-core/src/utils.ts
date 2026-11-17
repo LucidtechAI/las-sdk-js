@@ -1,6 +1,6 @@
 import { Base64 } from 'js-base64';
 
-export type BuildURLParams = Record<string, undefined | string | Array<string> | number>;
+export type BuildURLParams = Record<string, undefined | string | Array<string> | number | boolean>;
 
 export function buildURL(url: string, params?: BuildURLParams): string {
   if (!params || Object.keys(params).length === 0) {
@@ -14,7 +14,7 @@ export function buildURL(url: string, params?: BuildURLParams): string {
       return;
     }
 
-    if (typeof value === 'number') {
+    if (typeof value === 'number' || typeof value === 'boolean') {
       searchParams.set(key, value.toString());
       return;
     }
@@ -37,6 +37,14 @@ export function buildURL(url: string, params?: BuildURLParams): string {
   }
 
   return `${url}?${searchParams}`;
+}
+
+/**
+ * A resource ID as a path segment. An ID naming its organization ('cradl:organization:cradl/cradl:function:x') has a
+ * '/', which is encoded. A version (':3'), alias (':@prod') or ':$latest' qualifier is kept as it is.
+ */
+export function pathId(resourceId: string): string {
+  return encodeURIComponent(resourceId).replace(/%3A/gi, ':').replace(/%24/g, '$').replace(/%40/g, '@');
 }
 
 export function wait(ms: number): Promise<void> {

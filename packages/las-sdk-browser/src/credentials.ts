@@ -9,14 +9,10 @@ export class TokenCredentials extends Credentials {
   }
 
   getAccessToken(): Promise<string> {
-    return new Promise<string>((resolve, reject) => {
-      resolve(this.token.accessToken);
-    });
+    return Promise.resolve(this.token.accessToken);
   }
 
   protected getToken(): Promise<Token> {
-    return new Promise<Token>((resolve, reject) => {
-      resolve(this.token);
-    });
+    return Promise.resolve(this.token);
   }
 }

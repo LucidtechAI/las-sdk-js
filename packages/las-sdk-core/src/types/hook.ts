@@ -2,12 +2,26 @@ import { JSONObject, OptionsOmit, PaginationOptions, RequestConfig } from './com
 
 export const TriggerValues = [
   'ActionRun has Completed',
+  'ActionRun has Failed',
+  'ActionRun has Succeeded',
   'Document is Created',
+  'Email is Received',
   'Prediction is Created',
   'ValidationTask has Completed',
   'ValidationTask is Created',
 ] as const;
 export type Trigger = (typeof TriggerValues)[number];
+
+/* The triggers a hook can be created with */
+export const CreateHookTriggerValues = [
+  'ActionRun has Completed',
+  'ActionRun has Failed',
+  'ActionRun has Succeeded',
+  'Document is Created',
+  'Prediction is Created',
+  'ValidationTask has Completed',
+] as const;
+export type CreateHookTrigger = (typeof CreateHookTriggerValues)[number];
 
 export type Hook = {
   /* Id */
@@ -45,7 +59,7 @@ export type ListHooksOptions = RequestConfig &
   };
 export type GetHookOptions = RequestConfig;
 export type CreateHookOptions = RequestConfig &
-  OptionsOmit<Hook, 'hookId'> &
-  Pick<Hook, 'functionId' | 'config' | 'trigger'>;
+  OptionsOmit<Hook, 'hookId' | 'trigger'> &
+  Pick<Hook, 'functionId' | 'config'> & { trigger: CreateHookTrigger };
 export type UpdateHookOptions = RequestConfig & OptionsOmit<Hook, 'hookId' | 'agentId'>;
 export type DeleteHookOptions = RequestConfig;

@@ -25,7 +25,7 @@ export const toGetAgentStatisticsQueryParams = (options?: GetAgentStatisticsOpti
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   const params: Record<string, any> = {};
 
-  for (const [key, val] of Object.entries(options)) {
+  for (const [key, val] of Object.entries(options ?? {})) {
     switch (key) {
       case 'after':
       case 'before':
@@ -43,4 +43,3 @@ export const toGetAgentStatisticsQueryParams = (options?: GetAgentStatisticsOpti
 
   return params;
 };
-

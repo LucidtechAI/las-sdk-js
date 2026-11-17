@@ -1,15 +1,34 @@
-import { JSONObject, OptionsOmit, PaginationOptions, RequestConfig } from './common';
+import { Alias, JSONObject, JSONValue, PaginationOptions, RequestConfig, SetAliasOptions } from './common';
+
+export type AgentEnvironmentVariable = {
+  name: string;
+  value: JSONValue;
+  description?: string | null;
+};
+
+export type AgentEnvironment = {
+  id: string;
+  name: string;
+  variables: AgentEnvironmentVariable[];
+};
 
 export type Agent = {
   /* Id */
   id: string;
+  /* Qualified with the version (`<id>:3`) on a published version */
   agentId: string;
   /* Attributes */
   createdBy: string;
   createdTime: Date;
   description?: string | null;
+  /* The environment the draft runs with */
+  draftEnvironmentId?: string | null;
+  environments?: AgentEnvironment[];
   metadata: JSONObject;
   name?: string | null;
+  /* Set on a published version */
+  publishedBy?: string | null;
+  publishedTime?: Date | null;
   resourceIds: string[];
   status: 'active' | 'inactive';
   updatedBy?: string | null;
@@ -23,9 +42,45 @@ export type AgentList = {
 
 export type ListAgentsOptions = RequestConfig & PaginationOptions;
 export type GetAgentOptions = RequestConfig;
-export type CreateAgentOptions = RequestConfig & OptionsOmit<Agent, 'agentId' | 'resourceIds'>;
-export type UpdateAgentOptions = RequestConfig & OptionsOmit<Agent, 'agentId' | 'resourceIds'>;
-export type DeleteAgentOptions = RequestConfig;
+export type CreateAgentOptions = RequestConfig & Pick<Partial<Agent>, 'description' | 'metadata' | 'name'>;
+export type UpdateAgentOptions = RequestConfig &
+  Pick<Partial<Agent>, 'description' | 'metadata' | 'name'> & {
+    /* Replaces the agent's environments. An environment without an id is added */
+    environments?: Array<Omit<AgentEnvironment, 'id'> & { id?: string }>;
+    /* The environment the draft runs with: null clears it */
+    draftEnvironmentId?: string | null;
+  };
+export type DeleteAgentOptions = RequestConfig & {
+  /* Also delete the agent's hooks, actions, models and validations */
+  deleteResources?: boolean;
+};
+
+/* Published versions, newest first: each is the agent as it was published */
+export type AgentVersionList = {
+  versions: Agent[];
+  nextToken?: string | null;
+};
+
+export type AgentAlias = Alias & {
+  /* Qualified with the version the alias points to */
+  agentId: string;
+  /* The environment runs of the alias run with */
+  environmentId?: string | null;
+};
+
+export type AgentAliasList = {
+  aliases: AgentAlias[];
+};
+
+export type ListAgentVersionsOptions = RequestConfig & PaginationOptions;
+export type CreateAgentVersionOptions = RequestConfig;
+export type ListAgentAliasesOptions = RequestConfig;
+export type GetAgentAliasOptions = RequestConfig;
+export type SetAgentAliasOptions = SetAliasOptions & {
+  /* The environment runs of the alias run with: null clears it, and leaving it out keeps the alias's */
+  environmentId?: string | null;
+};
+export type DeleteAgentAliasOptions = RequestConfig;
 
 /* GET /agents/:id/graph: the agent's resources and how they connect */
 export type AgentGraphNodeType = 'action' | 'function' | 'hook' | 'model' | 'validation';

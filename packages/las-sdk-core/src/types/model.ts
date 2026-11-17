@@ -1,10 +1,12 @@
 import {
+  Alias,
   JSONObject,
   OptionsOmit,
   PaginationOptions,
   PostprocessConfig,
   PreprocessConfig,
   RequestConfig,
+  SetAliasOptions,
 } from './common';
 
 export type EnumValue = { value: string; description: string };
@@ -12,14 +14,11 @@ export type EnumValue = { value: string; description: string };
 export const FieldTypeValues = ['single-value', 'multi-value', 'table'] as const;
 export type FieldType = (typeof FieldTypeValues)[number];
 
-export const LlmVersionValues = [
-  'sonnet-3.7',
-  'sonnet-4.5',
-  'sonnet-4.6',
-  'sonnet-5',
-  'sonnet-5.5',
-  'qwen3-vl',
-] as const;
+/* No longer supported: a model can still have one, but can't be created or updated with it */
+export const DeprecatedLlmVersionValues = ['haiku-5.5'] as const;
+export type DeprecatedLlmVersion = (typeof DeprecatedLlmVersionValues)[number];
+
+export const LlmVersionValues = ['sonnet-4.6', 'sonnet-5', 'sonnet-5.5', 'qwen3-vl'] as const;
 export type LlmVersion = (typeof LlmVersionValues)[number];
 
 export const ConditionOperatorValues = ['all', 'any', 'none'] as const;
@@ -81,6 +80,7 @@ export type FieldConfig = Record<string, Field>;
 
 export type Model = {
   /* Id */
+  /* Qualified with the version (`<id>:3`) on a published version */
   modelId: string;
   /* Attributes */
   /* The agent it belongs to: set when it's created (agentId on create), it leaves the agent when deleted */
@@ -90,11 +90,14 @@ export type Model = {
   createdTime: Date;
   description?: string | null;
   fieldConfig: FieldConfig;
-  llmVersion?: LlmVersion | null;
+  llmVersion?: LlmVersion | DeprecatedLlmVersion | null;
   metadata: JSONObject;
   name?: string | null;
   postprocessConfig: PostprocessConfig;
   preprocessConfig: PreprocessConfig;
+  /* Set on a published version */
+  publishedBy?: string | null;
+  publishedTime?: Date | null;
   updatedBy?: string | null;
   updatedTime?: Date | null;
 };
@@ -112,6 +115,31 @@ export type ListModelsOptions = RequestConfig &
     modelId?: string | Array<string>;
   };
 export type GetModelOptions = RequestConfig;
-export type CreateModelOptions = RequestConfig & OptionsOmit<Model, 'modelId'> & Pick<Model, 'fieldConfig'>;
-export type UpdateModelOptions = RequestConfig & OptionsOmit<Model, 'modelId' | 'agentId'>;
+export type CreateModelOptions = RequestConfig &
+  OptionsOmit<Model, 'modelId' | 'llmVersion'> &
+  Pick<Model, 'fieldConfig'> & { llmVersion?: LlmVersion | null };
+export type UpdateModelOptions = RequestConfig &
+  OptionsOmit<Model, 'modelId' | 'agentId' | 'llmVersion'> & { llmVersion?: LlmVersion | null };
 export type DeleteModelOptions = RequestConfig;
+
+/* Published versions, newest first: each is the model as it was published */
+export type ModelVersionList = {
+  versions: Model[];
+  nextToken?: string | null;
+};
+
+export type ModelAlias = Alias & {
+  /* Qualified with the version the alias points to */
+  modelId: string;
+};
+
+export type ModelAliasList = {
+  aliases: ModelAlias[];
+};
+
+export type ListModelVersionsOptions = RequestConfig & PaginationOptions;
+export type CreateModelVersionOptions = RequestConfig;
+export type ListModelAliasesOptions = RequestConfig;
+export type GetModelAliasOptions = RequestConfig;
+export type SetModelAliasOptions = SetAliasOptions;
+export type DeleteModelAliasOptions = RequestConfig;

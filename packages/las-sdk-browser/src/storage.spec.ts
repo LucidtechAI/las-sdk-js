@@ -1,6 +1,7 @@
 import { Token } from '@lucidtech/las-sdk-core';
-import { SessionStorage } from './storage';
+
 import { MockStorage } from './helpers';
+import { SessionStorage } from './storage';
 
 it('Tests getting and setting token in session storage', () => {
   const mockStorage = new MockStorage();
@@ -16,4 +17,16 @@ it('Tests getting and setting token in session storage', () => {
   expect(persistentToken!.accessToken).toEqual('testAccessToken');
   expect(persistentToken!.expiration).toEqual(1);
   expect(persistentToken!.refreshToken).toEqual('testRefreshToken');
+});
+
+it('Tests that a missing or incomplete token in session storage is no token', () => {
+  const mockStorage = new MockStorage();
+  Storage.prototype.getItem = jest.fn((key: string) => mockStorage.getItem(key));
+  Storage.prototype.setItem = jest.fn((key: string, value: string) => mockStorage.setItem(key, value));
+
+  const storage = new SessionStorage('token');
+  expect(storage.getPersistentToken()).toBe(null);
+
+  mockStorage.setItem('token', JSON.stringify({ accessToken: 'testAccessToken', expiration: 1 }));
+  expect(storage.getPersistentToken()).toBe(null);
 });

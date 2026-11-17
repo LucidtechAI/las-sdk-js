@@ -1,6 +1,6 @@
 import { JSONObject, OptionsOmit, PaginationOptions, RequestConfig } from './common';
 
-export const HookStatusValues = ['failed', 'running', 'succeeded'] as const;
+export const HookStatusValues = ['failed', 'ignored', 'running', 'succeeded'] as const;
 export type HookStatus = (typeof HookStatusValues)[number];
 
 export type HookRun = {
@@ -32,6 +32,7 @@ export type ListHookRunsOptions = RequestConfig & PaginationOptions;
 export type GetHookRunOptions = RequestConfig;
 export type CreateHookRunOptions = RequestConfig &
   OptionsOmit<HookRun, 'hookId' | 'runId' | 'logId'> &
-  Pick<HookRun, 'input' | 'agentRunId'>;
-export type UpdateHookRunOptions = RequestConfig & Pick<Partial<HookRun>, 'output' | 'metadata'>;
+  Pick<HookRun, 'input'>;
+export type UpdateHookRunOptions = RequestConfig &
+  Pick<Partial<HookRun>, 'output' | 'metadata'> & { status?: Exclude<HookStatus, 'running'> };
 export type DeleteHookRunOptions = RequestConfig;

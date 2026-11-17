@@ -1,9 +1,7 @@
-import { v4 as uuidv4 } from 'uuid';
-
-import { Credentials, Token } from './credentials';
 import { Client } from './client';
+import { Credentials, Token } from './credentials';
 
-const endpoint = 'http://localhost:4010';
+export const testEndpoint = 'http://localhost:4010';
 
 export class TestCredentials extends Credentials {
   testAccessToken: string;
@@ -21,22 +19,14 @@ export class TestCredentials extends Credentials {
   }
 
   getToken(): Promise<Token> {
-    return new Promise<Token>((resolve, _reject) => {
-      resolve(new Token(this.testAccessToken, this.testExpiration, this.testRefreshToken));
-    });
+    return Promise.resolve(new Token(this.testAccessToken, this.testExpiration, this.testRefreshToken));
   }
-}
-
-export const uuidWithoutDashes = () => uuidv4().replace(/-/g, '');
-
-export function sleep(seconds: number) {
-  return new Promise((resolve) => setTimeout(resolve, 1000 * seconds));
 }
 
 export function getTestClient() {
   const testAccessToken = 'testAccessToken';
   const testExpiresInSeconds = 3600;
   const testRefreshToken = 'testRefreshToken';
-  const credentials = new TestCredentials(endpoint, testAccessToken, testExpiresInSeconds, testRefreshToken);
+  const credentials = new TestCredentials(testEndpoint, testAccessToken, testExpiresInSeconds, testRefreshToken);
   return new Client(credentials);
 }

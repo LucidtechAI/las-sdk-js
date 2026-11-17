@@ -1,71 +1,25 @@
-import { v4 as uuidv4 } from 'uuid';
-import functions, { AuthorizationCodeCredentials, PKCE, PKCEDerived } from './credentials';
+import { Client } from '@lucidtech/las-sdk-core';
+import axios from 'axios';
 
-function getCredentials(testLaunchUri: (arg0: string) => void, pkce?: PKCEDerived) {
-  const testApiEndpoint = 'http://localhost:4010';
-  const testClientId = 'testClientId';
-  const testAuthEndpoint = 'http://localhost:4010';
-  const testRedirectUri = 'testRedirectUri';
+import { TokenCredentials } from './credentials';
 
-  return new AuthorizationCodeCredentials(
-    testApiEndpoint,
-    testClientId,
-    testAuthEndpoint,
-    testRedirectUri,
-    testLaunchUri,
-    pkce,
-  );
-}
+afterEach(() => {
+  jest.restoreAllMocks();
+});
 
-test('Testing randomString', () => {
-  const getRandomValues = (buffer: any): any => {
-    for (let i = 0; i < buffer.byteLength; i += 1) {
-      buffer[i] = Math.floor(256 * Math.random());
-    }
-  };
+describe('TokenCredentials', () => {
+  test('authorizes requests with the access token it was given', async () => {
+    const credentials = new TokenCredentials('http://localhost:4010', 'accessToken', 'cradl:organization:a');
+    const get = jest.spyOn(axios, 'get').mockResolvedValue({ data: {}, headers: {} });
 
-  Object.defineProperty(window, 'crypto', {
-    value: {
-      getRandomValues() {
-        return;
-      },
-    },
+    await expect(credentials.getAccessToken()).resolves.toBe('accessToken');
+    await new Client(credentials).getAgent('cradl:agent:a');
+
+    expect(credentials.organizationId).toBe('cradl:organization:a');
+    // It has no other token to get
+    await expect(credentials['getToken']()).resolves.toEqual(expect.objectContaining({ accessToken: 'accessToken' }));
+    expect(get).toHaveBeenCalledWith('http://localhost:4010/agents/cradl:agent:a', {
+      headers: { Authorization: 'Bearer accessToken' },
+    });
   });
-
-  jest.spyOn(window.crypto, 'getRandomValues').mockImplementation(getRandomValues);
-  expect(window.crypto.getRandomValues).not.toHaveBeenCalled();
-
-  const alphabet = PKCE.CODE_CHALLENGE_ALPHABET;
-  const size = 4096;
-
-  const s = functions.randomString(alphabet, size);
-  expect(s).toHaveLength(size);
-  expect(s.replace(new RegExp(`[${alphabet}]`, 'g'), '')).toHaveLength(0);
-
-  expect(window.crypto.getRandomValues).toHaveBeenCalled();
-  jest.clearAllMocks();
-});
-
-test('Testing initiateOAuthFlow', async () => {
-  const randomStringMock = (a: string, b: number) => uuidv4();
-  jest.spyOn(functions, 'randomString').mockImplementation(randomStringMock);
-
-  const testLaunchUri = jest.fn();
-  const credentials = getCredentials(testLaunchUri);
-  credentials.initiateOAuthFlow();
-  expect(testLaunchUri).toHaveBeenCalled();
-
-  jest.clearAllMocks();
-});
-
-test('Testing initiateLogoutFlow', async () => {
-  const randomStringMock = (a: string, b: number) => uuidv4();
-  jest.spyOn(functions, 'randomString').mockImplementation(randomStringMock);
-
-  const testLaunchUri = jest.fn();
-  const credentials = getCredentials(testLaunchUri);
-  credentials.initiateLogoutFlow();
-  expect(testLaunchUri).toHaveBeenCalled();
-
-  jest.clearAllMocks();
 });

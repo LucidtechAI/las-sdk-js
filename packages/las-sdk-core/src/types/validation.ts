@@ -37,8 +37,10 @@ export type Validation = {
   config: ValidationConfig;
   createdBy: string;
   createdTime: Date;
+  description?: string | null;
   enabled: boolean;
   metadata: JSONObject;
+  name?: string | null;
   updatedBy?: string | null;
   updatedTime?: Date | null;
 };
