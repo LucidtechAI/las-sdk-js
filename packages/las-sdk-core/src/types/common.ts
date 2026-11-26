@@ -85,3 +85,60 @@ export type SetAliasOptions = RequestConfig & {
   /* The version the alias points to */
   resourceVersion: number;
 };
+
+export const RestoreStatusValues = ['failed', 'running', 'succeeded'] as const;
+export type RestoreStatus = (typeof RestoreStatusValues)[number];
+
+/* A Function of restored steps that something outside the restore also uses: those steps were pointed at the
+   Function's version instead of having the Function's draft restored in place */
+export type RestoreSharedFunction = {
+  functionId: string;
+  /* The restored steps that use it */
+  usedBy: string[];
+};
+
+/* The resources a restore changed, or for a dry run would change */
+export type RestoreChanges = {
+  /* Resources whose settings were replaced by the version's */
+  updated: string[];
+  /* Resources deleted since the version, brought back */
+  undeleted: string[];
+  /* Resources of the draft that aren't in the version */
+  deleted: string[];
+  sharedFunctions: RestoreSharedFunction[];
+};
+
+/* A restore of a published version of an agent, a model or a function into its draft. Restores can't be changed */
+export type Restore = {
+  /* null for a dry run, which isn't stored */
+  restoreId: string | null;
+  /* The restored draft */
+  resourceId: string;
+  /* The version as requested: `<id>:3`, `<id>:@prod` or `<id>:$latest` */
+  sourceId: string;
+  /* The version sourceId resolved to: `<id>:3` */
+  resolvedSourceId: string;
+  dryRun: boolean;
+  /* null for a dry run */
+  status: RestoreStatus | null;
+  /* Why it failed */
+  error?: string | null;
+  changes: RestoreChanges;
+  /* null for a dry run */
+  createdBy: string | null;
+  createdTime: Date | null;
+  updatedTime: Date | null;
+};
+
+/* Restores, newest first */
+export type RestoreList = {
+  restores: Restore[];
+  nextToken?: string | null;
+};
+
+export type CreateRestoreOptions = RequestConfig & {
+  /* The version to restore: `<id>:3`, an alias (`<id>:@prod`) or `<id>:$latest` */
+  sourceId: string;
+  /* Compute what the restore would change, without changing anything or storing the restore */
+  dryRun?: boolean;
+};

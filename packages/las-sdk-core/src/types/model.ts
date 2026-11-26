@@ -1,5 +1,6 @@
 import {
   Alias,
+  CreateRestoreOptions,
   JSONObject,
   OptionsOmit,
   PaginationOptions,
@@ -143,3 +144,7 @@ export type ListModelAliasesOptions = RequestConfig;
 export type GetModelAliasOptions = RequestConfig;
 export type SetModelAliasOptions = SetAliasOptions;
 export type DeleteModelAliasOptions = RequestConfig;
+
+export type CreateModelRestoreOptions = CreateRestoreOptions;
+export type ListModelRestoresOptions = RequestConfig & PaginationOptions;
+export type GetModelRestoreOptions = RequestConfig;

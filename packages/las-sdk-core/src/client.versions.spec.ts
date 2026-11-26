@@ -66,6 +66,27 @@ describe('Versions and aliases', () => {
       await call('delete$Alias', 'prod');
       expect(del).toHaveBeenCalledWith(`/${path}/${id}/aliases/prod`, undefined);
     });
+
+    test('create$Restore sends the version and dryRun with POST /:id/restores', async () => {
+      const post = jest.spyOn(client, 'makePostRequest').mockResolvedValue({});
+
+      await call('create$Restore', { sourceId: `${id}:@prod`, dryRun: true });
+      expect(post).toHaveBeenCalledWith(`/${path}/${id}/restores`, { sourceId: `${id}:@prod`, dryRun: true });
+    });
+
+    test('list$Restores requests GET /:id/restores', async () => {
+      const get = jest.spyOn(client, 'makeGetRequest').mockResolvedValue({ restores: [], nextToken: null });
+
+      await call('list$Restores', { maxResults: 5, nextToken: 'token' });
+      expect(get).toHaveBeenCalledWith(`/${path}/${id}/restores`, { maxResults: 5, nextToken: 'token' });
+    });
+
+    test('get$Restore requests GET /:id/restores/:restoreId', async () => {
+      const get = jest.spyOn(client, 'makeGetRequest').mockResolvedValue({});
+
+      await call('get$Restore', 'cradl:restore:0123');
+      expect(get).toHaveBeenCalledWith(`/${path}/${id}/restores/cradl:restore:0123`, undefined);
+    });
     /* eslint-enable @typescript-eslint/no-explicit-any */
   });
 
@@ -100,6 +121,76 @@ describe('Versions and aliases', () => {
 
     const { versions } = await client.listAgentVersions('cradl:agent:abc');
     expect(versions[0].publishedTime).toEqual(new Date(publishedTime));
+  });
+});
+
+describe('Restores', () => {
+  const changes = { updated: [], undeleted: [], deleted: [], sharedFunctions: [] };
+
+  test('createAgentRestore sends the version without dryRun when not given', async () => {
+    const post = jest.spyOn(axios, 'post').mockResolvedValue({ data: {} });
+
+    await client.createAgentRestore('cradl:agent:abc', { sourceId: 'cradl:agent:abc:3' });
+    expect(post).toHaveBeenCalledWith(
+      `${testEndpoint}/agents/cradl:agent:abc/restores`,
+      { sourceId: 'cradl:agent:abc:3' },
+      expect.anything(),
+    );
+  });
+
+  test("a restore's createdTime and updatedTime are Dates", async () => {
+    const createdTime = '2026-11-26T10:00:00.123456+0000';
+    const updatedTime = '2026-11-26T10:00:01.5Z';
+    const restore = {
+      restoreId: 'cradl:restore:0123',
+      resourceId: 'cradl:agent:abc',
+      sourceId: 'cradl:agent:abc:@prod',
+      resolvedSourceId: 'cradl:agent:abc:3',
+      dryRun: false,
+      status: 'succeeded',
+      error: null,
+      changes: {
+        updated: ['cradl:action:a'],
+        undeleted: [],
+        deleted: [],
+        sharedFunctions: [{ functionId: 'cradl:function:f', usedBy: ['cradl:action:a'] }],
+      },
+      createdBy: 'cradl:user:u',
+      createdTime,
+      updatedTime,
+    };
+    jest.spyOn(axios, 'get').mockResolvedValue({ data: { restores: [restore], nextToken: null } });
+
+    const { restores } = await client.listAgentRestores('cradl:agent:abc');
+    expect(restores[0]).toEqual({ ...restore, createdTime: new Date(createdTime), updatedTime: new Date(updatedTime) });
+  });
+
+  test('a dry run has no ID, status or timestamps', async () => {
+    const dryRun = {
+      restoreId: null,
+      resourceId: 'cradl:model:abc',
+      sourceId: 'cradl:model:abc:$latest',
+      resolvedSourceId: 'cradl:model:abc:2',
+      dryRun: true,
+      status: null,
+      error: null,
+      changes,
+      createdBy: null,
+      createdTime: null,
+      updatedTime: null,
+    };
+    jest.spyOn(axios, 'post').mockResolvedValue({ data: dryRun });
+
+    await expect(
+      client.createModelRestore('cradl:model:abc', { sourceId: 'cradl:model:abc:$latest', dryRun: true }),
+    ).resolves.toEqual(dryRun);
+  });
+
+  test('createFunctionRestore takes a version to restore', async () => {
+    jest.spyOn(client, 'makePostRequest').mockResolvedValue({});
+
+    // @ts-expect-error sourceId is required
+    await client.createFunctionRestore('cradl:function:abc', { dryRun: true });
   });
 });
 

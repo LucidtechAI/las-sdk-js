@@ -25,16 +25,19 @@ import type {
   CreateActionOptions,
   CreateActionRunOptions,
   CreateAgentOptions,
+  CreateAgentRestoreOptions,
   CreateAgentRunOptions,
   CreateAgentVersionOptions,
   CreateAppClientOptions,
   CreateConnectionOptions,
   CreateDocumentOptions,
   CreateFunctionOptions,
+  CreateFunctionRestoreOptions,
   CreateFunctionVersionOptions,
   CreateHookOptions,
   CreateHookRunOptions,
   CreateModelOptions,
+  CreateModelRestoreOptions,
   CreateModelVersionOptions,
   CreateOrganizationOptions,
   CreatePaymentMethodOptions,
@@ -77,6 +80,7 @@ import type {
   GetAgentAliasOptions,
   GetAgentGraphOptions,
   GetAgentOptions,
+  GetAgentRestoreOptions,
   GetAgentRunOptions,
   GetAgentStatisticsOptions,
   GetAppClientOptions,
@@ -84,12 +88,14 @@ import type {
   GetDocumentOptions,
   GetFunctionAliasOptions,
   GetFunctionOptions,
+  GetFunctionRestoreOptions,
   GetHookOptions,
   GetHookRunOptions,
   GetInvoiceOptions,
   GetLogOptions,
   GetModelAliasOptions,
   GetModelOptions,
+  GetModelRestoreOptions,
   GetOrganizationOptions,
   GetPaymentMethodOptions,
   GetPlanOptions,
@@ -110,6 +116,7 @@ import type {
   ListActionRunsOptions,
   ListActionsOptions,
   ListAgentAliasesOptions,
+  ListAgentRestoresOptions,
   ListAgentRunsOptions,
   ListAgentsOptions,
   ListAgentVersionsOptions,
@@ -117,6 +124,7 @@ import type {
   ListConnectionsOptions,
   ListDocumentsOptions,
   ListFunctionAliasesOptions,
+  ListFunctionRestoresOptions,
   ListFunctionsOptions,
   ListFunctionVersionsOptions,
   ListHookRunsOptions,
@@ -124,6 +132,7 @@ import type {
   ListInvoicesOptions,
   ListLogsOptions,
   ListModelAliasesOptions,
+  ListModelRestoresOptions,
   ListModelsOptions,
   ListModelVersionsOptions,
   ListOrganizationsOptions,
@@ -151,6 +160,8 @@ import type {
   Prediction,
   PredictionList,
   Profile,
+  Restore,
+  RestoreList,
   Role,
   RoleList,
   Secret,
@@ -490,6 +501,9 @@ export class Client {
    * - getFunctionAlias
    * - setFunctionAlias
    * - deleteFunctionAlias
+   * - createFunctionRestore
+   * - listFunctionRestores
+   * - getFunctionRestore
    */
 
   /**
@@ -610,6 +624,44 @@ export class Client {
     options?: DeleteFunctionAliasOptions,
   ): Promise<FunctionAlias> {
     return this.makeDeleteRequest<FunctionAlias>(`/functions/${pathId(functionId)}/aliases/${pathId(alias)}`, options);
+  }
+
+  /**
+   * Restore a published version of a function into its draft, calls the POST /functions/:id/restores endpoint.
+   * The draft becomes as exact a copy of the version as possible. With `dryRun`, nothing is written and no restore
+   * is stored: the response shows what the restore would change.
+   * @param functionId Id of the function's draft, unqualified
+   * @param options Object with the version to restore, `sourceId`: `<id>:3`, an alias (`<id>:@prod`) or
+   * `<id>:$latest`, and `dryRun`
+   * @returns Restore response from REST API, with what it changed
+   */
+  async createFunctionRestore(functionId: string, options: CreateFunctionRestoreOptions): Promise<Restore> {
+    return this.makePostRequest<Restore>(`/functions/${pathId(functionId)}/restores`, options);
+  }
+
+  /**
+   * List the restores of a function, newest first, calls the GET /functions/:id/restores endpoint.
+   * @param functionId Id of the function
+   * @param options Object with list options
+   * @returns RestoreList response from REST API
+   */
+  async listFunctionRestores(functionId: string, options?: ListFunctionRestoresOptions): Promise<RestoreList> {
+    return this.makeGetRequest<RestoreList>(`/functions/${pathId(functionId)}/restores`, options);
+  }
+
+  /**
+   * Get a restore of a function, calls the GET /functions/:id/restores/:restoreId endpoint.
+   * @param functionId Id of the function
+   * @param restoreId Id of the restore
+   * @param options Object with get options
+   * @returns Restore response from REST API
+   */
+  async getFunctionRestore(
+    functionId: string,
+    restoreId: string,
+    options?: GetFunctionRestoreOptions,
+  ): Promise<Restore> {
+    return this.makeGetRequest<Restore>(`/functions/${pathId(functionId)}/restores/${pathId(restoreId)}`, options);
   }
 
   /**
@@ -813,6 +865,9 @@ export class Client {
    * - getModelAlias
    * - setModelAlias
    * - deleteModelAlias
+   * - createModelRestore
+   * - listModelRestores
+   * - getModelRestore
    */
 
   /**
@@ -929,6 +984,40 @@ export class Client {
    */
   async deleteModelAlias(modelId: string, alias: string, options?: DeleteModelAliasOptions): Promise<ModelAlias> {
     return this.makeDeleteRequest<ModelAlias>(`/models/${pathId(modelId)}/aliases/${pathId(alias)}`, options);
+  }
+
+  /**
+   * Restore a published version of a model into its draft, calls the POST /models/:id/restores endpoint.
+   * The draft becomes as exact a copy of the version as possible. With `dryRun`, nothing is written and no restore
+   * is stored: the response shows what the restore would change.
+   * @param modelId Id of the model's draft, unqualified
+   * @param options Object with the version to restore, `sourceId`: `<id>:3`, an alias (`<id>:@prod`) or
+   * `<id>:$latest`, and `dryRun`
+   * @returns Restore response from REST API, with what it changed
+   */
+  async createModelRestore(modelId: string, options: CreateModelRestoreOptions): Promise<Restore> {
+    return this.makePostRequest<Restore>(`/models/${pathId(modelId)}/restores`, options);
+  }
+
+  /**
+   * List the restores of a model, newest first, calls the GET /models/:id/restores endpoint.
+   * @param modelId Id of the model
+   * @param options Object with list options
+   * @returns RestoreList response from REST API
+   */
+  async listModelRestores(modelId: string, options?: ListModelRestoresOptions): Promise<RestoreList> {
+    return this.makeGetRequest<RestoreList>(`/models/${pathId(modelId)}/restores`, options);
+  }
+
+  /**
+   * Get a restore of a model, calls the GET /models/:id/restores/:restoreId endpoint.
+   * @param modelId Id of the model
+   * @param restoreId Id of the restore
+   * @param options Object with get options
+   * @returns Restore response from REST API
+   */
+  async getModelRestore(modelId: string, restoreId: string, options?: GetModelRestoreOptions): Promise<Restore> {
+    return this.makeGetRequest<Restore>(`/models/${pathId(modelId)}/restores/${pathId(restoreId)}`, options);
   }
 
   /**
@@ -1169,6 +1258,9 @@ export class Client {
    * - getAgentAlias
    * - setAgentAlias
    * - deleteAgentAlias
+   * - createAgentRestore
+   * - listAgentRestores
+   * - getAgentRestore
    */
 
   /**
@@ -1307,6 +1399,43 @@ export class Client {
    */
   async deleteAgentAlias(agentId: string, alias: string, options?: DeleteAgentAliasOptions): Promise<AgentAlias> {
     return this.makeDeleteRequest<AgentAlias>(`/agents/${pathId(agentId)}/aliases/${pathId(alias)}`, options);
+  }
+
+  /**
+   * Restore a published version of an agent into its draft, calls the POST /agents/:id/restores endpoint. The
+   * draft becomes as exact a copy of the version as possible: steps that aren't in the version are deleted, steps
+   * deleted since are brought back, and every step's settings are replaced by the version's. A step's Function that
+   * something outside the restore also uses isn't restored in place: the step is pointed at the Function's version
+   * instead (`changes.sharedFunctions`). With `dryRun`, nothing is written and no restore is stored: the response
+   * shows what the restore would change.
+   * @param agentId Id of the agent's draft, unqualified
+   * @param options Object with the version to restore, `sourceId`: `<id>:3`, an alias (`<id>:@prod`) or
+   * `<id>:$latest`, and `dryRun`
+   * @returns Restore response from REST API, with what it changed
+   */
+  async createAgentRestore(agentId: string, options: CreateAgentRestoreOptions): Promise<Restore> {
+    return this.makePostRequest<Restore>(`/agents/${pathId(agentId)}/restores`, options);
+  }
+
+  /**
+   * List the restores of an agent, newest first, calls the GET /agents/:id/restores endpoint.
+   * @param agentId Id of the agent
+   * @param options Object with list options
+   * @returns RestoreList response from REST API
+   */
+  async listAgentRestores(agentId: string, options?: ListAgentRestoresOptions): Promise<RestoreList> {
+    return this.makeGetRequest<RestoreList>(`/agents/${pathId(agentId)}/restores`, options);
+  }
+
+  /**
+   * Get a restore of an agent, calls the GET /agents/:id/restores/:restoreId endpoint.
+   * @param agentId Id of the agent
+   * @param restoreId Id of the restore
+   * @param options Object with get options
+   * @returns Restore response from REST API
+   */
+  async getAgentRestore(agentId: string, restoreId: string, options?: GetAgentRestoreOptions): Promise<Restore> {
+    return this.makeGetRequest<Restore>(`/agents/${pathId(agentId)}/restores/${pathId(restoreId)}`, options);
   }
 
   /**

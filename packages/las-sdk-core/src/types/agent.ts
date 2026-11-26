@@ -1,4 +1,12 @@
-import { Alias, JSONObject, JSONValue, PaginationOptions, RequestConfig, SetAliasOptions } from './common';
+import {
+  Alias,
+  CreateRestoreOptions,
+  JSONObject,
+  JSONValue,
+  PaginationOptions,
+  RequestConfig,
+  SetAliasOptions,
+} from './common';
 
 export type AgentEnvironmentVariable = {
   name: string;
@@ -81,6 +89,10 @@ export type SetAgentAliasOptions = SetAliasOptions & {
   environmentId?: string | null;
 };
 export type DeleteAgentAliasOptions = RequestConfig;
+
+export type CreateAgentRestoreOptions = CreateRestoreOptions;
+export type ListAgentRestoresOptions = RequestConfig & PaginationOptions;
+export type GetAgentRestoreOptions = RequestConfig;
 
 /* GET /agents/:id/graph: the agent's resources and how they connect */
 export type AgentGraphNodeType = 'action' | 'function' | 'hook' | 'model' | 'validation';

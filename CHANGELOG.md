@@ -19,6 +19,12 @@
 - Add aliases: `setAgentAlias`, `setModelAlias` and `setFunctionAlias` (`PUT .../aliases/:alias`) create an alias or
   move it to a version, and `get*Alias`, `list*Aliases` and `delete*Alias`. `setAgentAlias` also takes an
   `environmentId`: `null` clears it, leaving it out keeps the alias's
+- Add restores: `createAgentRestore`, `createModelRestore` and `createFunctionRestore` (`POST .../restores`) restore a
+  version (`sourceId`: `<id>:3`, `<id>:@prod` or `<id>:$latest`) into the draft, making the draft as exact a copy of
+  it as possible; with `dryRun` they write nothing and only return what would change. `list*Restores` and
+  `get*Restore` list and get them. A `Restore` has the version it resolved to, its `status` and its `changes`: the
+  `updated`, `undeleted` and `deleted` resources, and the `sharedFunctions` whose steps were pointed at the
+  Function's version instead of having its draft restored
 - `getAgent`, `getModel`, `getFunction`, `createAgentRun` and `getAgentGraph` take qualified IDs: `<id>:3`,
   `<id>:@prod` or `<id>:$latest`
 - IDs are encoded in request paths, so an ID naming its organization (`cradl:organization:cradl/cradl:function:...`)
