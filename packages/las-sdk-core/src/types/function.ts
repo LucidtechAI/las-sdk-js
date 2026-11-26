@@ -1,5 +1,6 @@
 import {
   Alias,
+  CreateRestoreOptions,
   JSONObject,
   OptionsOmit,
   OrderParam,
@@ -71,3 +72,7 @@ export type ListFunctionAliasesOptions = RequestConfig;
 export type GetFunctionAliasOptions = RequestConfig;
 export type SetFunctionAliasOptions = SetAliasOptions;
 export type DeleteFunctionAliasOptions = RequestConfig;
+
+export type CreateFunctionRestoreOptions = CreateRestoreOptions;
+export type ListFunctionRestoresOptions = RequestConfig & PaginationOptions;
+export type GetFunctionRestoreOptions = RequestConfig;
