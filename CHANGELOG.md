@@ -23,7 +23,7 @@
   version (`sourceId`: `<id>:3`, `<id>:@prod` or `<id>:$latest`) into the draft, making the draft as exact a copy of
   it as possible; with `dryRun` they write nothing and only return what would change. `list*Restores` and
   `get*Restore` list and get them. A `Restore` has the version it resolved to, its `status` and its `changes`: the
-  `updated`, `undeleted` and `deleted` resources, and the `sharedFunctions` whose steps were pointed at the
+  `updated`, `undeleted`, `deleted` and `removed` resources, and the `sharedFunctions` whose steps were pointed at the
   Function's version instead of having its draft restored
 - `getAgent`, `getModel`, `getFunction`, `createAgentRun` and `getAgentGraph` take qualified IDs: `<id>:3`,
   `<id>:@prod` or `<id>:$latest`

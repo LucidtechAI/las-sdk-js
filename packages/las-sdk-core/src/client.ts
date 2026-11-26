@@ -1403,8 +1403,9 @@ export class Client {
 
   /**
    * Restore a published version of an agent into its draft, calls the POST /agents/:id/restores endpoint. The
-   * draft becomes as exact a copy of the version as possible: steps that aren't in the version are deleted, steps
-   * deleted since are brought back, and every step's settings are replaced by the version's. A step's Function that
+   * draft becomes as exact a copy of the version as possible: steps that aren't in the version are deleted (or, if the
+   * agent doesn't own them, only taken out of it: `changes.removed`), steps deleted since are brought back, and every
+   * step's settings are replaced by the version's. A step's Function that
    * something outside the restore also uses isn't restored in place: the step is pointed at the Function's version
    * instead (`changes.sharedFunctions`). With `dryRun`, nothing is written and no restore is stored: the response
    * shows what the restore would change.

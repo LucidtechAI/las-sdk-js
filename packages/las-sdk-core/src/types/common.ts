@@ -103,8 +103,10 @@ export type RestoreChanges = {
   updated: string[];
   /* Resources deleted since the version, brought back */
   undeleted: string[];
-  /* Resources of the draft that aren't in the version */
+  /* Resources of the draft that aren't in the version, and that the agent owned */
   deleted: string[];
+  /* Resources of the draft that aren't in the version, taken out of the agent but kept: the agent didn't own them */
+  removed: string[];
   sharedFunctions: RestoreSharedFunction[];
 };
 

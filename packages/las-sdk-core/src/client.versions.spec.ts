@@ -125,7 +125,7 @@ describe('Versions and aliases', () => {
 });
 
 describe('Restores', () => {
-  const changes = { updated: [], undeleted: [], deleted: [], sharedFunctions: [] };
+  const changes = { updated: [], undeleted: [], deleted: [], removed: [], sharedFunctions: [] };
 
   test('createAgentRestore sends the version without dryRun when not given', async () => {
     const post = jest.spyOn(axios, 'post').mockResolvedValue({ data: {} });
@@ -153,6 +153,7 @@ describe('Restores', () => {
         updated: ['cradl:action:a'],
         undeleted: [],
         deleted: [],
+        removed: [],
         sharedFunctions: [{ functionId: 'cradl:function:f', usedBy: ['cradl:action:a'] }],
       },
       createdBy: 'cradl:user:u',
